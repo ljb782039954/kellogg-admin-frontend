@@ -41,6 +41,10 @@ export default function ImageText({
 
   const internalPath = getInternalPath(buttonLink);
 
+    const value = t(content);
+  // 匹配双正斜杠 // 或双反斜杠 \\ 进行拆分
+  const parts = value.split(/\/\/|\\\\/).map(p => p.trim()).filter(p => p !== '');
+
   return (
     <section className="py-12">
       <div className="container mx-auto px-4">
@@ -66,9 +70,20 @@ export default function ImageText({
             <h3 className="text-2xl md:text-4xl font-bold">
               {t(title)}
             </h3>
+            {parts.length > 1 ? (
+                  <ul className="space-y-1.5 mt-1">
+                    {parts.map((part, i) => (
+                      <li key={i} className="flex items-start gap-2 text-gray-600 text-sm leading-relaxed">
+                        {i != 0 && <span className="text-gray-900 font-black text-lg -mt-1">·</span>}
+                        <span>{part}</span>
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
             <p className="text-gray-600 text-md md:text-lg leading-relaxed">
               {t(content)}
             </p>
+                )}
             {buttonText && buttonLink && (
               internalPath ? (
                 <Link to={internalPath}>

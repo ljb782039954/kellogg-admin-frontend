@@ -54,6 +54,9 @@ export function ImageTextPropsEditor({ props, onUpdate }: ImageTextPropsEditorPr
           value={props.title || { zh: '', en: '' }}
           onChange={(val) => onUpdate({ ...props, title: val })}
         />
+        <p className="text-sm font-bold text-gray-400 uppercase">参数内容 (值)</p>
+        <p className="text-sm text-orange-600">文本中使用“//”或者“\\”，在前端显示中会自动进行换行, 第一行不会出现 ‘·’ 圆点。 </p>
+
         <BilingualInput
           label="内容"
           value={props.content || { zh: '', en: '' }}
