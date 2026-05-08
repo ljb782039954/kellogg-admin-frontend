@@ -2,6 +2,7 @@ import { useRef, useState } from 'react';
 import { Upload, X, RefreshCw, Loader2 } from 'lucide-react';
 import { useContent } from '@/context/ContentContext';
 import { getPreviewUrl } from '@/lib/utils';
+import { resizeImage } from '@/lib/image';
 
 interface ImageInputProps {
   label?: string;
@@ -10,6 +11,7 @@ interface ImageInputProps {
   aspectRatio?: 'square' | 'video' | 'banner' | 'auto';
   className?: string;
   acceptType?: string;
+  maxWidth?: number;
 }
 
 export default function ImageInput({
@@ -19,6 +21,7 @@ export default function ImageInput({
   aspectRatio = 'auto',
   className = '',
   acceptType = 'image/*',
+  maxWidth,
 }: ImageInputProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isUploading, setIsUploading] = useState(false);
@@ -32,10 +35,24 @@ export default function ImageInput({
     setIsUploading(true);
     setError(null);
 
+
     try {
-      console.log('Starting upload for file:', file.name);
+      let fileToUpload = file;
+      
+      // If it's an image and maxWidth is provided, resize it first
+      if (maxWidth && file.type.startsWith('image/')) {
+        console.log(`Resizing image to maxWidth: ${maxWidth}`);
+        try {
+          fileToUpload = await resizeImage(file, maxWidth);
+          console.log(`Resized from ${file.size} to ${fileToUpload.size} bytes`);
+        } catch (resizeErr) {
+          console.warn('Image resize failed, uploading original:', resizeErr);
+        }
+      }
+
+      console.log('Starting upload for file:', fileToUpload.name);
       // 尝试上传到 API
-      const result = await uploadImage(file);
+      const result = await uploadImage(fileToUpload);
       console.log('Upload success, URL:', result.url);
       onChange(result.url);
     } catch (err) {

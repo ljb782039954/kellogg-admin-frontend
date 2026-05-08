@@ -114,6 +114,7 @@ export default function CompanyInfoEditor() {
                 value={localInfo.logo}
                 onChange={(value) => updateInfo('logo', value)}
                 label="上传 Logo"
+                maxWidth={400}
               />
               <p className="text-xs text-gray-500">建议尺寸: 200x60 像素，支持 PNG、JPG、SVG 格式</p>
             </div>

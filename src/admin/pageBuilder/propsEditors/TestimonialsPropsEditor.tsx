@@ -126,6 +126,7 @@ export function TestimonialsPropsEditor({ props, onUpdate }: TestimonialsPropsEd
                         value={item.avatar}
                         onChange={(val) => updateItem(item.id, 'avatar', val)}
                         aspectRatio="square"
+                        maxWidth={100}
                       />
                     </div>
                     <div className="flex-1 space-y-2">

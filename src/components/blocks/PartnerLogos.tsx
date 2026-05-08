@@ -2,6 +2,7 @@ import MotionHeader from "../custom/motionHeader";
 import type { Translation } from '@/types';
 
 export interface Partner {
+  id?: string;
   logo: string;
   name: string;
   color?: string;

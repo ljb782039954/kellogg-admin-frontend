@@ -10,6 +10,7 @@ import { Button } from '@/components/ui/button';
 //   SelectTrigger,
 //   SelectValue,
 // } from '@/components/ui/select';
+import { nanoid } from 'nanoid';
 import { Plus, Trash2 } from 'lucide-react';
 import BilingualInput from '@/admin/components/BilingualInput';
 import ImageInput from '@/admin/components/ImageInput';
@@ -25,18 +26,19 @@ export function PartnerLogosPropsEditor({ props, onUpdate }: PartnerLogosPropsEd
   const addItem = () => {
     onUpdate({
       ...props,
-      items: [...items, { logo: '', name: '', link: '' }],
+      items: [...items, { id: nanoid(8), logo: '', name: '', link: '' }],
     });
   };
 
-  const updateItem = (index: number, field: string, value: string) => {
-    const newItems = [...items];
-    newItems[index] = { ...newItems[index], [field]: value };
+  const updateItem = (id: string, field: string, value: string) => {
+    const newItems = items.map(item => 
+      item.id === id ? { ...item, [field]: value } : item
+    );
     onUpdate({ ...props, items: newItems });
   };
 
-  const removeItem = (index: number) => {
-    const newItems = items.filter((_, i) => i !== index);
+  const removeItem = (id: string) => {
+    const newItems = items.filter((item) => item.id !== id);
     onUpdate({ ...props, items: newItems });
   };
 
@@ -97,14 +99,14 @@ export function PartnerLogosPropsEditor({ props, onUpdate }: PartnerLogosPropsEd
         ) : (
           <div className="space-y-4">
             {items.map((partner, index) => (
-              <div key={index} className="p-4 bg-gray-50 rounded-lg space-y-3">
+              <div key={partner.id || index} className="p-4 bg-gray-50 rounded-lg space-y-3">
                 <div className="flex items-center justify-between">
                   <span className="text-sm font-medium">合作伙伴 {index + 1}</span>
                   <Button
                     size="sm"
                     variant="ghost"
                     className="text-red-500 hover:text-red-600"
-                    onClick={() => removeItem(index)}
+                    onClick={() => removeItem(partner.id!)}
                   >
                     <Trash2 className="w-4 h-4" />
                   </Button>
@@ -112,15 +114,16 @@ export function PartnerLogosPropsEditor({ props, onUpdate }: PartnerLogosPropsEd
                 <ImageInput
                   label="Logo 图片"
                   value={partner.logo}
-                  onChange={(val) => updateItem(index, 'logo', val)}
+                  onChange={(val) => updateItem(partner.id!, 'logo', val)}
                   aspectRatio="video"
+                  maxWidth={200}
                 />
                 <div className="grid grid-cols-2 gap-3">
                   <div className="space-y-2">
                     <Label>品牌名称</Label>
                     <Input
                       value={partner.name}
-                      onChange={(e) => updateItem(index, 'name', e.target.value)}
+                      onChange={(e) => updateItem(partner.id!, 'name', e.target.value)}
                       placeholder="如 Brand Name"
                     />
                   </div>
@@ -128,7 +131,7 @@ export function PartnerLogosPropsEditor({ props, onUpdate }: PartnerLogosPropsEd
                     <Label>品牌主色 (Hex)</Label>
                     <Input
                       value={partner.color || ''}
-                      onChange={(e) => updateItem(index, 'color', e.target.value)}
+                      onChange={(e) => updateItem(partner.id!, 'color', e.target.value)}
                       placeholder="如 #FF0000"
                     />
                   </div>
@@ -137,7 +140,7 @@ export function PartnerLogosPropsEditor({ props, onUpdate }: PartnerLogosPropsEd
                   <Label>链接（可选）</Label>
                   <Input
                     value={partner.link || ''}
-                    onChange={(e) => updateItem(index, 'link', e.target.value)}
+                    onChange={(e) => updateItem(partner.id!, 'link', e.target.value)}
                     placeholder="如 https://example.com"
                   />
                 </div>

@@ -27,6 +27,7 @@ export default function ProductMediaSection({ product, onUpdateField }: ProductM
           value={product.image || ''}
           onChange={setMainImage}
           aspectRatio="square"
+          maxWidth={1200}
         />
       </div>
 
@@ -46,6 +47,7 @@ export default function ProductMediaSection({ product, onUpdateField }: ProductM
                   updateImages(nextImages);
                 }}
                 aspectRatio="square"
+                maxWidth={1200}
               />
               <button
                 onClick={() => {

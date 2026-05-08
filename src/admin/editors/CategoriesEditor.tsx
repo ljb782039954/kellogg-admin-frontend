@@ -180,6 +180,7 @@ export default function CategoriesEditor() {
                       value={cat.image || ''}
                       onChange={(val) => updateLocalCategoryImage(index, val)}
                       aspectRatio="square"
+                      maxWidth={100}
                     />
                   </div>
                   <div className="flex-1 text-sm text-gray-400 mt-6">
