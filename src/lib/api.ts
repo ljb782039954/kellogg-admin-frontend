@@ -8,6 +8,7 @@ import type {
   Category,
   ProductInput,
   CategoryInput,
+  CustomPage,
 } from '../types';
 
 const API_BASE = import.meta.env.VITE_IS_LOCAL_DEV === "true" ? import.meta.env.VITE_API_BASE_URL_LOCAL : import.meta.env.VITE_API_BASE_URL;
@@ -168,6 +169,13 @@ export const api = {
       method: 'POST',
       body: JSON.stringify({ key, value }),
     }),
+
+  deleteConfig: (key: string) =>
+    request<{ success: boolean }>(`/api/config/${key}`, {
+      method: 'DELETE',
+    }),
+
+  getPageById: (id: string) => request<CustomPage>(`/api/config/pages/${id}`),
 
   // ============================================
   // 图片与静态资源上传

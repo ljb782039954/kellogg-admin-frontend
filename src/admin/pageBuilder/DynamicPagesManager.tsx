@@ -447,7 +447,7 @@ function PageCard({ page, onEdit, onEditSettings, onDuplicate, onDelete }: PageC
           <span className="truncate">{page.path}</span>
         </div>
         <div className="flex items-center justify-between text-xs text-gray-400">
-          <span>{page.blocks.length} 个积木块</span>
+          <span>{page.blocks?.length || 0} 个积木块</span>
         </div>
         <div className="flex items-center gap-2 pt-2 border-t">
           <Button variant="outline" size="sm" className="flex-1" onClick={onEdit}>

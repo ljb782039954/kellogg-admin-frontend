@@ -125,7 +125,7 @@ export function ContentProvider({ children }: { children: ReactNode }) {
       };
 
       const [
-        pages, 
+        pagesIndex, 
         siteSettings, 
         header, 
         footer
@@ -136,11 +136,23 @@ export function ContentProvider({ children }: { children: ReactNode }) {
         fetchConfig<FooterContent>('footer_config', blankContent.footer),
       ]);
 
+      // adminApp 专门：一次性加载所有的完整页面数据进行匹配
+      const fullPages = await Promise.all(
+        pagesIndex.map(async (p) => {
+          try {
+            const detail = await api.getPageById(p.id);
+            return { ...p, ...detail } as CustomPage;
+          } catch (e) {
+            return { ...p, blocks: [] } as CustomPage;
+          }
+        })
+      );
+
       setContent({
         companyInfo: siteSettings,
         header: header,
         footer: footer,
-        pages: pages, // Directly use pages from KV
+        pages: fullPages, // Directly use full pages
       });
 
       setAllProducts(productsResp.data || []);
@@ -200,26 +212,55 @@ export function ContentProvider({ children }: { children: ReactNode }) {
   // 页面管理 (真正的积木持久化)
   // ============================================
   const updatePage = useCallback(async (pageId: string, pageData: Partial<CustomPage>) => {
+    const existingFullPage = content.pages.find(p => p.id === pageId);
+    const fullPageToSave = { ...(existingFullPage || {}), ...pageData } as CustomPage;
+
+    // 1. 保存全量数据到 page:[id]
+    await api.setConfig(`page:${pageId}`, fullPageToSave);
+
+    // 2. 更新 pages_index 并剔除 blocks
     const updatedPages = content.pages.map(p =>
       p.id === pageId ? { ...p, ...pageData } : p
     );
-    // 先持久化 KV
-    await api.setConfig('pages', updatedPages);
+    const sanitizedIndex = updatedPages.map(p => {
+      const { blocks, ...rest } = p;
+      return rest as CustomPage;
+    });
+    await api.setConfig('pages_index', sanitizedIndex);
+
     // 后同步 State
     setContent(prev => ({ ...prev, pages: updatedPages }));
-    toast.success('页面布局已自动保存');
+    toast.success('页面信息已更新');
   }, [content.pages]);
 
   const addPage = useCallback(async (page: CustomPage) => {
+    // 1. 保存全量数据到 page:[id]
+    await api.setConfig(`page:${page.id}`, page);
+
+    // 2. 更新 pages_index
     const updatedPages = [...content.pages, page];
-    await api.setConfig('pages', updatedPages);
+    const sanitizedIndex = updatedPages.map(p => {
+      const { blocks, ...rest } = p;
+      return rest as CustomPage;
+    });
+    await api.setConfig('pages_index', sanitizedIndex);
+
     setContent(prev => ({ ...prev, pages: updatedPages }));
     toast.success('已新建页面');
   }, [content.pages]);
 
   const deletePage = useCallback(async (pageId: string) => {
+    // 1. 删除 page:[id]
+    await api.deleteConfig(`page:${pageId}`).catch(console.error);
+
+    // 2. 更新 pages_index
     const updatedPages = content.pages.filter(p => p.id !== pageId);
-    await api.setConfig('pages', updatedPages);
+    const sanitizedIndex = updatedPages.map(p => {
+      const { blocks, ...rest } = p;
+      return rest as CustomPage;
+    });
+    await api.setConfig('pages_index', sanitizedIndex);
+
     setContent(prev => ({ ...prev, pages: updatedPages }));
     toast.success('已删除页面');
   }, [content.pages]);
