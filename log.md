@@ -1,47 +1,89 @@
 # adminApp生产环境：
 
-## 进入页面管理-页面编辑
+## 图片管理- 点击图片网格中的图片
 
-react-dom_client.js?v=fb503298:20103 Download the React DevTools for a better development experience: https://react.dev/link/react-devtools
-PageLayoutEditor.tsx:246 Uncaught TypeError: Cannot read properties of undefined (reading 'zh')
-at PageLayoutEditor (PageLayoutEditor.tsx:246:68)
-at Object.react_stack_bottom_frame (react-dom_client.js?v=fb503298:18509:20)
-at renderWithHooks (react-dom_client.js?v=fb503298:5654:24)
-at updateFunctionComponent (react-dom_client.js?v=fb503298:7475:21)
-at beginWork (react-dom_client.js?v=fb503298:8525:20)
-at runWithFiberInDEV (react-dom_client.js?v=fb503298:997:72)
-at performUnitOfWork (react-dom_client.js?v=fb503298:12561:98)
-at workLoopSync (react-dom_client.js?v=fb503298:12424:43)
-at renderRootSync (react-dom_client.js?v=fb503298:12408:13)
-at performWorkOnRoot (react-dom_client.js?v=fb503298:11827:37)
-(anonymous) @ PageLayoutEditor.tsx:246
-react_stack_bottom_frame @ react-dom_client.js?v=fb503298:18509
-renderWithHooks @ react-dom_client.js?v=fb503298:5654
-updateFunctionComponent @ react-dom_client.js?v=fb503298:7475
-beginWork @ react-dom_client.js?v=fb503298:8525
-runWithFiberInDEV @ react-dom_client.js?v=fb503298:997
-performUnitOfWork @ react-dom_client.js?v=fb503298:12561
-workLoopSync @ react-dom_client.js?v=fb503298:12424
-renderRootSync @ react-dom_client.js?v=fb503298:12408
-performWorkOnRoot @ react-dom_client.js?v=fb503298:11827
-performWorkOnRootViaSchedulerTask @ react-dom_client.js?v=fb503298:13505
-performWorkUntilDeadline @ react-dom_client.js?v=fb503298:36
-react-dom_client.js?v=fb503298:6966 An error occurred in the <PageLayoutEditor> component.
+直接白屏，控制台日志
+
+react-dom_client.js?v=b9aaffaf:4598 Uncaught Error: Objects are not valid as a React child (found: object with keys {zh, en}). If you meant to render a collection of children, use an array instead.
+at throwOnInvalidObjectTypeImpl (react-dom_client.js?v=b9aaffaf:4598:15)
+at throwOnInvalidObjectType (react-dom_client.js?v=b9aaffaf:4606:13)
+at reconcileChildFibersImpl (react-dom_client.js?v=b9aaffaf:5217:13)
+at react-dom_client.js?v=b9aaffaf:5237:35
+at reconcileChildren (react-dom_client.js?v=b9aaffaf:7182:53)
+at beginWork (react-dom_client.js?v=b9aaffaf:8701:104)
+at runWithFiberInDEV (react-dom_client.js?v=b9aaffaf:997:72)
+at performUnitOfWork (react-dom_client.js?v=b9aaffaf:12561:98)
+at workLoopSync (react-dom_client.js?v=b9aaffaf:12424:43)
+at renderRootSync (react-dom_client.js?v=b9aaffaf:12408:13)
+throwOnInvalidObjectTypeImpl @ react-dom_client.js?v=b9aaffaf:4598
+throwOnInvalidObjectType @ react-dom_client.js?v=b9aaffaf:4606
+reconcileChildFibersImpl @ react-dom_client.js?v=b9aaffaf:5217
+(anonymous) @ react-dom_client.js?v=b9aaffaf:5237
+reconcileChildren @ react-dom_client.js?v=b9aaffaf:7182
+beginWork @ react-dom_client.js?v=b9aaffaf:8701
+runWithFiberInDEV @ react-dom_client.js?v=b9aaffaf:997
+performUnitOfWork @ react-dom_client.js?v=b9aaffaf:12561
+workLoopSync @ react-dom_client.js?v=b9aaffaf:12424
+renderRootSync @ react-dom_client.js?v=b9aaffaf:12408
+performWorkOnRoot @ react-dom_client.js?v=b9aaffaf:11827
+performSyncWorkOnRoot @ react-dom_client.js?v=b9aaffaf:13517
+flushSyncWorkAcrossRoots_impl @ react-dom_client.js?v=b9aaffaf:13414
+processRootScheduleInMicrotask @ react-dom_client.js?v=b9aaffaf:13437
+(anonymous) @ react-dom_client.js?v=b9aaffaf:13531
+<span>
+exports.jsxDEV @ react_jsx-dev-runtime.js?v=b9aaffaf:247
+$RefreshSig$ @ MediaDetails.tsx:79
+$RefreshSig$ @ MediaDetails.tsx:74
+react_stack_bottom_frame @ react-dom_client.js?v=b9aaffaf:18509
+renderWithHooksAgain @ react-dom_client.js?v=b9aaffaf:5729
+renderWithHooks @ react-dom_client.js?v=b9aaffaf:5665
+updateFunctionComponent @ react-dom_client.js?v=b9aaffaf:7475
+beginWork @ react-dom_client.js?v=b9aaffaf:8525
+runWithFiberInDEV @ react-dom_client.js?v=b9aaffaf:997
+performUnitOfWork @ react-dom_client.js?v=b9aaffaf:12561
+workLoopSync @ react-dom_client.js?v=b9aaffaf:12424
+renderRootSync @ react-dom_client.js?v=b9aaffaf:12408
+performWorkOnRoot @ react-dom_client.js?v=b9aaffaf:11827
+performSyncWorkOnRoot @ react-dom_client.js?v=b9aaffaf:13517
+flushSyncWorkAcrossRoots_impl @ react-dom_client.js?v=b9aaffaf:13414
+processRootScheduleInMicrotask @ react-dom_client.js?v=b9aaffaf:13437
+(anonymous) @ react-dom_client.js?v=b9aaffaf:13531
+MediaDetails.tsx:79 An error occurred in the <span> component.
 
 Consider adding an error boundary to your tree to customize error handling behavior.
 Visit https://react.dev/link/error-boundaries to learn more about error boundaries.
 
-defaultOnUncaughtError @ react-dom_client.js?v=fb503298:6966
-logUncaughtError @ react-dom_client.js?v=fb503298:7020
-runWithFiberInDEV @ react-dom_client.js?v=fb503298:997
-lane.callback @ react-dom_client.js?v=fb503298:7048
-callCallback @ react-dom_client.js?v=fb503298:5491
-commitCallbacks @ react-dom_client.js?v=fb503298:5503
-runWithFiberInDEV @ react-dom_client.js?v=fb503298:999
-commitLayoutEffectOnFiber @ react-dom_client.js?v=fb503298:9976
-flushLayoutEffects @ react-dom_client.js?v=fb503298:12924
-commitRoot @ react-dom_client.js?v=fb503298:12803
-commitRootWhenReady @ react-dom_client.js?v=fb503298:12016
-performWorkOnRoot @ react-dom_client.js?v=fb503298:11950
-performWorkOnRootViaSchedulerTask @ react-dom_client.js?v=fb503298:13505
-performWorkUntilDeadline @ react-dom_client.js?v=fb503298:36
+defaultOnUncaughtError @ react-dom_client.js?v=b9aaffaf:6966
+logUncaughtError @ react-dom_client.js?v=b9aaffaf:7020
+runWithFiberInDEV @ react-dom_client.js?v=b9aaffaf:997
+lane.callback @ react-dom_client.js?v=b9aaffaf:7048
+callCallback @ react-dom_client.js?v=b9aaffaf:5491
+commitCallbacks @ react-dom_client.js?v=b9aaffaf:5503
+runWithFiberInDEV @ react-dom_client.js?v=b9aaffaf:999
+commitLayoutEffectOnFiber @ react-dom_client.js?v=b9aaffaf:9976
+flushLayoutEffects @ react-dom_client.js?v=b9aaffaf:12924
+commitRoot @ react-dom_client.js?v=b9aaffaf:12803
+commitRootWhenReady @ react-dom_client.js?v=b9aaffaf:12016
+performWorkOnRoot @ react-dom_client.js?v=b9aaffaf:11950
+performSyncWorkOnRoot @ react-dom_client.js?v=b9aaffaf:13517
+flushSyncWorkAcrossRoots_impl @ react-dom_client.js?v=b9aaffaf:13414
+processRootScheduleInMicrotask @ react-dom_client.js?v=b9aaffaf:13437
+(anonymous) @ react-dom_client.js?v=b9aaffaf:13531
+<span>
+exports.jsxDEV @ react_jsx-dev-runtime.js?v=b9aaffaf:247
+$RefreshSig$ @ MediaDetails.tsx:79
+$RefreshSig$ @ MediaDetails.tsx:74
+react_stack_bottom_frame @ react-dom_client.js?v=b9aaffaf:18509
+renderWithHooksAgain @ react-dom_client.js?v=b9aaffaf:5729
+renderWithHooks @ react-dom_client.js?v=b9aaffaf:5665
+updateFunctionComponent @ react-dom_client.js?v=b9aaffaf:7475
+beginWork @ react-dom_client.js?v=b9aaffaf:8525
+runWithFiberInDEV @ react-dom_client.js?v=b9aaffaf:997
+performUnitOfWork @ react-dom_client.js?v=b9aaffaf:12561
+workLoopSync @ react-dom_client.js?v=b9aaffaf:12424
+renderRootSync @ react-dom_client.js?v=b9aaffaf:12408
+performWorkOnRoot @ react-dom_client.js?v=b9aaffaf:11827
+performSyncWorkOnRoot @ react-dom_client.js?v=b9aaffaf:13517
+flushSyncWorkAcrossRoots_impl @ react-dom_client.js?v=b9aaffaf:13414
+processRootScheduleInMicrotask @ react-dom_client.js?v=b9aaffaf:13437
+(anonymous) @ react-dom_client.js?v=b9aaffaf:13531

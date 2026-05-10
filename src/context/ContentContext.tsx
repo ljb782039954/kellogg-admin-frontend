@@ -9,6 +9,7 @@ import type {
   CompanyInfo,
   ProductInput,
   CategoryInput,
+  R2Image,
 } from '../types';
 import { api } from '../lib/api';
 import { toast } from 'sonner';
@@ -73,8 +74,9 @@ interface ContentContextType {
   updateHeader: (header: HeaderContent) => Promise<void>;
   updateFooter: (footer: FooterContent) => Promise<void>;
 
-  // 图片上传
-  uploadImage: (file: File) => Promise<{ url: string; key: string }>;
+  // 资源管理
+  uploadImage: (file: File, dimensions?: { width: number; height: number }) => Promise<{ url: string; thumbUrl: string; key: string }>;
+  getImagesList: () => Promise<R2Image[]>;
   deleteImage: (key: string) => Promise<void>;
 }
 
@@ -289,8 +291,12 @@ export function ContentProvider({ children }: { children: ReactNode }) {
   // ============================================
   // 资源管理
   // ============================================
-  const uploadImage = useCallback(async (file: File) => {
-    return api.uploadImage(file);
+  const uploadImage = useCallback(async (file: File, dimensions?: { width: number; height: number }) => {
+    return api.uploadImage(file, dimensions);
+  }, []);
+
+  const getImagesList = useCallback(async () => {
+    return api.getImagesList();
   }, []);
 
   const deleteImage = useCallback(async (key: string) => {
@@ -321,6 +327,7 @@ export function ContentProvider({ children }: { children: ReactNode }) {
         updateHeader,
         updateFooter,
         uploadImage,
+        getImagesList,
         deleteImage,
       }}
     >

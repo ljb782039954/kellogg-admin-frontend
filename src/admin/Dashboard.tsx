@@ -12,7 +12,8 @@ import {
   PanelTop,
   PanelBottom,
   Layers,
-  Inbox
+  Inbox,
+  Image as ImageIcon
 } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 import siteSettings from '../config/siteSettings.json';
@@ -54,6 +55,11 @@ const menuItems: MenuItem[] = [
     path: '/pages',
     name: '页面管理',
     icon: FileText,
+  },
+  {
+    path: '/media',
+    name: '图片管理',
+    icon: ImageIcon,
   },
   {
     name: '产品管理',

@@ -16,3 +16,13 @@ export interface NavLink {
   href: string;        // 内部链接为 pagePath (如 '/')，外部链接为完整 URL
   pageDeleted?: boolean; // 标记链接目标页面是否已被删除
 }
+
+export interface R2Image {
+  key: string;
+  name: string;
+  url: string;
+  thumbUrl: string;
+  size: number;
+  dimensions?: string;
+  uploaded: string | Date;
+}

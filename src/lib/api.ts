@@ -9,6 +9,7 @@ import type {
   ProductInput,
   CategoryInput,
   CustomPage,
+  R2Image,
 } from '../types';
 
 const API_BASE = import.meta.env.VITE_IS_LOCAL_DEV === "true" ? import.meta.env.VITE_API_BASE_URL_LOCAL : import.meta.env.VITE_API_BASE_URL;
@@ -180,9 +181,16 @@ export const api = {
   // ============================================
   // 图片与静态资源上传
   // ============================================
-  uploadImage: async (file: File): Promise<{ url: string; key: string }> => {
+  uploadImage: async (
+    file: File,
+    dimensions?: { width: number; height: number }
+  ): Promise<{ url: string; thumbUrl: string; key: string }> => {
     const formData = new FormData();
     formData.append('file', file);
+    if (dimensions) {
+      formData.append('width', dimensions.width.toString());
+      formData.append('height', dimensions.height.toString());
+    }
 
     const response = await fetch(`${API_BASE}/api/upload`, {
       method: 'POST',
@@ -199,6 +207,8 @@ export const api = {
 
     return response.json();
   },
+
+  getImagesList: () => request<R2Image[]>('/api/upload/list'),
 
   deleteImage: (key: string) =>
     request<{ success: boolean }>(`/api/upload?key=${encodeURIComponent(key)}`, {

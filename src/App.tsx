@@ -21,6 +21,7 @@ import CategoriesEditor from './admin/editors/CategoriesEditor';
 import FooterEditor from './admin/editors/FooterEditor';
 import InquiryEditor from './admin/editors/InquiryEditor';
 import InquiryManagement from './admin/InquiryManagement';
+import MediaManager from './admin/MediaManager';
 
 function App() {
   return (
@@ -49,6 +50,7 @@ function App() {
               <Route path="products" element={<ProductsEditor />} />
               <Route path="categories" element={<CategoriesEditor />} />
               <Route path="inquiries" element={<InquiryManagement />} />
+              <Route path="media" element={<MediaManager />} />
               <Route path="inquiry-editor" element={<InquiryEditor />} />
               {/* <Route path="account" element={<AccountSettings />} /> */}
             </Route>
