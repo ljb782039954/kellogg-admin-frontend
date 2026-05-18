@@ -15,7 +15,7 @@ import ComponentsPreview from './admin/BlocksPreview';
 
 // 编辑器
 import CompanyInfoEditor from './admin/editors/CompanyInfoEditor';
-import HeaderEditor from './admin/editors/HeaderEditor';
+import HeaderEditor from './admin/editors/headerEditor';
 import ProductsEditor from './admin/editors/ProductsEditor';
 import CategoriesEditor from './admin/editors/CategoriesEditor';
 import FooterEditor from './admin/editors/FooterEditor';

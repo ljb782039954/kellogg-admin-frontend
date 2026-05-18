@@ -1,18 +1,17 @@
-// Header 组件管理编辑器
+// Header 组件管理主入口
 
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Plus, Trash2, GripVertical, Save, AlertTriangle, Globe, Share2, Menu, Loader2 } from 'lucide-react';
+import { Save, AlertTriangle, Globe, Share2, Menu, Loader2 } from 'lucide-react';
 import { useContent } from '@/context/ContentContext';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import BilingualInput from '../components/BilingualInput';
-import LinkSelector from '../components/LinkSelector';
 import { checkPageExists } from '@/lib/linkUtils';
-import type { NavLink, HeaderContent, Translation } from '@/types';
+import type { HeaderContent } from '@/types';
 import siteSettings from '@/config/siteSettings.json';
 import { getPreviewUrl } from '@/lib/utils';
+import NavEditor from './NavEditor';
 
 // Header 预览组件
 function HeaderPreview({ header, language }: { header: HeaderContent; language: 'zh' | 'en' }) {
@@ -23,10 +22,9 @@ function HeaderPreview({ header, language }: { header: HeaderContent; language: 
           预览效果
           <Badge variant="outline" className="ml-2">{language === 'zh' ? '中文' : 'English'}</Badge>
         </CardTitle>
-        <CardDescription>在浏览器中的实际显示效果</CardDescription>
+        <CardDescription>在浏览器中的实际显示效果（简易预览，完整下拉效果请在前台查看）</CardDescription>
       </CardHeader>
       <CardContent className="p-0">
-        {/* 模拟 Header */}
         <div className="bg-white border-b border-gray-200 px-6 py-4">
           <div className="flex items-center justify-between">
             {/* Logo */}
@@ -48,16 +46,20 @@ function HeaderPreview({ header, language }: { header: HeaderContent; language: 
 
             {/* 导航菜单 */}
             <nav className="hidden md:flex items-center gap-6">
-              {header.navItems.map((item, index) => (
-                <span
-                  key={index}
-                  className={`text-sm font-medium transition-colors ${item.pageDeleted
-                    ? 'text-red-500 line-through'
-                    : 'text-gray-600 hover:text-gray-900'
-                    }`}
-                >
-                  {item.name[language]}
-                </span>
+              {header.navItems.slice(0, 5).map((item, index) => (
+                <div key={index} className="group relative">
+                  <span
+                    className={`text-sm font-medium transition-colors ${item.pageDeleted
+                      ? 'text-red-500 line-through'
+                      : 'text-gray-600 hover:text-gray-900'
+                      }`}
+                  >
+                    {item.name[language]}
+                    {item.children && item.children.length > 0 && (
+                      <span className="ml-1 text-xs">▼</span>
+                    )}
+                  </span>
+                </div>
               ))}
             </nav>
 
@@ -98,7 +100,8 @@ export default function HeaderEditor() {
   // 检查是否有已删除的页面链接
   useEffect(() => {
     const hasDeleted = localHeader.navItems.some(
-      (item) => !checkPageExists(item.href, item.linkType, content.pages)
+      (item) => !checkPageExists(item.href, item.linkType, content.pages) || 
+      (item.children && item.children.some(sub => !checkPageExists(sub.href, sub.linkType, content.pages)))
     );
     setHasDeletedPages(hasDeleted);
   }, [localHeader.navItems, content.pages]);
@@ -120,7 +123,12 @@ export default function HeaderEditor() {
     setError(null);
 
     try {
-      await updateHeader(localHeader);
+      // 确保存入数据库的数据最多只有 5 个一级菜单
+      const headerToSave = {
+        ...localHeader,
+        navItems: localHeader.navItems.slice(0, 5),
+      };
+      await updateHeader(headerToSave);
       setSaved(true);
       setTimeout(() => setSaved(false), 2000);
     } catch (err) {
@@ -128,38 +136,6 @@ export default function HeaderEditor() {
     } finally {
       setIsSaving(false);
     }
-  };
-
-  const addNavItem = () => {
-    const newItem: NavLink = {
-      id: Date.now().toString(), // TODO: 生成更可靠的 ID
-      name: { zh: '新菜单', en: 'New Menu' },
-      linkType: 'internal',
-      href: '',
-    };
-    setLocalHeader({
-      ...localHeader,
-      navItems: [...localHeader.navItems, newItem],
-    });
-  };
-
-  const updateNavItemName = (index: number, value: Translation) => {
-    const newNavItems = [...localHeader.navItems];
-    newNavItems[index] = { ...newNavItems[index], name: value };
-    setLocalHeader({ ...localHeader, navItems: newNavItems });
-  };
-
-  const updateNavItemLink = (index: number, value: NavLink) => {
-    const newNavItems = [...localHeader.navItems];
-    newNavItems[index] = { ...newNavItems[index], ...value };
-    setLocalHeader({ ...localHeader, navItems: newNavItems });
-  };
-
-  const removeNavItem = (index: number) => {
-    setLocalHeader({
-      ...localHeader,
-      navItems: localHeader.navItems.filter((_, i) => i !== index),
-    });
   };
 
   if (contextLoading) {
@@ -177,7 +153,7 @@ export default function HeaderEditor() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-gray-800">Header 导航管理</h1>
-          <p className="text-gray-500 mt-1">编辑网站顶部导航菜单</p>
+          <p className="text-gray-500 mt-1">编辑网站顶部导航菜单，支持下拉框</p>
         </div>
         <Button onClick={handleSave} disabled={isSaving}>
           {isSaving ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Save className="w-4 h-4 mr-2" />}
@@ -245,80 +221,11 @@ export default function HeaderEditor() {
         品牌 Logo 和名称由「公司信息管理」统一配置。
       </div>
 
-      {/* 导航菜单列表 */}
-      <Card>
-        <CardHeader>
-          <div className="flex items-center justify-between">
-            <div>
-              <CardTitle>导航菜单</CardTitle>
-              <CardDescription>管理顶部导航栏的菜单项</CardDescription>
-            </div>
-            <Button variant="outline" size="sm" onClick={addNavItem}>
-              <Plus className="w-4 h-4 mr-1" />
-              添加菜单
-            </Button>
-          </div>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          {localHeader.navItems.length === 0 ? (
-            <div className="text-center py-8 text-gray-500">
-              <p>暂无导航菜单</p>
-              <p className="text-sm mt-1">点击「添加菜单」开始配置</p>
-            </div>
-          ) : (
-            localHeader.navItems.map((item, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                className={`p-4 rounded-lg border ${item.pageDeleted
-                  ? 'border-red-300 bg-red-50'
-                  : 'border-gray-200 bg-gray-50'
-                  }`}
-              >
-                <div className="flex items-start gap-3">
-                  <GripVertical className="w-5 h-5 text-gray-400 mt-2 cursor-move" />
-
-                  <div className="flex-1 space-y-4">
-                    {/* 菜单名称 */}
-                    <div className="flex items-center gap-2">
-                      <span className="text-sm font-medium text-gray-700 w-16">菜单名称</span>
-                      {item.pageDeleted && (
-                        <Badge variant="destructive" className="text-xs">
-                          <AlertTriangle className="w-3 h-3 mr-1" />
-                          链接失效
-                        </Badge>
-                      )}
-                    </div>
-                    <BilingualInput
-                      value={item.name}
-                      onChange={(value) => updateNavItemName(index, value)}
-                      placeholder={{ zh: '菜单中文名', en: 'Menu English name' }}
-                    />
-
-                    {/* 链接配置 */}
-                    <div className="pt-2 border-t">
-                      <LinkSelector
-                        value={item}
-                        onChange={(value) => updateNavItemLink(index, value)}
-                      />
-                    </div>
-                  </div>
-
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => removeNavItem(index)}
-                    className="text-red-500 hover:text-red-700 hover:bg-red-50"
-                  >
-                    <Trash2 className="w-4 h-4" />
-                  </Button>
-                </div>
-              </motion.div>
-            ))
-          )}
-        </CardContent>
-      </Card>
+      {/* 导航菜单列表编辑器 */}
+      <NavEditor 
+        navItems={localHeader.navItems} 
+        onChange={(items) => setLocalHeader({ ...localHeader, navItems: items })} 
+      />
     </div>
   );
 }
