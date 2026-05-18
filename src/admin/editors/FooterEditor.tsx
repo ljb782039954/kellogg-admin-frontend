@@ -14,6 +14,7 @@ import type { Translation, FooterLinkGroup, FooterLink, FooterContent } from '@/
 import siteSettings from '@/config/siteSettings.json';
 
 // Footer 预览组件
+
 function FooterPreview({ footer, language }: { footer: FooterContent; language: 'zh' | 'en' }) {
   return (
     <Card className="overflow-hidden">
