@@ -78,6 +78,10 @@ interface ContentContextType {
   uploadImage: (file: File, dimensions?: { width: number; height: number }) => Promise<{ url: string; thumbUrl: string; key: string }>;
   getImagesList: () => Promise<R2Image[]>;
   deleteImage: (key: string) => Promise<void>;
+
+  // 构建管理
+  buildStatus: { hasChanges: boolean; lastBuildTime?: string };
+  triggerBuild: () => Promise<void>;
 }
 
 const ContentContext = createContext<ContentContextType | undefined>(undefined);
@@ -89,6 +93,9 @@ export function ContentProvider({ children }: { children: ReactNode }) {
 
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [buildStatus, setBuildStatus] = useState<{ hasChanges: boolean; lastBuildTime?: string }>({
+    hasChanges: false,
+  });
 
   const clearError = useCallback(() => setError(null), []);
 
@@ -130,12 +137,14 @@ export function ContentProvider({ children }: { children: ReactNode }) {
         pagesIndex, 
         siteSettings, 
         header, 
-        footer
+        footer,
+        buildStatusData
       ] = await Promise.all([
         fetchConfig<CustomPage[]>('pages', blankContent.pages),
         fetchConfig<CompanyInfo>('site_settings', blankContent.companyInfo),
         fetchConfig<HeaderContent>('header_config', blankContent.header),
         fetchConfig<FooterContent>('footer_config', blankContent.footer),
+        fetchConfig<{ hasChanges: boolean; lastBuildTime?: string }>('build_status', { hasChanges: false }),
       ]);
 
       // adminApp 专门：一次性加载所有的完整页面数据进行匹配
@@ -159,6 +168,7 @@ export function ContentProvider({ children }: { children: ReactNode }) {
 
       setAllProducts(productsResp.data || []);
       setCategories(categoriesData);
+      setBuildStatus(buildStatusData);
 
     } catch (err) {
       console.error('Critical data load failure:', err);
@@ -299,6 +309,21 @@ export function ContentProvider({ children }: { children: ReactNode }) {
     return api.getImagesList();
   }, []);
 
+  const triggerBuild = useCallback(async () => {
+    try {
+      const response = await api.triggerBuild();
+      if (response.success && response.buildStatus) {
+        setBuildStatus(response.buildStatus);
+        toast.success('构建部署已成功触发，正在后台生成中...');
+      } else {
+        toast.error('触发构建失败');
+      }
+    } catch (e: any) {
+      console.error(e);
+      toast.error(`触发构建出错: ${e.message || e}`);
+    }
+  }, []);
+
   const deleteImage = useCallback(async (key: string) => {
     await api.deleteImage(key);
   }, []);
@@ -329,6 +354,8 @@ export function ContentProvider({ children }: { children: ReactNode }) {
         uploadImage,
         getImagesList,
         deleteImage,
+        buildStatus,
+        triggerBuild,
       }}
     >
       {children}

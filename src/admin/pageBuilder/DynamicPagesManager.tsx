@@ -414,8 +414,8 @@ interface PageCardProps {
 
 function PageCard({ page, onEdit, onEditSettings, onDuplicate, onDelete }: PageCardProps) {
   return (
-    <Card className="hover:shadow-md transition-shadow">
-      <CardHeader className="pb-2">
+    <Card className="hover:shadow-md transition-shadow gap-1">
+      <CardHeader className="pb-1">
         <div className="flex items-start justify-between">
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2">
@@ -441,7 +441,7 @@ function PageCard({ page, onEdit, onEditSettings, onDuplicate, onDelete }: PageC
           )}
         </div>
       </CardHeader>
-      <CardContent className="space-y-3">
+      <CardContent className="space-y-1">
         <div className="flex items-center gap-2 text-sm text-gray-500">
           <ExternalLink className="w-4 h-4" />
           <span className="truncate">{page.path}</span>

@@ -228,6 +228,17 @@ export const api = {
     request<{ success: boolean }>(`/api/inquiries/${id}`, {
       method: 'DELETE',
     }),
+
+  // ============================================
+  // 系统管理 / 触发构建
+  // ============================================
+  triggerBuild: () =>
+    request<{ success: boolean; buildStatus: { hasChanges: boolean; lastBuildTime: string } }>(
+      '/api/system/trigger-build',
+      {
+        method: 'POST',
+      }
+    ),
 };
 
 export default api;

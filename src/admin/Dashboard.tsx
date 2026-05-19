@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate, NavLink, Outlet, useLocation } from 'react-router-dom';
 import {
   LayoutDashboard,
@@ -13,9 +13,11 @@ import {
   PanelBottom,
   Layers,
   Inbox,
-  Image as ImageIcon
+  Image as ImageIcon,
+  CloudLightning
 } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
+import { useContent } from '../context/ContentContext';
 import siteSettings from '../config/siteSettings.json';
 
 interface MenuItem {
@@ -88,6 +90,14 @@ export default function Dashboard() {
   const navigate = useNavigate();
   const { language, setLanguage } = useLanguage();
   const location = useLocation();
+  const { buildStatus, triggerBuild } = useContent();
+  const [isBuilding, setIsBuilding] = useState(false);
+
+  const handleBuild = async () => {
+    setIsBuilding(true);
+    await triggerBuild();
+    setIsBuilding(false);
+  };
 
   useEffect(() => {
     // TODO: 登录验证，已注释
@@ -105,7 +115,7 @@ export default function Dashboard() {
   return (
     <div className="min-h-screen bg-gray-100 flex">
       {/* Sidebar */}
-      <aside className="w-64 bg-white shadow-lg flex flex-col overflow-y-auto">
+      <aside className="w-64 bg-white shadow-lg flex flex-col">
         {/* Logo */}
         <div className="p-6 border-b border-gray-100">
           <div className="flex items-center gap-3 mb-2">
@@ -115,6 +125,78 @@ export default function Dashboard() {
             <h1 className="text-xl font-bold text-gray-800">{siteSettings.brand.name.zh}</h1>
           </div>
           <p className="text-sm text-gray-500">后台管理系统</p>
+        </div>
+
+        {/* Build Panel */}
+        <div className="p-4 border-t border-gray-300 bg-gray-50/50">
+          <div className="space-y-3">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-semibold text-gray-500 uppercase tracking-wider">发布构建</span>
+              {buildStatus?.hasChanges ? (
+                <span className="flex h-2 w-2 relative">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-amber-500"></span>
+                </span>
+              ) : (
+                <span className="h-2 w-2 rounded-full bg-emerald-500"></span>
+              )}
+            </div>
+            
+            {/* {buildStatus?.hasChanges ? ( */}
+              <div className="bg-amber-50 border border-amber-200 rounded-lg p-2.5">
+                <p className="text-xs text-amber-800 leading-relaxed font-medium">
+                  如果内容有改动，请点击重新部署。
+                </p>
+              </div>
+            {/* ) : (
+              <div className="bg-emerald-50/60 border border-emerald-100 rounded-lg p-2.5">
+                <p className="text-xs text-emerald-800 leading-relaxed font-medium">
+                  内容已同步至最新，无需构建。
+                </p>
+              </div>
+            )} */}
+
+            <button
+              onClick={handleBuild}
+              disabled={isBuilding}
+              className={`w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium transition-all shadow-sm ${
+                buildStatus?.hasChanges
+                  ? 'bg-amber-500 hover:bg-amber-600 active:bg-amber-700 text-white shadow-amber-100'
+                  : 'bg-gray-100 hover:bg-gray-200 active:bg-gray-300 text-gray-700'
+              } disabled:opacity-50 disabled:cursor-not-allowed`}
+            >
+              <CloudLightning className={`w-4 h-4 ${isBuilding ? 'animate-bounce' : ''}`} />
+              <span>{isBuilding ? '部署中...' : buildStatus?.hasChanges ? '立即部署更新' : '重新构建网站'}</span>
+            </button>
+            
+            {buildStatus?.lastBuildTime && (
+              <p className="text-[12px] text-gray-600 text-center">
+                上次部署: {new Date(buildStatus.lastBuildTime).toLocaleString('zh-CN', {
+                  hour12: false,
+                  month: 'numeric',
+                  day: 'numeric',
+                  hour: '2-digit',
+                  minute: '2-digit'
+                })}
+              </p>
+            )}
+          </div>
+        </div>
+
+                {/* Language Switcher */}
+        <div className="p-4 border-b border-gray-300">
+          <div className="flex items-center gap-3 px-4 py-3">
+            <Globe className="w-5 h-5 text-gray-500" />
+            <span className="text-sm text-gray-600">预览语言</span>
+            <div className="flex-1 flex justify-end">
+              <button
+                onClick={() => setLanguage(language === 'zh' ? 'en' : 'zh')}
+                className="px-3 py-1 text-sm bg-gray-100 rounded-full hover:bg-gray-200 transition-colors"
+              >
+                {language === 'zh' ? '中文' : 'EN'}
+              </button>
+            </div>
+          </div>
         </div>
 
         {/* Navigation */}
@@ -159,21 +241,8 @@ export default function Dashboard() {
           ))}
         </nav>
 
-        {/* Language Switcher */}
-        <div className="p-4 border-t border-gray-100">
-          <div className="flex items-center gap-3 px-4 py-3">
-            <Globe className="w-5 h-5 text-gray-500" />
-            <span className="text-sm text-gray-600">预览语言</span>
-            <div className="flex-1 flex justify-end">
-              <button
-                onClick={() => setLanguage(language === 'zh' ? 'en' : 'zh')}
-                className="px-3 py-1 text-sm bg-gray-100 rounded-full hover:bg-gray-200 transition-colors"
-              >
-                {language === 'zh' ? '中文' : 'EN'}
-              </button>
-            </div>
-          </div>
-        </div>
+
+
 
         {/* Logout */}
         {/* <div className="p-4 border-t border-gray-100">
