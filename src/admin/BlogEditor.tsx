@@ -22,9 +22,18 @@ import { toast } from 'sonner';
 import type { BlogInput } from '@/types';
 import ImageInput from '@/admin/components/ImageInput';
 
-// ---- Minimal Markdown Editor (no external deps required) ----
-// We use a simple textarea with a toolbar for now.
-// If md-editor-rt is installed, swap this out.
+// Static toolbar config - defined outside component to avoid ref-in-render issues
+const TOOLBAR_CONFIG = [
+  { label: 'B',   title: '加粗',   before: '**',       after: '**',    italic: false },
+  { label: 'I',   title: '斜体',   before: '*',        after: '*',     italic: true  },
+  { label: 'H2',  title: '二级标题', before: '\n## ',   after: '',      italic: false },
+  { label: 'H3',  title: '三级标题', before: '\n### ',  after: '',      italic: false },
+  { label: '""',  title: '引用',   before: '\n> ',    after: '',      italic: false },
+  { label: '</>',  title: '代码块',  before: '\n```\n', after: '\n```', italic: false },
+  { label: '—',   title: '分割线',  before: '\n---\n', after: '',      italic: false },
+];
+
+// ---- Minimal Markdown Editor ----
 function MarkdownEditor({
   value,
   onChange,
@@ -53,15 +62,6 @@ function MarkdownEditor({
     }, 0);
   };
 
-  const toolbarActions = [
-    { label: 'B', title: '加粗', action: () => insertAtCursor('**', '**') },
-    { label: 'I', title: '斜体', action: () => insertAtCursor('*', '*'), italic: true },
-    { label: 'H2', title: '二级标题', action: () => insertAtCursor('\n## ', '') },
-    { label: 'H3', title: '三级标题', action: () => insertAtCursor('\n### ', '') },
-    { label: '""', title: '引用', action: () => insertAtCursor('\n> ', '') },
-    { label: '</>', title: '代码块', action: () => insertAtCursor('\n```\n', '\n```') },
-    { label: '—', title: '分割线', action: () => insertAtCursor('\n---\n', '') },
-  ];
 
   const handlePaste = async (e: React.ClipboardEvent<HTMLTextAreaElement>) => {
     if (!onImageUpload) return;
@@ -88,12 +88,12 @@ function MarkdownEditor({
     <div className="border border-gray-200 rounded-xl overflow-hidden">
       {/* Toolbar */}
       <div className="flex gap-1 p-2 bg-gray-50 border-b border-gray-200 flex-wrap">
-        {toolbarActions.map(({ label, title, action, italic }) => (
+        {TOOLBAR_CONFIG.map(({ label, title, before, after, italic }) => (
           <button
             key={title}
             type="button"
             title={title}
-            onClick={action}
+            onClick={() => insertAtCursor(before, after)}
             className={`px-2.5 py-1 text-xs rounded-md bg-white border border-gray-200 text-gray-600 hover:border-gray-400 hover:bg-gray-100 transition-all font-mono ${italic ? 'italic' : 'font-bold'}`}
           >
             {label}
@@ -201,14 +201,14 @@ function generateSlug(title: string): string {
     .substring(0, 80);
 }
 
-const CATEGORY_OPTIONS = [
-  '',
-  'Industry News',
-  'Fabric Guide',
-  'OEM Tips',
-  'Trend Report',
-  'Company News',
-];
+// const CATEGORY_OPTIONS = [
+//   '',
+//   'Industry News',
+//   'Fabric Guide',
+//   'OEM Tips',
+//   'Trend Report',
+//   'Company News',
+// ];
 
 const FIELD_LABEL = 'block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1.5';
 const INPUT_CLASS = 'w-full px-3 py-2 text-sm border border-gray-200 rounded-xl bg-white focus:ring-2 focus:ring-gray-900 focus:border-transparent transition-all placeholder-gray-300';
