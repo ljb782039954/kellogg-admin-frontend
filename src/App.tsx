@@ -22,6 +22,9 @@ import FooterEditor from './admin/editors/FooterEditor';
 import InquiryEditor from './admin/editors/InquiryEditor';
 import InquiryManagement from './admin/InquiryManagement';
 import MediaManager from './admin/MediaManager';
+import BlogManagement from './admin/BlogManagement';
+import BlogEditor from './admin/BlogEditor';
+import BlogCategoryManager from './admin/BlogCategoryManager';
 
 function App() {
   return (
@@ -52,6 +55,11 @@ function App() {
               <Route path="inquiries" element={<InquiryManagement />} />
               <Route path="media" element={<MediaManager />} />
               <Route path="inquiry-editor" element={<InquiryEditor />} />
+              {/* Blog Management */}
+              <Route path="blog" element={<BlogManagement />} />
+              <Route path="blog/new" element={<BlogEditor />} />
+              <Route path="blog/:id/edit" element={<BlogEditor />} />
+              <Route path="blog-categories" element={<BlogCategoryManager />} />
               {/* <Route path="account" element={<AccountSettings />} /> */}
             </Route>
           </Routes>

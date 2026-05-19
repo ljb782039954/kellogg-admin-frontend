@@ -10,6 +10,9 @@ import type {
   CategoryInput,
   CustomPage,
   R2Image,
+  Blog,
+  BlogInput,
+  BlogCategory,
 } from '../types';
 
 const API_BASE = import.meta.env.VITE_IS_LOCAL_DEV === "true" ? import.meta.env.VITE_API_BASE_URL_LOCAL : import.meta.env.VITE_API_BASE_URL;
@@ -226,6 +229,61 @@ export const api = {
     }),
   deleteInquiry: (id: number) =>
     request<{ success: boolean }>(`/api/inquiries/${id}`, {
+      method: 'DELETE',
+    }),
+
+  // ============================================
+  // 博客管理
+  // ============================================
+  getBlogs: (params?: { page?: number; pageSize?: number; status?: string; category?: string; sort?: string }) => {
+    const query = new URLSearchParams();
+    if (params) {
+      Object.entries(params).forEach(([key, value]) => {
+        if (value !== undefined) query.set(key, String(value));
+      });
+    }
+    const queryStr = query.toString();
+    return request<{ data: Blog[]; pagination: { page: number; pageSize: number; total: number; totalPages: number } }>(
+      `/api/blogs${queryStr ? `?${queryStr}` : ''}`
+    );
+  },
+
+  getBlog: (idOrSlug: string | number) => request<Blog>(`/api/blogs/${idOrSlug}`),
+
+  createBlog: (data: BlogInput) =>
+    request<{ id: number; message: string }>('/api/blogs', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    }),
+
+  updateBlog: (id: number, data: Partial<BlogInput>) =>
+    request<{ message: string }>(`/api/blogs/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(data),
+    }),
+
+  deleteBlog: (id: number) =>
+    request<{ message: string }>(`/api/blogs/${id}`, {
+      method: 'DELETE',
+    }),
+
+  // Blog Categories
+  getBlogCategories: () => request<BlogCategory[]>('/api/blog-categories'),
+
+  createBlogCategory: (data: { name_zh: string; name_en: string; slug?: string; sort_order?: number }) =>
+    request<{ id: number; message: string }>('/api/blog-categories', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    }),
+
+  updateBlogCategory: (id: number, data: { name_zh?: string; name_en?: string; slug?: string; sort_order?: number }) =>
+    request<{ message: string }>(`/api/blog-categories/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(data),
+    }),
+
+  deleteBlogCategory: (id: number) =>
+    request<{ message: string }>(`/api/blog-categories/${id}`, {
       method: 'DELETE',
     }),
 

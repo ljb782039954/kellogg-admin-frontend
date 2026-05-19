@@ -14,7 +14,8 @@ import {
   Layers,
   Inbox,
   Image as ImageIcon,
-  CloudLightning
+  CloudLightning,
+  BookOpen,
 } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 import { useContent } from '../context/ContentContext';
@@ -62,6 +63,15 @@ const menuItems: MenuItem[] = [
     path: '/media',
     name: '图片管理',
     icon: ImageIcon,
+  },
+  {
+    name: '博客管理',
+    icon: BookOpen,
+    children: [
+      { path: '/blog', name: '文章列表' },
+      { path: '/blog/new', name: '写新文章' },
+      { path: '/blog-categories', name: '分类管理' },
+    ],
   },
   {
     name: '产品管理',

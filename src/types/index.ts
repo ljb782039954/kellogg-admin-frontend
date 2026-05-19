@@ -1,6 +1,7 @@
 export * from "./blocks";
 export * from "./common";
 export * from "./products";
+export * from "./blog";
 // export * from "./editor";
 export * from "./baseEditor";
 
