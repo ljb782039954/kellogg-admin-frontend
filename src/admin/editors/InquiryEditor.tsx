@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Save, Loader2, FileText, Info } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { api } from '@/lib/api';
+import { useContent } from '@/context/ContentContext';
 import BilingualInput from '@/admin/components/BilingualInput';
 import { toast } from 'sonner';
 
@@ -19,6 +20,7 @@ const defaultConfig: InquiryConfig = {
 };
 
 export default function InquiryEditor() {
+  const { findPage, updatePage } = useContent();
   const [config, setConfig] = useState<InquiryConfig>(defaultConfig);
   const [isSaving, setIsSaving] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
@@ -30,12 +32,17 @@ export default function InquiryEditor() {
   const fetchConfig = async () => {
     setIsLoading(true);
     try {
-      const data = await api.getConfig<InquiryConfig>('inquiry_config');
-      if (data) {
-        setConfig(data);
+      const page = findPage('system-inquiry');
+      if (page && page.content) {
+        setConfig(page.content);
+      } else {
+        const pageData = await api.getPageById('system-inquiry');
+        if (pageData && pageData.content) {
+          setConfig(pageData.content);
+        }
       }
     } catch (err) {
-      console.error('Failed to load inquiry config:', err);
+      console.error('Failed to load inquiry config from page:', err);
     } finally {
       setIsLoading(false);
     }
@@ -44,7 +51,7 @@ export default function InquiryEditor() {
   const handleSave = async () => {
     setIsSaving(true);
     try {
-      await api.setConfig('inquiry_config', config);
+      await updatePage('system-inquiry', { content: config });
       toast.success('询盘页面配置已保存');
     } catch (err) {
       toast.error('保存失败');

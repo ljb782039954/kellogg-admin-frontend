@@ -278,12 +278,22 @@ export const componentRegistry: Record<BlockType, ComponentMeta> = {
       primaryButton: { text: { zh: '开始', en: 'Get Started' }, link: '' },
     },
   },
+  caseStudies: {
+    type: 'caseStudies',
+    name: { zh: '客户案例列表', en: 'Case Studies' },
+    description: { zh: '展示客户真实展示视频与成衣图片评价', en: 'Display real customer try-on videos and product photo reviews' },
+    icon: 'Star',
+    category: 'marketing',
+    hasGlobalData: true,
+    singleton: true,
+    defaultProps: {},
+  },
 };
 
 // 按分类分组的组件列表
 export const componentsByCategory: Record<ComponentCategory, BlockType[]> = {
   product: ['categories', 'newArrivals', 'featuredProducts', 'productGrid'],
-  marketing: ['brandValues', 'statistics', 'testimonials', 'countdown', 'partnerLogos', 'ctaBanner'],
+  marketing: ['brandValues', 'statistics', 'testimonials', 'countdown', 'partnerLogos', 'ctaBanner', 'caseStudies'],
   content: ['faq', 'textSection', 'imageText', 'featureList'],
   media: ['carousel', 'imageFull', 'imageBanner', "imageBannerTag", 'gallery', 'videoSection'],
 };

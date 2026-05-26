@@ -11,7 +11,8 @@ import {
   ExternalLink,
   Search,
   Copy,
-  Settings
+  Settings,
+  Layers
 } from 'lucide-react';
 import { useContent } from '@/context/ContentContext';
 import { type CustomPage } from '@/types';
@@ -88,7 +89,7 @@ export function DynamicPagesManager() {
     // 生成唯一 ID
     const pageId = `page_${nanoid(8)}`;
 
-    // 创建新页面结构
+    // 创建新页面结构 (默认是 dynamic-block 自定义营销积木页)
     const newPage: CustomPage = {
       id: pageId,
       path,
@@ -97,6 +98,7 @@ export function DynamicPagesManager() {
         en: newPageTitle.en.trim() || newPageTitle.zh.trim(),
       },
       isFixed: false,
+      type: 'dynamic-block',
       blocks: duplicateSourcePage 
         ? duplicateSourcePage.blocks.map(b => ({ ...JSON.parse(JSON.stringify(b)), id: `block_${nanoid(8)}` })) 
         : [],
@@ -232,9 +234,18 @@ export function DynamicPagesManager() {
     });
   }, [content.pages, searchQuery]);
 
-  // 分离固定页面和动态页面
-  const fixedPages = useMemo(() => filteredPages.filter((p) => p.isFixed), [filteredPages]);
-  const dynamicPages = useMemo(() => filteredPages.filter((p) => !p.isFixed), [filteredPages]);
+  // 按照 type 页面类型分类
+  const fixedBlockPages = useMemo(() => {
+    return filteredPages.filter(p => p.type === 'fixed-block' || (p.isFixed && p.type !== 'fixed-layout'));
+  }, [filteredPages]);
+
+  const dynamicBlockPages = useMemo(() => {
+    return filteredPages.filter(p => p.type === 'dynamic-block' || (!p.isFixed && p.type !== 'fixed-layout' && p.type !== 'fixed-block'));
+  }, [filteredPages]);
+
+  const fixedLayoutPages = useMemo(() => {
+    return filteredPages.filter(p => p.type === 'fixed-layout');
+  }, [filteredPages]);
 
   return (
     <div className="space-y-6">
@@ -268,60 +279,90 @@ export function DynamicPagesManager() {
         />
       </div>
 
-      {/* 固定页面列表 */}
-      <div>
-        <h2 className="text-lg font-semibold mb-3 flex items-center gap-2">
-          <Lock className="w-4 h-4" />
-          固定页面
-        </h2>
-        <p className="text-sm text-gray-500 mb-4">
-          这些是网站的核心页面，不能被删除，但可以编辑页面内容
-        </p>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {fixedPages.map((page) => (
-            <PageCard
-              key={page.id}
-              page={page}
-              onEdit={() => handleEditPage(page.id)}
-              onEditSettings={() => handleOpenEditDialog(page)}
-              onDuplicate={() => handleOpenDuplicateDialog(page)}
-              onDelete={() => { }} // 禁止删除固定页面
-            />
-          ))}
+      {/* 1. 可视化积木页面 */}
+      <div className="space-y-6">
+        <div>
+          <h2 className="text-lg font-semibold mb-1 flex items-center gap-2 text-gray-800">
+            <Layers className="w-4 h-4 text-indigo-500" />
+            积木组件编排页面
+          </h2>
+          <p className="text-sm text-gray-500">
+            支持使用“可视化编辑器”自由添加、排序和配置积木块组件的页面
+          </p>
         </div>
-      </div>
 
-      {/* 自定义页面列表 */}
-      <div>
-        <h2 className="text-lg font-semibold mb-3 flex items-center gap-2">
-          <FileText className="w-4 h-4" />
-          自定义页面
-        </h2>
-        <p className="text-sm text-gray-500 mb-4">
-          自定义页面，可以自由创建、编辑和删除
-        </p>
-        {dynamicPages.length > 0 ? (
+        {/* 预设积木页面 */}
+        <div className="space-y-3">
+          <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider flex items-center gap-1.5 pl-1">
+            <Lock className="w-3.5 h-3.5" /> 系统预设 (不可删除)
+          </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {dynamicPages.map((page) => (
+            {fixedBlockPages.map((page) => (
               <PageCard
                 key={page.id}
                 page={page}
                 onEdit={() => handleEditPage(page.id)}
                 onEditSettings={() => handleOpenEditDialog(page)}
                 onDuplicate={() => handleOpenDuplicateDialog(page)}
-                onDelete={() => setDeletePageId(page.id)}
+                onDelete={() => { }}
               />
             ))}
           </div>
-        ) : (
-          <Card className="border-dashed">
-            <CardContent className="flex flex-col items-center justify-center py-12 text-gray-500">
-              <FileText className="w-12 h-12 mb-4 text-gray-300" />
-              <p className="text-sm">还没有自定义页面</p>
-              <p className="text-xs mt-1">点击「创建新页面」按钮开始</p>
-            </CardContent>
-          </Card>
-        )}
+        </div>
+
+        {/* 自定义积木页面 */}
+        <div className="space-y-3 pt-2">
+          <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider flex items-center gap-1.5 pl-1">
+            <FileText className="w-3.5 h-3.5" /> 自定义落地页 (可配置与删除)
+          </h3>
+          {dynamicBlockPages.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {dynamicBlockPages.map((page) => (
+                <PageCard
+                  key={page.id}
+                  page={page}
+                  onEdit={() => handleEditPage(page.id)}
+                  onEditSettings={() => handleOpenEditDialog(page)}
+                  onDuplicate={() => handleOpenDuplicateDialog(page)}
+                  onDelete={() => setDeletePageId(page.id)}
+                />
+              ))}
+            </div>
+          ) : (
+            <Card className="border-dashed">
+              <CardContent className="flex flex-col items-center justify-center py-10 text-gray-500">
+                <FileText className="w-10 h-10 mb-2 text-gray-300" />
+                <p className="text-xs">还没有自定义落地页</p>
+                <p className="text-[11px] text-gray-400 mt-1">点击右上角「创建新页面」开始创建</p>
+              </CardContent>
+            </Card>
+          )}
+        </div>
+      </div>
+
+      {/* 2. 固定布局页面 */}
+      <div className="pt-6 border-t space-y-4">
+        <div>
+          <h2 className="text-lg font-semibold mb-1 flex items-center gap-2 text-gray-800">
+            <FileText className="w-4 h-4 text-blue-500" />
+            固定布局系统页面 (数据驱动)
+          </h2>
+          <p className="text-sm text-gray-500">
+            这些页面的 UI 架构在前台已固定（如博客、询盘、客户案例）。您在此处仅可修改其访问标题及 SEO 推广配置。
+          </p>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {fixedLayoutPages.map((page) => (
+            <PageCard
+              key={page.id}
+              page={page}
+              onEdit={() => {}}
+              onEditSettings={() => handleOpenEditDialog(page)}
+              onDuplicate={() => {}}
+              onDelete={() => {}}
+            />
+          ))}
+        </div>
       </div>
 
       {/* 创建/复制页面弹窗 */}
@@ -413,6 +454,8 @@ interface PageCardProps {
 }
 
 function PageCard({ page, onEdit, onEditSettings, onDuplicate, onDelete }: PageCardProps) {
+  const isFixedLayout = page.type === 'fixed-layout';
+
   return (
     <Card className="hover:shadow-md transition-shadow gap-1">
       <CardHeader className="pb-1">
@@ -447,26 +490,39 @@ function PageCard({ page, onEdit, onEditSettings, onDuplicate, onDelete }: PageC
           <span className="truncate">{page.path}</span>
         </div>
         <div className="flex items-center justify-between text-xs text-gray-400">
-          <span>{page.blocks?.length || 0} 个积木块</span>
+          {isFixedLayout ? (
+            <span className="text-blue-500 font-medium">系统固定布局 (数据驱动)</span>
+          ) : (
+            <span>{page.blocks?.length || 0} 个积木块</span>
+          )}
         </div>
         <div className="flex items-center gap-2 pt-2 border-t">
-          <Button variant="outline" size="sm" className="flex-1" onClick={onEdit}>
-            <Edit className="w-4 h-4 mr-1" />
-            编辑
-          </Button>
-          <Button variant="outline" size="sm" className="flex-1" onClick={onDuplicate}>
-            <Copy className="w-4 h-4 mr-1" />
-            复制
-          </Button>
-          {!page.isFixed && (
-            <Button
-              variant="outline"
-              size="sm"
-              className="px-3 text-red-600 hover:text-red-700 hover:bg-red-50"
-              onClick={onDelete}
-            >
-              <Trash2 className="w-4 h-4" />
+          {isFixedLayout ? (
+            <Button variant="outline" size="sm" className="flex-1" onClick={onEditSettings}>
+              <Settings className="w-4 h-4 mr-1" />
+              设置 SEO 与元数据
             </Button>
+          ) : (
+            <>
+              <Button variant="outline" size="sm" className="flex-1" onClick={onEdit}>
+                <Edit className="w-4 h-4 mr-1" />
+                编辑
+              </Button>
+              <Button variant="outline" size="sm" className="flex-1" onClick={onDuplicate}>
+                <Copy className="w-4 h-4 mr-1" />
+                复制
+              </Button>
+              {!page.isFixed && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="px-3 text-red-600 hover:text-red-700 hover:bg-red-50"
+                  onClick={onDelete}
+                >
+                  <Trash2 className="w-4 h-4" />
+                </Button>
+              )}
+            </>
           )}
         </div>
       </CardContent>

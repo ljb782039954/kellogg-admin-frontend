@@ -297,6 +297,39 @@ export const api = {
         method: 'POST',
       }
     ),
+
+  // ============================================
+  // Case Studies (客户案例)
+  // ============================================
+  getAdminCaseStudies: (params?: { page?: number; pageSize?: number; search?: string; status?: string }) => {
+    const query = new URLSearchParams();
+    if (params) {
+      Object.entries(params).forEach(([k, v]) => {
+        if (v !== undefined) query.set(k, String(v));
+      });
+    }
+    const qs = query.toString();
+    return request<{ data: any[]; pagination: { page: number; pageSize: number; total: number; totalPages: number } }>(
+      `/api/admin/case-studies${qs ? `?${qs}` : ''}`
+    );
+  },
+
+  createCaseStudy: (data: import('../types').CaseStudyInput) =>
+    request<{ id: number; message: string }>('/api/admin/case-studies', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    }),
+
+  updateCaseStudy: (id: number, data: Partial<import('../types').CaseStudyInput>) =>
+    request<{ message: string }>(`/api/admin/case-studies/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(data),
+    }),
+
+  deleteCaseStudy: (id: number) =>
+    request<{ message: string }>(`/api/admin/case-studies/${id}`, {
+      method: 'DELETE',
+    }),
 };
 
 export default api;

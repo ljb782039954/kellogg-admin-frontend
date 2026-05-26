@@ -25,6 +25,7 @@ import MediaManager from './admin/MediaManager';
 import BlogManagement from './admin/BlogManagement';
 import BlogEditor from './admin/BlogEditor';
 import BlogCategoryManager from './admin/BlogCategoryManager';
+import CaseStudiesManagement from './admin/CaseStudiesManagement';
 
 function App() {
   return (
@@ -60,6 +61,7 @@ function App() {
               <Route path="blog/new" element={<BlogEditor />} />
               <Route path="blog/:id/edit" element={<BlogEditor />} />
               <Route path="blog-categories" element={<BlogCategoryManager />} />
+              <Route path="case-studies" element={<CaseStudiesManagement />} />
               {/* <Route path="account" element={<AccountSettings />} /> */}
             </Route>
           </Routes>

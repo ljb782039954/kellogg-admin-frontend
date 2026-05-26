@@ -52,10 +52,21 @@ export function PageLayoutEditor() {
 
   // 当 page 加载后，且本地没有数据时，同步到本地状态
   useEffect(() => {
-    if (page && !localPage) {
-      setLocalPage(JSON.parse(JSON.stringify(page))); // 深拷贝
+    if (page) {
+      if (page.type === 'fixed-layout') {
+        toast({
+          title: '该页面无需积木编辑',
+          description: '该页面属于系统固定布局，已自动返回列表。',
+          variant: 'destructive',
+        });
+        navigate('/pages');
+        return;
+      }
+      if (!localPage) {
+        setLocalPage(JSON.parse(JSON.stringify(page))); // 深拷贝
+      }
     }
-  }, [page, localPage]);
+  }, [page, localPage, navigate, toast]);
 
   // 拖拽传感器配置
   const sensors = useSensors(

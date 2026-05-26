@@ -227,7 +227,7 @@ export function ContentProvider({ children }: { children: ReactNode }) {
     const existingFullPage = content.pages.find(p => p.id === pageId);
     const fullPageToSave = { ...(existingFullPage || {}), ...pageData } as CustomPage;
 
-    // 1. 保存全量数据到 page:[id]
+    // 1. 写入独立详情 KV (不管什么页面类型都写入以确保 getPageById 可被正常调用)
     await api.setConfig(`page:${pageId}`, fullPageToSave);
 
     // 2. 更新 pages_index 并剔除 blocks
@@ -235,7 +235,7 @@ export function ContentProvider({ children }: { children: ReactNode }) {
       p.id === pageId ? { ...p, ...pageData } : p
     );
     const sanitizedIndex = updatedPages.map(p => {
-      const { blocks, ...rest } = p;
+      const { blocks, seo, ...rest } = p;
       return rest as CustomPage;
     });
     await api.setConfig('pages_index', sanitizedIndex);
@@ -246,13 +246,13 @@ export function ContentProvider({ children }: { children: ReactNode }) {
   }, [content.pages]);
 
   const addPage = useCallback(async (page: CustomPage) => {
-    // 1. 保存全量数据到 page:[id]
+    // 1. 写入独立详情 KV
     await api.setConfig(`page:${page.id}`, page);
 
     // 2. 更新 pages_index
     const updatedPages = [...content.pages, page];
     const sanitizedIndex = updatedPages.map(p => {
-      const { blocks, ...rest } = p;
+      const { blocks, seo, ...rest } = p;
       return rest as CustomPage;
     });
     await api.setConfig('pages_index', sanitizedIndex);
@@ -268,7 +268,7 @@ export function ContentProvider({ children }: { children: ReactNode }) {
     // 2. 更新 pages_index
     const updatedPages = content.pages.filter(p => p.id !== pageId);
     const sanitizedIndex = updatedPages.map(p => {
-      const { blocks, ...rest } = p;
+      const { blocks, seo, ...rest } = p;
       return rest as CustomPage;
     });
     await api.setConfig('pages_index', sanitizedIndex);

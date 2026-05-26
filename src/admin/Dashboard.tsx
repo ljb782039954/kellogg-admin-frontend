@@ -16,6 +16,7 @@ import {
   Image as ImageIcon,
   CloudLightning,
   BookOpen,
+  Star,
 } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 import { useContent } from '../context/ContentContext';
@@ -88,6 +89,11 @@ const menuItems: MenuItem[] = [
       { path: '/inquiries', name: '询盘列表' },
       { path: '/inquiry-editor', name: '页面编辑' },
     ],
+  },
+  {
+    path: '/case-studies',
+    name: '客户案例',
+    icon: Star,
   },
   // {
   //   path: '/account',
