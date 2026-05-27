@@ -299,9 +299,9 @@ export const api = {
     ),
 
   // ============================================
-  // Case Studies (客户案例)
+  // Customer Reviews (客户评价)
   // ============================================
-  getAdminCaseStudies: (params?: { page?: number; pageSize?: number; search?: string; status?: string }) => {
+  getAdminReviews: (params?: { page?: number; pageSize?: number; search?: string; status?: string }) => {
     const query = new URLSearchParams();
     if (params) {
       Object.entries(params).forEach(([k, v]) => {
@@ -310,24 +310,24 @@ export const api = {
     }
     const qs = query.toString();
     return request<{ data: any[]; pagination: { page: number; pageSize: number; total: number; totalPages: number } }>(
-      `/api/admin/case-studies${qs ? `?${qs}` : ''}`
+      `/api/admin/reviews${qs ? `?${qs}` : ''}`
     );
   },
 
-  createCaseStudy: (data: import('../types').CaseStudyInput) =>
-    request<{ id: number; message: string }>('/api/admin/case-studies', {
+  createReview: (data: import('../types').ReviewInput) =>
+    request<{ id: number; message: string }>('/api/admin/reviews', {
       method: 'POST',
       body: JSON.stringify(data),
     }),
 
-  updateCaseStudy: (id: number, data: Partial<import('../types').CaseStudyInput>) =>
-    request<{ message: string }>(`/api/admin/case-studies/${id}`, {
+  updateReview: (id: number, data: Partial<import('../types').ReviewInput>) =>
+    request<{ message: string }>(`/api/admin/reviews/${id}`, {
       method: 'PUT',
       body: JSON.stringify(data),
     }),
 
-  deleteCaseStudy: (id: number) =>
-    request<{ message: string }>(`/api/admin/case-studies/${id}`, {
+  deleteReview: (id: number) =>
+    request<{ message: string }>(`/api/admin/reviews/${id}`, {
       method: 'DELETE',
     }),
 };

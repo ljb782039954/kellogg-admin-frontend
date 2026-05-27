@@ -1,4 +1,4 @@
-export interface CaseStudy {
+export interface CustomerReview {
   id: number;
   client_name: string;
   country: string | null;
@@ -13,7 +13,7 @@ export interface CaseStudy {
   updated_at: string;
 }
 
-export interface CaseStudyInput {
+export interface ReviewInput {
   client_name: string;
   country?: string;
   rating?: number;

@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { X, Youtube, Image as ImageIcon, Star, AlertCircle, Loader2 } from 'lucide-react';
 import { api } from '@/lib/api';
 import { toast } from 'sonner';
-import type { CaseStudy, CaseStudyInput } from '@/types';
+import type { CustomerReview, ReviewInput } from '@/types';
 import ImageInput from '@/admin/components/ImageInput';
 
 // ---- YouTube ID extractor ----
@@ -70,24 +70,24 @@ function StarRatingInput({ value, onChange }: { value: number; onChange: (v: num
 }
 
 interface Props {
-  caseStudy?: CaseStudy | null;
+  review?: CustomerReview | null;
   onClose: () => void;
   onSaved: () => void;
 }
 
-export default function CaseStudyFormDialog({ caseStudy, onClose, onSaved }: Props) {
-  const isEdit = !!caseStudy;
+export default function ReviewFormDialog({ review, onClose, onSaved }: Props) {
+  const isEdit = !!review;
 
-  const [form, setForm] = useState<CaseStudyInput>({
-    client_name: caseStudy?.client_name ?? '',
-    country: caseStudy?.country ?? '',
-    rating: caseStudy?.rating ?? 5,
-    media_type: caseStudy?.media_type ?? 'video',
-    media_url: caseStudy?.media_url ?? '',
-    review_text_zh: caseStudy?.review_text_zh ?? '',
-    review_text_en: caseStudy?.review_text_en ?? '',
-    sort_order: caseStudy?.sort_order ?? 0,
-    status: caseStudy?.status ?? 'published',
+  const [form, setForm] = useState<ReviewInput>({
+    client_name: review?.client_name ?? '',
+    country: review?.country ?? '',
+    rating: review?.rating ?? 5,
+    media_type: review?.media_type ?? 'video',
+    media_url: review?.media_url ?? '',
+    review_text_zh: review?.review_text_zh ?? '',
+    review_text_en: review?.review_text_en ?? '',
+    sort_order: review?.sort_order ?? 0,
+    status: review?.status ?? 'published',
   });
 
   const [isSaving, setIsSaving] = useState(false);
@@ -98,7 +98,7 @@ export default function CaseStudyFormDialog({ caseStudy, onClose, onSaved }: Pro
     ? `https://img.youtube.com/vi/${youtubeId}/hqdefault.jpg`
     : null;
 
-  const setField = <K extends keyof CaseStudyInput>(key: K, value: CaseStudyInput[K]) => {
+  const setField = <K extends keyof ReviewInput>(key: K, value: ReviewInput[K]) => {
     setForm(prev => ({ ...prev, [key]: value }));
   };
 
@@ -116,18 +116,18 @@ export default function CaseStudyFormDialog({ caseStudy, onClose, onSaved }: Pro
       return;
     }
     if (!form.review_text_zh.trim() || !form.review_text_en.trim()) {
-      toast.error('请填写中英文案例内容');
+      toast.error('请填写中英文评价内容');
       return;
     }
 
     setIsSaving(true);
     try {
-      if (isEdit && caseStudy) {
-        await api.updateCaseStudy(caseStudy.id, form);
-        toast.success('案例已更新');
+      if (isEdit && review) {
+        await api.updateReview(review.id, form);
+        toast.success('评价已更新');
       } else {
-        await api.createCaseStudy(form);
-        toast.success('案例已创建');
+        await api.createReview(form);
+        toast.success('评价已创建');
       }
       onSaved();
       onClose();
@@ -153,7 +153,7 @@ export default function CaseStudyFormDialog({ caseStudy, onClose, onSaved }: Pro
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 flex-shrink-0">
           <h2 className="text-lg font-bold text-gray-800">
-            {isEdit ? '编辑客户案例' : '新增客户案例'}
+            {isEdit ? '编辑客户评价' : '新增客户评价'}
           </h2>
           <button
             onClick={onClose}
@@ -306,13 +306,13 @@ export default function CaseStudyFormDialog({ caseStudy, onClose, onSaved }: Pro
 
           {/* Review Text ZH */}
           <div className="space-y-1.5">
-            <label className={LABEL}>中文案例内容 *</label>
+            <label className={LABEL}>中文评价内容 *</label>
             <FormattingHint />
             <textarea
               value={form.review_text_zh}
               onChange={e => setField('review_text_zh', e.target.value)}
               rows={4}
-              placeholder={`输入中文案例内容...\n可使用 <strong>加粗词语</strong> 或 <em>斜体</em> 来强调重点`}
+              placeholder={`输入中文评价内容...\n可使用 <strong>加粗词语</strong> 或 <em>斜体</em> 来强调重点`}
               className={TEXTAREA}
             />
             <p className="text-xs text-gray-400">{form.review_text_zh.length} 字</p>
@@ -320,13 +320,13 @@ export default function CaseStudyFormDialog({ caseStudy, onClose, onSaved }: Pro
 
           {/* Review Text EN */}
           <div className="space-y-1.5">
-            <label className={LABEL}>English Case Study Content *</label>
+            <label className={LABEL}>English Review Content *</label>
             <FormattingHint />
             <textarea
               value={form.review_text_en}
               onChange={e => setField('review_text_en', e.target.value)}
               rows={4}
-              placeholder={`Enter English case study content...\nUse <strong>bold words</strong> or <em>italics</em> to emphasize key phrases`}
+              placeholder={`Enter English review...\nUse <strong>bold words</strong> or <em>italics</em> to emphasize key phrases`}
               className={TEXTAREA}
             />
             <p className="text-xs text-gray-400">{form.review_text_en.length} chars</p>
@@ -347,7 +347,7 @@ export default function CaseStudyFormDialog({ caseStudy, onClose, onSaved }: Pro
             className="flex items-center gap-2 px-5 py-2 bg-gray-900 text-white text-sm font-medium rounded-xl hover:bg-gray-700 transition-all disabled:opacity-50"
           >
             {isSaving && <Loader2 className="w-4 h-4 animate-spin" />}
-            {isSaving ? '保存中...' : isEdit ? '保存修改' : '创建案例'}
+            {isSaving ? '保存中...' : isEdit ? '保存修改' : '创建评价'}
           </button>
         </div>
       </div>

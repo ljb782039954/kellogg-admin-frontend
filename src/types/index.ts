@@ -2,7 +2,7 @@ export * from "./blocks";
 export * from "./common";
 export * from "./products";
 export * from "./blog";
-export * from "./caseStudy";
+export * from "./review";
 // export * from "./editor";
 export * from "./baseEditor";
 

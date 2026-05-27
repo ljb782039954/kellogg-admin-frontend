@@ -16,8 +16,8 @@ import {
 } from 'lucide-react';
 import { api } from '@/lib/api';
 import { toast } from 'sonner';
-import type { CaseStudy } from '@/types';
-import CaseStudyFormDialog from './CaseStudyFormDialog';
+import type { CustomerReview } from '@/types';
+import ReviewFormDialog from './ReviewFormDialog';
 
 // ---- Star renderer (read-only) ----
 function StarDisplay({ rating }: { rating: number }) {
@@ -48,8 +48,8 @@ const STATUS_LABELS = {
   draft: { label: '草稿', cls: 'bg-gray-100 text-gray-500' },
 };
 
-export default function CaseStudiesManagement() {
-  const [caseStudies, setCaseStudies] = useState<CaseStudy[]>([]);
+export default function CustomerReviewsManagement() {
+  const [reviews, setReviews] = useState<CustomerReview[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState<'all' | 'published' | 'draft'>('all');
@@ -59,48 +59,48 @@ export default function CaseStudiesManagement() {
   const PAGE_SIZE = 15;
 
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [editingCaseStudy, setEditingCaseStudy] = useState<CaseStudy | null>(null);
+  const [editingReview, setEditingReview] = useState<CustomerReview | null>(null);
 
-  const fetchCaseStudies = useCallback(async () => {
+  const fetchReviews = useCallback(async () => {
     setIsLoading(true);
     try {
       const params: any = { page, pageSize: PAGE_SIZE };
       if (statusFilter !== 'all') params.status = statusFilter;
       if (searchTerm) params.search = searchTerm;
-      const resp = await api.getAdminCaseStudies(params);
-      setCaseStudies(resp.data || []);
+      const resp = await api.getAdminReviews(params);
+      setReviews(resp.data || []);
       setTotalPages(resp.pagination?.totalPages || 1);
       setTotal(resp.pagination?.total || 0);
     } catch {
-      toast.error('无法加载案例列表');
+      toast.error('无法加载评价列表');
     } finally {
       setIsLoading(false);
     }
   }, [page, statusFilter, searchTerm]);
 
   useEffect(() => {
-    const timer = setTimeout(fetchCaseStudies, searchTerm ? 400 : 0);
+    const timer = setTimeout(fetchReviews, searchTerm ? 400 : 0);
     return () => clearTimeout(timer);
-  }, [fetchCaseStudies, searchTerm]);
+  }, [fetchReviews, searchTerm]);
 
-  const handleDelete = async (caseStudy: CaseStudy) => {
-    if (!confirm(`确定要永久删除「${caseStudy.client_name}」的案例吗？`)) return;
+  const handleDelete = async (review: CustomerReview) => {
+    if (!confirm(`确定要永久删除「${review.client_name}」的评价吗？`)) return;
     try {
-      await api.deleteCaseStudy(caseStudy.id);
-      toast.success('案例已删除');
-      fetchCaseStudies();
+      await api.deleteReview(review.id);
+      toast.success('评价已删除');
+      fetchReviews();
     } catch {
       toast.error('删除失败');
     }
   };
 
-  const handleToggleStatus = async (caseStudy: CaseStudy) => {
-    const next = caseStudy.status === 'published' ? 'draft' : 'published';
+  const handleToggleStatus = async (review: CustomerReview) => {
+    const next = review.status === 'published' ? 'draft' : 'published';
     try {
-      await api.updateCaseStudy(caseStudy.id, { status: next });
+      await api.updateReview(review.id, { status: next });
       toast.success(next === 'published' ? '已发布' : '已下架为草稿');
-      setCaseStudies(prev =>
-        prev.map(r => r.id === caseStudy.id ? { ...r, status: next } : r)
+      setReviews(prev =>
+        prev.map(r => r.id === review.id ? { ...r, status: next } : r)
       );
     } catch {
       toast.error('状态切换失败');
@@ -108,12 +108,12 @@ export default function CaseStudiesManagement() {
   };
 
   const openCreate = () => {
-    setEditingCaseStudy(null);
+    setEditingReview(null);
     setDialogOpen(true);
   };
 
-  const openEdit = (caseStudy: CaseStudy) => {
-    setEditingCaseStudy(caseStudy);
+  const openEdit = (review: CustomerReview) => {
+    setEditingReview(review);
     setDialogOpen(true);
   };
 
@@ -124,13 +124,13 @@ export default function CaseStudiesManagement() {
         <div>
           <h1 className="text-2xl font-bold text-gray-800 tracking-tight flex items-center gap-2">
             <Star className="w-6 h-6 fill-yellow-400 text-yellow-400" />
-            客户案例管理
+            客户评价管理
             <span className="text-xs bg-gray-100 text-gray-400 px-2 py-1 rounded-full font-mono">
               {total} 条
             </span>
           </h1>
           <p className="text-gray-500 mt-1 text-sm">
-            管理客户案例，支持 YouTube 视频嵌入和成衣图片展示。
+            管理客户评价，支持 YouTube 视频嵌入和成衣图片展示。
           </p>
         </div>
         <button
@@ -138,7 +138,7 @@ export default function CaseStudiesManagement() {
           className="flex items-center gap-2 px-5 py-2.5 bg-gray-900 text-white rounded-xl hover:bg-gray-700 transition-all font-medium shadow-sm text-sm"
         >
           <Plus className="w-4 h-4" />
-          新增案例
+          新增评价
         </button>
       </div>
 
@@ -178,12 +178,12 @@ export default function CaseStudiesManagement() {
             <Loader2 className="w-8 h-8 animate-spin" />
             <span className="text-sm">加载中...</span>
           </div>
-        ) : caseStudies.length === 0 ? (
+        ) : reviews.length === 0 ? (
           <div className="flex flex-col items-center justify-center p-16 text-gray-300 gap-4">
             <Star className="w-14 h-14 stroke-[1.2]" />
             <div className="text-center">
-              <p className="text-base font-semibold text-gray-400">暂无案例</p>
-              <p className="text-sm mt-1">点击右上角「新增案例」开始录入客户案例</p>
+              <p className="text-base font-semibold text-gray-400">暂无评价</p>
+              <p className="text-sm mt-1">点击右上角「新增评价」开始录入客户评价</p>
             </div>
           </div>
         ) : (
@@ -201,9 +201,9 @@ export default function CaseStudiesManagement() {
               </thead>
               <tbody className="divide-y divide-gray-50">
                 <AnimatePresence initial={false}>
-                  {caseStudies.map(caseStudy => (
+                  {reviews.map(review => (
                     <motion.tr
-                      key={caseStudy.id}
+                      key={review.id}
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
                       exit={{ opacity: 0 }}
@@ -212,7 +212,7 @@ export default function CaseStudiesManagement() {
                       {/* Media Preview */}
                       <td className="px-5 py-3">
                         <div className="w-16 h-10 rounded-lg overflow-hidden bg-gray-100 flex-shrink-0 relative">
-                          {caseStudy.media_type === 'video' ? (
+                          {review.media_type === 'video' ? (
                             <>
                               {/* YouTube thumbnail */}
                               {(() => {
@@ -223,13 +223,13 @@ export default function CaseStudiesManagement() {
                                 ];
                                 let id: string | null = null;
                                 for (const p of patterns) {
-                                  const m = caseStudy.media_url.match(p);
+                                  const m = review.media_url.match(p);
                                   if (m) { id = m[1]; break; }
                                 }
                                 return id ? (
                                   <img
                                     src={`https://img.youtube.com/vi/${id}/default.jpg`}
-                                    alt={caseStudy.client_name}
+                                    alt={review.client_name}
                                     className="w-full h-full object-cover"
                                   />
                                 ) : (
@@ -246,10 +246,10 @@ export default function CaseStudiesManagement() {
                                 </div>
                               </div>
                             </>
-                          ) : caseStudy.media_url ? (
+                          ) : review.media_url ? (
                             <img
-                              src={caseStudy.media_url}
-                              alt={caseStudy.client_name}
+                              src={review.media_url}
+                              alt={review.client_name}
                               className="w-full h-full object-cover"
                             />
                           ) : (
@@ -262,54 +262,54 @@ export default function CaseStudiesManagement() {
 
                       {/* Client Info */}
                       <td className="px-4 py-3">
-                        <p className="font-semibold text-gray-800">{caseStudy.client_name}</p>
-                        {caseStudy.country && (
-                          <p className="text-xs text-gray-400 mt-0.5">{caseStudy.country}</p>
+                        <p className="font-semibold text-gray-800">{review.client_name}</p>
+                        {review.country && (
+                          <p className="text-xs text-gray-400 mt-0.5">{review.country}</p>
                         )}
                         <p className="text-xs text-gray-300 mt-1 line-clamp-1">
-                          {caseStudy.review_text_en.replace(/<[^>]+>/g, '')}
+                          {review.review_text_en.replace(/<[^>]+>/g, '')}
                         </p>
                       </td>
 
                       {/* Rating */}
                       <td className="px-4 py-3">
-                        <StarDisplay rating={caseStudy.rating} />
-                        <span className="text-xs text-gray-400 mt-1 block">{caseStudy.rating.toFixed(1)}</span>
+                        <StarDisplay rating={review.rating} />
+                        <span className="text-xs text-gray-400 mt-1 block">{review.rating.toFixed(1)}</span>
                       </td>
 
                       {/* Status */}
                       <td className="px-4 py-3">
-                        <span className={`inline-flex items-center px-2.5 py-1 text-xs font-semibold rounded-full ${STATUS_LABELS[caseStudy.status]?.cls}`}>
-                          {STATUS_LABELS[caseStudy.status]?.label}
+                        <span className={`inline-flex items-center px-2.5 py-1 text-xs font-semibold rounded-full ${STATUS_LABELS[review.status]?.cls}`}>
+                          {STATUS_LABELS[review.status]?.label}
                         </span>
                       </td>
 
                       {/* Sort Order */}
-                      <td className="px-4 py-3 text-gray-500 text-xs font-mono">{caseStudy.sort_order}</td>
+                      <td className="px-4 py-3 text-gray-500 text-xs font-mono">{review.sort_order}</td>
 
                       {/* Actions */}
                       <td className="px-5 py-3">
                         <div className="flex items-center justify-end gap-1">
                           <button
-                            onClick={() => handleToggleStatus(caseStudy)}
-                            title={caseStudy.status === 'published' ? '下架为草稿' : '发布'}
+                            onClick={() => handleToggleStatus(review)}
+                            title={review.status === 'published' ? '下架为草稿' : '发布'}
                             className={`p-1.5 rounded-lg transition-all ${
-                              caseStudy.status === 'published'
+                              review.status === 'published'
                                 ? 'text-green-500 hover:bg-green-50 hover:text-green-700'
                                 : 'text-gray-400 hover:bg-gray-100 hover:text-gray-600'
                             }`}
                           >
-                            {caseStudy.status === 'published' ? <Eye className="w-4 h-4" /> : <EyeOff className="w-4 h-4" />}
+                            {review.status === 'published' ? <Eye className="w-4 h-4" /> : <EyeOff className="w-4 h-4" />}
                           </button>
                           <button
-                            onClick={() => openEdit(caseStudy)}
+                            onClick={() => openEdit(review)}
                             title="编辑"
                             className="p-1.5 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all"
                           >
                             <Pencil className="w-4 h-4" />
                           </button>
                           <button
-                            onClick={() => handleDelete(caseStudy)}
+                            onClick={() => handleDelete(review)}
                             title="删除"
                             className="p-1.5 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all"
                           >
@@ -368,10 +368,10 @@ export default function CaseStudiesManagement() {
 
       {/* Dialog */}
       {dialogOpen && (
-        <CaseStudyFormDialog
-          caseStudy={editingCaseStudy}
+        <ReviewFormDialog
+          review={editingReview}
           onClose={() => setDialogOpen(false)}
-          onSaved={fetchCaseStudies}
+          onSaved={fetchReviews}
         />
       )}
     </div>

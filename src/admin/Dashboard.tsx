@@ -91,8 +91,8 @@ const menuItems: MenuItem[] = [
     ],
   },
   {
-    path: '/case-studies',
-    name: '客户案例',
+    path: '/reviews',
+    name: '客户评价',
     icon: Star,
   },
   // {
