@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { api } from '@/lib/api';
 import { useContent } from '@/context/ContentContext';
 import BilingualInput from '@/admin/components/BilingualInput';
+import BilingualInputAera from '@/admin/components/BilingualInputAera';
 import { toast } from 'sonner';
 
 interface InquiryConfig {
@@ -104,35 +105,15 @@ export default function InquiryEditor() {
             onChange={(val) => setConfig({ ...config, title: val })}
           />
           
-          <div className="space-y-4">
-            <label className="block text-xs font-bold text-gray-400 uppercase flex items-center gap-1">
-              描述性文字
-            </label>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <span className="text-[10px] text-gray-400 font-bold uppercase">中文 (ZH)</span>
-                <textarea
-                  className="w-full px-4 py-3 bg-gray-50 border-none rounded-xl focus:ring-2 focus:ring-gray-900 text-sm min-h-[120px]"
-                  value={config.description.zh}
-                  onChange={(e) => setConfig({ 
-                    ...config, 
-                    description: { ...config.description, zh: e.target.value } 
-                  })}
-                />
-              </div>
-              <div className="space-y-2">
-                <span className="text-[10px] text-gray-400 font-bold uppercase">English (EN)</span>
-                <textarea
-                  className="w-full px-4 py-3 bg-gray-50 border-none rounded-xl focus:ring-2 focus:ring-gray-900 text-sm min-h-[120px]"
-                  value={config.description.en}
-                  onChange={(e) => setConfig({ 
-                    ...config, 
-                    description: { ...config.description, en: e.target.value } 
-                  })}
-                />
-              </div>
-            </div>
-          </div>
+          <BilingualInputAera
+            label="描述性文字"
+            value={config.description}
+            onChange={(val) => setConfig({ ...config, description: val })}
+            placeholder={{ 
+              zh: '如果您有任何关于产品的咨询，请填写下方表格，我们的团队会尽快与您联系。', 
+              en: 'If you have any inquiries about our products, please fill out the form below and our team will get back to you as soon as possible.' 
+            }}
+          />
         </div>
       </motion.div>
 

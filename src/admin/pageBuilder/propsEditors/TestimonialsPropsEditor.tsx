@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import BilingualInput from '@/admin/components/BilingualInput';
+import BilingualInputAera from '@/admin/components/BilingualInputAera';
 import ImageInput from '@/admin/components/ImageInput';
 import type { Testimonial, TestimonialProps } from '@/components/blocks/Testimonials';
 
@@ -142,11 +143,10 @@ export function TestimonialsPropsEditor({ props, onUpdate }: TestimonialsPropsEd
                       />
                     </div>
                   </div>
-                  <BilingualInput
+                  <BilingualInputAera
                     label="评价内容"
                     value={item.content}
                     onChange={(val) => updateItem(item.id, 'content', val)}
-                    multiline
                   />
                 </div>
               </motion.div>

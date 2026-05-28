@@ -1,5 +1,6 @@
 import { Plus, Trash2, ClipboardList } from 'lucide-react';
 import type { Product } from '@/types';
+// import BilingualRichInput from '@/admin/components/BilingualRichInput';
 
 interface ProductCustomFieldsProps {
   product: Product;

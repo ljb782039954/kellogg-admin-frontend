@@ -1,6 +1,5 @@
 // 文本区块属性编辑器
 import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
 import {
   Select,
   SelectContent,
@@ -9,6 +8,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import BilingualInput from '../../components/BilingualInput';
+import BilingualRichInput from '../../components/BilingualRichInput';
 import type { TextSectionProps } from '@/components/blocks/TextSection';
 
 export interface TextSectionPropsEditorProps {
@@ -34,37 +34,12 @@ export function TextSectionPropsEditor({ props, onUpdate }: TextSectionPropsEdit
       </div>
 
       {/* 内容 */}
-      <div className="space-y-2">
-        <Label>内容（中文）</Label>
-        <Textarea
-          value={props.content?.zh || ''}
-          onChange={(e) =>
-            handleChange('content', {
-              ...props.content,
-              zh: e.target.value,
-              en: props.content?.en || '',
-            })
-          }
-          placeholder="请输入中文内容"
-          rows={4}
-        />
-      </div>
-
-      <div className="space-y-2">
-        <Label>内容（英文）</Label>
-        <Textarea
-          value={props.content?.en || ''}
-          onChange={(e) =>
-            handleChange('content', {
-              ...props.content,
-              zh: props.content?.zh || '',
-              en: e.target.value,
-            })
-          }
-          placeholder="Enter English content"
-          rows={4}
-        />
-      </div>
+      <BilingualRichInput
+        label="内容"
+        value={props.content || { zh: '', en: '' }}
+        onChange={(val) => handleChange('content', val)}
+        placeholder={{ zh: '请输入中文内容', en: 'Enter English content' }}
+      />
 
       {/* 对齐方式 */}
       <div className="space-y-2">

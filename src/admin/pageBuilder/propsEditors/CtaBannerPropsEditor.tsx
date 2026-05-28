@@ -37,7 +37,6 @@ export function CtaBannerPropsEditor({ props, onUpdate }: CtaBannerPropsEditorPr
           label="副标题"
           value={props.subtitle || { zh: '', en: '' }}
           onChange={(val) => onUpdate({ ...props, subtitle: val })}
-          multiline
         />
       </div>
 

@@ -73,3 +73,30 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* 富文本样式美化 */
+.content-rich-text {
+  color: inherit;
+  line-height: 1.6;
+}
+.content-rich-text a {
+  @apply text-blue-600 underline underline-offset-2 transition-all duration-200 hover:opacity-80;
+}
+.content-rich-text strong {
+  @apply font-bold text-gray-900;
+}
+.content-rich-text u {
+  @apply underline;
+}
+.content-rich-text del {
+  @apply line-through text-gray-400;
+}
+.content-rich-text code {
+  @apply bg-gray-100 text-rose-600 px-1.5 py-0.5 rounded text-xs font-mono;
+}
+.content-rich-text ul {
+  @apply list-disc list-inside my-2 pl-4 space-y-1;
+}
+.content-rich-text li {
+  @apply text-sm leading-relaxed;
+}

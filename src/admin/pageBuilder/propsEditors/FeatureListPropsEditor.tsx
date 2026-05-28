@@ -12,6 +12,7 @@ import {
 import { Plus, Trash2 } from 'lucide-react';
 import * as LucideIcons from 'lucide-react';
 import BilingualInput from '@/admin/components/BilingualInput';
+import BilingualRichInput from '@/admin/components/BilingualRichInput';
 // import { commonFeatureIcons } from '@/types/editor';
 import type { FeatureListProps } from '@/components/blocks/FeatureList';
 
@@ -171,11 +172,10 @@ export function FeatureListPropsEditor({ props, onUpdate }: FeatureListPropsEdit
                     value={feature.title}
                     onChange={(val) => updateItems(index, 'title', val)}
                   />
-                  <BilingualInput
+                  <BilingualRichInput
                     label="描述"
                     value={feature.description}
                     onChange={(val) => updateItems(index, 'description', val)}
-                    multiline
                   />
                 </div>
               );

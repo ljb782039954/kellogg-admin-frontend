@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import BilingualInput from '@/admin/components/BilingualInput';
+import BilingualRichInput from '@/admin/components/BilingualRichInput';
 import type { BrandValue, BrandValuesProps } from '@/components/blocks/BrandValues';
 // import { iconOptions } from '@/types';
 
@@ -128,11 +129,10 @@ export function BrandValuesPropsEditor({ props, onUpdate }: BrandValuesPropsEdit
                     value={item.title}
                     onChange={(val) => updateItems(index, 'title', val)}
                   />
-                  <BilingualInput
+                  <BilingualRichInput
                     label="描述"
                     value={item.description}
                     onChange={(val) => updateItems(index, 'description', val)}
-                    multiline
                   />
                 </div>
               </motion.div>

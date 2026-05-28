@@ -8,6 +8,7 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import BilingualInput from '@/admin/components/BilingualInput';
+import BilingualInputAera from '@/admin/components/BilingualInputAera';
 import ImageInput from '@/admin/components/ImageInput';
 import type { CompanyInfo } from '@/types';
 import { useContent } from '@/context/ContentContext';
@@ -121,11 +122,10 @@ export default function CompanyInfoEditor() {
 
             <div className="space-y-2">
               <Label>公司简介</Label>
-              <BilingualInput
+              <BilingualInputAera
                 value={localInfo.description}
                 onChange={(value) => updateInfo('description', value)}
                 placeholder={{ zh: '请输入公司简介', en: 'Enter company description' }}
-                multiline
               />
             </div>
           </CardContent>
