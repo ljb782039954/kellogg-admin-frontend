@@ -1,7 +1,8 @@
 import { useState, useRef } from 'react';
 import { 
   Bold, Italic, Underline, Strikethrough, Code, 
-  List, Link, Sparkles, Maximize2, Eye, Edit2 
+  List, Link,  Maximize2, Eye, Edit2 ,
+  // Sparkles,
 } from 'lucide-react';
 import { handleFormatHelper, getPreviewHtml } from './utils';
 
