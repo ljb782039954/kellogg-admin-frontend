@@ -352,6 +352,7 @@ export default function FooterEditor() {
                 {/* Group Title */}
                 <BilingualInput
                   label="分组标题"
+                  colRow="row"
                   value={group.title}
                   onChange={(value) => updateLinkGroup(groupIndex, 'title', value)}
                   placeholder={{ zh: '分组标题', en: 'Group Title' }}
@@ -376,52 +377,55 @@ export default function FooterEditor() {
                       暂无链接，点击「添加链接」开始配置
                     </div>
                   ) : (
-                    group.links.map((link, linkIndex) => (
-                      <div
-                        key={linkIndex}
-                        className={`p-4 rounded-lg border ${ (link.pageDeleted || !checkPageExists(link.href, link.linkType, content.pages))
-                          ? 'border-red-300 bg-red-50'
-                          : 'border-gray-200 bg-gray-50'
-                          }`}
-                      >
-                        <div className="flex items-start gap-3">
-                          <div className="flex-1 space-y-4">
-                            {/* 链接名称 */}
-                            <div className="flex items-center gap-2">
-                              <span className="text-sm font-medium text-gray-700">链接名称</span>
-                              {link.pageDeleted && (
-                                <Badge variant="destructive" className="text-xs">
-                                  <AlertTriangle className="w-3 h-3 mr-1" />
-                                  页面已删除
-                                </Badge>
-                              )}
-                            </div>
-                            <BilingualInput
-                              value={link.name}
-                              onChange={(value) => updateLinkName(groupIndex, linkIndex, value)}
-                              placeholder={{ zh: '链接中文名', en: 'Link English name' }}
-                            />
-
-                            {/* 链接配置 */}
-                            <div className="pt-2 border-t">
-                              <LinkSelector
-                                value={link}
-                                onChange={(value) => updateLinkData(groupIndex, linkIndex, value as FooterLink)}
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                      {group.links.map((link, linkIndex) => (
+                        <div
+                          key={link.id || linkIndex}
+                          className={`p-4 rounded-lg border ${ (link.pageDeleted || !checkPageExists(link.href, link.linkType, content.pages))
+                            ? 'border-red-300 bg-red-50'
+                            : 'border-gray-200 bg-gray-50'
+                            }`}
+                        >
+                          <div className="flex items-start gap-3">
+                            <div className="flex-1 space-y-4">
+                              {/* 链接名称 */}
+                              <div className="flex items-center gap-2">
+                                <span className="text-sm font-medium text-gray-700">链接名称</span>
+                                {link.pageDeleted && (
+                                  <Badge variant="destructive" className="text-xs">
+                                    <AlertTriangle className="w-3 h-3 mr-1" />
+                                    页面已删除
+                                  </Badge>
+                                )}
+                              </div>
+                              <BilingualInput
+                                // colRow="row"
+                                value={link.name}
+                                onChange={(value) => updateLinkName(groupIndex, linkIndex, value)}
+                                placeholder={{ zh: '链接中文名', en: 'Link English name' }}
                               />
-                            </div>
-                          </div>
 
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => removeLinkFromGroup(groupIndex, linkIndex)}
-                            className="text-red-500 hover:text-red-700 hover:bg-red-50"
-                          >
-                            <Trash2 className="w-4 h-4" />
-                          </Button>
+                              {/* 链接配置 */}
+                              <div className="pt-2 border-t">
+                                <LinkSelector
+                                  value={link}
+                                  onChange={(value) => updateLinkData(groupIndex, linkIndex, value as FooterLink)}
+                                />
+                              </div>
+                            </div>
+
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => removeLinkFromGroup(groupIndex, linkIndex)}
+                              className="text-red-500 hover:text-red-700 hover:bg-red-50"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </Button>
+                          </div>
                         </div>
-                      </div>
-                    ))
+                      ))}
+                    </div>
                   )}
                 </div>
               </CardContent>

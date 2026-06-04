@@ -44,8 +44,7 @@ export function MediaGrid({
     <ScrollArea className="h-full">
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-6 p-6 pr-10 pb-10">
         {images.map((img) => {
-          const baseUrl = img.url.split('?')[0];
-          const isUnused = !usageMap[baseUrl];
+          const isUnused = !usageMap[img.key] || usageMap[img.key].length === 0;
           
           return (
             <button

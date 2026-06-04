@@ -10,6 +10,8 @@ import type {
   ProductInput,
   CategoryInput,
   R2Image,
+  Blog,
+  CustomerReview,
 } from '../types';
 import { api } from '../lib/api';
 import { toast } from 'sonner';
@@ -46,6 +48,8 @@ interface ContentContextType {
   content: SiteContent;
   allProducts: Product[];
   categories: Category[];
+  allBlogs: Blog[];
+  allReviews: CustomerReview[];
   isLoading: boolean;
   error: string | null;
 
@@ -90,6 +94,8 @@ export function ContentProvider({ children }: { children: ReactNode }) {
   const [content, setContent] = useState<SiteContent>(blankContent);
   const [allProducts, setAllProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
+  const [allBlogs, setAllBlogs] = useState<Blog[]>([]);
+  const [allReviews, setAllReviews] = useState<CustomerReview[]>([]);
 
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -117,9 +123,11 @@ export function ContentProvider({ children }: { children: ReactNode }) {
         }
       };
 
-      const [productsResp, categoriesData] = await Promise.all([
+      const [productsResp, categoriesData, blogsResp, reviewsResp] = await Promise.all([
         fetchEntity(api.getProducts({ pageSize: 1000 }), { data: [], total: 0, page: 1, pageSize: 1000, totalPages: 1 }),
         fetchEntity(api.getCategories(), []),
+        fetchEntity(api.getBlogs({ pageSize: 1000 }), { data: [], pagination: { page: 1, pageSize: 1000, total: 0, totalPages: 1 } }),
+        fetchEntity(api.getAdminReviews({ pageSize: 1000 }), { data: [], pagination: { page: 1, pageSize: 1000, total: 0, totalPages: 1 } }),
       ]);
 
       // 2. 从 KV 获取所有页面和配置 (核心积木系统依赖)
@@ -168,6 +176,8 @@ export function ContentProvider({ children }: { children: ReactNode }) {
 
       setAllProducts(productsResp.data || []);
       setCategories(categoriesData);
+      setAllBlogs(blogsResp.data || []);
+      setAllReviews(reviewsResp.data || []);
       setBuildStatus(buildStatusData);
 
     } catch (err) {
@@ -334,6 +344,8 @@ export function ContentProvider({ children }: { children: ReactNode }) {
         content,
         allProducts,
         categories,
+        allBlogs,
+        allReviews,
         isLoading,
         error,
         refreshData,

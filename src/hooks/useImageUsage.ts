@@ -8,15 +8,32 @@ export interface UsageInfo {
   id?: string;
 }
 
-// 递归查找对象中所有的 URL
+// Normalize URL or image path to key format (e.g. 'uploads/xxxx.png')
+export function normalizeImageUrl(url: string): string {
+  if (!url || typeof url !== 'string') return '';
+  const cleanUrl = url.split('?')[0];
+  const idx = cleanUrl.indexOf('uploads/');
+  if (idx !== -1) {
+    return cleanUrl.substring(idx);
+  }
+  return cleanUrl;
+}
+
+// Recursively find all image keys/paths in an object
 function findUrlsInObject(obj: any): string[] {
   const urls: string[] = [];
   if (!obj) return urls;
   if (typeof obj === 'string') {
-    // 识别包含 assets.kelloggfashion.com 或 uploads/ 路径的 URL
-    if (obj.startsWith('http') && (obj.includes('assets.kelloggfashion.com') || obj.includes('uploads/'))) {
-      // 提取基础 URL（去除查询参数，如 ?w=300）
-      urls.push(obj.split('?')[0]);
+    // Match paths containing 'uploads/' (handles relative, absolute, markdown, HTML, etc.)
+    const regex = /(?:https?:\/\/[^\s"'()<>]+)?\/?uploads\/[^\s"'()<>]+/g;
+    const matches = obj.match(regex);
+    if (matches) {
+      matches.forEach(match => {
+        const normalized = normalizeImageUrl(match);
+        if (normalized) {
+          urls.push(normalized);
+        }
+      });
     }
   } else if (Array.isArray(obj)) {
     obj.forEach(item => urls.push(...findUrlsInObject(item)));
@@ -27,24 +44,26 @@ function findUrlsInObject(obj: any): string[] {
 }
 
 export function useImageUsage() {
-  const { content, allProducts, categories } = useContent();
+  const { content, allProducts, categories, allBlogs, allReviews } = useContent();
   const { t } = useLanguage();
 
   const usageMap = useMemo(() => {
     const map: Record<string, UsageInfo[]> = {};
 
-    const addUsage = (url: string, usage: UsageInfo) => {
-      if (!url || typeof url !== 'string') return;
-      const baseUrl = url.split('?')[0];
-      if (!map[baseUrl]) map[baseUrl] = [];
+    const addUsage = (keyOrUrl: string, usage: UsageInfo) => {
+      if (!keyOrUrl || typeof keyOrUrl !== 'string') return;
+      const cleanKey = normalizeImageUrl(keyOrUrl);
+      if (!cleanKey) return;
       
-      // 避免重复记录相同位置
-      if (!map[baseUrl].some(u => u.id === usage.id && u.name === usage.name && u.type === usage.type)) {
-        map[baseUrl].push(usage);
+      if (!map[cleanKey]) map[cleanKey] = [];
+      
+      // Avoid duplicate entries
+      if (!map[cleanKey].some(u => u.id === usage.id && u.name === usage.name && u.type === usage.type)) {
+        map[cleanKey].push(usage);
       }
     };
 
-    // 1. 扫描页面
+    // 1. Scan pages
     content.pages.forEach(page => {
       const pageTitle = typeof page.title === 'string' ? page.title : t(page.title.zh, page.title.en);
       
@@ -67,7 +86,7 @@ export function useImageUsage() {
       }
     });
 
-    // 2. 扫描产品
+    // 2. Scan products
     allProducts.forEach(prod => {
       const prodName = typeof prod.name === 'string' ? prod.name : t(prod.name.zh, prod.name.en);
       
@@ -92,21 +111,41 @@ export function useImageUsage() {
       }
     });
 
-    // 3. 扫描分类
+    // 3. Scan categories
     categories.forEach(cat => {
       const catName = typeof cat.name === 'string' ? cat.name : t(cat.name.zh, cat.name.en);
       if (cat.image) addUsage(cat.image, { type: '产品分类', name: catName, id: cat.id });
     });
 
-    // 4. 扫描全局配置
+    // 4. Scan blogs
+    allBlogs.forEach(blog => {
+      const blogTitle = blog.title_zh || blog.title_en || 'Untitled Blog';
+      const urls = findUrlsInObject(blog);
+      urls.forEach(url => addUsage(url, {
+        type: '博客文章',
+        name: blogTitle,
+        id: blog.id.toString()
+      }));
+    });
+
+    // 5. Scan customer reviews
+    allReviews.forEach(rev => {
+      const clientName = rev.client_name || 'Anonymous';
+      const urls = findUrlsInObject(rev);
+      urls.forEach(url => addUsage(url, {
+        type: '客户评价',
+        name: `${clientName} 的评价`,
+        id: rev.id.toString()
+      }));
+    });
+
+    // 6. Scan global site settings
     if (content.companyInfo.logo) addUsage(content.companyInfo.logo, { type: '全局配置', name: '公司 Logo' });
-    // if (content.header.logo) addUsage(content.header.logo, { type: '导航栏', name: 'Logo' });
-    // if (content.footer.logo) addUsage(content.footer.logo, { type: '页脚', name: 'Logo' });
     
     findUrlsInObject(content.footer).forEach(url => addUsage(url, { type: '页脚内容', name: '页脚配置' }));
 
     return map;
-  }, [content, allProducts, categories, t]);
+  }, [content, allProducts, categories, allBlogs, allReviews, t]);
 
   return usageMap;
 }

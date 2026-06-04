@@ -5,6 +5,8 @@ interface BilingualInputProps {
   value: Translation;
   onChange: (value: Translation) => void;
   placeholder?: { zh?: string; en?: string };
+  // col / row
+  colRow?:'col' | 'row';
 }
 
 export default function BilingualInput({
@@ -12,11 +14,12 @@ export default function BilingualInput({
   value,
   onChange,
   placeholder = {},
+  colRow = 'col'
 }: BilingualInputProps) {
   return (
     <div className="space-y-3">
       {label && <label className="block text-sm font-medium text-gray-700">{label}</label>}
-      <div className="flex flex-col gap-3">
+      <div className={`flex ${colRow === 'col' ? 'flex-col' : 'flex-row'} gap-3`}>
         {/* Chinese Input */}
         <div className="relative">
           <span className="absolute left-3 top-3 text-xs font-medium text-gray-400 bg-gray-100 px-2 py-0.5 rounded">

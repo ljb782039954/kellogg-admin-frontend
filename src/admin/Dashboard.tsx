@@ -115,6 +115,26 @@ export default function Dashboard() {
     setIsBuilding(false);
   };
 
+  const [openMenus, setOpenMenus] = useState<Record<string, boolean>>(() => {
+    const initial: Record<string, boolean> = {};
+    menuItems.forEach((item) => {
+      if (item.children) {
+        const hasActiveChild = item.children.some((child) => location.pathname.startsWith(child.path));
+        if (hasActiveChild) {
+          initial[item.name] = true;
+        }
+      }
+    });
+    return initial;
+  });
+
+  const toggleMenu = (name: string) => {
+    setOpenMenus((prev) => ({
+      ...prev,
+      [name]: !prev[name],
+    }));
+  };
+
   useEffect(() => {
     // TODO: 登录验证，已注释
     // const isLoggedIn = sessionStorage.getItem('admin_logged_in');
@@ -193,7 +213,7 @@ export default function Dashboard() {
                   day: 'numeric',
                   hour: '2-digit',
                   minute: '2-digit'
-                })}
+                 })}
               </p>
             )}
           </div>
@@ -216,12 +236,17 @@ export default function Dashboard() {
         </div>
 
         {/* Navigation */}
-        <nav className="flex-1 p-4 space-y-1">
+        <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
           {menuItems.map((item) => (
             <div key={item.path || item.name}>
               <NavLink
                 to={item.path || '#'}
-                onClick={(e) => !item.path && e.preventDefault()}
+                onClick={(e) => {
+                  if (item.children) {
+                    e.preventDefault();
+                    toggleMenu(item.name);
+                  }
+                }}
                 className={({ isActive }) =>
                   `flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${(item.path && isActive) || item.children?.some((c) => location.pathname.startsWith(c.path))
                     ? 'bg-gray-800 text-white'
@@ -231,11 +256,17 @@ export default function Dashboard() {
               >
                 <item.icon className="w-5 h-5" />
                 <span className="flex-1">{item.name}</span>
-                {item.children && <ChevronRight className="w-4 h-4" />}
+                {item.children && (
+                  <ChevronRight
+                    className={`w-4 h-4 transition-transform duration-200 ${
+                      openMenus[item.name] ? 'rotate-90' : ''
+                    }`}
+                  />
+                )}
               </NavLink>
 
               {/* Submenu */}
-              {item.children && (
+              {item.children && openMenus[item.name] && (
                 <div className="ml-4 mt-1 space-y-1">
                   {item.children.map((child) => (
                     <NavLink

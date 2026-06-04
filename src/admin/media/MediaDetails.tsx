@@ -18,6 +18,9 @@ import { format } from 'date-fns';
 interface MediaDetailsProps {
   image: R2Image | undefined;
   usages: UsageInfo[];
+  similarImages: Array<{ image: R2Image; matchType: 'exact' | 'dimension' | 'size' | 'close_size'; reason: string }>;
+  usageMap: Record<string, UsageInfo[]>;
+  onSelectImage: (key: string) => void;
   onDownload: () => void;
   onDelete: () => void;
 }
@@ -25,6 +28,9 @@ interface MediaDetailsProps {
 export function MediaDetails({
   image,
   usages,
+  similarImages,
+  usageMap,
+  onSelectImage,
   onDownload,
   onDelete
 }: MediaDetailsProps) {
@@ -89,6 +95,57 @@ export function MediaDetails({
           </div>
         )}
       </div>
+
+      {/* 相似图片 */}
+      {similarImages.length > 0 && (
+        <div className="space-y-3 p-4 rounded-xl bg-white border border-gray-100 shadow-sm">
+          <div className="flex items-center justify-between">
+            <h4 className="text-xs font-bold uppercase tracking-wider text-gray-400">相似图片 ({similarImages.length})</h4>
+            <span className="text-[10px] text-gray-400">可能重复存储</span>
+          </div>
+          <div className="space-y-3 max-h-52 overflow-y-auto pr-1">
+            {similarImages.map(({ image: simImg, reason }) => {
+              const hasUsages = usageMap[simImg.key] && usageMap[simImg.key].length > 0;
+              return (
+                <div 
+                  key={simImg.key} 
+                  onClick={() => onSelectImage(simImg.key)}
+                  className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-50 border border-transparent hover:border-gray-100 cursor-pointer transition-all group"
+                >
+                  <div className="w-10 h-10 rounded-lg border bg-gray-50 flex items-center justify-center overflow-hidden shrink-0">
+                    <img 
+                      src={simImg.thumbUrl || simImg.url} 
+                      alt={simImg.name} 
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform"
+                    />
+                  </div>
+                  <div className="flex-1 min-w-0 space-y-0.5">
+                    <p className="text-[11px] font-medium text-gray-700 truncate" title={simImg.name}>
+                      {simImg.name}
+                    </p>
+                    <p className="text-[9px] text-gray-400 leading-tight">
+                      <span>{simImg.dimensions || '无尺寸'}</span>
+                      <span className="mx-1">•</span>
+                      <span>{reason}</span>
+                    </p>
+                  </div>
+                  <div className="shrink-0">
+                    {hasUsages ? (
+                      <Badge variant="secondary" className="text-[8px] py-0 px-1 font-normal bg-gray-100 text-gray-500 border-none scale-90 origin-right">
+                        使用中
+                      </Badge>
+                    ) : (
+                      <Badge variant="outline" className="text-[8px] py-0 px-1 font-normal bg-green-50 text-green-600 border-green-200 scale-90 origin-right">
+                        未使用
+                      </Badge>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
 
       <div className="space-y-4">
         <div className="space-y-1">

@@ -50,13 +50,58 @@ export default function MediaManager() {
 
   const currentUsages = useMemo(() => {
     if (!selectedImage) return [];
-    const baseUrl = selectedImage.url.split('?')[0];
-    return usageMap[baseUrl] || [];
+    return usageMap[selectedImage.key] || [];
   }, [selectedImage, usageMap]);
 
   const unusedCount = useMemo(() => {
-    return images.filter(img => !usageMap[img.url.split('?')[0]]).length;
+    return images.filter(img => !usageMap[img.key] || usageMap[img.key].length === 0).length;
   }, [images, usageMap]);
+
+  const similarImages = useMemo(() => {
+    if (!selectedImage) return [];
+    
+    const list: { image: R2Image; matchType: 'exact' | 'dimension' | 'size' | 'close_size'; reason: string }[] = [];
+    
+    images.forEach(img => {
+      if (img.key === selectedImage.key) return;
+      
+      const hasDimensions = !!(selectedImage.dimensions && img.dimensions);
+      const sameDimensions = hasDimensions && selectedImage.dimensions === img.dimensions;
+      const sameSize = selectedImage.size === img.size;
+      
+      const sizeDiff = Math.abs(selectedImage.size - img.size) / selectedImage.size;
+      const closeSize = sizeDiff < 0.05; // 5% difference threshold
+      
+      if (sameDimensions && sameSize) {
+        list.push({
+          image: img,
+          matchType: 'exact',
+          reason: '尺寸与大小完全相同'
+        });
+      } else if (sameDimensions) {
+        list.push({
+          image: img,
+          matchType: 'dimension',
+          reason: '原始尺寸相同'
+        });
+      } else if (sameSize) {
+        list.push({
+          image: img,
+          matchType: 'size',
+          reason: '文件大小相同'
+        });
+      } else if (closeSize) {
+        list.push({
+          image: img,
+          matchType: 'close_size',
+          reason: `大小相近 (差异 ${(sizeDiff * 100).toFixed(1)}%)`
+        });
+      }
+    });
+    
+    const order = { exact: 0, dimension: 1, size: 2, close_size: 3 };
+    return list.sort((a, b) => order[a.matchType] - order[b.matchType]);
+  }, [selectedImage, images]);
 
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -144,6 +189,9 @@ export default function MediaManager() {
             <MediaDetails 
               image={selectedImage}
               usages={currentUsages}
+              similarImages={similarImages}
+              usageMap={usageMap}
+              onSelectImage={setSelectedKey}
               onDownload={() => selectedImage && window.open(selectedImage.url, '_blank')}
               onDelete={handleDelete}
             />
