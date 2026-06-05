@@ -1,9 +1,19 @@
 import { useRef, useState } from 'react';
-import { Upload, X, RefreshCw, Loader2, Library } from 'lucide-react';
+import { Upload, X, RefreshCw, Loader2 } from 'lucide-react';
 import { useContent } from '@/context/ContentContext';
 import { getPreviewUrl } from '@/lib/utils';
-import { resizeImage } from '@/lib/image';
-import { MediaLibraryDialog } from './MediaLibraryDialog';
+import { resizeImage, calculateImageHash, calculateHashSimilarity } from '@/lib/image';
+import AdminImage from '@/admin/components/AdminImage';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
+import { ScrollArea } from '@/components/ui/scroll-area';
 
 interface ImageInputProps {
   label?: string;
@@ -27,8 +37,13 @@ export default function ImageInput({
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isUploading, setIsUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [showLibrary, setShowLibrary] = useState(false);
-  const { uploadImage } = useContent();
+  const { uploadImage, getImagesList } = useContent();
+  const [dupMatches, setDupMatches] = useState<Array<{ image: any; similarity: number }>>([]);
+  const [pendingUpload, setPendingUpload] = useState<{
+    file: File;
+    dimensions?: { width: number; height: number };
+    hash: string;
+  } | null>(null);
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -41,7 +56,7 @@ export default function ImageInput({
       let fileToUpload = file;
       let dimensions: { width: number; height: number } | undefined;
 
-      // 尝试获取图片原始尺寸
+      // Try to get original dimensions
       if (file.type.startsWith('image/')) {
         dimensions = await new Promise((resolve) => {
           const img = new Image();
@@ -60,12 +75,41 @@ export default function ImageInput({
         }
       }
 
-      // 上传图片并附带尺寸信息
-      const result = await uploadImage(fileToUpload, dimensions);
+      // Calculate image aHash
+      const imageHash = await calculateImageHash(fileToUpload);
+
+      if (imageHash) {
+        // Fetch all current images from database
+        const dbImages = await getImagesList();
+        
+        // Find duplicate matches with similarity >= 0.95
+        const matches = dbImages
+          .map(img => ({
+            image: img,
+            similarity: img.hash ? calculateHashSimilarity(imageHash, img.hash) : 0
+          }))
+          .filter(item => item.similarity >= 0.95)
+          .sort((a, b) => b.similarity - a.similarity);
+
+        if (matches.length > 0) {
+          // Store matching candidates and upload details
+          setDupMatches(matches);
+          setPendingUpload({
+            file: fileToUpload,
+            dimensions,
+            hash: imageHash
+          });
+          setIsUploading(false);
+          return;
+        }
+      }
+
+      // No duplicates found, upload directly
+      const result = await uploadImage(fileToUpload, dimensions, imageHash || undefined);
       onChange(result.url);
     } catch (err) {
       console.error('Upload failed:', err);
-      // 如果 API 上传失败，回退到 base64
+      // Fallback to base64 on failure
       const reader = new FileReader();
       reader.onloadend = () => {
         onChange(reader.result as string);
@@ -77,6 +121,37 @@ export default function ImageInput({
     } finally {
       setIsUploading(false);
     }
+  };
+
+  const handleReuse = (url: string) => {
+    onChange(url);
+    resetUploadState();
+  };
+
+  const handleForceUpload = async () => {
+    if (!pendingUpload) return;
+    
+    setIsUploading(true);
+    try {
+      const result = await uploadImage(
+        pendingUpload.file, 
+        pendingUpload.dimensions, 
+        pendingUpload.hash
+      );
+      onChange(result.url);
+    } catch (err) {
+      console.error('Upload failed:', err);
+      setError('上传失败');
+    } finally {
+      setIsUploading(false);
+      resetUploadState();
+    }
+  };
+
+  const resetUploadState = () => {
+    setDupMatches([]);
+    setPendingUpload(null);
+    if (fileInputRef.current) fileInputRef.current.value = '';
   };
 
   const clearImage = () => {
@@ -92,7 +167,7 @@ export default function ImageInput({
     auto: 'min-h-[80px] h-24 max-w-[160px]',
   }[aspectRatio];
 
-  const previewUrl = getPreviewUrl(value);
+  const previewUrl = getPreviewUrl(value, true);
 
   return (
     <div className={`space-y-2 ${className}`}>
@@ -116,35 +191,21 @@ export default function ImageInput({
       )}
 
       {!value ? (
-        <div className="flex gap-2">
-          {/* 上传按钮 */}
-          <button
-            type="button"
-            onClick={() => !isUploading && fileInputRef.current?.click()}
-            disabled={isUploading}
-            className={`flex-1 ${aspectRatioClass} border-2 border-dashed border-gray-200 rounded-xl hover:border-gray-400 hover:bg-gray-50 transition-all flex flex-col items-center justify-center gap-2 text-gray-500 disabled:opacity-50`}
-          >
-            {isUploading ? (
-              <Loader2 className="w-8 h-8 animate-spin" />
-            ) : (
-              <>
-                <Upload className="w-6 h-6" />
-                <span className="text-xs font-medium">本地上传</span>
-              </>
-            )}
-          </button>
-
-          {/* 媒体库按钮 */}
-          <button
-            type="button"
-            onClick={() => setShowLibrary(true)}
-            disabled={isUploading}
-            className={`w-20 ${aspectRatioClass} border-2 border-dashed border-gray-200 rounded-xl hover:border-gray-400 hover:bg-gray-50 transition-all flex flex-col items-center justify-center gap-2 text-gray-500 disabled:opacity-50`}
-          >
-            <Library className="w-6 h-6" />
-            <span className="text-xs font-medium">媒体库</span>
-          </button>
-        </div>
+        <button
+          type="button"
+          onClick={() => !isUploading && fileInputRef.current?.click()}
+          disabled={isUploading}
+          className={`w-full ${aspectRatioClass} border-2 border-dashed border-gray-200 rounded-xl hover:border-gray-400 hover:bg-gray-50 transition-all flex flex-col items-center justify-center gap-2 text-gray-500 disabled:opacity-50`}
+        >
+          {isUploading ? (
+            <Loader2 className="w-8 h-8 animate-spin" />
+          ) : (
+            <>
+              <Upload className="w-6 h-6" />
+              <span className="text-xs font-medium">本地上传</span>
+            </>
+          )}
+        </button>
       ) : (
         <div className={`relative w-full ${aspectRatioClass} bg-gray-100 rounded-xl overflow-hidden border border-gray-200 group`}>
           {previewUrl && (previewUrl.match(/\.(mp4|webm|ogg)$/i) || acceptType.includes('video')) ? (
@@ -153,13 +214,12 @@ export default function ImageInput({
               className="w-full h-full object-contain bg-black"
             />
           ) : (
-            <img
-              src={previewUrl}
+            <AdminImage
+              src={value}
+              thumbnail={true}
+              fallbackSrc={value}
               alt="Preview"
               className="w-full h-full object-contain"
-              onError={(e) => {
-                (e.target as HTMLImageElement).src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 24 24" fill="none" stroke="%23999" stroke-width="2"%3E%3Crect x="3" y="3" width="18" height="18" rx="2" ry="2"/%3E%3Ccircle cx="8.5" cy="8.5" r="1.5"/%3E%3Cpolyline points="21 15 16 10 5 21"/%3E%3C/svg%3E';
-              }}
             />
           )}
 
@@ -179,15 +239,6 @@ export default function ImageInput({
               >
                 <RefreshCw className="w-4 h-4 text-gray-700" />
               </button>
-              
-              <button
-                type="button"
-                onClick={() => setShowLibrary(true)}
-                className="p-2 bg-white rounded-full shadow-lg hover:bg-gray-100 transition-colors"
-                title="从媒体库选择"
-              >
-                <Library className="w-4 h-4 text-gray-700" />
-              </button>
 
               <button
                 type="button"
@@ -202,12 +253,73 @@ export default function ImageInput({
         </div>
       )}
 
-      {/* 媒体库弹窗 */}
-      <MediaLibraryDialog 
-        open={showLibrary} 
-        onClose={() => setShowLibrary(false)} 
-        onSelect={(url) => onChange(url)} 
-      />
+      {/* 图片查重提示弹窗 */}
+      <Dialog open={dupMatches.length > 0} onOpenChange={(isOpen) => !isOpen && resetUploadState()}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle className="text-base font-semibold text-gray-900 flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-orange-500"></span>
+              检测到相似图片
+            </DialogTitle>
+            <DialogDescription className="text-xs text-gray-500">
+              系统检测到图库中已有与您当前上传内容高度相似（95% 以上）的图片，建议直接复用以节约存储空间并提升加载效率。
+            </DialogDescription>
+          </DialogHeader>
+
+          <ScrollArea className="max-h-60 mt-3 border rounded-xl overflow-hidden">
+            <div className="divide-y divide-gray-100 bg-gray-50/50">
+              {dupMatches.map(({ image: simImg, similarity }) => (
+                <div key={simImg.key} className="flex items-center gap-3 p-3 bg-white">
+                  <div className="w-12 h-12 rounded-lg border bg-gray-50 flex items-center justify-center overflow-hidden shrink-0">
+                    <AdminImage 
+                      src={simImg.thumbUrl || simImg.url} 
+                      fallbackSrc={simImg.url}
+                      alt={simImg.name} 
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-xs font-semibold text-gray-700 truncate" title={simImg.name}>
+                      {simImg.name}
+                    </p>
+                    <p className="text-[10px] text-gray-400 mt-0.5">
+                      {simImg.dimensions || '未知尺寸'} • 相似度: <span className="font-bold text-orange-600">{(similarity * 100).toFixed(1)}%</span>
+                    </p>
+                  </div>
+                  <Button 
+                    type="button" 
+                    variant="outline" 
+                    size="sm" 
+                    className="text-xs font-medium text-primary hover:text-primary-hover hover:bg-primary/5 h-8 shrink-0"
+                    onClick={() => handleReuse(simImg.url)}
+                  >
+                    复用此图
+                  </Button>
+                </div>
+              ))}
+            </div>
+          </ScrollArea>
+
+          <DialogFooter className="mt-4 pt-3 border-t flex gap-2 sm:justify-end">
+            <Button 
+              type="button" 
+              variant="ghost" 
+              onClick={resetUploadState}
+              className="text-xs text-gray-500"
+            >
+              取消
+            </Button>
+            <Button 
+              type="button" 
+              variant="destructive" 
+              onClick={handleForceUpload}
+              className="text-xs"
+            >
+              坚持上传新图
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

@@ -24,6 +24,7 @@ import { useContent } from '@/context/ContentContext';
 import { type R2Image } from '@/types';
 import { cn } from '@/lib/utils';
 import { format } from 'date-fns';
+import AdminImage from '@/admin/components/AdminImage';
 
 interface MediaLibraryDialogProps {
   open: boolean;
@@ -134,14 +135,11 @@ export function MediaLibraryDialog({ open, onClose, onSelect }: MediaLibraryDial
                           : "border-transparent hover:border-primary/30 hover:shadow-md"
                       )}
                     >
-                      <img
+                      <AdminImage
                         src={img.thumbUrl || img.url}
+                        fallbackSrc={img.url}
                         alt={img.name}
                         className="w-full h-full object-cover aspect-square"
-                        onError={(e) => {
-                           // 如果缩略图 404，回退到原图
-                          (e.target as HTMLImageElement).src = img.url;
-                        }}
                       />
                       
                       {/* 选中标识 */}
@@ -173,7 +171,7 @@ export function MediaLibraryDialog({ open, onClose, onSelect }: MediaLibraryDial
                 <div className="space-y-2">
                   <h3 className="font-semibold text-sm text-gray-900">预览</h3>
                   <div className="aspect-square rounded-lg border bg-gray-50 flex items-center justify-center overflow-hidden">
-                    <img 
+                    <AdminImage 
                       src={selectedImage.url} 
                       alt="Preview" 
                       className="max-w-full max-h-full object-contain"

@@ -4,6 +4,7 @@ import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 import { type R2Image } from '@/types';
 import { type UsageInfo } from '@/hooks/useImageUsage';
+import AdminImage from '@/admin/components/AdminImage';
 
 interface MediaGridProps {
   images: R2Image[];
@@ -57,14 +58,12 @@ export function MediaGrid({
                   : "border-transparent hover:border-primary/30 hover:shadow-md"
               )}
             >
-              <img
+              <AdminImage
                 src={img.thumbUrl || img.url}
+                fallbackSrc={img.url}
                 alt={img.name}
                 className="w-full h-full object-cover aspect-square"
                 loading="lazy"
-                onError={(e) => {
-                  (e.target as HTMLImageElement).src = img.url;
-                }}
               />
 
               {isUnused && (

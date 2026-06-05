@@ -1,7 +1,7 @@
 import { ChevronDown, ChevronUp, Trash2 } from 'lucide-react';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
-import { getPreviewUrl } from '@/lib/utils';
+import AdminImage from '@/admin/components/AdminImage';
 import type { Product, Category } from '@/types';
 
 interface ProductSummaryProps {
@@ -43,11 +43,12 @@ export default function ProductSummary({
           />
         </div>
         <div className="w-12 h-12 rounded-lg overflow-hidden flex-shrink-0 bg-gray-100 border border-gray-50 flex items-center justify-center">
-          {product.image ? (
-            <img src={getPreviewUrl(product.image)} alt="" className="w-full h-full object-cover" />
-          ) : (
-            <span className="text-[10px] text-gray-400">无图</span>
-          )}
+          <AdminImage
+            src={product.image}
+            thumbnail={true}
+            className="w-full h-full object-cover"
+            fallback={<span className="text-[10px] text-gray-400">无图</span>}
+          />
         </div>
         <div>
           <h3 className="font-bold text-gray-800 group-hover:text-gray-900 transition-colors">

@@ -79,7 +79,7 @@ interface ContentContextType {
   updateFooter: (footer: FooterContent) => Promise<void>;
 
   // 资源管理
-  uploadImage: (file: File, dimensions?: { width: number; height: number }) => Promise<{ url: string; thumbUrl: string; key: string }>;
+  uploadImage: (file: File, dimensions?: { width: number; height: number }, hash?: string) => Promise<{ url: string; thumbUrl: string; key: string }>;
   getImagesList: () => Promise<R2Image[]>;
   deleteImage: (key: string) => Promise<void>;
 
@@ -311,8 +311,8 @@ export function ContentProvider({ children }: { children: ReactNode }) {
   // ============================================
   // 资源管理
   // ============================================
-  const uploadImage = useCallback(async (file: File, dimensions?: { width: number; height: number }) => {
-    return api.uploadImage(file, dimensions);
+  const uploadImage = useCallback(async (file: File, dimensions?: { width: number; height: number }, hash?: string) => {
+    return api.uploadImage(file, dimensions, hash);
   }, []);
 
   const getImagesList = useCallback(async () => {

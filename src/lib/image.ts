@@ -64,3 +64,81 @@ export async function resizeImage(file: File, maxWidth: number): Promise<File> {
     reader.onerror = () => reject(new Error('Failed to read file'));
   });
 }
+
+/**
+ * Calculates a 64-bit Average Hash (aHash) for an image file.
+ * Returns a 64-character string of '0' and '1'.
+ */
+export async function calculateImageHash(file: File): Promise<string> {
+  if (!file.type.startsWith('image/')) {
+    return '';
+  }
+
+  return new Promise((resolve) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = (event) => {
+      const img = new Image();
+      img.src = event.target?.result as string;
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        canvas.width = 8;
+        canvas.height = 8;
+        const ctx = canvas.getContext('2d');
+        if (!ctx) {
+          resolve('');
+          return;
+        }
+        
+        ctx.drawImage(img, 0, 0, 8, 8);
+        let imgData;
+        try {
+          imgData = ctx.getImageData(0, 0, 8, 8);
+        } catch (e) {
+          // Fallback if getImageData fails due to CORS or other canvas issues
+          resolve('');
+          return;
+        }
+        
+        const data = imgData.data;
+        let sum = 0;
+        const grays = new Uint8Array(64);
+        
+        for (let i = 0; i < 64; i++) {
+          const r = data[i * 4];
+          const g = data[i * 4 + 1];
+          const b = data[i * 4 + 2];
+          // Classic gray formula
+          const gray = Math.round(r * 0.299 + g * 0.587 + b * 0.114);
+          grays[i] = gray;
+          sum += gray;
+        }
+        
+        const avg = sum / 64;
+        let hash = '';
+        for (let i = 0; i < 64; i++) {
+          hash += grays[i] >= avg ? '1' : '0';
+        }
+        resolve(hash);
+      };
+      img.onerror = () => resolve('');
+    };
+    reader.onerror = () => resolve('');
+  });
+}
+
+/**
+ * Calculates similarity between two aHash strings (value between 0 and 1).
+ */
+export function calculateHashSimilarity(hash1: string, hash2: string): number {
+  if (!hash1 || !hash2 || hash1.length !== 64 || hash2.length !== 64) {
+    return 0;
+  }
+  let diff = 0;
+  for (let i = 0; i < 64; i++) {
+    if (hash1[i] !== hash2[i]) {
+      diff++;
+    }
+  }
+  return 1 - (diff / 64);
+}

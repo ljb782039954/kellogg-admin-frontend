@@ -5,11 +5,46 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
-export function getPreviewUrl(url: string | undefined): string {
+export function getPreviewUrl(url: string | undefined, isThumbnail: boolean = false): string {
   if (!url) return '';
-  // 本地开发时，如果图片 URL 是线上域名，替换为本地后端 URL 使得能顺利预览
-  if (import.meta.env.VITE_IS_LOCAL_DEV === "true" && url.includes(import.meta.env.VITE_API_BASE_URL)) {
-    return url.replace(import.meta.env.VITE_API_BASE_URL, import.meta.env.VITE_API_BASE_URL_LOCAL);
+
+  // Respect the VITE_IS_LOCAL_DEV env var to control local dev mode
+  const isLocalDev = import.meta.env.VITE_IS_LOCAL_DEV === "true";
+
+  let targetUrl = url;
+
+  // Rewrite uploads/ to thumbnails/ if thumbnail is requested and the URL points to an image
+  const isImageFile = /\.(png|jpg|jpeg|webp|gif|svg)(\?.*)?$/i.test(targetUrl);
+  if (isThumbnail && isImageFile && targetUrl.includes('uploads/')) {
+    targetUrl = targetUrl.replace('uploads/', 'thumbnails/');
   }
-  return url;
+
+  // Resolve relative paths like 'uploads/xxx', 'thumbnails/xxx' or their slashed forms
+  if (targetUrl.startsWith('uploads/')) {
+    targetUrl = '/' + targetUrl;
+  } else if (targetUrl.startsWith('thumbnails/')) {
+    targetUrl = '/' + targetUrl;
+  }
+  
+  if (targetUrl.startsWith('/uploads/') || targetUrl.startsWith('/thumbnails/')) {
+    const apiBase = isLocalDev 
+      ? (import.meta.env.VITE_API_BASE_URL_LOCAL || 'http://localhost:8787')
+      : (import.meta.env.VITE_API_ASSETS || import.meta.env.VITE_API_BASE_URL || '');
+    targetUrl = `${apiBase}${targetUrl}`;
+  }
+
+  // Rewrite live URLs to local worker address to preview locally uploaded R2 files
+  if (isLocalDev) {
+    const assetsBase = import.meta.env.VITE_API_ASSETS || 'https://assets.kelloggfashion.com';
+    const apiBase = import.meta.env.VITE_API_BASE_URL || 'https://kellogg-api.aimeexiang239.workers.dev';
+    const localBase = import.meta.env.VITE_API_BASE_URL_LOCAL || 'http://localhost:8787';
+
+    if (targetUrl.includes(assetsBase)) {
+      targetUrl = targetUrl.replace(assetsBase, localBase);
+    } else if (targetUrl.includes(apiBase)) {
+      targetUrl = targetUrl.replace(apiBase, localBase);
+    }
+  }
+
+  return targetUrl;
 }

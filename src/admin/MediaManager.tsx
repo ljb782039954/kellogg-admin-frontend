@@ -3,6 +3,7 @@ import { useContent } from '@/context/ContentContext';
 import { type R2Image } from '@/types';
 import { toast } from 'sonner';
 import { useImageUsage } from '@/hooks/useImageUsage';
+import { calculateHashSimilarity } from '@/lib/image';
 
 // 子组件
 import { MediaHeader } from './media/MediaHeader';
@@ -11,7 +12,6 @@ import { MediaDetails } from './media/MediaDetails';
 
 export default function MediaManager() {
   const { getImagesList, uploadImage, deleteImage } = useContent();
-  const usageMap = useImageUsage();
   
   const [images, setImages] = useState<R2Image[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -19,6 +19,8 @@ export default function MediaManager() {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedKey, setSelectedKey] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const usageMap = useImageUsage(images);
 
   const loadImages = async () => {
     setIsLoading(true);
@@ -60,11 +62,36 @@ export default function MediaManager() {
   const similarImages = useMemo(() => {
     if (!selectedImage) return [];
     
-    const list: { image: R2Image; matchType: 'exact' | 'dimension' | 'size' | 'close_size'; reason: string }[] = [];
+    const list: { 
+      image: R2Image; 
+      matchType: 'exact_hash' | 'high_similarity' | 'exact' | 'dimension' | 'size' | 'close_size'; 
+      reason: string 
+    }[] = [];
     
     images.forEach(img => {
       if (img.key === selectedImage.key) return;
       
+      // 1. Prioritize aHash similarity comparison
+      if (selectedImage.hash && img.hash) {
+        const similarity = calculateHashSimilarity(selectedImage.hash, img.hash);
+        if (similarity === 1) {
+          list.push({
+            image: img,
+            matchType: 'exact_hash',
+            reason: '视觉内容完全相同 (100%)'
+          });
+          return;
+        } else if (similarity >= 0.85) {
+          list.push({
+            image: img,
+            matchType: 'high_similarity',
+            reason: `视觉相似度: ${(similarity * 100).toFixed(0)}%`
+          });
+          return;
+        }
+      }
+      
+      // 2. Fallback to physical dimensions and file size (for backwards compatibility with older images)
       const hasDimensions = !!(selectedImage.dimensions && img.dimensions);
       const sameDimensions = hasDimensions && selectedImage.dimensions === img.dimensions;
       const sameSize = selectedImage.size === img.size;
@@ -99,7 +126,7 @@ export default function MediaManager() {
       }
     });
     
-    const order = { exact: 0, dimension: 1, size: 2, close_size: 3 };
+    const order = { exact_hash: 0, high_similarity: 1, exact: 2, dimension: 3, size: 4, close_size: 5 };
     return list.sort((a, b) => order[a.matchType] - order[b.matchType]);
   }, [selectedImage, images]);
 

@@ -186,13 +186,17 @@ export const api = {
   // ============================================
   uploadImage: async (
     file: File,
-    dimensions?: { width: number; height: number }
+    dimensions?: { width: number; height: number },
+    hash?: string
   ): Promise<{ url: string; thumbUrl: string; key: string }> => {
     const formData = new FormData();
     formData.append('file', file);
     if (dimensions) {
       formData.append('width', dimensions.width.toString());
       formData.append('height', dimensions.height.toString());
+    }
+    if (hash) {
+      formData.append('hash', hash);
     }
 
     const response = await fetch(`${API_BASE}/api/upload`, {

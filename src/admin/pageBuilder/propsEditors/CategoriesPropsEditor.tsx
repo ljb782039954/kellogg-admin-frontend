@@ -4,7 +4,7 @@ import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { Info } from 'lucide-react';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { getPreviewUrl } from '@/lib/utils';
+import AdminImage from '@/admin/components/AdminImage';
 import type { CategoriesProps } from '@/components/blocks/Categories';
 
 export interface CategoriesPropsEditorProps {
@@ -54,11 +54,14 @@ export function CategoriesPropsEditor({ props, onUpdate }: CategoriesPropsEditor
                 className="flex items-center gap-2 p-2 bg-gray-50 rounded-lg text-sm"
               >
                 <div className="w-8 h-8 bg-gray-200 rounded-lg flex items-center justify-center text-xs text-gray-500 font-bold uppercase overflow-hidden flex-shrink-0">
-                  {cat.image ? (
-                    <img src={getPreviewUrl(cat.image)} alt={cat.name.zh} className="w-full h-full object-cover" />
-                  ) : (
-                    cat.name.zh.charAt(0)
-                  )}
+                  <AdminImage
+                    src={cat.image}
+                    thumbnail={true}
+                    fallbackSrc={cat.image}
+                    alt={cat.name.zh}
+                    className="w-full h-full object-cover"
+                    fallback={cat.name.zh.charAt(0)}
+                  />
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="truncate font-medium">{cat.name.zh}</p>

@@ -22,6 +22,7 @@ import {
 import { api } from '@/lib/api';
 import { toast } from 'sonner';
 import type { Blog } from '@/types';
+import AdminImage from '@/admin/components/AdminImage';
 
 const STATUS_LABELS = {
   draft: { label: '草稿', class: 'bg-gray-100 text-gray-500' },
@@ -215,17 +216,17 @@ export default function BlogManagement() {
                       {/* Cover */}
                       <td className="px-5 py-3">
                         <div className="w-12 h-12 rounded-lg overflow-hidden bg-gray-100 flex-shrink-0">
-                          {blog.cover_image ? (
-                            <img
-                              src={blog.cover_image}
-                              alt={blog.title_zh}
-                              className="w-full h-full object-cover"
-                            />
-                          ) : (
-                            <div className="w-full h-full flex items-center justify-center">
-                              <BookOpen className="w-5 h-5 text-gray-300" />
-                            </div>
-                          )}
+                          <AdminImage
+                            src={blog.cover_image}
+                            thumbnail={true}
+                            alt={blog.title_zh}
+                            className="w-full h-full object-cover"
+                            fallback={
+                              <div className="w-full h-full flex items-center justify-center">
+                                <BookOpen className="w-5 h-5 text-gray-300" />
+                              </div>
+                            }
+                          />
                         </div>
                       </td>
 

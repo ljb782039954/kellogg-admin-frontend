@@ -14,11 +14,12 @@ import { Badge } from '@/components/ui/badge';
 import { type R2Image } from '@/types';
 import { type UsageInfo } from '@/hooks/useImageUsage';
 import { format } from 'date-fns';
+import AdminImage from '@/admin/components/AdminImage';
 
 interface MediaDetailsProps {
   image: R2Image | undefined;
   usages: UsageInfo[];
-  similarImages: Array<{ image: R2Image; matchType: 'exact' | 'dimension' | 'size' | 'close_size'; reason: string }>;
+  similarImages: Array<{ image: R2Image; matchType: 'exact_hash' | 'high_similarity' | 'exact' | 'dimension' | 'size' | 'close_size'; reason: string }>;
   usageMap: Record<string, UsageInfo[]>;
   onSelectImage: (key: string) => void;
   onDownload: () => void;
@@ -61,7 +62,7 @@ export function MediaDetails({
       <div className="space-y-2">
         <h3 className="font-semibold text-sm text-gray-900">预览</h3>
         <div className="aspect-square rounded-xl border bg-white shadow-inner flex items-center justify-center overflow-hidden p-2">
-          <img 
+          <AdminImage 
             src={image.url} 
             alt="Preview" 
             className="max-w-full max-h-full object-contain"
@@ -113,8 +114,9 @@ export function MediaDetails({
                   className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-50 border border-transparent hover:border-gray-100 cursor-pointer transition-all group"
                 >
                   <div className="w-10 h-10 rounded-lg border bg-gray-50 flex items-center justify-center overflow-hidden shrink-0">
-                    <img 
+                    <AdminImage 
                       src={simImg.thumbUrl || simImg.url} 
+                      fallbackSrc={simImg.url}
                       alt={simImg.name} 
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform"
                     />
