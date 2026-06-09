@@ -1,6 +1,12 @@
 // 产品网格属性编辑器
 import { Label } from '@/components/ui/label';
-import { Input } from '@/components/ui/input';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import type { ProductGridProps } from '@/components/blocks/ProductGrid';
 
 export interface ProductGridPropsEditorProps {
@@ -16,17 +22,24 @@ export function ProductGridPropsEditor({ props, onUpdate }: ProductGridPropsEdit
 
   return (
     <div className="space-y-6">
-
       {/* 设置每页显示数量 */}
       <div className="space-y-2">
         <Label>每页显示数量</Label>
-        <Input
-          type="number"
-          min={1}
-          max={50}
-          value={props.itemsPerPage || 12}
-          onChange={(e) => handleChange('itemsPerPage', parseInt(e.target.value) || 12)}
-        />
+        <Select
+          value={String(props.itemsPerPage || 12)}
+          onValueChange={(val) => handleChange('itemsPerPage', parseInt(val) || 12)}
+        >
+          <SelectTrigger className="w-full">
+            <SelectValue placeholder="选择显示数量" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="4">4 个</SelectItem>
+            <SelectItem value="8">8 个</SelectItem>
+            <SelectItem value="12">12 个</SelectItem>
+            <SelectItem value="16">16 个</SelectItem>
+            <SelectItem value="20">20 个</SelectItem>
+          </SelectContent>
+        </Select>
       </div>
     </div>
   );
