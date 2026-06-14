@@ -109,15 +109,7 @@ export default function ImageInput({
       onChange(result.url);
     } catch (err) {
       console.error('Upload failed:', err);
-      // Fallback to base64 on failure
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        onChange(reader.result as string);
-      };
-      reader.onerror = () => {
-        setError('图片读取失败');
-      };
-      reader.readAsDataURL(file);
+      setError('图片上传失败，请重试');
     } finally {
       setIsUploading(false);
     }
