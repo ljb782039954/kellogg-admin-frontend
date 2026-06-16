@@ -35,5 +35,14 @@ describe('findDuplicateImages', () => {
 
   it('returns an empty list when the selected hash is missing', () => {
     expect(findDuplicateImages('', [image('exact', '1'.repeat(64))])).toEqual([]);
+    expect(findDuplicateImages(undefined, [image('exact', '1'.repeat(64))])).toEqual([]);
+  });
+
+  it('returns zero similarity for images without hashes when the threshold allows it', () => {
+    const matches = findDuplicateImages('1'.repeat(64), [image('no-hash')], 0);
+
+    expect(matches).toHaveLength(1);
+    expect(matches[0].image.key).toBe('no-hash');
+    expect(matches[0].similarity).toBe(0);
   });
 });
