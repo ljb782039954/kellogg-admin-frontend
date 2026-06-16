@@ -8,8 +8,11 @@ import { defineConfig, globalIgnores } from 'eslint/config'
 const privateFeatureImports = [
   {
     group: [
+      '@/features/*/api',
       '@/features/*/api/*',
+      '@/features/*/model',
       '@/features/*/model/*',
+      '@/features/*/ui',
       '@/features/*/ui/*',
     ],
     message: 'Import another feature through its public index.ts only.',
