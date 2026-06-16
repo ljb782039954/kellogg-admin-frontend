@@ -40,6 +40,29 @@ describe('createApiClient', () => {
     });
   });
 
+  it('preserves raw error bodies when non-success responses are not JSON', async () => {
+    server.use(
+      http.get(
+        `${baseUrl}/api/html-error`,
+        () => new HttpResponse('<h1>Bad gateway</h1>', {
+          status: 502,
+          statusText: 'Bad Gateway',
+          headers: { 'Content-Type': 'text/html' },
+        }),
+      ),
+    );
+
+    const client = createApiClient({ baseUrl });
+    const error = await client.request('/api/html-error').catch((cause) => cause);
+
+    expect(error).toBeInstanceOf(ApiError);
+    expect(error).toMatchObject({
+      message: 'Bad Gateway',
+      status: 502,
+      details: { raw: '<h1>Bad gateway</h1>' },
+    });
+  });
+
   it('reports invalid successful JSON responses', async () => {
     server.use(
       http.get(
@@ -75,5 +98,28 @@ describe('createApiClient', () => {
         body: formData,
       }),
     ).resolves.toEqual({ url: '/uploaded/image.jpg' });
+  });
+
+  it('does not overwrite explicit authorization or content type headers', async () => {
+    server.use(
+      http.post(`${baseUrl}/api/custom`, async ({ request }) => {
+        expect(request.headers.get('Authorization')).toBe('Bearer override-token');
+        expect(request.headers.get('Content-Type')).toBe('application/merge-patch+json');
+        return HttpResponse.json({ ok: true });
+      }),
+    );
+
+    const client = createApiClient({ baseUrl, token: 'default-token' });
+
+    await expect(
+      client.request('/api/custom', {
+        method: 'POST',
+        headers: {
+          Authorization: 'Bearer override-token',
+          'Content-Type': 'application/merge-patch+json',
+        },
+        body: JSON.stringify({ active: true }),
+      }),
+    ).resolves.toEqual({ ok: true });
   });
 });

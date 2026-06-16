@@ -78,6 +78,8 @@ export function createApiClient({
             details: text,
             cause,
           });
+        } else {
+          data = { raw: text };
         }
       }
     }
