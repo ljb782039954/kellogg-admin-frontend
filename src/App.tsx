@@ -14,7 +14,7 @@ import { DynamicPagesManager, PageLayoutEditor } from './admin/pageBuilder';
 import ComponentsPreview from './admin/BlocksPreview';
 
 // 编辑器
-import CompanyInfoEditor from './admin/editors/CompanyInfoEditor';
+import { CompanyInfoEditor } from '@/features/company-info';
 import HeaderEditor from './admin/editors/headerEditor';
 import ProductsEditor from './admin/editors/ProductsEditor';
 import CategoriesEditor from './admin/editors/CategoriesEditor';
