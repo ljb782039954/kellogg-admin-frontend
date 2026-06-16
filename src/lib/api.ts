@@ -1,8 +1,4 @@
-/**
- * API 客户端
- * 封装所有与 worker-api 的通信
- */
-
+import { apiClient } from '@/shared/api/client';
 import type {
   Product,
   Category,
@@ -15,68 +11,10 @@ import type {
   BlogCategory,
 } from '../types';
 
-const API_BASE = import.meta.env.VITE_IS_LOCAL_DEV === "true" ? import.meta.env.VITE_API_BASE_URL_LOCAL : import.meta.env.VITE_API_BASE_URL;
+export { ApiError, AppError } from '@/shared/api/errors';
 
-const ADMIN_TOKEN = import.meta.env.VITE_IS_LOCAL_DEV === "true" ? import.meta.env.VITE_ADMIN_TOKEN_LOCAL : import.meta.env.VITE_ADMIN_TOKEN;
+const request = apiClient.request;
 
-// API 错误类型
-export class ApiError extends Error {
-  constructor(
-    message: string,
-    public status: number,
-    public data?: unknown
-  ) {
-    super(message);
-    this.name = 'ApiError';
-  }
-}
-
-// 通用请求函数
-async function request<T>(
-  path: string,
-  options: RequestInit = {}
-): Promise<T> {
-  const url = `${API_BASE}${path}`;
-
-  const headers: HeadersInit = {
-    'Content-Type': 'application/json',
-    ...options.headers,
-  };
-
-  // 添加认证 Token
-  if (ADMIN_TOKEN) {
-    (headers as Record<string, string>)['Authorization'] = `Bearer ${ADMIN_TOKEN}`;
-  }
-
-  const response = await fetch(url, {
-    ...options,
-    headers,
-  });
-
-  if (!response.ok) {
-    let errorData;
-    try {
-      errorData = await response.json();
-    } catch {
-      errorData = { message: response.statusText };
-    }
-    throw new ApiError(
-      errorData.error || errorData.message || 'Request failed',
-      response.status,
-      errorData
-    );
-  }
-
-  // 处理空响应
-  const text = await response.text();
-  if (!text) {
-    return {} as T;
-  }
-
-  return JSON.parse(text);
-}
-
-// 分页响应类型
 interface PaginatedResponse<T> {
   data: T[];
   total: number;
@@ -85,7 +23,6 @@ interface PaginatedResponse<T> {
   totalPages: number;
 }
 
-// 商品列表查询参数
 interface ProductsQuery {
   page?: number;
   pageSize?: number;
@@ -95,11 +32,7 @@ interface ProductsQuery {
   search?: string;
 }
 
-// API 接口
 export const api = {
-  // ============================================
-  // 商品 (保持为核心实体)
-  // ============================================
   getProducts: (params?: ProductsQuery) => {
     const query = new URLSearchParams();
     if (params) {
@@ -111,7 +44,7 @@ export const api = {
     }
     const queryStr = query.toString();
     return request<PaginatedResponse<Product>>(
-      `/api/products${queryStr ? `?${queryStr}` : ''}`
+      `/api/products${queryStr ? `?${queryStr}` : ''}`,
     );
   },
 
@@ -134,9 +67,6 @@ export const api = {
       method: 'DELETE',
     }),
 
-  // ============================================
-  // 分类 (保持为核心实体)
-  // ============================================
   getCategories: () => request<Category[]>('/api/categories'),
 
   createCategory: (data: CategoryInput) =>
@@ -156,12 +86,8 @@ export const api = {
       method: 'DELETE',
     }),
 
-  // ============================================
-  // 通用配置 KV 系统 (积木与页面全靠它通信)
-  // ============================================
   getConfig: <T = unknown>(key: string) =>
     request<T>(`/api/config/${key}`).catch((err) => {
-      // 如果配置不存在，返回 null
       if (err.status === 404) {
         return null;
       }
@@ -181,16 +107,14 @@ export const api = {
 
   getPageById: (id: string) => request<CustomPage>(`/api/config/pages/${id}`),
 
-  // ============================================
-  // 图片与静态资源上传
-  // ============================================
   uploadImage: async (
     file: File,
     dimensions?: { width: number; height: number },
-    hash?: string
+    hash?: string,
   ): Promise<{ url: string; thumbUrl: string; key: string }> => {
     const formData = new FormData();
     formData.append('file', file);
+
     if (dimensions) {
       formData.append('width', dimensions.width.toString());
       formData.append('height', dimensions.height.toString());
@@ -199,20 +123,10 @@ export const api = {
       formData.append('hash', hash);
     }
 
-    const response = await fetch(`${API_BASE}/api/upload`, {
+    return request('/api/upload', {
       method: 'POST',
-      headers: {
-        Authorization: `Bearer ${ADMIN_TOKEN}`,
-      },
       body: formData,
     });
-
-    if (!response.ok) {
-      const error = await response.json().catch(() => ({ error: 'Upload failed' }));
-      throw new ApiError(error.error || 'Upload failed', response.status);
-    }
-
-    return response.json();
   },
 
   getImagesList: () => request<R2Image[]>('/api/upload/list'),
@@ -222,9 +136,6 @@ export const api = {
       method: 'DELETE',
     }),
 
-  // ============================================
-  // 询盘管理
-  // ============================================
   getInquiries: () => request<PaginatedResponse<any>>('/api/inquiries'),
   patchInquiry: (id: number, data: { status: string }) =>
     request<{ success: boolean }>(`/api/inquiries/${id}`, {
@@ -236,9 +147,6 @@ export const api = {
       method: 'DELETE',
     }),
 
-  // ============================================
-  // 博客管理
-  // ============================================
   getBlogs: (params?: { page?: number; pageSize?: number; status?: string; category?: string; sort?: string }) => {
     const query = new URLSearchParams();
     if (params) {
@@ -248,7 +156,7 @@ export const api = {
     }
     const queryStr = query.toString();
     return request<{ data: Blog[]; pagination: { page: number; pageSize: number; total: number; totalPages: number } }>(
-      `/api/blogs${queryStr ? `?${queryStr}` : ''}`
+      `/api/blogs${queryStr ? `?${queryStr}` : ''}`,
     );
   },
 
@@ -271,7 +179,6 @@ export const api = {
       method: 'DELETE',
     }),
 
-  // Blog Categories
   getBlogCategories: () => request<BlogCategory[]>('/api/blog-categories'),
 
   createBlogCategory: (data: { name_zh: string; name_en: string; slug?: string; sort_order?: number }) =>
@@ -291,20 +198,14 @@ export const api = {
       method: 'DELETE',
     }),
 
-  // ============================================
-  // 系统管理 / 触发构建
-  // ============================================
   triggerBuild: () =>
     request<{ success: boolean; buildStatus: { hasChanges: boolean; lastBuildTime: string } }>(
       '/api/system/trigger-build',
       {
         method: 'POST',
-      }
+      },
     ),
 
-  // ============================================
-  // Customer Reviews (客户评价)
-  // ============================================
   getAdminReviews: (params?: { page?: number; pageSize?: number; search?: string; status?: string }) => {
     const query = new URLSearchParams();
     if (params) {
@@ -314,7 +215,7 @@ export const api = {
     }
     const qs = query.toString();
     return request<{ data: any[]; pagination: { page: number; pageSize: number; total: number; totalPages: number } }>(
-      `/api/admin/reviews${qs ? `?${qs}` : ''}`
+      `/api/admin/reviews${qs ? `?${qs}` : ''}`,
     );
   },
 
