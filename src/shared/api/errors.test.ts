@@ -31,6 +31,22 @@ describe('AppError', () => {
     expect(error.data).toEqual({ resource: 'page' });
   });
 
+  it('returns existing AppError instances unchanged', () => {
+    const error = new AppError({ code: 'NETWORK_ERROR', message: 'offline' });
+
+    expect(toAppError(error)).toBe(error);
+  });
+
+  it('preserves native Error instances as cause', () => {
+    const cause = new Error('boom');
+    const normalized = toAppError(cause);
+
+    expect(normalized).toBeInstanceOf(AppError);
+    expect(normalized.code).toBe('UNKNOWN_ERROR');
+    expect(normalized.message).toBe('boom');
+    expect(normalized.cause).toBe(cause);
+  });
+
   it('normalizes unknown thrown values', () => {
     const normalized = toAppError('offline');
 
