@@ -1,17 +1,17 @@
 import { z } from 'zod';
 
 const translationSchema = z.object({
-  zh: z.string().default(''),
-  en: z.string().default(''),
+  zh: z.string(),
+  en: z.string(),
 });
 
 export const companyInfoSchema = z.object({
   name: translationSchema,
-  logo: z.string().default(''),
+  logo: z.string(),
   description: translationSchema,
   contact: z.object({
-    phone: z.string().default(''),
-    email: z.string().default(''),
+    phone: z.string(),
+    email: z.string(),
     address: translationSchema,
   }),
   socialMedia: z.object({
@@ -24,7 +24,7 @@ export const companyInfoSchema = z.object({
     linkedin: z.string().optional(),
     tiktok: z.string().optional(),
     whatsapp: z.string().optional(),
-  }).default({}),
+  }),
 });
 
 export type CompanyInfoFormValues = z.infer<typeof companyInfoSchema>;
