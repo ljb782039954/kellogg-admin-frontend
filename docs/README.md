@@ -29,6 +29,9 @@ admin/
 ├── Overview.tsx       概览仪表盘
 ├── BlocksPreview.tsx  21种组件预览
 ├── Blog* / InquiryManagement / CustomerReviews* / MediaManager
+app/
+├── providers/QueryProvider.tsx  TanStack Query 根 Provider
+└── queryClient.ts               Query 默认缓存与重试策略
 components/
 ├── blocks/            21种积木块预览渲染组件
 ├── custom/            业务组件（ProductCard, Pagination等）
@@ -39,12 +42,20 @@ config/
 context/
 ├── ContentContext.tsx  全局数据状态中心
 └── LanguageContext.tsx 中英文切换
+features/                        新业务模块目录（后续按领域渐进迁入）
+shared/
+└── api/                         API client、环境配置与统一错误模型
+test/                            Vitest、Testing Library 与 MSW 测试底座
 types/                 与 webApp-astro 和 worker-api 共享类型
 lib/api.ts             API 封装（自动附带 Admin Token）
 App.tsx                路由配置
 ```
 
 ---
+
+### 渐进重构约束
+
+新业务代码按 `features/<domain>/{api,model,ui}` 组织，并通过 feature 根部 `index.ts` 暴露公共能力。`shared` 不得依赖 `features`，新 feature UI 不得直接调用 `lib/api`、`shared/api/client` 或新增对 `ContentContext` 的依赖。旧模块在迁移完成前继续保持现状。
 
 ## 架构要点
 
