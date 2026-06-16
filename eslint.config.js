@@ -14,6 +14,12 @@ const privateFeatureImports = [
       '@/features/*/model/*',
       '@/features/*/ui',
       '@/features/*/ui/*',
+      '**/features/*/api',
+      '**/features/*/api/*',
+      '**/features/*/model',
+      '**/features/*/model/*',
+      '**/features/*/ui',
+      '**/features/*/ui/*',
     ],
     message: 'Import another feature through its public index.ts only.',
   },
@@ -46,7 +52,7 @@ export default defineConfig([
           patterns: [
             ...privateFeatureImports,
             {
-              group: ['@/features/*', '@/features/**'],
+              group: ['@/features/*', '@/features/**', '**/features/*', '**/features/**'],
               message: 'Shared code must not depend on business features.',
             },
           ],
@@ -74,7 +80,17 @@ export default defineConfig([
               message: 'New feature UI must not add dependencies on ContentContext.',
             },
           ],
-          patterns: privateFeatureImports,
+          patterns: [
+            ...privateFeatureImports,
+            {
+              regex: '^\\.\\./\\.\\./(?:\\.\\./)?(?!lib/|shared/|context/)[^/]+/(api|model|ui)(/.*)?$',
+              message: 'Import another feature through its public index.ts only.',
+            },
+            {
+              group: ['**/lib/api', '**/shared/api/client', '**/context/ContentContext'],
+              message: 'Feature UI must call a controller or feature query, not lower-level app infrastructure.',
+            },
+          ],
         },
       ],
     },
