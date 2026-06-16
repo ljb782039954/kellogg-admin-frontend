@@ -1,12 +1,16 @@
 import { render, screen } from '@testing-library/react';
-import { useQueryClient } from '@tanstack/react-query';
+import { useQueryClient, type QueryClient } from '@tanstack/react-query';
 import { describe, expect, it } from 'vitest';
 import { createAppQueryClient } from '../queryClient';
 import { QueryProvider } from './QueryProvider';
 
-function QueryClientProbe() {
+function QueryClientProbe({ expectedClient }: { expectedClient: QueryClient }) {
   const client = useQueryClient();
-  return <span>{client ? 'query-ready' : 'query-missing'}</span>;
+  return (
+    <span>
+      {client === expectedClient ? 'query-ready' : 'query-mismatch'}
+    </span>
+  );
 }
 
 describe('QueryProvider', () => {
@@ -15,7 +19,7 @@ describe('QueryProvider', () => {
 
     render(
       <QueryProvider client={client}>
-        <QueryClientProbe />
+        <QueryClientProbe expectedClient={client} />
       </QueryProvider>,
     );
 
