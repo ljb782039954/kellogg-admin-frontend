@@ -15,10 +15,10 @@ import ComponentsPreview from './admin/BlocksPreview';
 
 // 编辑器
 import { CompanyInfoEditor } from '@/features/company-info';
-import HeaderEditor from './admin/editors/headerEditor';
+import { NavigationEditor } from '@/features/navigation';
+import { CategoriesEditor } from '@/features/categories';
+import { FooterEditor } from '@/features/footer';
 import ProductsEditor from './admin/editors/ProductsEditor';
-import CategoriesEditor from './admin/editors/CategoriesEditor';
-import FooterEditor from './admin/editors/FooterEditor';
 import InquiryEditor from './admin/editors/InquiryEditor';
 import InquiryManagement from './admin/InquiryManagement';
 import MediaManager from './admin/MediaManager';
@@ -48,7 +48,7 @@ function App() {
 
               {/* 公司信息和组件管理 */}
               <Route path="company" element={<CompanyInfoEditor />} />
-              <Route path="header" element={<HeaderEditor />} />
+              <Route path="header" element={<NavigationEditor />} />
               <Route path="footer" element={<FooterEditor />} />
 
               <Route path="products" element={<ProductsEditor />} />

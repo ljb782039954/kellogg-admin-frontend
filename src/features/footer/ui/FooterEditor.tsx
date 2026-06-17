@@ -1,20 +1,20 @@
-// Footer 组件管理编辑器（已弃用，保留文件仅用于兼容构建）
-
-import { useState } from 'react';
+import { useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { Plus, Trash2, Save, GripVertical, AlertTriangle, Mail, Phone, MapPin, Facebook, Instagram, Twitter, Youtube } from 'lucide-react';
-import { useContent } from '@/context/ContentContext';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import BilingualInput from '@/admin/components/BilingualInput';
 import LinkSelector from '@/admin/components/LinkSelector';
-import type { Translation, FooterLinkGroup, FooterLink, FooterContent } from '@/types';
 import siteSettings from '@/config/siteSettings.json';
+import type { FooterContent, FooterLink, FooterLinkGroup, Translation } from '@/types';
 
-// 旧版 FooterEditor 已弃用，实际路由已切换至 features/footer/ui/FooterEditor。
+interface FooterPreviewProps {
+  footer: FooterContent;
+  language: 'zh' | 'en';
+}
 
-function FooterPreview({ footer, language }: { footer: FooterContent; language: 'zh' | 'en' }) {
+export function FooterPreview({ footer, language }: FooterPreviewProps) {
   return (
     <Card className="overflow-hidden">
       <CardHeader className="pb-2">
@@ -25,17 +25,11 @@ function FooterPreview({ footer, language }: { footer: FooterContent; language: 
         <CardDescription>在浏览器中的实际显示效果（缩略版）</CardDescription>
       </CardHeader>
       <CardContent className="p-0">
-        {/* 模拟 Footer */}
         <div className="bg-gray-900 text-white p-6">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
-            {/* 品牌 & 订阅 */}
             <div>
-              <h3 className="text-lg font-bold mb-2">
-                {siteSettings.brand.name[language]}
-              </h3>
-              <p className="text-gray-400 text-xs mb-3 line-clamp-2">
-                {siteSettings.brand.description[language]}
-              </p>
+              <h3 className="text-lg font-bold mb-2">{siteSettings.brand.name[language]}</h3>
+              <p className="text-gray-400 text-xs mb-3 line-clamp-2">{siteSettings.brand.description[language]}</p>
               <div className="flex gap-2">
                 <input
                   type="email"
@@ -49,14 +43,17 @@ function FooterPreview({ footer, language }: { footer: FooterContent; language: 
               </div>
             </div>
 
-            {/* 链接分组 */}
             {footer.linkGroups.slice(0, 2).map((group, index) => (
               <div key={index}>
                 <h4 className="font-semibold mb-2 text-sm">{group.title[language]}</h4>
                 <ul className="space-y-1">
                   {group.links.slice(0, 4).map((link, linkIndex) => (
                     <li key={linkIndex}>
-                      <span className={`text-xs ${link.pageDeleted ? 'text-red-400 line-through' : 'text-gray-400'}`}>
+                      <span
+                        className={`text-xs ${
+                          link.pageDeleted ? 'text-red-400 line-through' : 'text-gray-400'
+                        }`}
+                      >
                         {link.name[language]}
                       </span>
                     </li>
@@ -68,11 +65,8 @@ function FooterPreview({ footer, language }: { footer: FooterContent; language: 
               </div>
             ))}
 
-            {/* 联系信息 */}
             <div>
-              <h4 className="font-semibold mb-2 text-sm">
-                {language === 'zh' ? '联系我们' : 'Contact Us'}
-              </h4>
+              <h4 className="font-semibold mb-2 text-sm">{language === 'zh' ? '联系我们' : 'Contact Us'}</h4>
               <ul className="space-y-1.5 text-xs text-gray-400">
                 <li className="flex items-center gap-2">
                   <Phone className="w-3 h-3" />
@@ -87,10 +81,12 @@ function FooterPreview({ footer, language }: { footer: FooterContent; language: 
                   <span className="line-clamp-2">{siteSettings.contact.address[language]}</span>
                 </li>
               </ul>
-              {/* 社交媒体 */}
               <div className="flex gap-2 mt-3">
                 {[Facebook, Instagram, Twitter, Youtube].map((Icon, i) => (
-                  <div key={i} className="w-6 h-6 rounded-full border border-gray-700 flex items-center justify-center">
+                  <div
+                    key={i}
+                    className="w-6 h-6 rounded-full border border-gray-700 flex items-center justify-center"
+                  >
                     <Icon className="w-3 h-3 text-gray-400" />
                   </div>
                 ))}
@@ -98,9 +94,11 @@ function FooterPreview({ footer, language }: { footer: FooterContent; language: 
             </div>
           </div>
 
-          {/* 版权 */}
           <div className="border-t border-gray-800 pt-4 flex flex-col md:flex-row items-center justify-between text-xs text-gray-500">
-            <span>© 2024 {siteSettings.brand.name[language]}. {language === 'zh' ? '保留所有权利。' : 'All rights reserved.'}</span>
+            <span>
+              © 2024 {siteSettings.brand.name[language]}.{' '}
+              {language === 'zh' ? '保留所有权利。' : 'All rights reserved.'}
+            </span>
             <div className="flex gap-4 mt-2 md:mt-0">
               <span>{language === 'zh' ? '隐私政策' : 'Privacy Policy'}</span>
               <span>{language === 'zh' ? '服务条款' : 'Terms of Service'}</span>
@@ -112,111 +110,56 @@ function FooterPreview({ footer, language }: { footer: FooterContent; language: 
   );
 }
 
-export default function FooterEditor() {
-  const { content } = useContent();
-  const [localFooter, setLocalFooter] = useState<FooterContent>(() => {
-    const footer = content.footer;
-    const needsConversion = footer.linkGroups.some((group) =>
-      group.links.some((link) => !('linkType' in link))
-    );
+interface FooterEditorProps {
+  footer: FooterContent;
+  saved: boolean;
+  previewLang: 'zh' | 'en';
+  hasDeletedPages: boolean;
+  onSave: () => void;
+  onPreviewLangChange: (lang: 'zh' | 'en') => void;
+  onUpdateNewsletterPlaceholder: (value: Translation) => void;
+  onUpdateNewsletterButton: (value: Translation) => void;
+  onAddGroup: () => void;
+  onRemoveGroup: (index: number) => void;
+  onUpdateGroup: (index: number, group: FooterLinkGroup) => void;
+  onAddLink: (groupIndex: number) => void;
+  onRemoveLink: (groupIndex: number, linkIndex: number) => void;
+  onUpdateLink: (groupIndex: number, linkIndex: number, link: FooterLink) => void;
+}
 
-    if (needsConversion) {
-      return {
-        ...footer,
-        linkGroups: footer.linkGroups.map((group) => ({
-          ...group,
-          links: group.links.map((link) => ({
-            ...link,
-            linkType: (link as any).linkType || (link.href?.startsWith('http') ? 'external' : 'internal'),
-          })),
-        })),
-      };
-    }
-    return footer;
-  });
-
-  const [saved, setSaved] = useState(false);
-  const [previewLang, setPreviewLang] = useState<'zh' | 'en'>('zh');
-
-  const handleSave = () => {
-    setSaved(true);
-    setTimeout(() => setSaved(false), 2000);
-  };
-
-  const updateLinkGroup = <K extends keyof FooterLinkGroup>(
-    index: number,
-    field: K,
-    value: FooterLinkGroup[K]
-  ) => {
-    const newGroups = [...localFooter.linkGroups];
-    newGroups[index] = { ...newGroups[index], [field]: value };
-    setLocalFooter({ ...localFooter, linkGroups: newGroups });
-  };
-
-  const addLinkToGroup = (groupIndex: number) => {
-    const newGroups = [...localFooter.linkGroups];
-    const newLink: FooterLink = {
-      id: Date.now().toString(), // TODO: 生成更可靠的 ID
-      name: { zh: '新链接', en: 'New Link' },
-      linkType: 'internal',
-      href: '',
-    };
-    newGroups[groupIndex].links.push(newLink);
-    setLocalFooter({ ...localFooter, linkGroups: newGroups });
-  };
-
-  const updateLinkName = (groupIndex: number, linkIndex: number, value: Translation) => {
-    const newGroups = [...localFooter.linkGroups];
-    newGroups[groupIndex].links[linkIndex] = {
-      ...newGroups[groupIndex].links[linkIndex],
-      name: value,
-    };
-    setLocalFooter({ ...localFooter, linkGroups: newGroups });
-  };
-
-  const updateLinkData = (groupIndex: number, linkIndex: number, value: FooterLink) => {
-    const newGroups = [...localFooter.linkGroups];
-    newGroups[groupIndex].links[linkIndex] = {
-      ...newGroups[groupIndex].links[linkIndex],
-      ...value,
-    };
-    setLocalFooter({ ...localFooter, linkGroups: newGroups });
-  };
-
-  const removeLinkFromGroup = (groupIndex: number, linkIndex: number) => {
-    const newGroups = [...localFooter.linkGroups];
-    newGroups[groupIndex].links = newGroups[groupIndex].links.filter((_, i) => i !== linkIndex);
-    setLocalFooter({ ...localFooter, linkGroups: newGroups });
-  };
-
-  const addLinkGroup = () => {
-    const newGroup: FooterLinkGroup = {
-      id: Date.now().toString(), // TODO: 生成更可靠的 ID
-      title: { zh: '新分组', en: 'New Group' },
-      links: [],
-    };
-    setLocalFooter({
-      ...localFooter,
-      linkGroups: [...localFooter.linkGroups, newGroup],
-    });
-  };
-
-  const removeLinkGroup = (index: number) => {
-    setLocalFooter({
-      ...localFooter,
-      linkGroups: localFooter.linkGroups.filter((_, i) => i !== index),
-    });
-  };
+export function FooterEditorView({
+  footer,
+  saved,
+  previewLang,
+  hasDeletedPages,
+  onSave,
+  onPreviewLangChange,
+  onUpdateNewsletterPlaceholder,
+  onUpdateNewsletterButton,
+  onAddGroup,
+  onRemoveGroup,
+  onUpdateGroup,
+  onAddLink,
+  onRemoveLink,
+  onUpdateLink,
+}: FooterEditorProps) {
+  const updateGroupTitle = useCallback(
+    (groupIndex: number, title: Translation) => {
+      const next = [...footer.linkGroups];
+      next[groupIndex] = { ...next[groupIndex], title };
+      onUpdateGroup(groupIndex, next[groupIndex]);
+    },
+    [footer.linkGroups, onUpdateGroup],
+  );
 
   return (
     <div className="space-y-6">
-      {/* Header */}
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-gray-800">Footer 页脚管理</h1>
           <p className="text-gray-500 mt-1">编辑页脚链接分组和订阅设置</p>
         </div>
-        <Button onClick={handleSave}>
+        <Button onClick={onSave}>
           <Save className="w-4 h-4 mr-2" />
           保存更改
         </Button>
@@ -232,7 +175,6 @@ export default function FooterEditor() {
         </motion.div>
       )}
 
-      {/* Footer 预览 */}
       <div className="space-y-2">
         <div className="flex items-center justify-between">
           <span className="text-sm font-medium text-gray-700">组件预览</span>
@@ -240,38 +182,34 @@ export default function FooterEditor() {
             <Button
               variant={previewLang === 'zh' ? 'default' : 'outline'}
               size="sm"
-              onClick={() => setPreviewLang('zh')}
+              onClick={() => onPreviewLangChange('zh')}
             >
               中文
             </Button>
             <Button
               variant={previewLang === 'en' ? 'default' : 'outline'}
               size="sm"
-              onClick={() => setPreviewLang('en')}
+              onClick={() => onPreviewLangChange('en')}
             >
               English
             </Button>
           </div>
         </div>
-        <FooterPreview footer={localFooter} language={previewLang} />
+        <FooterPreview footer={footer} language={previewLang} />
       </div>
 
-      {
-        false && (
-          <div className="flex items-center gap-2 text-amber-700 bg-amber-50 border border-amber-200 px-4 py-3 rounded-lg">
-            <AlertTriangle className="w-5 h-5" />
-            <span>部分链接指向的页面已被删除，请更新相关链接。</span>
-          </div>
-        )
-      }
+      {hasDeletedPages && (
+        <div className="flex items-center gap-2 text-amber-700 bg-amber-50 border border-amber-200 px-4 py-3 rounded-lg">
+          <AlertTriangle className="w-5 h-5" />
+          <span>部分链接指向的页面已被删除，请更新相关链接。</span>
+        </div>
+      )}
 
-      {/* 提示信息 */}
       <div className="p-4 bg-blue-50 text-blue-700 rounded-lg flex items-center gap-2 text-sm">
         <span className="w-2 h-2 bg-blue-500 rounded-full" />
         公司名称、联系方式、社交媒体链接由「公司信息管理」统一配置。
       </div>
 
-      {/* Newsletter */}
       <Card>
         <CardHeader>
           <CardTitle>邮件订阅</CardTitle>
@@ -280,36 +218,35 @@ export default function FooterEditor() {
         <CardContent className="space-y-4">
           <BilingualInput
             label="输入框占位文字"
-            value={localFooter.newsletterPlaceholder}
-            onChange={(value) => setLocalFooter({ ...localFooter, newsletterPlaceholder: value })}
+            value={footer.newsletterPlaceholder}
+            onChange={onUpdateNewsletterPlaceholder}
             placeholder={{ zh: '输入邮箱订阅', en: 'Enter email to subscribe' }}
           />
 
           <BilingualInput
             label="订阅按钮文字"
-            value={localFooter.newsletterButton}
-            onChange={(value) => setLocalFooter({ ...localFooter, newsletterButton: value })}
+            value={footer.newsletterButton}
+            onChange={onUpdateNewsletterButton}
             placeholder={{ zh: '订阅', en: 'Subscribe' }}
           />
         </CardContent>
       </Card>
 
-      {/* Link Groups */}
       <div className="space-y-4">
         <div className="flex items-center justify-between">
           <h3 className="text-lg font-semibold">链接分组</h3>
-          <Button variant="outline" size="sm" onClick={addLinkGroup}>
+          <Button variant="outline" size="sm" onClick={onAddGroup}>
             <Plus className="w-4 h-4 mr-1" />
             添加分组
           </Button>
         </div>
 
-        {localFooter.linkGroups.map((group, groupIndex) => {
-          const groupHasDeletedLinks = false;
+        {footer.linkGroups.map((group, groupIndex) => {
+          const groupHasDeletedLinks = group.links.some((link) => link.pageDeleted);
 
           return (
             <Card
-              key={groupIndex}
+              key={group.id || groupIndex}
               className={groupHasDeletedLinks ? 'border-amber-300' : ''}
             >
               <CardHeader className="pb-2">
@@ -327,7 +264,7 @@ export default function FooterEditor() {
                   <Button
                     variant="ghost"
                     size="sm"
-                    onClick={() => removeLinkGroup(groupIndex)}
+                    onClick={() => onRemoveGroup(groupIndex)}
                     className="text-red-500 hover:text-red-700 hover:bg-red-50"
                   >
                     <Trash2 className="w-4 h-4" />
@@ -336,23 +273,21 @@ export default function FooterEditor() {
               </CardHeader>
 
               <CardContent className="space-y-4">
-                {/* Group Title */}
                 <BilingualInput
-                  label="分组标题"
                   colRow="row"
                   value={group.title}
-                  onChange={(value) => updateLinkGroup(groupIndex, 'title', value)}
+                  onChange={(value) => updateGroupTitle(groupIndex, value)}
                   placeholder={{ zh: '分组标题', en: 'Group Title' }}
+                  label="分组标题"
                 />
 
-                {/* Links */}
                 <div className="space-y-3">
                   <div className="flex items-center justify-between">
                     <label className="text-sm font-medium text-gray-700">链接列表</label>
                     <Button
                       variant="outline"
                       size="sm"
-                      onClick={() => addLinkToGroup(groupIndex)}
+                      onClick={() => onAddLink(groupIndex)}
                     >
                       <Plus className="w-4 h-4 mr-1" />
                       添加链接
@@ -368,14 +303,14 @@ export default function FooterEditor() {
                       {group.links.map((link, linkIndex) => (
                         <div
                           key={link.id || linkIndex}
-                          className={`p-4 rounded-lg border ${link.pageDeleted
-                            ? 'border-red-300 bg-red-50'
-                            : 'border-gray-200 bg-gray-50'
-                            }`}
+                          className={`p-4 rounded-lg border ${
+                            link.pageDeleted
+                              ? 'border-red-300 bg-red-50'
+                              : 'border-gray-200 bg-gray-50'
+                          }`}
                         >
                           <div className="flex items-start gap-3">
                             <div className="flex-1 space-y-4">
-                              {/* 链接名称 */}
                               <div className="flex items-center gap-2">
                                 <span className="text-sm font-medium text-gray-700">链接名称</span>
                                 {link.pageDeleted && (
@@ -386,17 +321,19 @@ export default function FooterEditor() {
                                 )}
                               </div>
                               <BilingualInput
-                                // colRow="row"
                                 value={link.name}
-                                onChange={(value) => updateLinkName(groupIndex, linkIndex, value)}
+                                onChange={(value) => {
+                                  const next = [...footer.linkGroups];
+                                  next[groupIndex].links[linkIndex] = { ...link, name: value };
+                                  onUpdateLink(groupIndex, linkIndex, next[groupIndex].links[linkIndex]);
+                                }}
                                 placeholder={{ zh: '链接中文名', en: 'Link English name' }}
                               />
 
-                              {/* 链接配置 */}
                               <div className="pt-2 border-t">
                                 <LinkSelector
                                   value={link}
-                                  onChange={(value) => updateLinkData(groupIndex, linkIndex, value as FooterLink)}
+                                  onChange={(value) => onUpdateLink(groupIndex, linkIndex, value as FooterLink)}
                                 />
                               </div>
                             </div>
@@ -404,7 +341,7 @@ export default function FooterEditor() {
                             <Button
                               variant="ghost"
                               size="sm"
-                              onClick={() => removeLinkFromGroup(groupIndex, linkIndex)}
+                              onClick={() => onRemoveLink(groupIndex, linkIndex)}
                               className="text-red-500 hover:text-red-700 hover:bg-red-50"
                             >
                               <Trash2 className="w-4 h-4" />
@@ -420,7 +357,7 @@ export default function FooterEditor() {
           );
         })}
 
-        {localFooter.linkGroups.length === 0 && (
+        {footer.linkGroups.length === 0 && (
           <Card className="border-dashed">
             <CardContent className="flex flex-col items-center justify-center py-12 text-gray-500">
               <p className="text-sm">暂无链接分组</p>

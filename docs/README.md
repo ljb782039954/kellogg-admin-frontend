@@ -43,9 +43,13 @@ context/
 ├── ContentContext.tsx  全局数据状态中心
 └── LanguageContext.tsx 中英文切换
 features/                        新业务模块目录（后续按领域渐进迁入）
-└── company-info/                公司信息样板：Query、Mutation、Schema、Mapper、Form Controller、View
+├── company-info/                公司信息样板：Query、Mutation、Schema、Mapper、Form Controller、View
+├── categories/                  产品分类管理
+├── navigation/                  Header 导航配置
+└── footer/                      Footer 页脚配置
 shared/
-└── api/                         API client、环境配置与统一错误模型
+├── api/                         API client、环境配置与统一错误模型
+└── media/                       图片上传准备、查重、上传 controller 与兼容 UI
 test/                            Vitest、Testing Library 与 MSW 测试底座
 types/                 与 webApp-astro 和 worker-api 共享类型
 lib/api.ts             API 封装（自动附带 Admin Token）
@@ -57,6 +61,10 @@ App.tsx                路由配置
 ### 渐进重构约束
 
 新业务代码按 `features/<domain>/{api,model,ui}` 组织，并通过 feature 根部 `index.ts` 暴露公共能力。`shared` 不得依赖 `features`，新 feature UI 不得直接调用 `lib/api`、`shared/api/client` 或新增对 `ContentContext` 的依赖。旧模块在迁移完成前继续保持现状。当前 `/company` 路由已使用 `features/company-info`，未迁移模块继续使用旧 `ContentContext`。
+
+`ImageInput` 保留旧导出，但上传准备、查重和上传编排已迁入 `shared/media`；后续媒体管理页再独立迁移到 `features/media`。
+
+当前 `/company`、`/categories`、`/header`、`/footer` 路由已迁移到对应 `features/`，不再依赖 `ContentContext`。
 
 ## 架构要点
 

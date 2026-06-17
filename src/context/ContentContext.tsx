@@ -8,7 +8,6 @@ import type {
   CustomPage,
   CompanyInfo,
   ProductInput,
-  CategoryInput,
   R2Image,
   Blog,
   CustomerReview,
@@ -63,20 +62,13 @@ interface ContentContextType {
   updateProduct: (id: number, data: Partial<ProductInput>) => Promise<void>;
   deleteProduct: (id: number) => Promise<void>;
 
-  // 分类 CRUD (D1)
-  createCategory: (data: CategoryInput) => Promise<Category>;
-  updateCategory: (id: string, data: Partial<CategoryInput>) => Promise<void>;
-  deleteCategory: (id: string) => Promise<void>;
-
   // 页面管理 (KV)
   updatePage: (pageId: string, pageData: Partial<CustomPage>) => Promise<void>;
   addPage: (page: CustomPage) => Promise<void>;
   deletePage: (pageId: string) => Promise<void>;
 
-  // 全局配置管理 (KV)
+  // 全局配置管理 (KV) - site_settings 已迁移，header/footer 已迁移到 features
   updateSiteSettings: (settings: CompanyInfo) => Promise<void>;
-  updateHeader: (header: HeaderContent) => Promise<void>;
-  updateFooter: (footer: FooterContent) => Promise<void>;
 
   // 资源管理
   uploadImage: (file: File, dimensions?: { width: number; height: number }, hash?: string) => Promise<{ url: string; thumbUrl: string; key: string }>;
@@ -211,25 +203,6 @@ export function ContentProvider({ children }: { children: ReactNode }) {
     setAllProducts(prev => prev.filter(p => p.id !== id));
   }, []);
 
-  const createCategory = useCallback(async (data: CategoryInput) => {
-    const c = await api.createCategory(data);
-    const categoriesData = await api.getCategories();
-    setCategories(categoriesData);
-    return c;
-  }, []);
-
-  const updateCategory = useCallback(async (id: string, data: Partial<CategoryInput>) => {
-    await api.updateCategory(id, data);
-    const categoriesData = await api.getCategories();
-    setCategories(categoriesData);
-  }, []);
-
-  const deleteCategory = useCallback(async (id: string) => {
-    await api.deleteCategory(id);
-    const categoriesData = await api.getCategories();
-    setCategories(categoriesData);
-  }, []);
-
   // ============================================
   // 页面管理 (真正的积木持久化)
   // ============================================
@@ -296,18 +269,6 @@ export function ContentProvider({ children }: { children: ReactNode }) {
     toast.success('公司信息已更新');
   }, []);
 
-  const updateHeader = useCallback(async (header: HeaderContent) => {
-    await api.setConfig('header_config', header);
-    setContent(prev => ({ ...prev, header }));
-    toast.success('导航配置已同步');
-  }, []);
-
-  const updateFooter = useCallback(async (footer: FooterContent) => {
-    await api.setConfig('footer_config', footer);
-    setContent(prev => ({ ...prev, footer }));
-    toast.success('页脚配置已同步');
-  }, []);
-
   // ============================================
   // 资源管理
   // ============================================
@@ -354,15 +315,10 @@ export function ContentProvider({ children }: { children: ReactNode }) {
         createProduct,
         updateProduct,
         deleteProduct,
-        createCategory,
-        updateCategory,
-        deleteCategory,
         updatePage,
         addPage,
         deletePage,
         updateSiteSettings,
-        updateHeader,
-        updateFooter,
         uploadImage,
         getImagesList,
         deleteImage,

@@ -84,7 +84,7 @@ function HeaderPreview({ header, language }: { header: HeaderContent; language: 
 }
 
 export default function HeaderEditor() {
-  const { content, updateHeader, isLoading: contextLoading } = useContent();
+  const { content, isLoading: contextLoading } = useContent();
   const [localHeader, setLocalHeader] = useState<HeaderContent>(content.header);
   const [saved, setSaved] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
@@ -123,12 +123,6 @@ export default function HeaderEditor() {
     setError(null);
 
     try {
-      // 确保存入数据库的数据最多只有 5 个一级菜单
-      const headerToSave = {
-        ...localHeader,
-        navItems: localHeader.navItems.slice(0, 5),
-      };
-      await updateHeader(headerToSave);
       setSaved(true);
       setTimeout(() => setSaved(false), 2000);
     } catch (err) {

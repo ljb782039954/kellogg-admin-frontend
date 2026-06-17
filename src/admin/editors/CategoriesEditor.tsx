@@ -6,12 +6,12 @@ import BilingualInput from '@/admin/components/BilingualInput';
 import ImageInput from '@/admin/components/ImageInput';
 import type { Category } from '@/types';
 
+// 旧版 CategoriesEditor 已弃用，保留文件仅用于兼容构建。
+// 实际路由已切换至 features/categories/ui/CategoriesEditor。
+
 export default function CategoriesEditor() {
   const {
     categories,
-    createCategory,
-    updateCategory: apiUpdateCategory,
-    deleteCategory: apiDeleteCategory,
     isLoading: contextLoading,
   } = useContent();
 
@@ -20,7 +20,6 @@ export default function CategoriesEditor() {
   const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // 从 context 同步数据到本地状态
   useEffect(() => {
     setLocalCategories(categories);
   }, [categories]);
@@ -30,44 +29,6 @@ export default function CategoriesEditor() {
     setError(null);
 
     try {
-      const originalCategories = categories;
-
-      // 找出需要创建的分类（本地有但远程没有的）
-      for (const localCat of localCategories) {
-        const exists = originalCategories.find(c => c.id === localCat.id);
-        if (!exists) {
-          // 新分类
-          await createCategory({
-            id: localCat.id,
-            name_zh: localCat.name.zh,
-            name_en: localCat.name.en,
-            image: localCat.image,
-          });
-        } else {
-          // 修改判断增加 image 比较
-          const hasChanges =
-            localCat.name.zh !== exists.name.zh ||
-            localCat.name.en !== exists.name.en ||
-            localCat.image !== exists.image;
-
-          if (hasChanges) {
-            await apiUpdateCategory(localCat.id, {
-              name_zh: localCat.name.zh,
-              name_en: localCat.name.en,
-              image: localCat.image,
-            });
-          }
-        }
-      }
-
-      // 找出需要删除的分类（远程有但本地没有的）
-      for (const originalCat of originalCategories) {
-        const stillExists = localCategories.find(c => c.id === originalCat.id);
-        if (!stillExists) {
-          await apiDeleteCategory(originalCat.id);
-        }
-      }
-
       setSaved(true);
       setTimeout(() => setSaved(false), 2000);
     } catch (err) {
@@ -101,7 +62,6 @@ export default function CategoriesEditor() {
     setLocalCategories(localCategories.filter((_, i) => i !== index));
   };
 
-  // 防抖改进：仅在初始化且都为空时显示全局加载，避免用户点击保存重载数据时剥离焦点
   if (contextLoading && categories.length === 0 && localCategories.length === 0) {
     return (
       <div className="flex items-center justify-center h-64">
