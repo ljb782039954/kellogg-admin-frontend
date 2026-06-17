@@ -25,10 +25,20 @@ export function useImageUploadController({
     return selectionIdRef.current === selectionId;
   }
 
-  function clear() {
+  function resetTransientState() {
     setDuplicates([]);
     setPendingUpload(null);
     setError(null);
+  }
+
+  function invalidateSelection() {
+    selectionIdRef.current += 1;
+  }
+
+  function clear() {
+    invalidateSelection();
+    resetTransientState();
+    setIsUploading(false);
   }
 
   async function uploadPrepared(prepared: PreparedImageUpload, selectionId?: number) {
@@ -50,9 +60,7 @@ export function useImageUploadController({
     selectionIdRef.current = selectionId;
 
     setIsUploading(true);
-    setDuplicates([]);
-    setPendingUpload(null);
-    setError(null);
+    resetTransientState();
 
     try {
       const prepared = await prepareImageUpload(file, { maxWidth });
@@ -75,7 +83,7 @@ export function useImageUploadController({
 
       const uploaded = await uploadPrepared(prepared, selectionId);
       if (uploaded && isCurrentSelection(selectionId)) {
-        clear();
+        resetTransientState();
       }
     } catch (err) {
       if (!isCurrentSelection(selectionId)) {
@@ -92,8 +100,10 @@ export function useImageUploadController({
   }
 
   function reuseImage(url: string) {
+    invalidateSelection();
     onChange(url);
-    clear();
+    resetTransientState();
+    setIsUploading(false);
   }
 
   async function forceUpload() {
@@ -108,7 +118,7 @@ export function useImageUploadController({
     try {
       const uploaded = await uploadPrepared(pendingUpload, selectionId);
       if (uploaded && isCurrentSelection(selectionId)) {
-        clear();
+        resetTransientState();
       }
     } catch (err) {
       if (!isCurrentSelection(selectionId)) {

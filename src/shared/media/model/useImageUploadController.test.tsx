@@ -200,4 +200,102 @@ describe('useImageUploadController', () => {
     expect(result.current.duplicates).toEqual([]);
     expect(result.current.hasPendingUpload).toBe(false);
   });
+
+  it('does not apply a forced upload result after clear is called', async () => {
+    const onChange = vi.fn();
+    const file = new File(['image'], 'image.jpg', { type: 'image/jpeg' });
+    const hash = '1'.repeat(64);
+    const uploadResult = deferred<{ url: string }>();
+    prepareImageUploadMock.mockResolvedValueOnce({ file, hash });
+    getImagesListMock.mockResolvedValueOnce([r2Image(hash)]);
+    uploadImageMock.mockReturnValueOnce(uploadResult.promise);
+
+    const { result } = renderHook(() => useImageUploadController({ value: '', onChange }));
+
+    await act(async () => {
+      await result.current.selectFile(file);
+    });
+
+    let forceUpload!: Promise<void>;
+    await act(async () => {
+      forceUpload = result.current.forceUpload();
+    });
+    act(() => {
+      result.current.clear();
+    });
+    await act(async () => {
+      uploadResult.resolve({ url: '/forced.jpg' });
+      await forceUpload;
+    });
+
+    expect(onChange).not.toHaveBeenCalled();
+    expect(result.current.duplicates).toEqual([]);
+    expect(result.current.hasPendingUpload).toBe(false);
+    expect(result.current.isUploading).toBe(false);
+  });
+
+  it('does not let a stale forced upload override a reused image', async () => {
+    const onChange = vi.fn();
+    const file = new File(['image'], 'image.jpg', { type: 'image/jpeg' });
+    const hash = '1'.repeat(64);
+    const uploadResult = deferred<{ url: string }>();
+    prepareImageUploadMock.mockResolvedValueOnce({ file, hash });
+    getImagesListMock.mockResolvedValueOnce([r2Image(hash)]);
+    uploadImageMock.mockReturnValueOnce(uploadResult.promise);
+
+    const { result } = renderHook(() => useImageUploadController({ value: '', onChange }));
+
+    await act(async () => {
+      await result.current.selectFile(file);
+    });
+
+    let forceUpload!: Promise<void>;
+    await act(async () => {
+      forceUpload = result.current.forceUpload();
+    });
+    act(() => {
+      result.current.reuseImage('/existing.jpg');
+    });
+    await act(async () => {
+      uploadResult.resolve({ url: '/forced.jpg' });
+      await forceUpload;
+    });
+
+    expect(onChange).toHaveBeenCalledTimes(1);
+    expect(onChange).toHaveBeenCalledWith('/existing.jpg');
+    expect(result.current.duplicates).toEqual([]);
+    expect(result.current.hasPendingUpload).toBe(false);
+  });
+
+  it('keeps a failed force upload pending so it can be retried', async () => {
+    const onChange = vi.fn();
+    const file = new File(['image'], 'image.jpg', { type: 'image/jpeg' });
+    const hash = '1'.repeat(64);
+    prepareImageUploadMock.mockResolvedValueOnce({ file, hash });
+    getImagesListMock.mockResolvedValueOnce([r2Image(hash)]);
+    uploadImageMock
+      .mockRejectedValueOnce(new Error('boom'))
+      .mockResolvedValueOnce({ url: '/retried.jpg' });
+
+    const { result } = renderHook(() => useImageUploadController({ value: '', onChange }));
+
+    await act(async () => {
+      await result.current.selectFile(file);
+    });
+    await act(async () => {
+      await result.current.forceUpload();
+    });
+
+    expect(result.current.error).toBe('图片上传失败，请重试');
+    expect(result.current.hasPendingUpload).toBe(true);
+    expect(onChange).not.toHaveBeenCalled();
+
+    await act(async () => {
+      await result.current.forceUpload();
+    });
+
+    expect(uploadImageMock).toHaveBeenCalledTimes(2);
+    expect(onChange).toHaveBeenCalledWith('/retried.jpg');
+    expect(result.current.hasPendingUpload).toBe(false);
+  });
 });
