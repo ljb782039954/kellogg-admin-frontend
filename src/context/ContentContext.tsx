@@ -7,14 +7,11 @@ import type {
   FooterContent,
   CustomPage,
   CompanyInfo,
-  R2Image,
   Blog,
-  CustomerReview,
 } from '../types';
 import { api } from '../lib/api';
 import { toast } from 'sonner';
 
-// 初始空白状态
 const blankCompany: CompanyInfo = {
   name: { zh: '', en: '' },
   logo: '',
@@ -42,34 +39,21 @@ const blankContent: SiteContent = {
 };
 
 interface ContentContextType {
-  // 状态
   content: SiteContent;
   allProducts: Product[];
   categories: Category[];
   allBlogs: Blog[];
-  allReviews: CustomerReview[];
   isLoading: boolean;
   error: string | null;
 
-  // 数据获取
   refreshData: () => Promise<void>;
   findPage: (id: string) => CustomPage | undefined;
   clearError: () => void;
 
-  // 页面管理 (KV) - pending removal when InquiryEditor migrates
+  // Pending removal when InquiryEditor migrates
   updatePage: (pageId: string, pageData: Partial<CustomPage>) => Promise<void>;
 
-  // 全局配置管理 (KV) - site_settings 已迁移，header/footer 已迁移到 features
   updateSiteSettings: (settings: CompanyInfo) => Promise<void>;
-
-  // 资源管理
-  uploadImage: (file: File, dimensions?: { width: number; height: number }, hash?: string) => Promise<{ url: string; thumbUrl: string; key: string }>;
-  getImagesList: () => Promise<R2Image[]>;
-  deleteImage: (key: string) => Promise<void>;
-
-  // 构建管理
-  buildStatus: { hasChanges: boolean; lastBuildTime?: string };
-  triggerBuild: () => Promise<void>;
 }
 
 const ContentContext = createContext<ContentContextType | undefined>(undefined);
@@ -79,13 +63,9 @@ export function ContentProvider({ children }: { children: ReactNode }) {
   const [allProducts, setAllProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [allBlogs, setAllBlogs] = useState<Blog[]>([]);
-  const [allReviews, setAllReviews] = useState<CustomerReview[]>([]);
 
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [buildStatus, setBuildStatus] = useState<{ hasChanges: boolean; lastBuildTime?: string }>({
-    hasChanges: false,
-  });
 
   const clearError = useCallback(() => setError(null), []);
 
@@ -93,13 +73,11 @@ export function ContentProvider({ children }: { children: ReactNode }) {
     return content.pages.find(p => p.id === id);
   }, [content.pages]);
 
-  // 全局刷新逻辑
   const refreshData = useCallback(async () => {
     setIsLoading(true);
     setError(null);
 
     try {
-      // 1. 获取所有实体数据 (带容错，表不存在时返回空)
       const fetchEntity = async <T,>(p: Promise<T>, defaultValue: T): Promise<T> => {
         try { return await p; } catch (e) {
           console.warn('D1 entity load failed, using fallback:', e);
@@ -107,14 +85,12 @@ export function ContentProvider({ children }: { children: ReactNode }) {
         }
       };
 
-      const [productsResp, categoriesData, blogsResp, reviewsResp] = await Promise.all([
+      const [productsResp, categoriesData, blogsResp] = await Promise.all([
         fetchEntity(api.getProducts({ pageSize: 1000 }), { data: [], total: 0, page: 1, pageSize: 1000, totalPages: 1 }),
         fetchEntity(api.getCategories(), []),
         fetchEntity(api.getBlogs({ pageSize: 1000 }), { data: [], pagination: { page: 1, pageSize: 1000, total: 0, totalPages: 1 } }),
-        fetchEntity(api.getAdminReviews({ pageSize: 1000 }), { data: [], pagination: { page: 1, pageSize: 1000, total: 0, totalPages: 1 } }),
       ]);
 
-      // 2. 从 KV 获取所有页面和配置 (核心积木系统依赖)
       const fetchConfig = async <T,>(key: string, defaultVal: T): Promise<T> => {
         try {
           const val = await api.getConfig<T>(key);
@@ -126,20 +102,17 @@ export function ContentProvider({ children }: { children: ReactNode }) {
       };
 
       const [
-        pagesIndex, 
-        siteSettings, 
-        header, 
+        pagesIndex,
+        siteSettings,
+        header,
         footer,
-        buildStatusData
       ] = await Promise.all([
         fetchConfig<CustomPage[]>('pages', blankContent.pages),
         fetchConfig<CompanyInfo>('site_settings', blankContent.companyInfo),
         fetchConfig<HeaderContent>('header_config', blankContent.header),
         fetchConfig<FooterContent>('footer_config', blankContent.footer),
-        fetchConfig<{ hasChanges: boolean; lastBuildTime?: string }>('build_status', { hasChanges: false }),
       ]);
 
-      // adminApp 专门：一次性加载所有的完整页面数据进行匹配
       const fullPages = await Promise.all(
         pagesIndex.map(async (p) => {
           try {
@@ -155,14 +128,12 @@ export function ContentProvider({ children }: { children: ReactNode }) {
         companyInfo: siteSettings,
         header: header,
         footer: footer,
-        pages: fullPages, // Directly use full pages
+        pages: fullPages,
       });
 
       setAllProducts(productsResp.data || []);
       setCategories(categoriesData);
       setAllBlogs(blogsResp.data || []);
-      setAllReviews(reviewsResp.data || []);
-      setBuildStatus(buildStatusData);
 
     } catch (err) {
       console.error('Critical data load failure:', err);
@@ -207,36 +178,6 @@ export function ContentProvider({ children }: { children: ReactNode }) {
     toast.success('公司信息已更新');
   }, []);
 
-  // ============================================
-  // 资源管理
-  // ============================================
-  const uploadImage = useCallback(async (file: File, dimensions?: { width: number; height: number }, hash?: string) => {
-    return api.uploadImage(file, dimensions, hash);
-  }, []);
-
-  const getImagesList = useCallback(async () => {
-    return api.getImagesList();
-  }, []);
-
-  const triggerBuild = useCallback(async () => {
-    try {
-      const response = await api.triggerBuild();
-      if (response.success && response.buildStatus) {
-        setBuildStatus(response.buildStatus);
-        toast.success('构建部署已成功触发，正在后台生成中...');
-      } else {
-        toast.error('触发构建失败');
-      }
-    } catch (e: any) {
-      console.error(e);
-      toast.error(`触发构建出错: ${e.message || e}`);
-    }
-  }, []);
-
-  const deleteImage = useCallback(async (key: string) => {
-    await api.deleteImage(key);
-  }, []);
-
   return (
     <ContentContext.Provider
       value={{
@@ -244,7 +185,6 @@ export function ContentProvider({ children }: { children: ReactNode }) {
         allProducts,
         categories,
         allBlogs,
-        allReviews,
         isLoading,
         error,
         refreshData,
@@ -252,11 +192,6 @@ export function ContentProvider({ children }: { children: ReactNode }) {
         clearError,
         updatePage,
         updateSiteSettings,
-        uploadImage,
-        getImagesList,
-        deleteImage,
-        buildStatus,
-        triggerBuild,
       }}
     >
       {children}

@@ -14,7 +14,7 @@ export function sanitizePageIndex(pages: CustomPage[]): PageIndexEntry[] {
     type: p.type,
     content: p.content,
     blocks: [],
-    blockCount: p.blocks?.length ?? 0,
+    blockCount: (p as any).blockCount ?? p.blocks?.length ?? 0,
   }));
 }
 

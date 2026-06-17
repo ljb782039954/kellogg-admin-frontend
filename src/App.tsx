@@ -21,11 +21,11 @@ import { FooterEditor } from '@/features/footer';
 import { ProductsEditor } from '@/features/products';
 import InquiryEditor from './admin/editors/InquiryEditor';
 import InquiryManagement from './admin/InquiryManagement';
-import MediaManager from './admin/MediaManager';
+import { MediaManager } from '@/features/media';
 import BlogManagement from './admin/BlogManagement';
 import BlogEditor from './admin/BlogEditor';
 import BlogCategoryManager from './admin/BlogCategoryManager';
-import CustomerReviewsManagement from './admin/CustomerReviewsManagement';
+import { ReviewsManager } from '@/features/reviews';
 
 function App() {
   return (
@@ -61,7 +61,7 @@ function App() {
               <Route path="blog/new" element={<BlogEditor />} />
               <Route path="blog/:id/edit" element={<BlogEditor />} />
               <Route path="blog-categories" element={<BlogCategoryManager />} />
-              <Route path="reviews" element={<CustomerReviewsManagement />} />
+              <Route path="reviews" element={<ReviewsManager />} />
               {/* <Route path="account" element={<AccountSettings />} /> */}
             </Route>
           </Routes>

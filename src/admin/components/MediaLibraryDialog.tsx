@@ -20,11 +20,11 @@ import {
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { useContent } from '@/context/ContentContext';
 import { type R2Image } from '@/types';
 import { cn } from '@/lib/utils';
 import { format } from 'date-fns';
 import AdminImage from '@/admin/components/AdminImage';
+import { getImagesList } from '@/shared/media/api/media.api';
 
 interface MediaLibraryDialogProps {
   open: boolean;
@@ -33,7 +33,6 @@ interface MediaLibraryDialogProps {
 }
 
 export function MediaLibraryDialog({ open, onClose, onSelect }: MediaLibraryDialogProps) {
-  const { getImagesList } = useContent();
   const [images, setImages] = useState<R2Image[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
