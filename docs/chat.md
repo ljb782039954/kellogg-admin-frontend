@@ -4,4 +4,6 @@
 
 **需求**：现在我是准备将其组件进行拆分重构，主要是为了将UI组件和业务代码进行拆分，这样我可以复用一套业务代码，适配多个不同的UI风格的组件。
 
-**现状**：但是现在重构只进行到一半。`adminApp\docs\refactoring`是总的重构方案，`adminApp\docs\superpowers\plans` 中 06-16 的已经重构完毕，06-17的内容只完成到了Task4。
+**现状**：但是现在重构只进行到一半。`adminApp\docs\refactoring`是总的重构方案，`adminApp\docs\superpowers\plans` 中 06-16、17、18 的已经重构完毕，现在需要继续进行重构。
+
+**特别说明**: 项目中有 codegraph （知识图谱） 这个 mcp 工具，有助于更快检索和理解功能模块，以及组件之间的调用关系。

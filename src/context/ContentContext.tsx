@@ -7,7 +7,6 @@ import type {
   FooterContent,
   CustomPage,
   CompanyInfo,
-  ProductInput,
   R2Image,
   Blog,
   CustomerReview,
@@ -56,11 +55,6 @@ interface ContentContextType {
   refreshData: () => Promise<void>;
   findPage: (id: string) => CustomPage | undefined;
   clearError: () => void;
-
-  // 商品 CRUD (D1)
-  createProduct: (data: ProductInput) => Promise<Product>;
-  updateProduct: (id: number, data: Partial<ProductInput>) => Promise<void>;
-  deleteProduct: (id: number) => Promise<void>;
 
   // 页面管理 (KV)
   updatePage: (pageId: string, pageData: Partial<CustomPage>) => Promise<void>;
@@ -185,25 +179,6 @@ export function ContentProvider({ children }: { children: ReactNode }) {
   }, [refreshData]);
 
   // ============================================
-  // 商品与分类 (目前核心逻辑)
-  // ============================================
-  const createProduct = useCallback(async (data: ProductInput) => {
-    const p = await api.createProduct(data);
-    await refreshData();
-    return p;
-  }, [refreshData]);
-
-  const updateProduct = useCallback(async (id: number, data: Partial<ProductInput>) => {
-    await api.updateProduct(id, data);
-    await refreshData();
-  }, [refreshData]);
-
-  const deleteProduct = useCallback(async (id: number) => {
-    await api.deleteProduct(id);
-    setAllProducts(prev => prev.filter(p => p.id !== id));
-  }, []);
-
-  // ============================================
   // 页面管理 (真正的积木持久化)
   // ============================================
   const updatePage = useCallback(async (pageId: string, pageData: Partial<CustomPage>) => {
@@ -312,9 +287,6 @@ export function ContentProvider({ children }: { children: ReactNode }) {
         refreshData,
         findPage,
         clearError,
-        createProduct,
-        updateProduct,
-        deleteProduct,
         updatePage,
         addPage,
         deletePage,

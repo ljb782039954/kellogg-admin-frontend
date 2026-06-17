@@ -18,7 +18,7 @@ import { CompanyInfoEditor } from '@/features/company-info';
 import { NavigationEditor } from '@/features/navigation';
 import { CategoriesEditor } from '@/features/categories';
 import { FooterEditor } from '@/features/footer';
-import ProductsEditor from './admin/editors/ProductsEditor';
+import { ProductsEditor } from '@/features/products';
 import InquiryEditor from './admin/editors/InquiryEditor';
 import InquiryManagement from './admin/InquiryManagement';
 import MediaManager from './admin/MediaManager';
