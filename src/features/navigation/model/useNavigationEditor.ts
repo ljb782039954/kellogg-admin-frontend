@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import type { CustomPage, HeaderContent, NavLink } from '@/types';
 import { navigationKeys } from '../api/navigation.keys';
@@ -38,16 +38,8 @@ export function useNavigationEditor() {
     queryFn: getPagesIndex,
   });
 
-  const rawHeader = query.data;
-  const pages = useMemo(() => pagesQuery.data ?? [], [pagesQuery.data]);
-
-  useEffect(() => {
-    if (rawHeader) {
-      setDraft((current) => current ?? toHeaderForm(rawHeader));
-    }
-  }, [rawHeader]);
-
   const header = draft ?? toHeaderForm(query.data);
+  const pages = useMemo(() => pagesQuery.data ?? [], [pagesQuery.data]);
 
   const mutation = useMutation({
     mutationFn: updateHeader,

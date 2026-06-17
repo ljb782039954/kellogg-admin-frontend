@@ -190,7 +190,8 @@ export function useProductsManager() {
     // List
     products,
     categories,
-    isLoading: isListLoading || isDetailLoading,
+    isLoading: isListLoading,
+    isDetailLoading,
     listError,
 
     // Selection

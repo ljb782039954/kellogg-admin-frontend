@@ -56,10 +56,8 @@ interface ContentContextType {
   findPage: (id: string) => CustomPage | undefined;
   clearError: () => void;
 
-  // 页面管理 (KV)
+  // 页面管理 (KV) - pending removal when InquiryEditor migrates
   updatePage: (pageId: string, pageData: Partial<CustomPage>) => Promise<void>;
-  addPage: (page: CustomPage) => Promise<void>;
-  deletePage: (pageId: string) => Promise<void>;
 
   // 全局配置管理 (KV) - site_settings 已迁移，header/footer 已迁移到 features
   updateSiteSettings: (settings: CompanyInfo) => Promise<void>;
@@ -179,16 +177,14 @@ export function ContentProvider({ children }: { children: ReactNode }) {
   }, [refreshData]);
 
   // ============================================
-  // 页面管理 (真正的积木持久化)
+  // 页面管理 - pending removal when InquiryEditor migrates
   // ============================================
   const updatePage = useCallback(async (pageId: string, pageData: Partial<CustomPage>) => {
     const existingFullPage = content.pages.find(p => p.id === pageId);
     const fullPageToSave = { ...(existingFullPage || {}), ...pageData } as CustomPage;
 
-    // 1. 写入独立详情 KV (不管什么页面类型都写入以确保 getPageById 可被正常调用)
     await api.setConfig(`page:${pageId}`, fullPageToSave);
 
-    // 2. 更新 pages_index 并剔除 blocks
     const updatedPages = content.pages.map(p =>
       p.id === pageId ? { ...p, ...pageData } : p
     );
@@ -198,41 +194,8 @@ export function ContentProvider({ children }: { children: ReactNode }) {
     });
     await api.setConfig('pages_index', sanitizedIndex);
 
-    // 后同步 State
     setContent(prev => ({ ...prev, pages: updatedPages }));
     toast.success('页面信息已更新');
-  }, [content.pages]);
-
-  const addPage = useCallback(async (page: CustomPage) => {
-    // 1. 写入独立详情 KV
-    await api.setConfig(`page:${page.id}`, page);
-
-    // 2. 更新 pages_index
-    const updatedPages = [...content.pages, page];
-    const sanitizedIndex = updatedPages.map(p => {
-      const { blocks, seo, ...rest } = p;
-      return rest as CustomPage;
-    });
-    await api.setConfig('pages_index', sanitizedIndex);
-
-    setContent(prev => ({ ...prev, pages: updatedPages }));
-    toast.success('已新建页面');
-  }, [content.pages]);
-
-  const deletePage = useCallback(async (pageId: string) => {
-    // 1. 删除 page:[id]
-    await api.deleteConfig(`page:${pageId}`).catch(console.error);
-
-    // 2. 更新 pages_index
-    const updatedPages = content.pages.filter(p => p.id !== pageId);
-    const sanitizedIndex = updatedPages.map(p => {
-      const { blocks, seo, ...rest } = p;
-      return rest as CustomPage;
-    });
-    await api.setConfig('pages_index', sanitizedIndex);
-
-    setContent(prev => ({ ...prev, pages: updatedPages }));
-    toast.success('已删除页面');
   }, [content.pages]);
 
   // ============================================
@@ -288,8 +251,6 @@ export function ContentProvider({ children }: { children: ReactNode }) {
         findPage,
         clearError,
         updatePage,
-        addPage,
-        deletePage,
         updateSiteSettings,
         uploadImage,
         getImagesList,

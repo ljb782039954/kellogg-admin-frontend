@@ -11,6 +11,7 @@ export function ProductEditorContainer() {
     products,
     categories,
     isLoading,
+    isDetailLoading,
     selectedIds,
     isEditing,
     isSaving,
@@ -143,13 +144,25 @@ export function ProductEditorContainer() {
 
       {/* Product Editor Slide-over */}
       {isEditing && (
-        <ProductEditorView
-          form={form}
-          categories={categories}
-          isSaving={isSaving}
-          onSave={saveProduct}
-          onClose={closeEditor}
-        />
+        <div className="fixed inset-0 z-50 flex justify-end">
+          <div className="absolute inset-0 bg-black/30" onClick={closeEditor} />
+          <div className="relative w-full max-w-3xl bg-white shadow-2xl overflow-y-auto">
+            {isDetailLoading ? (
+              <div className="flex items-center justify-center h-64">
+                <Loader2 className="w-8 h-8 animate-spin text-gray-400" />
+                <span className="ml-2 text-gray-500">加载产品详情...</span>
+              </div>
+            ) : (
+              <ProductEditorView
+                form={form}
+                categories={categories}
+                isSaving={isSaving}
+                onSave={saveProduct}
+                onClose={closeEditor}
+              />
+            )}
+          </div>
+        </div>
       )}
     </div>
   );

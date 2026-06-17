@@ -10,7 +10,7 @@ import Overview from './admin/Overview';
 // import AccountSettings from './admin/AccountSettings';
 
 // 页面管理
-import { DynamicPagesManager, PageLayoutEditor } from './admin/pageBuilder';
+import { PagesManager, PageBuilderEditor } from '@/features/pages';
 import ComponentsPreview from './admin/BlocksPreview';
 
 // 编辑器
@@ -39,8 +39,8 @@ function App() {
               <Route path="dashboard" element={<Overview />} />
 
               {/* 页面管理 */}
-              <Route path="pages" element={<DynamicPagesManager />} />
-              <Route path="pages/:pageId/edit" element={<PageLayoutEditor />} />
+              <Route path="pages" element={<PagesManager />} />
+              <Route path="pages/:pageId/edit" element={<PageBuilderEditor />} />
               <Route path="components" element={<ComponentsPreview />} />
 
               {/* 兼容旧路由 */}

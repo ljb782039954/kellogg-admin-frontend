@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import type { CustomPage, FooterContent, FooterLink, FooterLinkGroup } from '@/types';
 import { footerKeys } from '../api/footer.keys';
@@ -36,12 +36,6 @@ export function useFooterEditor() {
 
   const footer = draft ?? toFooterForm(query.data);
   const pages = useMemo(() => pagesQuery.data ?? [], [pagesQuery.data]);
-
-  useEffect(() => {
-    if (query.data) {
-      setDraft((current) => current ?? toFooterForm(query.data));
-    }
-  }, [query.data]);
 
   const mutation = useMutation({
     mutationFn: updateFooter,

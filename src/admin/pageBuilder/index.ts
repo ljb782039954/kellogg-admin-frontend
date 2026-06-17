@@ -1,7 +1,6 @@
 // 页面编辑器组件导出
+// Routes now use @/features/pages - keeping non-route exports for reuse
 
-export { PageLayoutEditor } from './PageLayoutEditor';
-export { DynamicPagesManager } from './DynamicPagesManager';
 export { BlockList } from './BlockList';
 export { BlockItem } from './BlockItem';
 export { BlockPropsEditor } from './BlockPropsEditor';
