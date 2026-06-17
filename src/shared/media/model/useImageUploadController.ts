@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { getImagesList, uploadImage } from '../api/media.api';
 import { findDuplicateImages, type DuplicateImageMatch } from '../domain/findDuplicateImages';
 import { prepareImageUpload, type PreparedImageUpload } from '../domain/prepareImageUpload';
@@ -15,10 +15,15 @@ export function useImageUploadController({
   maxWidth,
   duplicateThreshold = 0.95,
 }: UseImageUploadControllerOptions) {
+  const selectionIdRef = useRef(0);
   const [isUploading, setIsUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [duplicates, setDuplicates] = useState<DuplicateImageMatch[]>([]);
   const [pendingUpload, setPendingUpload] = useState<PreparedImageUpload | null>(null);
+
+  function isCurrentSelection(selectionId: number) {
+    return selectionIdRef.current === selectionId;
+  }
 
   function clear() {
     setDuplicates([]);
@@ -26,9 +31,14 @@ export function useImageUploadController({
     setError(null);
   }
 
-  async function uploadPrepared(prepared: PreparedImageUpload) {
+  async function uploadPrepared(prepared: PreparedImageUpload, selectionId?: number) {
     const result = await uploadImage(prepared.file, prepared.dimensions, prepared.hash);
+    if (selectionId !== undefined && !isCurrentSelection(selectionId)) {
+      return false;
+    }
+
     onChange(result.url);
+    return true;
   }
 
   async function selectFile(file: File | null) {
@@ -36,12 +46,25 @@ export function useImageUploadController({
       return;
     }
 
+    const selectionId = selectionIdRef.current + 1;
+    selectionIdRef.current = selectionId;
+
     setIsUploading(true);
+    setDuplicates([]);
+    setPendingUpload(null);
     setError(null);
 
     try {
       const prepared = await prepareImageUpload(file, { maxWidth });
+      if (!isCurrentSelection(selectionId)) {
+        return;
+      }
+
       const images = prepared.hash ? await getImagesList() : [];
+      if (!isCurrentSelection(selectionId)) {
+        return;
+      }
+
       const matches = findDuplicateImages(prepared.hash, images, duplicateThreshold);
 
       if (matches.length > 0) {
@@ -50,13 +73,21 @@ export function useImageUploadController({
         return;
       }
 
-      await uploadPrepared(prepared);
-      clear();
+      const uploaded = await uploadPrepared(prepared, selectionId);
+      if (uploaded && isCurrentSelection(selectionId)) {
+        clear();
+      }
     } catch (err) {
+      if (!isCurrentSelection(selectionId)) {
+        return;
+      }
+
       console.error('Upload failed:', err);
       setError('图片上传失败，请重试');
     } finally {
-      setIsUploading(false);
+      if (isCurrentSelection(selectionId)) {
+        setIsUploading(false);
+      }
     }
   }
 
@@ -70,17 +101,26 @@ export function useImageUploadController({
       return;
     }
 
+    const selectionId = selectionIdRef.current;
     setIsUploading(true);
     setError(null);
 
     try {
-      await uploadPrepared(pendingUpload);
-      clear();
+      const uploaded = await uploadPrepared(pendingUpload, selectionId);
+      if (uploaded && isCurrentSelection(selectionId)) {
+        clear();
+      }
     } catch (err) {
+      if (!isCurrentSelection(selectionId)) {
+        return;
+      }
+
       console.error('Upload failed:', err);
-      setError('上传失败');
+      setError('图片上传失败，请重试');
     } finally {
-      setIsUploading(false);
+      if (isCurrentSelection(selectionId)) {
+        setIsUploading(false);
+      }
     }
   }
 
