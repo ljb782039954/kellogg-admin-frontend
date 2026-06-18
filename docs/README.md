@@ -71,6 +71,8 @@ App.tsx                路由配置
 
 当前 `/company`、`/categories`、`/header`、`/footer`、`/products`、`/pages`、`/media`、`/reviews` 路由已迁移到对应 `features/`；构建触发也已迁入 `features/build`。
 
+当前 feature 的架构复查与后续改进建议见 [`docs/refactoring/feature-reviews/`](refactoring/feature-reviews/README.md)。
+
 ## 架构要点
 
 ### 全局数据流（ContentContext）
