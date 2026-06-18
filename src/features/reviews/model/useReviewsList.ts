@@ -1,19 +1,28 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import type { CustomerReview } from '@/types';
-import { getReviews, createReview, updateReview, deleteReview } from '../api/reviews.api';
+import { getReviews, deleteReview, updateReview } from '../api/reviews.api';
 import { reviewKeys } from '../api/reviews.keys';
+import type { ReviewListFilters } from './review.types';
 
 const PAGE_SIZE = 15;
 
-export function useReviewsManager() {
+function buildFilters(searchTerm: string, statusFilter: 'all' | 'published' | 'draft', page: number): ReviewListFilters {
+  return {
+    page,
+    pageSize: PAGE_SIZE,
+    ...(searchTerm ? { search: searchTerm } : {}),
+    ...(statusFilter !== 'all' ? { status: statusFilter } : {}),
+  };
+}
+
+export function useReviewsList() {
   const queryClient = useQueryClient();
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState<'all' | 'published' | 'draft'>('all');
   const [page, setPage] = useState(1);
   const [debouncedSearch, setDebouncedSearch] = useState('');
 
-  // Debounce search
   useEffect(() => {
     const timer = setTimeout(() => {
       setDebouncedSearch(searchTerm);
@@ -22,12 +31,7 @@ export function useReviewsManager() {
     return () => clearTimeout(timer);
   }, [searchTerm]);
 
-  const filters: Record<string, unknown> = {
-    page,
-    pageSize: PAGE_SIZE,
-    ...(statusFilter !== 'all' && { status: statusFilter }),
-    ...(debouncedSearch && { search: debouncedSearch }),
-  };
+  const filters = buildFilters(debouncedSearch, statusFilter, page);
 
   const query = useQuery({
     queryKey: reviewKeys.list(filters),
@@ -38,24 +42,15 @@ export function useReviewsManager() {
   const totalPages = query.data?.pagination?.totalPages ?? 1;
   const total = query.data?.pagination?.total ?? 0;
 
-  const invalidateList = useCallback(() => {
-    queryClient.invalidateQueries({ queryKey: reviewKeys.lists() });
-  }, [queryClient]);
-
-  const createMutation = useMutation({
-    mutationFn: createReview,
-    onSuccess: () => invalidateList(),
-  });
-
-  const updateMutation = useMutation({
-    mutationFn: ({ id, data }: { id: number; data: Partial<import('@/types').ReviewInput> }) =>
-      updateReview(id, data),
-    onSuccess: () => invalidateList(),
-  });
-
   const deleteMutation = useMutation({
-    mutationFn: deleteReview,
-    onSuccess: () => invalidateList(),
+    mutationFn: (id: number) => deleteReview(id),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: reviewKeys.lists() }),
+  });
+
+  const toggleMutation = useMutation({
+    mutationFn: ({ id, status }: { id: number; status: 'published' | 'draft' }) =>
+      updateReview(id, { status }),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: reviewKeys.lists() }),
   });
 
   const changeSearch = useCallback((value: string) => {
@@ -71,17 +66,6 @@ export function useReviewsManager() {
     setPage(p);
   }, []);
 
-  const saveReview = useCallback(
-    async (form: import('@/types').ReviewInput, editingId?: number) => {
-      if (editingId) {
-        await updateMutation.mutateAsync({ id: editingId, data: form });
-      } else {
-        await createMutation.mutateAsync(form);
-      }
-    },
-    [createMutation, updateMutation],
-  );
-
   const removeReview = useCallback(
     async (id: number) => {
       await deleteMutation.mutateAsync(id);
@@ -92,9 +76,9 @@ export function useReviewsManager() {
   const toggleStatus = useCallback(
     async (review: CustomerReview) => {
       const next = review.status === 'published' ? 'draft' : 'published';
-      await updateMutation.mutateAsync({ id: review.id, data: { status: next } });
+      await toggleMutation.mutateAsync({ id: review.id, status: next });
     },
-    [updateMutation],
+    [toggleMutation],
   );
 
   return {
@@ -103,14 +87,13 @@ export function useReviewsManager() {
     totalPages,
     page,
     isLoading: query.isLoading,
+    queryError: query.error,
     searchTerm,
     statusFilter,
     changeSearch,
     changeStatusFilter,
     changePage,
-    saveReview,
     removeReview,
     toggleStatus,
-    isSaving: createMutation.isPending || updateMutation.isPending,
   };
 }

@@ -1,7 +1,9 @@
 import { useState } from 'react';
 import { X, Youtube, Image as ImageIcon, Star, AlertCircle, Loader2 } from 'lucide-react';
+import { Controller, type UseFormReturn } from 'react-hook-form';
 import ImageInput from '@/admin/components/ImageInput';
-import type { ReviewInput } from '@/types';
+import { parseYouTubeUrl } from '../model/reviewMedia';
+import type { ReviewFormValues } from '../model/review.types';
 
 const LABEL = 'block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1.5';
 const INPUT = 'w-full px-3 py-2 text-sm border border-gray-200 rounded-xl bg-white focus:ring-2 focus:ring-gray-900 focus:border-transparent transition-all placeholder-gray-300';
@@ -21,10 +23,9 @@ function FormattingHint() {
 
 function StarRatingInput({ value, onChange }: { value: number; onChange: (v: number) => void }) {
   const [hovered, setHovered] = useState<number | null>(null);
-
   return (
     <div className="flex items-center gap-1">
-      {[1, 2, 3, 4, 5].map(star => (
+      {[1, 2, 3, 4, 5].map((star) => (
         <button
           key={star}
           type="button"
@@ -32,13 +33,10 @@ function StarRatingInput({ value, onChange }: { value: number; onChange: (v: num
           onMouseLeave={() => setHovered(null)}
           onClick={() => onChange(star)}
           className="p-0.5 focus:outline-none transition-transform hover:scale-110"
-          title={`${star} 星`}
         >
           <Star
             className={`w-6 h-6 transition-colors ${
-              star <= (hovered ?? value)
-                ? 'fill-yellow-400 text-yellow-400'
-                : 'fill-gray-200 text-gray-200'
+              star <= (hovered ?? value) ? 'fill-yellow-400 text-yellow-400' : 'fill-gray-200 text-gray-200'
             }`}
           />
         </button>
@@ -49,107 +47,80 @@ function StarRatingInput({ value, onChange }: { value: number; onChange: (v: num
 }
 
 interface ReviewFormViewProps {
-  form: ReviewInput;
+  form: UseFormReturn<ReviewFormValues>;
   isEdit: boolean;
   isSaving: boolean;
-  error: string | null;
-  youtubeId: string | null;
-  youtubeThumbnail: string | null;
-  onFieldChange: <K extends keyof ReviewInput>(key: K, value: ReviewInput[K]) => void;
-  onSave: () => void;
+  mutationError: Error | null;
+  onSubmit: (e?: React.BaseSyntheticEvent) => Promise<void>;
   onClose: () => void;
 }
 
-export function ReviewFormView({
-  form,
-  isEdit,
-  isSaving,
-  error,
-  youtubeId,
-  youtubeThumbnail,
-  onFieldChange,
-  onSave,
-  onClose,
-}: ReviewFormViewProps) {
+export function ReviewFormView({ form, isEdit, isSaving, mutationError, onSubmit, onClose }: ReviewFormViewProps) {
+  const { control, register, watch, setValue, formState } = form;
+  const mediaType = watch('media.type');
+  const mediaUrl = watch('media.url');
+  const youtubeInfo = mediaType === 'video' ? parseYouTubeUrl(mediaUrl) : null;
+
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm"
-      onClick={e => { if (e.target === e.currentTarget) onClose(); }}
+      onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
     >
       <div className="relative w-full max-w-2xl max-h-[90vh] bg-white rounded-2xl shadow-2xl flex flex-col">
-        {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 flex-shrink-0">
           <h2 className="text-lg font-bold text-gray-800">
             {isEdit ? '编辑客户评价' : '新增客户评价'}
           </h2>
-          <button
-            onClick={onClose}
-            className="p-1.5 text-gray-400 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-all"
-          >
+          <button onClick={onClose} className="p-1.5 text-gray-400 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-all">
             <X className="w-5 h-5" />
           </button>
         </div>
 
-        {/* Error */}
-        {error && (
+        {mutationError && (
           <div className="mx-6 mt-4 bg-red-50 text-red-600 px-4 py-2 rounded-xl border border-red-100 text-sm flex items-center gap-2">
             <AlertCircle className="w-4 h-4" />
-            {error}
+            {mutationError.message || '保存失败'}
           </div>
         )}
 
-        {/* Scrollable Body */}
-        <div className="overflow-y-auto flex-1 px-6 py-5 space-y-5">
-          {/* Row 1: client_name + country */}
+        <form onSubmit={onSubmit} className="overflow-y-auto flex-1 px-6 py-5 space-y-5">
           <div className="grid grid-cols-2 gap-4">
-            <div>
+            <div className="space-y-1.5">
               <label className={LABEL}>客户名称 *</label>
               <input
-                type="text"
-                value={form.client_name}
-                onChange={e => onFieldChange('client_name', e.target.value)}
+                {...register('clientName')}
                 placeholder="如：Alex Goncalves"
-                className={INPUT}
+                className={`${INPUT} ${formState.errors.clientName ? 'border-red-400' : ''}`}
                 autoFocus
               />
+              {formState.errors.clientName && (
+                <p className="text-xs text-red-500">{formState.errors.clientName.message}</p>
+              )}
             </div>
-            <div>
+            <div className="space-y-1.5">
               <label className={LABEL}>国家 / 身份</label>
-              <input
-                type="text"
-                value={form.country ?? ''}
-                onChange={e => onFieldChange('country', e.target.value)}
-                placeholder="如：American"
-                className={INPUT}
-              />
+              <input {...register('country')} placeholder="如：American" className={INPUT} />
             </div>
           </div>
 
-          {/* Row 2: rating + sort_order + status */}
           <div className="grid grid-cols-2 gap-4">
-            <div>
+            <div className="space-y-1.5">
               <label className={LABEL}>评分星级</label>
-              <StarRatingInput value={form.rating ?? 5} onChange={v => onFieldChange('rating', v)} />
+              <Controller
+                control={control}
+                name="rating"
+                render={({ field }) => <StarRatingInput value={field.value} onChange={field.onChange} />}
+              />
             </div>
             <div className="grid grid-cols-2 gap-3">
-              <div>
+              <div className="space-y-1.5">
                 <label className={LABEL}>排序权重</label>
-                <input
-                  type="number"
-                  value={form.sort_order ?? 0}
-                  onChange={e => onFieldChange('sort_order', parseInt(e.target.value) || 0)}
-                  className={INPUT}
-                  min={0}
-                />
+                <input type="number" {...register('sortOrder', { valueAsNumber: true })} className={INPUT} min={0} />
                 <p className="text-[10px] text-gray-400 mt-1">数字越大越靠前</p>
               </div>
-              <div>
+              <div className="space-y-1.5">
                 <label className={LABEL}>状态</label>
-                <select
-                  value={form.status ?? 'published'}
-                  onChange={e => onFieldChange('status', e.target.value as 'published' | 'draft')}
-                  className={INPUT}
-                >
+                <select {...register('status')} className={INPUT}>
                   <option value="published">已发布</option>
                   <option value="draft">草稿</option>
                 </select>
@@ -157,8 +128,7 @@ export function ReviewFormView({
             </div>
           </div>
 
-          {/* Media Type */}
-          <div>
+          <div className="space-y-1.5">
             <label className={LABEL}>媒体类型</label>
             <div className="flex gap-3">
               {([['video', 'YouTube 视频', Youtube], ['image', '单张图片', ImageIcon]] as const).map(
@@ -166,9 +136,9 @@ export function ReviewFormView({
                   <button
                     key={type}
                     type="button"
-                    onClick={() => onFieldChange('media_type', type)}
+                    onClick={() => setValue('media', { type, url: '' })}
                     className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl border-2 text-sm font-medium transition-all ${
-                      form.media_type === type
+                      mediaType === type
                         ? type === 'video'
                           ? 'border-red-500 bg-red-50 text-red-700'
                           : 'border-blue-500 bg-blue-50 text-blue-700'
@@ -178,46 +148,41 @@ export function ReviewFormView({
                     <Icon className="w-4 h-4" />
                     {label}
                   </button>
-                )
+                ),
               )}
             </div>
           </div>
 
-          {/* Media Input */}
-          {form.media_type === 'video' ? (
+          {mediaType === 'video' ? (
             <div className="space-y-2">
               <label className={LABEL}>YouTube 视频链接 *</label>
               <input
                 type="url"
-                value={form.media_url}
-                onChange={e => onFieldChange('media_url', e.target.value)}
+                {...register('media.url')}
                 placeholder="https://www.youtube.com/watch?v=... 或 https://youtu.be/..."
-                className={INPUT}
+                className={`${INPUT} ${formState.errors.media?.url ? 'border-red-400' : ''}`}
               />
-              {form.media_url && (
-                youtubeId ? (
-                  <div className="flex items-center gap-2 text-xs text-green-600 font-medium">
-                    <div className="w-2 h-2 rounded-full bg-green-500" />
-                    视频 ID 已识别：<code className="bg-green-50 px-1.5 py-0.5 rounded">{youtubeId}</code>
-                  </div>
-                ) : (
-                  <div className="flex items-center gap-1.5 text-xs text-red-500">
-                    <AlertCircle className="w-3.5 h-3.5" />
-                    链接无法识别，请确认为有效 YouTube 链接
-                  </div>
-                )
+              {formState.errors.media?.url && (
+                <p className="text-xs text-red-500">{formState.errors.media.url.message}</p>
               )}
-              {youtubeThumbnail && (
+              {mediaUrl && youtubeInfo ? (
+                <div className="flex items-center gap-2 text-xs text-green-600 font-medium">
+                  <div className="w-2 h-2 rounded-full bg-green-500" />
+                  视频 ID 已识别：<code className="bg-green-50 px-1.5 py-0.5 rounded">{youtubeInfo.id}</code>
+                </div>
+              ) : mediaUrl ? (
+                <div className="flex items-center gap-1.5 text-xs text-red-500">
+                  <AlertCircle className="w-3.5 h-3.5" />
+                  链接无法识别，请确认为有效 YouTube 链接
+                </div>
+              ) : null}
+              {youtubeInfo && (
                 <div className="relative rounded-xl overflow-hidden border border-gray-200">
-                  <img
-                    src={youtubeThumbnail}
-                    alt="YouTube preview"
-                    className="w-full aspect-video object-cover"
-                  />
+                  <img src={youtubeInfo.thumbnailUrl} alt="YouTube preview" className="w-full aspect-video object-cover" />
                   <div className="absolute inset-0 flex items-center justify-center">
                     <div className="w-12 h-12 bg-red-600/90 rounded-full flex items-center justify-center shadow-lg">
-                      <svg className="w-5 h-5 text-white ml-0.5" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M8 5v14l11-7z"/>
+                      <svg className="w-2.5 h-2.5 text-white ml-0.5" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M8 5v14l11-7z" />
                       </svg>
                     </div>
                   </div>
@@ -227,61 +192,53 @@ export function ReviewFormView({
           ) : (
             <div>
               <label className={LABEL}>封面图片 *</label>
-              <ImageInput
-                value={form.media_url}
-                onChange={url => onFieldChange('media_url', url)}
-                maxWidth={1000}
-                aspectRatio="video"
-              />
+              <ImageInput value={mediaUrl} onChange={(url) => setValue('media.url', url)} maxWidth={1000} aspectRatio="video" />
+              {formState.errors.media?.url && (
+                <p className="text-xs text-red-500 mt-1">{formState.errors.media.url.message}</p>
+              )}
             </div>
           )}
 
-          {/* Review Text ZH */}
           <div className="space-y-1.5">
             <label className={LABEL}>中文评价内容 *</label>
             <FormattingHint />
             <textarea
-              value={form.review_text_zh}
-              onChange={e => onFieldChange('review_text_zh', e.target.value)}
+              {...register('content.zh')}
               rows={4}
               placeholder={`输入中文评价内容...\n可使用 <strong>加粗词语</strong> 或 <em>斜体</em> 来强调重点`}
-              className={TEXTAREA}
+              className={`${TEXTAREA} ${formState.errors.content?.zh ? 'border-red-400' : ''}`}
             />
-            <p className="text-xs text-gray-400">{form.review_text_zh.length} 字</p>
+            {formState.errors.content?.zh && <p className="text-xs text-red-500">{formState.errors.content.zh.message}</p>}
+            <p className="text-xs text-gray-400">{watch('content.zh').length} 字</p>
           </div>
 
-          {/* Review Text EN */}
           <div className="space-y-1.5">
             <label className={LABEL}>English Review Content *</label>
             <FormattingHint />
             <textarea
-              value={form.review_text_en}
-              onChange={e => onFieldChange('review_text_en', e.target.value)}
+              {...register('content.en')}
               rows={4}
               placeholder={`Enter English review...\nUse <strong>bold words</strong> or <em>italics</em> to emphasize key phrases`}
-              className={TEXTAREA}
+              className={`${TEXTAREA} ${formState.errors.content?.en ? 'border-red-400' : ''}`}
             />
-            <p className="text-xs text-gray-400">{form.review_text_en.length} chars</p>
+            {formState.errors.content?.en && <p className="text-xs text-red-500">{formState.errors.content.en.message}</p>}
+            <p className="text-xs text-gray-400">{watch('content.en').length} chars</p>
           </div>
-        </div>
 
-        {/* Footer */}
-        <div className="flex items-center justify-end gap-3 px-6 py-4 border-t border-gray-100 flex-shrink-0 bg-gray-50/50 rounded-b-2xl">
-          <button
-            onClick={onClose}
-            className="px-4 py-2 text-sm text-gray-600 border border-gray-200 rounded-xl hover:bg-gray-100 transition-all"
-          >
-            取消
-          </button>
-          <button
-            onClick={onSave}
-            disabled={isSaving}
-            className="flex items-center gap-2 px-5 py-2 bg-gray-900 text-white text-sm font-medium rounded-xl hover:bg-gray-700 transition-all disabled:opacity-50"
-          >
-            {isSaving && <Loader2 className="w-4 h-4 animate-spin" />}
-            {isSaving ? '保存中...' : isEdit ? '保存修改' : '创建评价'}
-          </button>
-        </div>
+          <div className="flex items-center justify-end gap-3">
+            <button type="button" onClick={onClose} className="px-4 py-2 text-sm text-gray-600 border border-gray-200 rounded-xl hover:bg-gray-100 transition-all">
+              取消
+            </button>
+            <button
+              type="submit"
+              disabled={isSaving}
+              className="flex items-center gap-2 px-5 py-2 bg-gray-900 text-white text-sm font-medium rounded-xl hover:bg-gray-700 transition-all disabled:opacity-50"
+            >
+              {isSaving && <Loader2 className="w-4 h-4 animate-spin" />}
+              {isSaving ? '保存中...' : isEdit ? '保存修改' : '创建评价'}
+            </button>
+          </div>
+        </form>
       </div>
     </div>
   );

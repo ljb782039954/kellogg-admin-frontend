@@ -1,27 +1,19 @@
 import { useCallback, useState } from 'react';
-import { useQueryClient } from '@tanstack/react-query';
 import type { CustomerReview } from '@/types';
-import { ReviewFormDialog } from './ReviewFormDialog';
-import { useReviewsManager } from '../model/useReviewsManager';
-import { reviewKeys } from '../api/reviews.keys';
+import { useReviewsList } from '../model/useReviewsList';
 import { ReviewsListView } from './ReviewsListView';
+import { ReviewFormDialog } from './ReviewFormDialog';
 
 export function ReviewsManager() {
-  const queryClient = useQueryClient();
   const {
     reviews, total, totalPages, page, isLoading,
     searchTerm, statusFilter,
     changeSearch, changeStatusFilter, changePage,
     removeReview, toggleStatus,
-  } = useReviewsManager();
+  } = useReviewsList();
 
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingReview, setEditingReview] = useState<CustomerReview | null>(null);
-
-  const handleDialogSaved = useCallback(() => {
-    setDialogOpen(false);
-    queryClient.invalidateQueries({ queryKey: reviewKeys.lists() });
-  }, [queryClient]);
 
   const openCreate = useCallback(() => {
     setEditingReview(null);
@@ -40,6 +32,10 @@ export function ReviewsManager() {
     },
     [removeReview],
   );
+
+  const handleDialogSaved = useCallback(() => {
+    setDialogOpen(false);
+  }, []);
 
   return (
     <>

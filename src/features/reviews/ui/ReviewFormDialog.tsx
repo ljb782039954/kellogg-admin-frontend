@@ -1,5 +1,5 @@
 import type { CustomerReview } from '@/types';
-import { useReviewForm } from '../model/useReviewForm';
+import { useReviewEditor } from '../model/useReviewEditor';
 import { ReviewFormView } from './ReviewFormView';
 
 interface ReviewFormDialogProps {
@@ -9,21 +9,20 @@ interface ReviewFormDialogProps {
 }
 
 export function ReviewFormDialog({ review, onClose, onSaved }: ReviewFormDialogProps) {
-  const {
-    form, setField, isEdit, isSaving, error,
-    youtubeId, youtubeThumbnail, handleSave,
-  } = useReviewForm({ review, onSaved, onClose });
+  const { form, isEdit, isSaving, mutationError, submit } = useReviewEditor(review);
 
   return (
     <ReviewFormView
-      form={form}
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      form={form as any}
       isEdit={isEdit}
       isSaving={isSaving}
-      error={error}
-      youtubeId={youtubeId}
-      youtubeThumbnail={youtubeThumbnail}
-      onFieldChange={setField}
-      onSave={handleSave}
+      mutationError={mutationError}
+      onSubmit={async () => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        await (submit as any)();
+        onSaved();
+      }}
       onClose={onClose}
     />
   );

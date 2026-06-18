@@ -1,12 +1,6 @@
 import { apiClient } from '@/shared/api/client';
 import type { CustomerReview, ReviewInput } from '@/types';
-
-interface ReviewsQuery {
-  page?: number;
-  pageSize?: number;
-  search?: string;
-  status?: string;
-}
+import type { ReviewListFilters } from '../model/review.types';
 
 interface PaginatedReviews {
   data: CustomerReview[];
@@ -18,12 +12,13 @@ interface PaginatedReviews {
   };
 }
 
-export function getReviews(params?: ReviewsQuery): Promise<PaginatedReviews> {
+export function getReviews(filters?: ReviewListFilters): Promise<PaginatedReviews> {
   const searchParams = new URLSearchParams();
-  if (params) {
-    Object.entries(params).forEach(([k, v]) => {
-      if (v !== undefined) searchParams.set(k, String(v));
-    });
+  if (filters) {
+    searchParams.set('page', String(filters.page));
+    searchParams.set('pageSize', String(filters.pageSize));
+    if (filters.search) searchParams.set('search', filters.search);
+    if (filters.status) searchParams.set('status', filters.status);
   }
   const qs = searchParams.toString();
   return apiClient.request<PaginatedReviews>(`/api/admin/reviews${qs ? `?${qs}` : ''}`);

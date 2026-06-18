@@ -1,27 +1,48 @@
 # 产品分类模块改进指导
 
-## 当前判断
+## 业务职责
 
-虽然已迁出 `ContentContext`，但保存模式仍接近旧的“全量草稿比较”实现。
+分类模块维护产品分类名称与分类主图。分类 ID 会被产品绑定，删除分类可能使已有产品失去有效筛选条件，因此新增、编辑和删除应是明确的业务命令。
 
-## 主要偏差
+## 当前业务流程
 
-- `useCategoriesEditor` 保存时遍历整个列表，比较并猜测创建、更新和删除。
-- DTO 字段 `name_zh`、`name_en` 在 controller 中拼装，应由 mapper 负责。
-- 已创建的 Zod schema 没有参与表单或提交校验。
-- `CategoryListItem` 仍使用旧 `BilingualInput`，未接入 `shared/forms`。
-- Container 与纯 View 尚未明确分开。
+1. Query 一次加载全部分类。
+2. 用户的新增、修改和删除先写入 `draft: Category[]`。
+3. 点击保存后，controller 遍历原始列表和草稿列表。
+4. controller 根据 ID 和字段比较推断 create、update、delete。
+5. 分类名称在 controller 内转换成 `name_zh`、`name_en` 后调用 API。
 
-## 建议改进
+该模式功能可用，但仍然继承了旧全量编辑器的思路：用户执行的是一个明确动作，系统却在保存时重新猜测动作。
 
-1. 改为显式命令：新增、编辑、删除分别触发对应 mutation，不再全量扫描。
-2. 增加 category mapper，集中处理 Translation 与 API DTO 转换。
-3. 简单列表编辑可使用 RHF field array，或保留 controller，但必须在提交前执行 schema 校验。
-4. 将双语输入迁到 `BilingualTextControl` 或后续的 RHF Field；图片继续使用 ImageInput 兼容入口。
-5. 把页面标题、提示和列表布局提取为 `CategoriesView`。
+## 审查发现
+
+- controller 同时管理草稿、差异算法和 DTO 转换，业务职责过重。
+- 新分类使用临时 ID，并依靠“原列表中不存在”判断 create。
+- 批量保存中任何一步失败时，前面已成功的请求无法清晰反馈。
+- `categorySchema` 只定义未使用，空名称等无效数据仍可进入 API。
+- `CategoryListItem` 使用旧 `BilingualInput`，未接入 shared/forms。
+- `CategoriesEditor` 同时是 Container 和 View，错误关闭按钮也没有实际行为。
+
+## 推荐职责边界
+
+- `api/`：分类 CRUD 请求和 DTO 类型。
+- `model/category.mapper`：Translation 与 `name_zh/name_en` 的转换。
+- `model/useCategoryList`：分类列表 Query。
+- `model/useCategoryCommands`：create、update、delete mutation。
+- `ui/CategoriesEditor`：组合列表和反馈。
+- `ui/CategoryListItem`：只接收 category ViewModel 与明确事件。
+
+## 渐进改进顺序
+
+1. 先提取 category mapper，移除 controller 中的 DTO 字段。
+2. 接入 schema 校验和 shared 双语 Control。
+3. 将删除改为点击确认后立即执行 delete mutation。
+4. 将新增和编辑改为单分类保存，或使用明确的批量命令结果。
+5. 最后删除全量 draft 差异扫描。
 
 ## 完成标准
 
 - 修改一个分类只发送一次明确 mutation。
 - UI 中不出现 `name_zh`、`name_en`。
 - 更换分类卡片布局不影响 CRUD 流程。
+- 删除失败时不会误报整个列表保存成功。
