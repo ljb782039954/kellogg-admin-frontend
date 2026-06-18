@@ -56,6 +56,22 @@ describe('ImageInput compatibility wrapper', () => {
     expect(controllerMock.selectFile).toHaveBeenCalledWith(file);
   });
 
+  it('resets the file input after selection so the same file can be selected again', async () => {
+    const user = userEvent.setup();
+    const file = new File(['image'], 'image.jpg', { type: 'image/jpeg' });
+
+    render(<ImageInput label="上传图片" value="" onChange={() => undefined} />);
+
+    const input = screen.getByLabelText('上传图片') as HTMLInputElement;
+    await user.upload(input, file);
+
+    expect(input.value).toBe('');
+
+    await user.upload(input, file);
+
+    expect(controllerMock.selectFile).toHaveBeenCalledTimes(2);
+  });
+
   it('renders controller errors', () => {
     controllerMock.error = '图片上传失败，请重试';
 

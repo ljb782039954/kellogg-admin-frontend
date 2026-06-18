@@ -53,6 +53,12 @@ export function ImageUploadControl({
     }
   }
 
+  function handleFileChange(event: React.ChangeEvent<HTMLInputElement>) {
+    const file = event.target.files?.[0] ?? null;
+    event.target.value = '';
+    onSelectFile(file);
+  }
+
   return (
     <div className={`space-y-2 ${className}`}>
       {label && (
@@ -65,7 +71,7 @@ export function ImageUploadControl({
         id={fileInputId}
         type="file"
         ref={fileInputRef}
-        onChange={(event) => onSelectFile(event.target.files?.[0] ?? null)}
+        onChange={handleFileChange}
         accept={acceptType}
         className="hidden"
         disabled={isUploading}
