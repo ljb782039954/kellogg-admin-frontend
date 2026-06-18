@@ -241,7 +241,28 @@ Container 必须处理 loading、query error、saving、submit error 和 success
 - 页面删除后内部链接被标记为失效。
 - Container 正确传递 loading、saving、error，并阻止重复提交。
 
-## 7. 完成标准
+## 7. 开发阶段测试脚本
+
+本模块改进时应持续运行以下测试：
+
+- `src/features/footer/api/footer.api.test.ts`：API 请求、404 默认值与保存契约。
+- `src/features/footer/model/footer.mapper.test.ts`：旧数据迁移、默认值、ID 和页面链接判断。
+- `src/features/footer/model/footer.schema.test.ts`：Footer、分组、链接和双语字段结构。
+- `src/features/footer/model/useFooterEditor.test.tsx`：Query、草稿命令与保存流程。
+
+模块内快速验证：
+
+```bash
+npm test -- --run src/features/footer
+```
+
+开发约束：
+
+- 修改 Mapper、Schema、API 或 controller 后，至少运行对应测试文件。
+- Footer 表单接入 RHF 后，应先扩充 schema 与 controller 测试，再修改 View。
+- dirty 保护和服务端结果 reset 落地后，应在 `useFooterEditor.test.tsx` 增加回归测试。
+
+## 8. 完成标准
 
 - `index.ts` 只保留公开导出。
 - Footer 保存必须经过 schema，非法表单不会发出请求。

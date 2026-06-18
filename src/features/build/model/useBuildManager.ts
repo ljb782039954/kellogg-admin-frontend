@@ -1,12 +1,11 @@
-import { useCallback, useState } from 'react';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { toast } from 'sonner';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
+import { toAppError } from '@/shared/api/errors';
 import { getBuildStatus, triggerBuild } from '../api/build.api';
 import { buildKeys } from '../api/build.keys';
 
 export function useBuildManager() {
   const queryClient = useQueryClient();
-  const [isBuilding, setIsBuilding] = useState(false);
 
   const { data: buildStatus = { hasChanges: false } } = useQuery({
     queryKey: buildKeys.status(),
@@ -19,31 +18,16 @@ export function useBuildManager() {
     onSuccess: (response) => {
       if (response.success && response.buildStatus) {
         queryClient.setQueryData(buildKeys.status(), response.buildStatus);
-        toast.success('构建部署已成功触发，正在后台生成中...');
-      } else {
-        toast.error('触发构建失败');
       }
-    },
-    onError: (e: any) => {
-      console.error(e);
-      toast.error(`触发构建出错: ${e.message || e}`);
     },
   });
 
-  const handleBuild = useCallback(async () => {
-    setIsBuilding(true);
-    try {
-      await triggerMutation.mutateAsync();
-    } finally {
-      setIsBuilding(false);
-    }
-  }, [triggerMutation]);
-
   return {
     buildStatus,
-    isBuilding,
+    isBuilding: triggerMutation.isPending,
+    error: triggerMutation.error ? toAppError(triggerMutation.error).message : null,
     hasChanges: buildStatus.hasChanges,
     lastBuildTime: buildStatus.lastBuildTime,
-    handleBuild,
+    triggerMutation,
   };
 }

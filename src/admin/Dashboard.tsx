@@ -17,6 +17,7 @@ import {
 } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 import siteSettings from '../config/siteSettings.json';
+import { toast } from 'sonner';
 import { useBuildManager, BuildTrigger } from '@/features/build';
 
 interface MenuItem {
@@ -103,7 +104,20 @@ export default function Dashboard() {
   const navigate = useNavigate();
   const { language, setLanguage } = useLanguage();
   const location = useLocation();
-  const { buildStatus, isBuilding, handleBuild } = useBuildManager();
+  const { buildStatus, isBuilding, triggerMutation } = useBuildManager();
+
+  const handleBuild = async () => {
+    try {
+      const response = await triggerMutation.mutateAsync();
+      if (response.success && response.buildStatus) {
+        toast.success('构建部署已成功触发，正在后台生成中...');
+      } else {
+        toast.error('触发构建失败');
+      }
+    } catch (e: any) {
+      toast.error(e?.message || '触发构建出错');
+    }
+  };
 
   const [openMenus, setOpenMenus] = useState<Record<string, boolean>>(() => {
     const initial: Record<string, boolean> = {};

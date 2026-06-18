@@ -239,7 +239,30 @@ features/media/
 - 上传、删除失败保留可诊断错误。
 - 手动刷新使用 Query，不丢失搜索与选中状态。
 
-## 7. 完成标准
+## 7. 开发阶段测试脚本
+
+本模块改进时应持续运行以下测试：
+
+- `src/features/media/api/media.api.test.ts`：删除请求、key 编码和 Query key。
+- `src/features/media/model/indexMediaUsages.test.ts`：引用索引与数据不可变性。
+- `src/features/media/model/findSimilarMediaAssets.test.ts`：哈希、尺寸、大小、策略和排序规则。
+- `src/features/media/model/useMediaManager.test.tsx`：列表 Query、选择、上传、删除风险、错误和缓存失效。
+- `src/shared/media/domain/prepareImageUpload.test.ts`：图片准备和临时 Object URL 释放。
+- `src/shared/media/domain/findDuplicateImages.test.ts`：通用上传查重规则。
+
+模块内快速验证：
+
+```bash
+npm test -- --run src/features/media src/shared/media
+```
+
+开发约束：
+
+- 调整相似度阈值或 match type 时，先修改纯函数测试明确新规则。
+- 调整上传流程时，media feature 与 shared/media 测试必须同时运行。
+- controller 测试只验证业务状态和命令，不绑定 Toast、Dialog 或文件 input DOM。
+
+## 8. 完成标准
 
 - 上传准备、上传 API 和通用哈希查重只有 `shared/media` 一套实现。
 - media model 不持有 DOM ref，不接收 React input event，不调用 `window` 或 Toast。

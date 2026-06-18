@@ -12,20 +12,19 @@ import {
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { type R2Image } from '@/types';
-import { type UsageInfo } from '@/hooks/useImageUsage';
 import { format } from 'date-fns';
 import AdminImage from '@/admin/components/AdminImage';
+import type { UsageInfo } from '../model/media.types';
 
-type SimilarImage = {
+interface SimilarImageDisplay {
   image: R2Image;
-  matchType: 'exact_hash' | 'high_similarity' | 'exact' | 'dimension' | 'size' | 'close_size';
   reason: string;
-};
+}
 
 interface MediaDetailsProps {
   image: R2Image | undefined;
   usages: UsageInfo[];
-  similarImages: SimilarImage[];
+  similarImages: SimilarImageDisplay[];
   usageMap: Record<string, UsageInfo[]>;
   onSelectImage: (key: string) => void;
   onDownload: () => void;

@@ -28,7 +28,7 @@ export function FooterPreview({ footer, language }: FooterPreviewProps) {
         <div className="bg-gray-900 text-white p-6">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
             <div>
-              <h3 className="text-lg font-bold mb-2">{siteSettings.brand.name[language]}</h3>
+              <h3 className="text-lg font-bold mb-2">{footer.brand.name[language]}</h3>
               <p className="text-gray-400 text-xs mb-3 line-clamp-2">{siteSettings.brand.description[language]}</p>
               <div className="flex gap-2">
                 <input

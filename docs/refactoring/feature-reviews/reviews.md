@@ -334,7 +334,30 @@ reviews/
 - 删除和状态切换的 pending、失败及缓存更新。
 - 编辑记录切换时不会残留上一条表单数据。
 
-## 7. 完成标准
+## 7. 开发阶段测试脚本
+
+本模块改进时应持续运行以下测试：
+
+- `src/features/reviews/api/reviews.api.test.ts`：筛选参数、Query key 和 CRUD 请求。
+- `src/features/reviews/model/review.mapper.test.ts`：DTO/Form 转换与默认值。
+- `src/features/reviews/model/review.schema.test.ts`：客户、评分、媒体、双语正文和排序约束。
+- `src/features/reviews/model/reviewMedia.test.ts`：YouTube URL 和缩略图解析。
+- `src/features/reviews/model/useReviewEditor.test.tsx`：创建、编辑、校验、reset、错误和缓存失效。
+- `src/features/reviews/model/useReviewsList.test.tsx`：列表 Query、搜索防抖、筛选、分页、删除和状态切换。
+
+模块内快速验证：
+
+```bash
+npm test -- --run src/features/reviews
+```
+
+开发约束：
+
+- DTO 字段、Schema 或媒体规则变化时，先调整纯函数测试。
+- 表单或列表 UI 重构不得删除 controller 测试；UI 只需补关键交互测试。
+- dirty 关闭保护和按项 pending 落地时，应在 hook/Container 层增加回归测试。
+
+## 8. 完成标准
 
 - View 中不出现 `client_name`、`review_text_zh` 等 API DTO 字段。
 - 创建和更新只有一套 mutation。

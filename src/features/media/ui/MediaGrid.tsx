@@ -3,7 +3,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 import { type R2Image } from '@/types';
-import { type UsageInfo } from '@/hooks/useImageUsage';
+import type { UsageInfo } from '../model/media.types';
 import AdminImage from '@/admin/components/AdminImage';
 
 interface MediaGridProps {

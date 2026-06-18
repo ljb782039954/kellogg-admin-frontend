@@ -311,7 +311,32 @@ PagesManager
 - 固定布局页面不能进入积木编辑流程。
 - 非法 path、空标题和非法页面类型不会发出保存请求。
 
-## 7. 完成标准
+## 7. 开发阶段测试脚本
+
+本模块改进时应持续运行以下测试：
+
+- `src/features/pages/api/pages.api.test.ts`：索引与详情读写、404 和 KV key。
+- `src/features/pages/model/pages.mapper.test.ts`：索引清洗、blockCount、默认页面与表单默认值。
+- `src/features/pages/model/pages.schema.test.ts`：页面、Block 和 SEO 基础结构。
+- `src/features/pages/model/usePageList.test.tsx`：创建、复制、元数据更新、删除顺序和缓存失效。
+- `src/features/pages/model/usePageEditor.test.tsx`：详情合并、Block 命令、保存、缓存和错误。
+
+模块内快速验证：
+
+```bash
+npm test -- --run src/features/pages
+```
+
+`usePageEditor.test.tsx` 当前包含一条 `it.fails` 预期失败测试，用于记录以下既有缺陷：
+
+```text
+handleUpdateMeta 与 handleUpdateSEO 在同一渲染周期连续执行时，
+后一次更新可能基于旧 localPage 覆盖前一次修改。
+```
+
+修复该缺陷时，应先将测试改为普通 `it`，确认修复前失败、修复后通过。创建/复制补齐详情持久化、双写补偿和 dirty 保护时，也必须先在对应 hook 测试中加入失败用例。
+
+## 8. 完成标准
 
 - 新建和复制页面后，`page:{id}` 与 `pages_index` 都存在且一致。
 - 删除或保存发生部分失败时，用户能看到明确状态，系统有可执行恢复策略。
