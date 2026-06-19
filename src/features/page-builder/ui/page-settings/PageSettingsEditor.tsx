@@ -11,9 +11,6 @@ interface PageSettingsEditorProps {
   onUpdate: (updates: { title?: Translation; path?: string }) => void;
 }
 
-/**
- * 页面基础设置编辑器 - 用于修改页面标题和 URL 路径
- */
 export function PageSettingsEditor({ title, path, isFixed, onUpdate }: PageSettingsEditorProps) {
   return (
     <div className="space-y-6">

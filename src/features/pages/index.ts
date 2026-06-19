@@ -1,2 +1,3 @@
 export { PagesManager } from './ui/PagesManager';
-export { PageBuilderEditor } from './ui/PageBuilderEditor';
+export { useResolvedPage } from './model/useResolvedPage';
+export { useSavePage } from './model/useSavePage';

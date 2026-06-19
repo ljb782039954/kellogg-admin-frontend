@@ -2,15 +2,15 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
   FolderOpen,
   Plus,
-  Pencil,
-  Trash2,
-  Save,
+  // Pencil,
+  // Trash2,
+  // Save,
   X,
   Loader2,
   AlertCircle,
   Check,
-  ArrowUp,
-  ArrowDown,
+  // ArrowUp,
+  // ArrowDown,
 } from 'lucide-react';
 import { useBlogCategoriesManager } from '../model/useBlogCategoriesManager';
 import { BlogCategoryRow } from './BlogCategoryRow';

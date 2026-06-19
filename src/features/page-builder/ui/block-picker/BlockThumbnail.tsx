@@ -1,14 +1,12 @@
-// 组件缩略图预览组件
-import React from 'react';
-import { type BlockType } from '@/types';
+import type { ReactNode } from 'react';
+import type { BlockType } from '@/types';
 
 interface BlockThumbnailProps {
   type: BlockType;
   className?: string;
 }
 
-// 每种组件类型的缩略图预览
-export function BlockThumbnail({ type, className = '' }: BlockThumbnailProps) {
+export default function BlockThumbnail({ type, className = '' }: BlockThumbnailProps) {
   return (
     <div className={`bg-gray-100 rounded-lg overflow-hidden ${className}`}>
       {thumbnails[type] || <DefaultThumbnail />}
@@ -16,7 +14,6 @@ export function BlockThumbnail({ type, className = '' }: BlockThumbnailProps) {
   );
 }
 
-// 默认缩略图
 function DefaultThumbnail() {
   return (
     <div className="w-full h-full flex items-center justify-center bg-gray-200">
@@ -25,7 +22,6 @@ function DefaultThumbnail() {
   );
 }
 
-// 轮播图缩略图
 function CarouselThumbnail() {
   return (
     <div className="w-full h-full p-2">
@@ -42,7 +38,6 @@ function CarouselThumbnail() {
   );
 }
 
-// 分类导航缩略图
 function CategoriesThumbnail() {
   return (
     <div className="w-full h-full p-2 flex gap-1.5 justify-center items-center">
@@ -56,7 +51,6 @@ function CategoriesThumbnail() {
   );
 }
 
-// 新品上市缩略图
 function NewArrivalsThumbnail() {
   return (
     <div className="w-full h-full p-2">
@@ -73,7 +67,6 @@ function NewArrivalsThumbnail() {
   );
 }
 
-// 精选产品缩略图
 function FeaturedProductsThumbnail() {
   return (
     <div className="w-full h-full p-2">
@@ -87,7 +80,6 @@ function FeaturedProductsThumbnail() {
   );
 }
 
-// 产品网格缩略图
 function ProductGridThumbnail() {
   return (
     <div className="w-full h-full p-2">
@@ -101,7 +93,6 @@ function ProductGridThumbnail() {
   );
 }
 
-// 品牌价值缩略图
 function BrandValuesThumbnail() {
   return (
     <div className="w-full h-full p-2 flex gap-2 justify-center items-center">
@@ -117,7 +108,6 @@ function BrandValuesThumbnail() {
   );
 }
 
-// 统计数据缩略图
 function StatisticsThumbnail() {
   return (
     <div className="w-full h-full p-2 bg-gray-800 rounded flex gap-2 justify-center items-center">
@@ -131,7 +121,6 @@ function StatisticsThumbnail() {
   );
 }
 
-// 客户评价缩略图
 function TestimonialsThumbnail() {
   return (
     <div className="w-full h-full p-2">
@@ -152,7 +141,6 @@ function TestimonialsThumbnail() {
   );
 }
 
-// FAQ 预览缩略图
 function FaqPreviewThumbnail() {
   return (
     <div className="w-full h-full p-2">
@@ -169,7 +157,6 @@ function FaqPreviewThumbnail() {
   );
 }
 
-// 文本区块缩略图
 function TextSectionThumbnail() {
   return (
     <div className="w-full h-full p-2 flex flex-col items-center justify-center gap-1">
@@ -181,7 +168,6 @@ function TextSectionThumbnail() {
   );
 }
 
-// 图片横幅缩略图
 function ImageBannerThumbnail() {
   return (
     <div className="w-full h-full p-2">
@@ -194,7 +180,6 @@ function ImageBannerThumbnail() {
   );
 }
 
-// 图片横幅带标签缩略图
 function ImageBannerTagThumbnail() {
   return (
     <div className="w-full h-full p-2">
@@ -208,7 +193,6 @@ function ImageBannerTagThumbnail() {
   );
 }
 
-// 图文组件缩略图
 function ImageTextThumbnail() {
   return (
     <div className="w-full h-full p-2 flex gap-2">
@@ -223,7 +207,6 @@ function ImageTextThumbnail() {
   );
 }
 
-// 倒计时促销缩略图
 function CountdownThumbnail() {
   return (
     <div className="w-full h-full p-2">
@@ -242,7 +225,6 @@ function CountdownThumbnail() {
   );
 }
 
-// 图片画廊缩略图
 function GalleryThumbnail() {
   return (
     <div className="w-full h-full p-2">
@@ -262,7 +244,6 @@ function GalleryThumbnail() {
   );
 }
 
-// 特性列表缩略图
 function FeatureListThumbnail() {
   return (
     <div className="w-full h-full p-2">
@@ -282,7 +263,6 @@ function FeatureListThumbnail() {
   );
 }
 
-// CTA行动号召缩略图
 function CtaBannerThumbnail() {
   return (
     <div className="w-full h-full p-2">
@@ -298,8 +278,29 @@ function CtaBannerThumbnail() {
   );
 }
 
-// 缩略图映射表
-const thumbnails: Partial<Record<BlockType, React.ReactNode>> = {
+function VideoThumbnail() {
+  return (
+    <div className="w-full h-full p-2">
+      <div className="w-full h-full bg-gray-800 rounded relative flex items-center justify-center">
+        <div className="w-6 h-6 border-2 border-white rounded-full flex items-center justify-center">
+          <div className="w-0 h-0 border-t-[4px] border-t-transparent border-l-[6px] border-l-white border-b-[4px] border-b-transparent ml-0.5" />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function PartnerLogosThumbnail() {
+  return (
+    <div className="w-full h-full p-2 flex flex-wrap gap-1 justify-center items-center">
+      {[1, 2, 3, 4, 5, 6].map((i) => (
+        <div key={i} className="w-5 h-3 bg-gray-200 rounded-sm" />
+      ))}
+    </div>
+  );
+}
+
+const thumbnails: Partial<Record<BlockType, ReactNode>> = {
   carousel: <CarouselThumbnail />,
   categories: <CategoriesThumbnail />,
   newArrivals: <NewArrivalsThumbnail />,
@@ -320,29 +321,3 @@ const thumbnails: Partial<Record<BlockType, React.ReactNode>> = {
   videoSection: <VideoThumbnail />,
   partnerLogos: <PartnerLogosThumbnail />,
 };
-
-// 视频缩略图
-function VideoThumbnail() {
-  return (
-    <div className="w-full h-full p-2">
-      <div className="w-full h-full bg-gray-800 rounded relative flex items-center justify-center">
-        <div className="w-6 h-6 border-2 border-white rounded-full flex items-center justify-center">
-          <div className="w-0 h-0 border-t-[4px] border-t-transparent border-l-[6px] border-l-white border-b-[4px] border-b-transparent ml-0.5" />
-        </div>
-      </div>
-    </div>
-  );
-}
-
-// 合作伙伴缩略图
-function PartnerLogosThumbnail() {
-  return (
-    <div className="w-full h-full p-2 flex flex-wrap gap-1 justify-center items-center">
-      {[1, 2, 3, 4, 5, 6].map((i) => (
-        <div key={i} className="w-5 h-3 bg-gray-200 rounded-sm" />
-      ))}
-    </div>
-  );
-}
-
-export default BlockThumbnail;

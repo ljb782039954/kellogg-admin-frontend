@@ -10,7 +10,8 @@ import Overview from './admin/Overview';
 // import AccountSettings from './admin/AccountSettings';
 
 // 页面管理
-import { PagesManager, PageBuilderEditor } from '@/features/pages';
+import { PagesManager } from '@/features/pages';
+import { PageBuilderContainer } from '@/features/page-builder';
 import ComponentsPreview from './admin/BlocksPreview';
 
 // 编辑器
@@ -39,7 +40,7 @@ function App() {
 
               {/* 页面管理 */}
               <Route path="pages" element={<PagesManager />} />
-              <Route path="pages/:pageId/edit" element={<PageBuilderEditor />} />
+              <Route path="pages/:pageId/edit" element={<PageBuilderContainer />} />
               <Route path="components" element={<ComponentsPreview />} />
 
               {/* 兼容旧路由 */}

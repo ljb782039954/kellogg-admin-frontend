@@ -1,26 +1,20 @@
-// import React from 'react';
 import { Label } from '@/components/ui/label';
 import BilingualInput from '@/admin/components/BilingualInput';
 import { Settings, Globe } from 'lucide-react';
-import { type Translation } from '@/types';
+import type { PageSeo } from '../../model/pageBuilder.types';
 
 interface SEOEditorProps {
-  seo: {
-    title: Translation;
-    description: Translation;
-    keywords?: Translation;
-    targetCountry?: string;
-  };
-  onChange: (seo: any) => void;
+  value: PageSeo;
+  onChange: (seo: PageSeo) => void;
 }
 
-export function SEOEditor({ seo, onChange }: SEOEditorProps) {
-  const handleTitleChange = (title: Translation) => {
-    onChange({ ...seo, title });
+export function SEOEditor({ value, onChange }: SEOEditorProps) {
+  const handleTitleChange = (title: { zh: string; en: string }) => {
+    onChange({ ...value, title });
   };
 
-  const handleDescriptionChange = (description: Translation) => {
-    onChange({ ...seo, description });
+  const handleDescriptionChange = (description: { zh: string; en: string }) => {
+    onChange({ ...value, description });
   };
 
   return (
@@ -51,7 +45,7 @@ export function SEOEditor({ seo, onChange }: SEOEditorProps) {
             <span className="text-[10px] text-gray-400 font-mono">必填</span>
           </div>
           <BilingualInput
-            value={seo.title || { zh: '', en: '' }}
+            value={value.title}
             onChange={handleTitleChange}
             placeholder={{ zh: '输入在搜索引擎中显示的标题', en: 'Enter SEO Title' }}
           />
@@ -64,7 +58,7 @@ export function SEOEditor({ seo, onChange }: SEOEditorProps) {
             <span className="text-[10px] text-gray-400 font-mono">建议填写</span>
           </div>
           <BilingualInput
-            value={seo.description || { zh: '', en: '' }}
+            value={value.description}
             onChange={handleDescriptionChange}
             placeholder={{ zh: '输入页面简要描述，吸引用户点击', en: 'Enter SEO Description' }}
           />
@@ -73,25 +67,21 @@ export function SEOEditor({ seo, onChange }: SEOEditorProps) {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="space-y-2">
-            <div className="flex items-center justify-between">
-              <Label className="text-sm font-medium">核心关键词 (Keywords)</Label>
-            </div>
+            <Label className="text-sm font-medium">核心关键词 (Keywords)</Label>
             <BilingualInput
-              value={seo.keywords || { zh: '', en: '' }}
-              onChange={(keywords) => onChange({ ...seo, keywords })}
+              value={value.keywords}
+              onChange={(keywords) => onChange({ ...value, keywords })}
               placeholder={{ zh: '如: 重磅卫衣, 街头服饰', en: 'e.g. Heavyweight Hoodie, Streetwear' }}
             />
           </div>
 
           <div className="space-y-2">
-            <div className="flex items-center justify-between">
-              <Label className="text-sm font-medium">GEO 目标市场 (Target Country)</Label>
-            </div>
+            <Label className="text-sm font-medium">GEO 目标市场 (Target Country)</Label>
             <input
               type="text"
               className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-              value={seo.targetCountry || ''}
-              onChange={(e) => onChange({ ...seo, targetCountry: e.target.value })}
+              value={value.targetCountry}
+              onChange={(e) => onChange({ ...value, targetCountry: e.target.value })}
               placeholder="如: USA, UK, Europe, Australia"
             />
             <p className="text-[10px] text-gray-400 mt-1">用于填充 JSON-LD 的 areaServed，提高地区检索排名</p>
@@ -99,23 +89,20 @@ export function SEOEditor({ seo, onChange }: SEOEditorProps) {
         </div>
       </div>
 
-      {/* 模拟搜索结果预览 */}
       <div className="mt-8 pt-6 border-t">
         <Label className="text-xs text-gray-400 uppercase tracking-wider">谷歌搜索预览 (模拟)</Label>
         <div className="mt-3 p-4 border rounded-xl bg-white shadow-sm max-w-md">
           <div className="text-[#1a0dab] text-xl font-medium truncate hover:underline cursor-pointer">
-            {seo.title?.zh || '页面标题预览'}
+            {value.title?.zh || '页面标题预览'}
           </div>
           <div className="text-[#006621] text-sm mt-1 mb-1 truncate">
             https://kelloggfashion.com/...
           </div>
           <div className="text-[#4d5156] text-sm line-clamp-2 leading-relaxed">
-            {seo.description?.zh || '这里将显示您在下方输入的 SEO 页面描述内容，它是用户在谷歌搜索结果中看到的简介。'}
+            {value.description?.zh || '这里将显示您在下方输入的 SEO 页面描述内容，它是用户在谷歌搜索结果中看到的简介。'}
           </div>
         </div>
       </div>
     </div>
   );
 }
-
-export default SEOEditor;

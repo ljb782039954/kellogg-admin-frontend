@@ -1,6 +1,4 @@
-// 添加积木块组件弹窗
 import { useState } from 'react';
-import { nanoid } from 'nanoid';
 import { Lock } from 'lucide-react';
 import {
   Dialog,
@@ -11,52 +9,43 @@ import {
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
-import { type BlockType, type PageBlock, type ComponentCategory } from '@/types';
+import type { BlockType, ComponentCategory } from '@/types';
 import {
-  componentRegistry,
   componentsByCategory,
   categoryNames,
-  canAddBlock,
-} from '@/config/componentRegistry';
+} from '../../model/blockCatalog';
+import type { AvailableBlock } from '../../model/pageBuilder.types';
 import BlockThumbnail from './BlockThumbnail';
 
 interface AddBlockDialogProps {
   open: boolean;
-  onClose: () => void;
-  onAdd: (block: PageBlock) => void;
-  existingBlocks: { type: BlockType }[];
+  items: AvailableBlock[];
+  onOpenChange(open: boolean): void;
+  onAdd(type: BlockType): void;
 }
 
 export function AddBlockDialog({
   open,
-  onClose,
+  onOpenChange,
   onAdd,
-  existingBlocks,
+  items,
 }: AddBlockDialogProps) {
   const [selectedCategory, setSelectedCategory] = useState<ComponentCategory>('product');
 
   const handleAddBlock = (type: BlockType) => {
-    const meta = componentRegistry[type];
-    const newBlock: PageBlock = {
-      id: `block_${nanoid(8)}`,
-      type,
-      isVisible: true,
-      content: { ...meta.defaultProps },
-    };
-    onAdd(newBlock);
-    onClose();
+    onAdd(type);
+    onOpenChange(false);
   };
 
   const categories = Object.keys(componentsByCategory) as ComponentCategory[];
 
   return (
-    <Dialog open={open} onOpenChange={(isOpen) => !isOpen && onClose()}>
+    <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-3xl">
         <DialogHeader>
           <DialogTitle>添加积木块组件</DialogTitle>
         </DialogHeader>
 
-        {/* 分类标签 */}
         <div className="flex gap-2 border-b pb-3">
           {categories.map((cat) => (
             <Button
@@ -70,28 +59,24 @@ export function AddBlockDialog({
           ))}
         </div>
 
-        {/* 积木块组件网格 */}
         <div className="grid grid-cols-3 gap-4 py-4 max-h-[480px] overflow-y-auto">
-          {componentsByCategory[selectedCategory].map((type) => {
-            const meta = componentRegistry[type];
-            const canAdd = canAddBlock(type, existingBlocks);
-
-            return (
+          {items
+            .filter((item) => item.category === selectedCategory)
+            .map((item) => (
               <button
-                key={type}
-                disabled={!canAdd}
-                onClick={() => handleAddBlock(type)}
+                key={item.type}
+                disabled={!item.canAdd}
+                onClick={() => handleAddBlock(item.type)}
                 className={cn(
                   'group flex flex-col rounded-xl border-2 text-left transition-all overflow-hidden',
-                  canAdd
+                  item.canAdd
                     ? 'hover:border-primary hover:shadow-md cursor-pointer border-gray-200'
-                    : 'opacity-50 cursor-not-allowed bg-gray-50 border-gray-200'
+                    : 'opacity-50 cursor-not-allowed bg-gray-50 border-gray-200',
                 )}
               >
-                {/* 缩略图预览 */}
                 <div className="relative">
-                  <BlockThumbnail type={type} className="w-full h-24" />
-                  {!canAdd && meta.singleton && (
+                  <BlockThumbnail type={item.type} className="w-full h-24" />
+                  {!item.canAdd && item.singleton && (
                     <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
                       <div className="bg-white rounded-full p-1.5">
                         <Lock className="w-4 h-4 text-gray-600" />
@@ -100,30 +85,28 @@ export function AddBlockDialog({
                   )}
                 </div>
 
-                {/* 组件信息 */}
                 <div className="p-3 border-t bg-white">
                   <div className="flex items-center gap-2 mb-1">
                     <span className="font-medium text-sm group-hover:text-primary transition-colors">
-                      {meta.name.zh}
+                      {item.name.zh}
                     </span>
-                    {meta.singleton && (
+                    {item.singleton && (
                       <Badge variant="outline" className="text-xs px-1.5 py-0">
                         唯一
                       </Badge>
                     )}
                   </div>
                   <p className="text-xs text-gray-500 line-clamp-2">
-                    {meta.description.zh}
+                    {item.description.zh}
                   </p>
-                  {!canAdd && meta.singleton && (
+                  {!item.canAdd && item.singleton && (
                     <p className="text-xs text-orange-500 mt-1 font-medium">
                       已添加至页面，不可重复添加
                     </p>
                   )}
                 </div>
               </button>
-            );
-          })}
+            ))}
         </div>
       </DialogContent>
     </Dialog>
