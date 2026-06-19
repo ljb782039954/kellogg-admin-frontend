@@ -43,10 +43,9 @@ export function useCompanyInfoForm() {
     }
   }, [formState.isDirty, query.data, reset]);
 
-  async function submit() {
-    const values = form.getValues();
+  const submit = form.handleSubmit(async (values) => {
     await mutation.mutateAsync(toCompanyInfoPayload(values));
-  }
+  });
 
   return {
     form,
