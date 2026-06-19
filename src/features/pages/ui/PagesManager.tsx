@@ -2,9 +2,9 @@ import { useCallback, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Plus, Search, Copy, Settings, Trash2, Loader2, FileText } from 'lucide-react';
-import type { CustomPage } from '@/types';
 import { useLanguage } from '@/context/LanguageContext';
 import { usePageList } from '../model/usePageList';
+import type { PageIndexEntry } from '../model/pages.mapper';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -12,13 +12,13 @@ import { Label } from '@/components/ui/label';
 export function PagesManager() {
   const navigate = useNavigate();
   const { language } = useLanguage();
-  const { pages, isLoading, saved, error, setError, addPage, updatePageMeta, deletePage } = usePageList();
+  const { pages, isLoading, saved, error, addPage, updatePageMeta, deletePage } = usePageList();
 
   const [search, setSearch] = useState('');
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
   const [dialogMode, setDialogMode] = useState<'create' | 'duplicate' | 'edit' | null>(null);
   const [dialogData, setDialogData] = useState<{
-    sourcePage?: CustomPage;
+    sourcePage?: PageIndexEntry;
     pageId?: string;
     titleZh: string;
     titleEn: string;
@@ -50,7 +50,7 @@ export function PagesManager() {
     setDialogData({ titleZh: '', titleEn: '', path: '/' });
   }, []);
 
-  const openDuplicateDialog = useCallback((page: CustomPage) => {
+  const openDuplicateDialog = useCallback((page: PageIndexEntry) => {
     setDialogMode('duplicate');
     setDialogData({
       sourcePage: page,
@@ -60,7 +60,7 @@ export function PagesManager() {
     });
   }, []);
 
-  const openEditDialog = useCallback((page: CustomPage) => {
+  const openEditDialog = useCallback((page: PageIndexEntry) => {
     setDialogMode('edit');
     setDialogData({
       pageId: page.id,
@@ -90,7 +90,7 @@ export function PagesManager() {
     setDeleteConfirm(null);
   }, [deletePage]);
 
-  function PageCard({ page }: { page: CustomPage }) {
+  function PageCard({ page }: { page: PageIndexEntry }) {
     const isFixedLayout = page.type === 'fixed-layout';
     return (
       <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 space-y-4">
@@ -107,7 +107,7 @@ export function PagesManager() {
               )}
             </div>
             {!isFixedLayout && (
-              <p className="text-xs text-gray-400">{(page as any).blockCount ?? page.blocks?.length ?? 0} 个积木块</p>
+              <p className="text-xs text-gray-400">{page.blockCount} 个积木块</p>
             )}
           </div>
         </div>
@@ -201,7 +201,7 @@ export function PagesManager() {
         </Button>
       </div>
 
-      {error && (
+          {error && (
         <motion.div
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
@@ -209,7 +209,6 @@ export function PagesManager() {
         >
           <span className="w-2 h-2 bg-red-500 rounded-full" />
           {error}
-          <button onClick={() => setError(null)} className="ml-auto text-red-400 hover:text-red-600">×</button>
         </motion.div>
       )}
 

@@ -7,11 +7,13 @@ import type { CustomPage } from '@/types';
 const {
   getPagesIndexMock,
   savePagesIndexMock,
+  savePageDetailMock,
   deletePageDetailMock,
   nanoidMock,
 } = vi.hoisted(() => ({
   getPagesIndexMock: vi.fn(),
   savePagesIndexMock: vi.fn(),
+  savePageDetailMock: vi.fn(),
   deletePageDetailMock: vi.fn(),
   nanoidMock: vi.fn(),
 }));
@@ -19,6 +21,7 @@ const {
 vi.mock('../api/pages.api', () => ({
   getPagesIndex: getPagesIndexMock,
   savePagesIndex: savePagesIndexMock,
+  savePageDetail: savePageDetailMock,
   deletePageDetail: deletePageDetailMock,
 }));
 
@@ -54,6 +57,7 @@ describe('usePageList', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     savePagesIndexMock.mockResolvedValue({ success: true });
+    savePageDetailMock.mockResolvedValue({ success: true });
     deletePageDetailMock.mockResolvedValue({ success: true });
   });
 
@@ -66,7 +70,7 @@ describe('usePageList', () => {
     expect(result.current.pages).toHaveLength(1);
   });
 
-  it('creates a page, saves its index entry, and navigates to the editor', async () => {
+  it('creates a page, saves its detail and index, and navigates to the editor', async () => {
     getPagesIndexMock.mockResolvedValueOnce([]);
     nanoidMock.mockReturnValueOnce('new12345');
     const navigate = vi.fn();
@@ -78,18 +82,20 @@ describe('usePageList', () => {
       await result.current.addPage({ zh: '新页', en: 'New' }, '/new', undefined, navigate);
     });
 
-    expect(savePagesIndexMock).toHaveBeenCalledWith([
-      expect.objectContaining({
-        id: 'page_new12345',
-        path: '/new',
-        blockCount: 0,
-        blocks: [],
-      }),
-    ]);
+    // Should save detail first
+    expect(savePageDetailMock).toHaveBeenCalledWith(
+      'page_new12345',
+      expect.objectContaining({ id: 'page_new12345', path: '/new' }),
+    );
+    // Then save index (without blocks)
+    expect(savePagesIndexMock).toHaveBeenCalled();
+    const savedIndex = savePagesIndexMock.mock.calls[0][0];
+    expect(savedIndex[0].blockCount).toBe(0);
+    expect(savedIndex[0]).not.toHaveProperty('blocks');
     expect(navigate).toHaveBeenCalledWith('/pages/page_new12345/edit');
   });
 
-  it('duplicates blocks with new IDs before saving the index', async () => {
+  it('duplicates blocks with new IDs before saving the detail and index', async () => {
     getPagesIndexMock.mockResolvedValueOnce([]);
     nanoidMock
       .mockReturnValueOnce('copy1234')
@@ -106,11 +112,10 @@ describe('usePageList', () => {
     });
 
     expect(nanoidMock).toHaveBeenCalledTimes(2);
-    expect(savePagesIndexMock.mock.calls[0][0][0]).toMatchObject({
-      id: 'page_copy1234',
-      blockCount: 1,
-      blocks: [],
-    });
+    // Detail has the duplicated block with new ID
+    expect(savePageDetailMock.mock.calls[0][1].blocks[0].id).toMatch(/^block_/);
+    // Index has blockCount
+    expect(savePagesIndexMock.mock.calls[0][0][0].blockCount).toBe(1);
   });
 
   it('updates metadata and deletes detail before removing the index entry', async () => {
@@ -122,13 +127,13 @@ describe('usePageList', () => {
     await act(async () => {
       await result.current.updatePageMeta('page_1', { path: '/updated' });
     });
-    expect(savePagesIndexMock).toHaveBeenLastCalledWith([
-      expect.objectContaining({ id: 'page_1', path: '/updated' }),
-    ]);
+    expect(savePagesIndexMock).toHaveBeenLastCalledWith(
+      expect.arrayContaining([expect.objectContaining({ id: 'page_1', path: '/updated' })]),
+    );
 
     await act(async () => result.current.deletePage('page_1'));
     expect(deletePageDetailMock).toHaveBeenCalledWith('page_1');
-    expect(savePagesIndexMock).toHaveBeenLastCalledWith([]);
+    expect(savePagesIndexMock).toHaveBeenLastCalledWith(expect.arrayContaining([]));
     expect(deletePageDetailMock.mock.invocationCallOrder[0])
       .toBeLessThan(savePagesIndexMock.mock.invocationCallOrder.at(-1)!);
   });

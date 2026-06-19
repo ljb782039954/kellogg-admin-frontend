@@ -38,7 +38,8 @@ export function useBlogEditor(id: number | undefined) {
   }, [isEdit, blog]);
 
   const form = useForm<BlogFormValues>({
-    resolver: zodResolver(blogSchema),
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    resolver: zodResolver(blogSchema) as any,
     defaultValues,
   });
 

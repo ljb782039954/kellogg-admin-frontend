@@ -103,7 +103,7 @@ describe('useProductsManager', () => {
     await waitFor(() => expect(result.current.isLoading).toBe(false));
 
     act(() => {
-      result.current.openEditor(1);
+      result.current.requestOpenEditor(1);
     });
 
     await waitFor(() => {
@@ -136,7 +136,7 @@ describe('useProductsManager', () => {
     });
 
     await act(async () => {
-      await result.current.saveProduct();
+      await result.current.validatedSubmit();
     });
 
     expect(createProductMock).toHaveBeenCalled();
@@ -174,7 +174,7 @@ describe('useProductsManager', () => {
     await waitFor(() => expect(result.current.isLoading).toBe(false));
 
     act(() => {
-      result.current.openEditor(1);
+      result.current.requestOpenEditor(1);
     });
 
     await waitFor(() => {
@@ -186,7 +186,7 @@ describe('useProductsManager', () => {
     });
 
     await act(async () => {
-      await result.current.saveProduct();
+      await result.current.validatedSubmit();
     });
 
     expect(updateProductMock).toHaveBeenCalledWith(1, expect.any(Object));

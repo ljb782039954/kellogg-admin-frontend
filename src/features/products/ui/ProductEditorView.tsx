@@ -16,7 +16,7 @@ interface ProductEditorViewProps {
   form: UseFormReturn<ProductFormValues>;
   categories: Category[];
   isSaving: boolean;
-  onSave: () => void;
+  onSubmit: (e?: React.BaseSyntheticEvent) => Promise<void>;
   onClose: () => void;
 }
 
@@ -24,7 +24,7 @@ export function ProductEditorView({
   form,
   categories,
   isSaving,
-  onSave,
+  onSubmit,
   onClose,
 }: ProductEditorViewProps) {
   const { control, register, watch, setValue } = form;
@@ -45,8 +45,7 @@ export function ProductEditorView({
           </div>
           <div className="flex items-center gap-3">
             <Button
-              type="button"
-              onClick={onSave}
+              type="submit"
               disabled={isSaving}
               className="bg-gray-900 text-white hover:bg-gray-800"
             >
@@ -63,7 +62,7 @@ export function ProductEditorView({
           </div>
         </div>
 
-        <form onSubmit={form.handleSubmit(onSave)} className="p-6 space-y-8">
+        <form onSubmit={onSubmit} className="p-6 space-y-8">
           {/* Basic Info */}
           <section>
             <h3 className="text-sm font-bold text-gray-400 uppercase mb-4">基本信息</h3>

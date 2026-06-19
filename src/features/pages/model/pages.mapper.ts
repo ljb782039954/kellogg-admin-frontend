@@ -1,39 +1,32 @@
-import type { CustomPage } from '@/types';
-import { customPageSchema, type PageFormValues } from './pages.schema';
+import type { Translation, CustomPage } from '@/types';
 
-interface PageIndexEntry extends CustomPage {
+export interface PageIndexEntry {
+  id: string;
+  path: string;
+  title: Translation;
+  isFixed: boolean;
+  type?: 'fixed-block' | 'dynamic-block' | 'fixed-layout';
+  content?: unknown;
   blockCount: number;
 }
 
-export function sanitizePageIndex(pages: CustomPage[]): PageIndexEntry[] {
+export function sanitizePageIndex(pages: { id: string; path: string; title: Translation; isFixed: boolean; type?: string; blocks?: unknown[]; content?: unknown; blockCount?: number }[]): PageIndexEntry[] {
   return pages.map((p) => ({
     id: p.id,
     path: p.path,
     title: p.title,
     isFixed: p.isFixed,
-    type: p.type,
+    type: p.type as PageIndexEntry['type'],
     content: p.content,
-    blocks: [],
-    blockCount: (p as any).blockCount ?? p.blocks?.length ?? 0,
+    blockCount: p.blockCount ?? p.blocks?.length ?? 0,
   }));
-}
-
-export function toPageFormValues(page: CustomPage | null | undefined): PageFormValues {
-  return customPageSchema.parse({
-    id: '',
-    path: '/',
-    title: { zh: '', en: '' },
-    isFixed: false,
-    blocks: [],
-    ...page,
-  });
 }
 
 export function createDefaultPage(
   path: string,
   title: { zh: string; en: string },
   id: string,
-): PageFormValues {
+): CustomPage {
   return {
     id,
     path,

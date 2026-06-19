@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import type { CustomPage, PageBlock } from '@/types';
 import { getPageById, savePageDetail } from '../api/pages.api';
@@ -27,18 +27,34 @@ export function usePageEditor(pageId: string | undefined) {
   // Find page from index too (for metadata like title, path)
   const indexPage = pages.find((p) => p.id === pageId);
 
-  // Initialize local state from query data
+  // Track whether user has made edits (dirty state)
+  const [isDirty, setIsDirty] = useState(false);
+  const pageIdRef = useRef(pageId);
+
+  // Initialize local state from query data — on pageId change, or when detail first arrives
   useEffect(() => {
-    if (pageId && indexPage) {
-      const full = pageDetail ?? indexPage;
-      setLocalPage({
-        ...indexPage,
-        blocks: full.blocks ?? [],
-        seo: full.seo ?? indexPage.seo,
-        content: full.content ?? indexPage.content,
-      });
-    }
-  }, [pageId, indexPage, pageDetail]);
+    if (!pageId || !indexPage) return;
+    const isNewPage = pageId !== pageIdRef.current;
+    if (!isNewPage && isDirty) return;
+
+    pageIdRef.current = pageId;
+    setLocalPage({
+      id: indexPage.id,
+      path: indexPage.path,
+      title: indexPage.title,
+      isFixed: indexPage.isFixed,
+      type: indexPage.type,
+      content: pageDetail?.content ?? indexPage.content,
+      blocks: pageDetail?.blocks ?? [],
+      seo: pageDetail?.seo,
+    });
+    if (!isDirty) setIsDirty(false);
+  }, [pageId, pageDetail, indexPage]);
+
+  // Mark dirty on any block/meta/seo change
+  const markDirty = useCallback(() => {
+    setIsDirty(true);
+  }, []);
 
   const isFixedLayout = localPage?.type === 'fixed-layout';
 
@@ -72,7 +88,8 @@ export function usePageEditor(pageId: string | undefined) {
     if (!localPage) return;
     setLocalPage({ ...localPage, blocks: [...localPage.blocks, block] });
     setActivePanel(block.id);
-  }, [localPage]);
+    markDirty();
+  }, [localPage, markDirty]);
 
   const handleRemoveBlock = useCallback((blockId: string) => {
     if (!localPage) return;
@@ -81,7 +98,8 @@ export function usePageEditor(pageId: string | undefined) {
       blocks: localPage.blocks.filter((b) => b.id !== blockId),
     });
     if (activePanel === blockId) setActivePanel(null);
-  }, [localPage, activePanel]);
+    markDirty();
+  }, [localPage, activePanel, markDirty]);
 
   const handleToggleBlock = useCallback((blockId: string) => {
     if (!localPage) return;
@@ -91,7 +109,8 @@ export function usePageEditor(pageId: string | undefined) {
         b.id === blockId ? { ...b, isVisible: !b.isVisible } : b,
       ),
     });
-  }, [localPage]);
+    markDirty();
+  }, [localPage, markDirty]);
 
   const handleMoveBlock = useCallback((blockId: string, direction: 'up' | 'down') => {
     if (!localPage) return;
@@ -102,7 +121,8 @@ export function usePageEditor(pageId: string | undefined) {
     const blocks = [...localPage.blocks];
     [blocks[idx], blocks[targetIdx]] = [blocks[targetIdx], blocks[idx]];
     setLocalPage({ ...localPage, blocks });
-  }, [localPage]);
+    markDirty();
+  }, [localPage, markDirty]);
 
   const handleUpdateBlockProps = useCallback((blockId: string, newContent: unknown) => {
     if (!localPage) return;
@@ -112,17 +132,20 @@ export function usePageEditor(pageId: string | undefined) {
         b.id === blockId ? { ...b, content: newContent } : b,
       ),
     });
-  }, [localPage]);
+    markDirty();
+  }, [localPage, markDirty]);
 
   const handleUpdateMeta = useCallback((updates: { title?: { zh: string; en: string }; path?: string }) => {
     if (!localPage) return;
     setLocalPage({ ...localPage, ...updates });
-  }, [localPage]);
+    markDirty();
+  }, [localPage, markDirty]);
 
   const handleUpdateSEO = useCallback((seo: CustomPage['seo']) => {
     if (!localPage) return;
     setLocalPage({ ...localPage, seo });
-  }, [localPage]);
+    markDirty();
+  }, [localPage, markDirty]);
 
   return {
     localPage,
@@ -130,6 +153,7 @@ export function usePageEditor(pageId: string | undefined) {
     isSaving,
     saved,
     error,
+    isDirty,
     activePanel,
     setActivePanel,
     isFixedLayout,

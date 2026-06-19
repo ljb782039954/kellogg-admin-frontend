@@ -22,9 +22,8 @@ import { ProductsEditor } from '@/features/products';
 import InquiryEditor from './admin/editors/InquiryEditor';
 import InquiryManagement from './admin/InquiryManagement';
 import { MediaManager } from '@/features/media';
-import BlogManagement from './admin/BlogManagement';
-import BlogEditor from './admin/BlogEditor';
-import BlogCategoryManager from './admin/BlogCategoryManager';
+import { BlogsManager, BlogEditor } from '@/features/blogs';
+import { BlogCategoriesManager } from '@/features/blog-categories';
 import { ReviewsManager } from '@/features/reviews';
 
 function App() {
@@ -57,10 +56,10 @@ function App() {
               <Route path="media" element={<MediaManager />} />
               <Route path="inquiry-editor" element={<InquiryEditor />} />
               {/* Blog Management */}
-              <Route path="blog" element={<BlogManagement />} />
+              <Route path="blog" element={<BlogsManager />} />
               <Route path="blog/new" element={<BlogEditor />} />
               <Route path="blog/:id/edit" element={<BlogEditor />} />
-              <Route path="blog-categories" element={<BlogCategoryManager />} />
+              <Route path="blog-categories" element={<BlogCategoriesManager />} />
               <Route path="reviews" element={<ReviewsManager />} />
               {/* <Route path="account" element={<AccountSettings />} /> */}
             </Route>

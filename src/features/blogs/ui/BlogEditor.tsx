@@ -29,7 +29,8 @@ export function BlogEditor() {
 
   return (
     <BlogForm
-      form={form}
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      form={form as any}
       isEdit={isEdit}
       isSaving={isSaving}
       categories={categories}

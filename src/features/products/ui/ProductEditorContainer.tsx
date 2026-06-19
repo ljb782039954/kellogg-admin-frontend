@@ -21,9 +21,9 @@ export function ProductEditorContainer() {
     toggleSelect,
     toggleSelectAll,
     addProduct,
-    openEditor,
-    closeEditor,
-    saveProduct,
+    requestOpenEditor,
+    requestCloseEditor,
+    validatedSubmit,
     deleteSelected,
     removeProduct,
     toggleFeatured,
@@ -53,7 +53,6 @@ export function ProductEditorContainer() {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-gray-800 tracking-tight flex items-center gap-2">
@@ -71,11 +70,7 @@ export function ProductEditorContainer() {
               disabled={isSaving}
               className="flex items-center gap-2 px-4 py-2 bg-red-50 text-red-600 rounded-xl hover:bg-red-100 transition-all font-bold text-sm border border-red-100 animate-in fade-in disabled:opacity-50"
             >
-              {isSaving ? (
-                <Loader2 className="w-4 h-4 animate-spin" />
-              ) : (
-                <Trash2 className="w-4 h-4" />
-              )}
+              {isSaving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Trash2 className="w-4 h-4" />}
               批量删除 ({selectedIds.size})
             </button>
           )}
@@ -97,9 +92,7 @@ export function ProductEditorContainer() {
         >
           <span className="w-2 h-2 bg-red-500 rounded-full" />
           {error}
-          <button onClick={() => setError(null)} className="ml-auto text-red-400 hover:text-red-600">
-            ×
-          </button>
+          <button onClick={() => setError(null)} className="ml-auto text-red-400 hover:text-red-600">×</button>
         </motion.div>
       )}
 
@@ -110,11 +103,10 @@ export function ProductEditorContainer() {
           className="bg-green-50 text-green-600 px-4 py-3 rounded-xl border border-green-100 flex items-center gap-2 text-sm"
         >
           <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
-          保存成功！更新已发布至全站。
+          保存成功！
         </motion.div>
       )}
 
-      {/* Product List */}
       <ProductListSection
         products={products}
         categories={categories}
@@ -122,17 +114,16 @@ export function ProductEditorContainer() {
         isSaving={isSaving}
         onToggleSelect={toggleSelect}
         onToggleSelectAll={toggleSelectAll}
-        onEditProduct={openEditor}
+        onEditProduct={requestOpenEditor}
         onRemoveProduct={removeProduct}
         onToggleFeatured={toggleFeatured}
         onToggleActive={toggleActive}
       />
 
-      {/* Floating Save Button */}
       {isEditing && (
         <div className="fixed bottom-8 right-8 z-50">
           <button
-            onClick={saveProduct}
+            onClick={validatedSubmit}
             disabled={isSaving}
             className="flex items-center gap-2 px-8 py-4 bg-gray-900 text-white rounded-full hover:bg-black transition-all font-bold shadow-2xl hover:scale-105 active:scale-95 disabled:opacity-50"
           >
@@ -142,10 +133,9 @@ export function ProductEditorContainer() {
         </div>
       )}
 
-      {/* Product Editor Slide-over */}
       {isEditing && (
         <div className="fixed inset-0 z-50 flex justify-end">
-          <div className="absolute inset-0 bg-black/30" onClick={closeEditor} />
+          <div className="absolute inset-0 bg-black/30" onClick={requestCloseEditor} />
           <div className="relative w-full max-w-3xl bg-white shadow-2xl overflow-y-auto">
             {isDetailLoading ? (
               <div className="flex items-center justify-center h-64">
@@ -157,8 +147,8 @@ export function ProductEditorContainer() {
                 form={form}
                 categories={categories}
                 isSaving={isSaving}
-                onSave={saveProduct}
-                onClose={closeEditor}
+                onSubmit={validatedSubmit}
+                onClose={requestCloseEditor}
               />
             )}
           </div>

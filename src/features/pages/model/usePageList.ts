@@ -1,74 +1,124 @@
 import { useCallback, useState } from 'react';
 import { nanoid } from 'nanoid';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import type { CustomPage } from '@/types';
-import { getPagesIndex, savePagesIndex, deletePageDetail } from '../api/pages.api';
+import { getPagesIndex, savePagesIndex, savePageDetail, deletePageDetail } from '../api/pages.api';
 import { pageKeys } from '../api/pages.keys';
 import { sanitizePageIndex, createDefaultPage } from './pages.mapper';
+import type { PageIndexEntry } from './pages.mapper';
 
 export function usePageList() {
   const queryClient = useQueryClient();
   const [saved, setSaved] = useState(false);
-  const [error, setError] = useState<string | null>(null);
 
   const { data: pages = [], isLoading } = useQuery({
     queryKey: pageKeys.list(),
     queryFn: getPagesIndex,
   });
 
-  const invalidateList = useCallback(() => {
-    queryClient.invalidateQueries({ queryKey: pageKeys.list() });
-  }, [queryClient]);
-
-  const addPage = useCallback(async (
-    title: { zh: string; en: string },
-    path: string,
-    duplicateSource?: CustomPage,
-    navigate?: (path: string) => void,
-  ) => {
-    const pageId = `page_${nanoid(8)}`;
-    const newPage = createDefaultPage(path, title, pageId);
-
-    if (duplicateSource) {
-      newPage.blocks = duplicateSource.blocks.map((b) => ({
-        ...b,
-        id: `block_${nanoid(8)}`,
-      }));
-      newPage.seo = duplicateSource.seo ? { ...duplicateSource.seo } : undefined;
-    }
-
-    const updated = [...pages, newPage as unknown as CustomPage];
-    await savePagesIndex(sanitizePageIndex(updated));
-    invalidateList();
-    navigate?.(`/pages/${pageId}/edit`);
-  }, [pages, invalidateList]);
-
-  const updatePageMeta = useCallback(async (
-    pageId: string,
-    updates: { title?: { zh: string; en: string }; path?: string },
-  ) => {
-    const updated = pages.map((p) =>
-      p.id === pageId ? { ...p, ...updates } : p,
-    );
-    await savePagesIndex(sanitizePageIndex(updated));
-    invalidateList();
+  const showSaved = useCallback(() => {
     setSaved(true);
     window.setTimeout(() => setSaved(false), 2000);
-  }, [pages, invalidateList]);
+  }, []);
 
-  const deletePage = useCallback(async (pageId: string) => {
-    await deletePageDetail(pageId);
-    const filtered = pages.filter((p) => p.id !== pageId);
-    await savePagesIndex(sanitizePageIndex(filtered));
-    invalidateList();
-  }, [pages, invalidateList]);
+  const createMutation = useMutation({
+    mutationFn: async ({
+      title,
+      path,
+      duplicateSource,
+    }: {
+      title: { zh: string; en: string };
+      path: string;
+      duplicateSource?: CustomPage | PageIndexEntry;
+    }) => {
+      const pageId = `page_${nanoid(8)}`;
+      const newPage = createDefaultPage(path, title, pageId);
+
+      if (duplicateSource && 'blocks' in duplicateSource && duplicateSource.blocks) {
+        newPage.blocks = duplicateSource.blocks.map((b) => ({
+          ...b,
+          id: `block_${nanoid(8)}`,
+        }));
+        if ('seo' in duplicateSource && duplicateSource.seo) {
+          newPage.seo = { ...duplicateSource.seo };
+        }
+      }
+
+      await savePageDetail(pageId, newPage);
+      const index = sanitizePageIndex([...pages, newPage]);
+      await savePagesIndex(index as unknown as Record<string, unknown>[]);
+
+      return { pageId, newPage };
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: pageKeys.lists() });
+    },
+  });
+
+  const updateMetaMutation = useMutation({
+    mutationFn: async ({
+      pageId,
+      updates,
+    }: {
+      pageId: string;
+      updates: { title?: { zh: string; en: string }; path?: string };
+    }) => {
+      const updated = pages.map((p) =>
+        p.id === pageId ? { ...p, ...updates } : p,
+      );
+      await savePagesIndex(sanitizePageIndex(updated) as unknown as Record<string, unknown>[]);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: pageKeys.lists() });
+      showSaved();
+    },
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: async (pageId: string) => {
+      await deletePageDetail(pageId);
+      const filtered = pages.filter((p) => p.id !== pageId);
+      await savePagesIndex(sanitizePageIndex(filtered) as unknown as Record<string, unknown>[]);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: pageKeys.lists() });
+    },
+  });
+
+  const addPage = useCallback(
+    async (
+      title: { zh: string; en: string },
+      path: string,
+      duplicateSource?: CustomPage | PageIndexEntry,
+      navigate?: (path: string) => void,
+    ) => {
+      const result = await createMutation.mutateAsync({ title, path, duplicateSource });
+      navigate?.(`/pages/${result.pageId}/edit`);
+    },
+    [createMutation],
+  );
+
+  const updatePageMeta = useCallback(
+    async (pageId: string, updates: { title?: { zh: string; en: string }; path?: string }) => {
+      await updateMetaMutation.mutateAsync({ pageId, updates });
+    },
+    [updateMetaMutation],
+  );
+
+  const deletePage = useCallback(
+    async (pageId: string) => {
+      await deleteMutation.mutateAsync(pageId);
+    },
+    [deleteMutation],
+  );
+
+  const error = (createMutation.error ?? deleteMutation.error ?? updateMetaMutation.error)?.message ?? null;
 
   return {
-    pages,
+    pages: pages as unknown as PageIndexEntry[],
     isLoading,
     saved,
     error,
-    setError,
     addPage,
     updatePageMeta,
     deletePage,

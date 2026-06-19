@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import type { CustomPage } from '@/types';
-import { createDefaultPage, sanitizePageIndex, toPageFormValues } from './pages.mapper';
+import { createDefaultPage, sanitizePageIndex } from './pages.mapper';
 
 function page(overrides: Partial<CustomPage> = {}): CustomPage {
   return {
@@ -24,24 +24,14 @@ describe('pages mapper', () => {
       id: 'page_1',
       path: '/one',
       blockCount: 1,
-      blocks: [],
     });
+    expect('blocks' in result[0]).toBe(false);
   });
 
   it('preserves an existing blockCount from an index entry', () => {
     const indexed = { ...page({ blocks: [] }), blockCount: 8 };
 
     expect(sanitizePageIndex([indexed])[0].blockCount).toBe(8);
-  });
-
-  it('fills form defaults for missing page data', () => {
-    expect(toPageFormValues(undefined)).toEqual({
-      id: '',
-      path: '/',
-      title: { zh: '', en: '' },
-      isFixed: false,
-      blocks: [],
-    });
   });
 
   it('creates a dynamic page with matching SEO title defaults', () => {

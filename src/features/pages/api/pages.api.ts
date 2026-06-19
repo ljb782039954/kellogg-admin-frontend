@@ -8,7 +8,9 @@ export function getPagesIndex(): Promise<CustomPage[]> {
   });
 }
 
-export function savePagesIndex(pages: CustomPage[]): Promise<{ success: boolean }> {
+export { type PageIndexEntry } from '../model/pages.mapper';
+
+export function savePagesIndex(pages: Record<string, unknown>[]): Promise<{ success: boolean }> {
   return apiClient.request<{ success: boolean }>('/api/config', {
     method: 'POST',
     body: JSON.stringify({ key: 'pages_index', value: pages }),

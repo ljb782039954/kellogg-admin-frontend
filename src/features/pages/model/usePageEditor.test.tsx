@@ -31,6 +31,12 @@ function page(overrides: Partial<CustomPage> = {}): CustomPage {
   };
 }
 
+function indexEntry(overrides: Partial<CustomPage> = {}) {
+  const p = page(overrides);
+  const { blocks, seo, ...rest } = p;
+  return { ...rest, blockCount: blocks?.length ?? 0 };
+}
+
 function createWrapper() {
   const client = new QueryClient({
     defaultOptions: { queries: { retry: false, gcTime: 0 } },
@@ -46,7 +52,7 @@ function createWrapper() {
 describe('usePageEditor', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    usePageListMock.mockReturnValue({ pages: [page()] });
+    usePageListMock.mockReturnValue({ pages: [indexEntry()] });
     savePageDetailMock.mockResolvedValue({ success: true });
   });
 
@@ -81,21 +87,18 @@ describe('usePageEditor', () => {
     expect(result.current.localPage?.blocks[0].isVisible).toBe(false);
 
     act(() => result.current.handleMoveBlock('b', 'up'));
-    expect(result.current.localPage?.blocks.map((block) => block.id)).toEqual(['b', 'a']);
+    expect(result.current.localPage?.blocks.map((b) => b.id)).toEqual(['b', 'a']);
 
     act(() => result.current.handleUpdateBlockProps('b', { image: '/hero.jpg' }));
     expect(result.current.localPage?.blocks[0].content).toEqual({ image: '/hero.jpg' });
 
     act(() => result.current.handleAddBlock({
-      id: 'c',
-      type: 'gallery',
-      content: {},
-      isVisible: true,
+      id: 'c', type: 'gallery', content: {}, isVisible: true,
     }));
     expect(result.current.activePanel).toBe('c');
 
     act(() => result.current.handleRemoveBlock('c'));
-    expect(result.current.localPage?.blocks.map((block) => block.id)).toEqual(['b', 'a']);
+    expect(result.current.localPage?.blocks.map((b) => b.id)).toEqual(['b', 'a']);
     expect(result.current.activePanel).toBeNull();
   });
 
@@ -142,7 +145,7 @@ describe('usePageEditor', () => {
   });
 
   it('exposes fixed-layout state and save errors', async () => {
-    usePageListMock.mockReturnValue({ pages: [page({ type: 'fixed-layout' })] });
+    usePageListMock.mockReturnValue({ pages: [indexEntry({ type: 'fixed-layout' })] });
     getPageByIdMock.mockResolvedValueOnce(page({ type: 'fixed-layout' }));
     savePageDetailMock.mockRejectedValueOnce(new Error('save failed'));
     const { Wrapper } = createWrapper();
