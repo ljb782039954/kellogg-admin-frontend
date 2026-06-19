@@ -4,7 +4,17 @@ import type { CustomPage, HeaderContent, NavLink } from '@/types';
 import { navigationKeys } from '../api/navigation.keys';
 import { getHeader, updateHeader } from '../api/navigation.api';
 import { getPagesIndex } from '../api/pagesIndex.api';
-import { MAX_MAIN_NAV, toHeaderForm } from './navigation.mapper';
+import { toHeaderForm } from './navigation.mapper';
+import {
+  addNavItem,
+  removeNavItem,
+  updateNavItemName,
+  addSubItem,
+  removeSubItem,
+  updateSubItemName,
+  updateSubItemLink,
+  trimToMaxNavItems,
+} from './navigation.commands';
 
 function hasDeletedPage(items: NavLink[], pages: CustomPage[]): boolean {
   return items.some((item) => {
@@ -53,24 +63,67 @@ export function useNavigationEditor() {
     },
   });
 
-  const updateNavItems = useCallback((navItems: NavLink[]) => {
-    setDraft((prev) => ({ ...(prev ?? toHeaderForm(query.data)), navItems }));
+  const updateNavItems = useCallback((newItems: NavLink[]) => {
+    setDraft((prev) => ({
+      ...(prev ?? toHeaderForm(query.data)),
+      navItems: newItems,
+    }));
   }, [query.data]);
 
   const updateHeaderDraft = useCallback((patch: Partial<HeaderContent>) => {
     setDraft((prev) => ({ ...(prev ?? toHeaderForm(query.data)), ...patch }));
   }, [query.data]);
 
+  // View-facing commands — delegate to pure functions then update draft
+  const handleAddItem = useCallback(() => {
+    updateNavItems(addNavItem(header.navItems));
+  }, [header.navItems, updateNavItems]);
+
+  const handleRemoveItem = useCallback((index: number) => {
+    updateNavItems(removeNavItem(header.navItems, index));
+  }, [header.navItems, updateNavItems]);
+
+  const handleUpdateItemName = useCallback(
+    (index: number, name: { zh: string; en: string }) => {
+      updateNavItems(updateNavItemName(header.navItems, index, name));
+    },
+    [header.navItems, updateNavItems],
+  );
+
+  const handleAddSubItem = useCallback((parentIndex: number) => {
+    updateNavItems(addSubItem(header.navItems, parentIndex));
+  }, [header.navItems, updateNavItems]);
+
+  const handleRemoveSubItem = useCallback(
+    (parentIndex: number, subIndex: number) => {
+      updateNavItems(removeSubItem(header.navItems, parentIndex, subIndex));
+    },
+    [header.navItems, updateNavItems],
+  );
+
+  const handleUpdateSubItemName = useCallback(
+    (parentIndex: number, subIndex: number, name: { zh: string; en: string }) => {
+      updateNavItems(updateSubItemName(header.navItems, parentIndex, subIndex, name));
+    },
+    [header.navItems, updateNavItems],
+  );
+
+  const handleUpdateSubItemLink = useCallback(
+    (parentIndex: number, subIndex: number, patch: Partial<NavLink>) => {
+      updateNavItems(updateSubItemLink(header.navItems, parentIndex, subIndex, patch));
+    },
+    [header.navItems, updateNavItems],
+  );
+
   const save = useCallback(async () => {
     setError(null);
-    const headerToSave = {
-      ...header,
-      navItems: header.navItems.slice(0, MAX_MAIN_NAV),
-    };
-    await mutation.mutateAsync(headerToSave);
+    await mutation.mutateAsync(trimToMaxNavItems(header));
   }, [header, mutation]);
 
-  const hasDeletedPages = useMemo(() => hasDeletedPage(header.navItems, pages), [header.navItems, pages]);
+  const hasDeletedPages = useMemo(
+    () => hasDeletedPage(header.navItems, pages),
+    [header.navItems, pages],
+  );
 
   return useMemo(
     () => ({
@@ -82,21 +135,23 @@ export function useNavigationEditor() {
       hasDeletedPages,
       previewLang,
       setPreviewLang,
-      updateNavItems,
+      handleAddItem,
+      handleRemoveItem,
+      handleUpdateItemName,
+      handleAddSubItem,
+      handleRemoveSubItem,
+      handleUpdateSubItemName,
+      handleUpdateSubItemLink,
       updateHeader: updateHeaderDraft,
       save,
     }),
     [
-      header,
-      query.isLoading,
-      mutation.isPending,
-      saved,
-      error,
-      hasDeletedPages,
-      previewLang,
-      updateNavItems,
-      updateHeaderDraft,
-      save,
+      header, query.isLoading, mutation.isPending, saved, error,
+      hasDeletedPages, previewLang,
+      handleAddItem, handleRemoveItem, handleUpdateItemName,
+      handleAddSubItem, handleRemoveSubItem,
+      handleUpdateSubItemName, handleUpdateSubItemLink,
+      updateHeaderDraft, save,
     ],
   );
 }

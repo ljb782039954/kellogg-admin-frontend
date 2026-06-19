@@ -20,8 +20,7 @@ import { NavigationEditor } from '@/features/navigation';
 import { CategoriesEditor } from '@/features/categories';
 import { FooterEditor } from '@/features/footer';
 import { ProductsEditor } from '@/features/products';
-import InquiryEditor from './admin/editors/InquiryEditor';
-import InquiryManagement from './admin/InquiryManagement';
+import { InquiriesManager, InquirySettingsEditor } from '@/features/inquiries';
 import { MediaManager } from '@/features/media';
 import { BlogsManager, BlogEditor } from '@/features/blogs';
 import { BlogCategoriesManager } from '@/features/blog-categories';
@@ -53,9 +52,9 @@ function App() {
 
               <Route path="products" element={<ProductsEditor />} />
               <Route path="categories" element={<CategoriesEditor />} />
-              <Route path="inquiries" element={<InquiryManagement />} />
+              <Route path="inquiries" element={<InquiriesManager />} />
               <Route path="media" element={<MediaManager />} />
-              <Route path="inquiry-editor" element={<InquiryEditor />} />
+              <Route path="inquiry-editor" element={<InquirySettingsEditor />} />
               {/* Blog Management */}
               <Route path="blog" element={<BlogsManager />} />
               <Route path="blog/new" element={<BlogEditor />} />

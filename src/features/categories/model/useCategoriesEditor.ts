@@ -1,135 +1,93 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import type { Category, CategoryInput } from '@/types';
+import type { CategoryInput } from '@/types';
 import { categoryKeys } from '../api/categories.keys';
 import { getCategories, createCategory, updateCategory, deleteCategory } from '../api/categories.api';
 import { createDefaultCategory } from './category.defaults';
+import { toCategoryInput } from './category.mapper';
+import type { CategoryFormValues } from './category.schema';
 
 export function useCategoriesEditor() {
   const queryClient = useQueryClient();
-  const [saved, setSaved] = useState(false);
-  const [draft, setDraft] = useState<Category[] | null>(null);
 
   const { data: categories = [], isLoading } = useQuery({
     queryKey: categoryKeys.list(),
     queryFn: getCategories,
   });
 
-  const localCategories = draft ?? categories;
+  const invalidateList = useCallback(
+    () => queryClient.invalidateQueries({ queryKey: categoryKeys.list() }),
+    [queryClient],
+  );
 
   const createMutation = useMutation({
-    mutationFn: createCategory,
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: categoryKeys.list() }),
+    mutationFn: (form: CategoryFormValues) => createCategory(toCategoryInput(form)),
+    onSuccess: () => invalidateList(),
   });
 
   const updateMutation = useMutation({
-    mutationFn: ({ id, data }: { id: string; data: Partial<CategoryInput> }) =>
-      updateCategory(id, data),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: categoryKeys.list() }),
+    mutationFn: ({
+      id,
+      name,
+      image,
+    }: {
+      id: string;
+      name?: { zh: string; en: string };
+      image?: string;
+    }) => {
+      const data: Partial<CategoryInput> = {};
+      if (name) {
+        data.name_zh = name.zh;
+        data.name_en = name.en;
+      }
+      if (image !== undefined) data.image = image;
+      return updateCategory(id, data);
+    },
+    onSuccess: () => invalidateList(),
   });
 
   const deleteMutation = useMutation({
-    mutationFn: deleteCategory,
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: categoryKeys.list() }),
+    mutationFn: (id: string) => deleteCategory(id),
+    onSuccess: () => invalidateList(),
   });
 
-  const isSaving =
-    createMutation.isPending || updateMutation.isPending || deleteMutation.isPending;
-  const error =
-    (createMutation.error || updateMutation.error || deleteMutation.error)?.message ?? null;
+  const addCategory = useCallback(async () => {
+    const form = createDefaultCategory();
+    await createMutation.mutateAsync(form);
+  }, [createMutation]);
 
-  const addCategory = useCallback(() => {
-    setDraft((prev) => [...(prev ?? categories), createDefaultCategory()]);
-  }, [categories]);
-
-  const updateCategoryByIndex = useCallback(
-    (index: number, patch: Partial<Category>) => {
-      setDraft((prev) => {
-        const list = [...(prev ?? categories)];
-        list[index] = { ...list[index], ...patch };
-        return list;
-      });
+  const updateCategoryName = useCallback(
+    async (id: string, name: { zh: string; en: string }) => {
+      await updateMutation.mutateAsync({ id, name });
     },
-    [categories],
+    [updateMutation],
+  );
+
+  const updateCategoryImage = useCallback(
+    async (id: string, image: string) => {
+      await updateMutation.mutateAsync({ id, image });
+    },
+    [updateMutation],
   );
 
   const removeCategory = useCallback(
-    (index: number) => {
-      setDraft((prev) => {
-        const list = [...(prev ?? categories)];
-        list.splice(index, 1);
-        return list;
-      });
+    async (id: string) => {
+      await deleteMutation.mutateAsync(id);
     },
-    [categories],
+    [deleteMutation],
   );
 
-  const save = useCallback(async () => {
-    const original = categories;
-    const current = localCategories;
+  const error =
+    (createMutation.error || updateMutation.error || deleteMutation.error)?.message ?? null;
 
-    for (const localCat of current) {
-      const exists = original.find((c) => c.id === localCat.id);
-      if (!exists) {
-        await createMutation.mutateAsync({
-          id: localCat.id,
-          name_zh: localCat.name.zh,
-          name_en: localCat.name.en,
-          image: localCat.image,
-        });
-      } else {
-        const hasChanges =
-          localCat.name.zh !== exists.name.zh ||
-          localCat.name.en !== exists.name.en ||
-          localCat.image !== exists.image;
-
-        if (hasChanges) {
-          await updateMutation.mutateAsync({
-            id: localCat.id,
-            data: {
-              name_zh: localCat.name.zh,
-              name_en: localCat.name.en,
-              image: localCat.image,
-            },
-          });
-        }
-      }
-    }
-
-    for (const originalCat of original) {
-      const stillExists = current.find((c) => c.id === originalCat.id);
-      if (!stillExists) {
-        await deleteMutation.mutateAsync(originalCat.id);
-      }
-    }
-
-    setSaved(true);
-    setDraft(null);
-    setTimeout(() => setSaved(false), 2000);
-  }, [categories, localCategories, createMutation, updateMutation, deleteMutation]);
-
-  return useMemo(
-    () => ({
-      categories: localCategories,
-      isLoading,
-      isSaving,
-      saved,
-      error,
-      addCategory,
-      updateCategory: updateCategoryByIndex,
-      removeCategory,
-      save,
-    }),
-    [
-      localCategories,
-      isLoading,
-      isSaving,
-      saved,
-      error,
-      addCategory,
-      updateCategoryByIndex,
-      removeCategory,
-      save,
-    ],
-  );
+  return {
+    categories,
+    isLoading,
+    isSaving: createMutation.isPending || updateMutation.isPending || deleteMutation.isPending,
+    error,
+    addCategory,
+    updateCategoryName,
+    updateCategoryImage,
+    removeCategory,
+  };
 }

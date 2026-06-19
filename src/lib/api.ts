@@ -136,17 +136,6 @@ export const api = {
       method: 'DELETE',
     }),
 
-  getInquiries: () => request<PaginatedResponse<any>>('/api/inquiries'),
-  patchInquiry: (id: number, data: { status: string }) =>
-    request<{ success: boolean }>(`/api/inquiries/${id}`, {
-      method: 'PATCH',
-      body: JSON.stringify(data),
-    }),
-  deleteInquiry: (id: number) =>
-    request<{ success: boolean }>(`/api/inquiries/${id}`, {
-      method: 'DELETE',
-    }),
-
   getBlogs: (params?: { page?: number; pageSize?: number; status?: string; category?: string; sort?: string }) => {
     const query = new URLSearchParams();
     if (params) {

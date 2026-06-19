@@ -1,5 +1,6 @@
+import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Plus, Save, Layers, Loader2 } from 'lucide-react';
+import { Plus, Layers, Loader2 } from 'lucide-react';
 import { useCategoriesEditor } from '../model/useCategoriesEditor';
 import { CategoryListItem } from './CategoryListItem';
 
@@ -7,14 +8,14 @@ export function CategoriesEditor() {
   const {
     categories,
     isLoading,
-    isSaving,
-    saved,
     error,
     addCategory,
-    updateCategory,
+    updateCategoryName,
+    updateCategoryImage,
     removeCategory,
-    save,
   } = useCategoriesEditor();
+
+  const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
 
   if (isLoading && categories.length === 0) {
     return (
@@ -32,19 +33,6 @@ export function CategoriesEditor() {
           <h1 className="text-2xl font-bold text-gray-800 tracking-tight">分类管理</h1>
           <p className="text-gray-500 mt-1">定义产品所属的分类，将直接影响前台的筛选功能</p>
         </div>
-        <button
-          type="button"
-          onClick={save}
-          disabled={isSaving}
-          className="flex items-center gap-2 px-5 py-2.5 bg-gray-900 text-white rounded-xl hover:bg-gray-800 transition-all font-medium shadow-lg disabled:opacity-50"
-        >
-          {isSaving ? (
-            <Loader2 className="w-4 h-4 animate-spin" />
-          ) : (
-            <Save className="w-4 h-4" />
-          )}
-          保存更改
-        </button>
       </div>
 
       {error && (
@@ -55,23 +43,6 @@ export function CategoriesEditor() {
         >
           <span className="w-2 h-2 bg-red-500 rounded-full" />
           {error}
-          <button
-            type="button"
-            onClick={() => {}}
-            className="ml-auto text-red-400 hover:text-red-600"
-          >
-            ×
-          </button>
-        </motion.div>
-      )}
-
-      {saved && (
-        <motion.div
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="bg-green-50 text-green-600 px-4 py-3 rounded-xl border border-green-100"
-        >
-          保存成功！
         </motion.div>
       )}
 
@@ -82,14 +53,46 @@ export function CategoriesEditor() {
         </h2>
 
         <div className="space-y-3">
-          {categories.map((cat, index) => (
-            <CategoryListItem
-              key={cat.id}
-              category={cat}
-              index={index}
-              onUpdate={updateCategory}
-              onRemove={removeCategory}
-            />
+          {categories.length === 0 && (
+            <p className="text-center text-gray-400 py-8">暂无分类，点击下方按钮添加</p>
+          )}
+          {categories.map((cat) => (
+            <div key={cat.id}>
+              <CategoryListItem
+                category={cat}
+                onUpdateName={updateCategoryName}
+                onUpdateImage={updateCategoryImage}
+                onRemove={(id) => setDeleteConfirm(id)}
+              />
+              {deleteConfirm === cat.id && (
+                <motion.div
+                  initial={{ opacity: 0, y: -5 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="flex items-center gap-2 px-4 py-2 bg-red-50 border border-red-100 rounded-lg ml-14 mt-1"
+                >
+                  <span className="text-xs text-red-600">
+                    确定要删除分类「{cat.name.zh || cat.name.en}」？已绑定的产品将失去此筛选条件。
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      removeCategory(cat.id);
+                      setDeleteConfirm(null);
+                    }}
+                    className="px-3 py-1 text-xs font-medium bg-red-600 text-white rounded-lg hover:bg-red-700"
+                  >
+                    确认删除
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setDeleteConfirm(null)}
+                    className="px-3 py-1 text-xs font-medium text-gray-600 hover:bg-gray-200 rounded-lg"
+                  >
+                    取消
+                  </button>
+                </motion.div>
+              )}
+            </div>
           ))}
 
           <button
@@ -104,7 +107,7 @@ export function CategoriesEditor() {
       </div>
 
       <div className="bg-amber-50 rounded-xl p-4 border border-amber-100 flex gap-3">
-        <div className="w-5 h-5 text-amber-500 flex-shrink-0 mt-0.5">⚠️</div>
+        <div className="text-amber-500 flex-shrink-0 mt-0.5">⚠️</div>
         <p className="text-sm text-amber-800">
           <strong>注意：</strong> 删除分类可能会导致已绑定该分类的产品在筛选时失效。建议仅在没有关联产品时删除。
         </p>

@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { Save, AlertTriangle, Loader2 } from 'lucide-react';
+import { Save, Loader2, AlertTriangle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useNavigationEditor } from '../model/useNavigationEditor';
 import { NavigationFormView } from './NavigationFormView';
@@ -15,7 +15,13 @@ export function NavigationEditor() {
     hasDeletedPages,
     previewLang,
     setPreviewLang,
-    updateNavItems,
+    handleAddItem,
+    handleRemoveItem,
+    handleUpdateItemName,
+    handleAddSubItem,
+    handleRemoveSubItem,
+    handleUpdateSubItemName,
+    handleUpdateSubItemLink,
     save,
   } = useNavigationEditor();
 
@@ -36,11 +42,7 @@ export function NavigationEditor() {
           <p className="text-gray-500 mt-1">编辑网站顶部导航菜单，支持下拉框</p>
         </div>
         <Button onClick={save} disabled={isSaving}>
-          {isSaving ? (
-            <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-          ) : (
-            <Save className="w-4 h-4 mr-2" />
-          )}
+          {isSaving ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Save className="w-4 h-4 mr-2" />}
           保存更改
         </Button>
       </div>
@@ -53,13 +55,6 @@ export function NavigationEditor() {
         >
           <span className="w-2 h-2 bg-red-500 rounded-full" />
           {error}
-          <button
-            type="button"
-            onClick={() => {}}
-            className="ml-auto text-red-400 hover:text-red-600"
-          >
-            ×
-          </button>
         </motion.div>
       )}
 
@@ -77,18 +72,10 @@ export function NavigationEditor() {
         <div className="flex items-center justify-between">
           <span className="text-sm font-medium text-gray-700">组件预览</span>
           <div className="flex gap-1">
-            <Button
-              variant={previewLang === 'zh' ? 'default' : 'outline'}
-              size="sm"
-              onClick={() => setPreviewLang('zh')}
-            >
+            <Button variant={previewLang === 'zh' ? 'default' : 'outline'} size="sm" onClick={() => setPreviewLang('zh')}>
               中文
             </Button>
-            <Button
-              variant={previewLang === 'en' ? 'default' : 'outline'}
-              size="sm"
-              onClick={() => setPreviewLang('en')}
-            >
+            <Button variant={previewLang === 'en' ? 'default' : 'outline'} size="sm" onClick={() => setPreviewLang('en')}>
               English
             </Button>
           </div>
@@ -108,7 +95,16 @@ export function NavigationEditor() {
         品牌 Logo 和名称由「公司信息管理」统一配置。
       </div>
 
-      <NavigationFormView navItems={header.navItems} onChange={updateNavItems} />
+      <NavigationFormView
+        navItems={header.navItems}
+        onAddItem={handleAddItem}
+        onRemoveItem={handleRemoveItem}
+        onUpdateItemName={handleUpdateItemName}
+        onAddSubItem={handleAddSubItem}
+        onRemoveSubItem={handleRemoveSubItem}
+        onUpdateSubItemName={handleUpdateSubItemName}
+        onUpdateSubItemLink={handleUpdateSubItemLink}
+      />
     </div>
   );
 }

@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { act, renderHook, waitFor } from '@testing-library/react';
-import { QueryClientProvider } from '@tanstack/react-query';
-import { createAppQueryClient } from '@/app/queryClient';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import type { ReactNode } from 'react';
 import { useCategoriesEditor } from './useCategoriesEditor';
 
 const { getCategoriesMock, createCategoryMock, updateCategoryMock, deleteCategoryMock } = vi.hoisted(
@@ -21,21 +21,20 @@ vi.mock('../api/categories.api', () => ({
 }));
 
 function createWrapper() {
-  const client = createAppQueryClient();
-  return function Wrapper({ children }: { children: React.ReactNode }) {
+  const client = new QueryClient({
+    defaultOptions: { queries: { retry: false, gcTime: 0 } },
+  });
+  return function Wrapper({ children }: { children: ReactNode }) {
     return <QueryClientProvider client={client}>{children}</QueryClientProvider>;
   };
 }
 
 describe('useCategoriesEditor', () => {
   beforeEach(() => {
-    getCategoriesMock.mockReset();
-    createCategoryMock.mockReset();
-    updateCategoryMock.mockReset();
-    deleteCategoryMock.mockReset();
+    vi.clearAllMocks();
   });
 
-  it('initializes with server categories', async () => {
+  it('loads server categories', async () => {
     getCategoriesMock.mockResolvedValueOnce([
       { id: 'cat_1', name: { zh: 'A', en: 'A' }, image: '' },
     ]);
@@ -48,11 +47,49 @@ describe('useCategoriesEditor', () => {
     expect(result.current.categories[0].name.zh).toBe('A');
   });
 
-  it('creates, updates and deletes categories on save', async () => {
+  it('creates a category immediately via addCategory', async () => {
+    getCategoriesMock.mockResolvedValueOnce([]);
+    createCategoryMock.mockResolvedValueOnce({ id: 'cat_new', message: 'created' });
+
+    const { result } = renderHook(() => useCategoriesEditor(), {
+      wrapper: createWrapper(),
+    });
+
+    await waitFor(() => expect(result.current.isLoading).toBe(false));
+
+    await act(async () => {
+      await result.current.addCategory();
+    });
+
+    expect(createCategoryMock).toHaveBeenCalledTimes(1);
+  });
+
+  it('updates category name immediately', async () => {
     getCategoriesMock.mockResolvedValueOnce([
       { id: 'cat_1', name: { zh: 'A', en: 'A' }, image: '' },
     ]);
     updateCategoryMock.mockResolvedValueOnce({ id: 'cat_1' });
+
+    const { result } = renderHook(() => useCategoriesEditor(), {
+      wrapper: createWrapper(),
+    });
+
+    await waitFor(() => expect(result.current.categories).toHaveLength(1));
+
+    await act(async () => {
+      await result.current.updateCategoryName('cat_1', { zh: 'A2', en: 'A2' });
+    });
+
+    expect(updateCategoryMock).toHaveBeenCalledWith(
+      'cat_1',
+      expect.objectContaining({ name_zh: 'A2', name_en: 'A2' }),
+    );
+  });
+
+  it('deletes a category immediately', async () => {
+    getCategoriesMock.mockResolvedValueOnce([
+      { id: 'cat_1', name: { zh: 'A', en: 'A' }, image: '' },
+    ]);
     deleteCategoryMock.mockResolvedValueOnce({ success: true });
 
     const { result } = renderHook(() => useCategoriesEditor(), {
@@ -61,39 +98,10 @@ describe('useCategoriesEditor', () => {
 
     await waitFor(() => expect(result.current.categories).toHaveLength(1));
 
-    act(() => result.current.updateCategory(0, { name: { zh: 'A2', en: 'A2' } }));
-    expect(result.current.categories[0].name.zh).toBe('A2');
-
-    act(() => result.current.removeCategory(0));
-    expect(result.current.categories).toHaveLength(0);
-
     await act(async () => {
-      await result.current.save();
+      await result.current.removeCategory('cat_1');
     });
 
-    expect(createCategoryMock).not.toHaveBeenCalled();
-    expect(updateCategoryMock).not.toHaveBeenCalled();
-    expect(deleteCategoryMock).toHaveBeenCalledWith('cat_1', expect.any(Object));
-    expect(result.current.saved).toBe(true);
-  });
-
-  it('creates a new category when the local list has an unknown id', async () => {
-    getCategoriesMock.mockResolvedValueOnce([]);
-    createCategoryMock.mockResolvedValueOnce({ id: 'cat_new' });
-
-    const { result } = renderHook(() => useCategoriesEditor(), {
-      wrapper: createWrapper(),
-    });
-
-    await waitFor(() => expect(result.current.categories).toHaveLength(0));
-
-    act(() => result.current.addCategory());
-    expect(result.current.categories).toHaveLength(1);
-
-    await act(async () => {
-      await result.current.save();
-    });
-
-    expect(createCategoryMock).toHaveBeenCalledTimes(1);
+    expect(deleteCategoryMock).toHaveBeenCalledWith('cat_1');
   });
 });

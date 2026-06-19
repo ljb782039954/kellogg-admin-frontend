@@ -1,84 +1,36 @@
 import { motion } from 'framer-motion';
 import { Plus, Trash2, GripVertical, AlertTriangle } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
 import BilingualInput from '@/admin/components/BilingualInput';
 import LinkSelector from '@/admin/components/LinkSelector';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { MAX_MAIN_NAV } from '../model/navigation.commands';
 import type { NavLink, Translation } from '@/types';
 
 interface NavigationFormViewProps {
   navItems: NavLink[];
-  onChange: (items: NavLink[]) => void;
+  maxMainNav?: number;
+  onAddItem: () => void;
+  onRemoveItem: (index: number) => void;
+  onUpdateItemName: (index: number, name: Translation) => void;
+  onAddSubItem: (parentIndex: number) => void;
+  onRemoveSubItem: (parentIndex: number, subIndex: number) => void;
+  onUpdateSubItemName: (parentIndex: number, subIndex: number, name: Translation) => void;
+  onUpdateSubItemLink: (parentIndex: number, subIndex: number, link: Partial<NavLink>) => void;
 }
 
-const MAX_MAIN_NAV = 5;
-
-export function NavigationFormView({ navItems, onChange }: NavigationFormViewProps) {
-  const addNavItem = () => {
-    if (navItems.length >= MAX_MAIN_NAV) return;
-
-    const newItem: NavLink = {
-      id: crypto.randomUUID(),
-      name: { zh: '新菜单', en: 'New Menu' },
-      linkType: 'internal',
-      href: '',
-      children: [],
-    };
-    onChange([...navItems, newItem]);
-  };
-
-  const updateNavItemName = (index: number, value: Translation) => {
-    const newNavItems = [...navItems];
-    newNavItems[index] = { ...newNavItems[index], name: value };
-    onChange(newNavItems);
-  };
-
-  const removeNavItem = (index: number) => {
-    onChange(navItems.filter((_, i) => i !== index));
-  };
-
-  const addSubItem = (parentIndex: number) => {
-    const newNavItems = [...navItems];
-    const parent = newNavItems[parentIndex];
-    const children = parent.children || [];
-
-    parent.children = [
-      ...children,
-      {
-        id: crypto.randomUUID(),
-        name: { zh: '新子菜单', en: 'New Sub Menu' },
-        linkType: 'internal',
-        href: '',
-      },
-    ];
-    onChange(newNavItems);
-  };
-
-  const updateSubItemName = (parentIndex: number, subIndex: number, value: Translation) => {
-    const newNavItems = [...navItems];
-    const children = [...(newNavItems[parentIndex].children || [])];
-    children[subIndex] = { ...children[subIndex], name: value };
-    newNavItems[parentIndex].children = children;
-    onChange(newNavItems);
-  };
-
-  const updateSubItemLink = (parentIndex: number, subIndex: number, value: Partial<NavLink>) => {
-    const newNavItems = [...navItems];
-    const children = [...(newNavItems[parentIndex].children || [])];
-    children[subIndex] = { ...children[subIndex], ...value };
-    newNavItems[parentIndex].children = children;
-    onChange(newNavItems);
-  };
-
-  const removeSubItem = (parentIndex: number, subIndex: number) => {
-    const newNavItems = [...navItems];
-    const children = [...(newNavItems[parentIndex].children || [])];
-    children.splice(subIndex, 1);
-    newNavItems[parentIndex].children = children;
-    onChange(newNavItems);
-  };
-
+export function NavigationFormView({
+  navItems,
+  maxMainNav = MAX_MAIN_NAV,
+  onAddItem,
+  onRemoveItem,
+  onUpdateItemName,
+  onAddSubItem,
+  onRemoveSubItem,
+  onUpdateSubItemName,
+  onUpdateSubItemLink,
+}: NavigationFormViewProps) {
   return (
     <Card>
       <CardHeader>
@@ -86,12 +38,12 @@ export function NavigationFormView({ navItems, onChange }: NavigationFormViewPro
           <div>
             <CardTitle>导航菜单</CardTitle>
             <CardDescription>
-              管理顶部导航栏的菜单项与下拉子菜单（最多 {MAX_MAIN_NAV} 个一级菜单）
+              管理顶部导航栏的菜单项与下拉子菜单（最多 {maxMainNav} 个一级菜单）
             </CardDescription>
           </div>
-          <Button variant="outline" size="sm" onClick={addNavItem} disabled={navItems.length >= MAX_MAIN_NAV}>
+          <Button variant="outline" size="sm" onClick={onAddItem} disabled={navItems.length >= maxMainNav}>
             <Plus className="w-4 h-4 mr-1" />
-            添加主菜单 {navItems.length}/{MAX_MAIN_NAV}
+            添加主菜单 {navItems.length}/{maxMainNav}
           </Button>
         </div>
       </CardHeader>
@@ -126,7 +78,7 @@ export function NavigationFormView({ navItems, onChange }: NavigationFormViewPro
                     <Button
                       variant="ghost"
                       size="sm"
-                      onClick={() => removeNavItem(index)}
+                      onClick={() => onRemoveItem(index)}
                       className="text-red-500 hover:text-red-700 hover:bg-red-50"
                     >
                       <Trash2 className="w-4 h-4" />
@@ -136,7 +88,7 @@ export function NavigationFormView({ navItems, onChange }: NavigationFormViewPro
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <BilingualInput
                       value={item.name}
-                      onChange={(value) => updateNavItemName(index, value)}
+                      onChange={(value) => onUpdateItemName(index, value)}
                       placeholder={{ zh: '菜单中文名', en: 'Menu English name' }}
                       label="菜单名称"
                     />
@@ -148,7 +100,7 @@ export function NavigationFormView({ navItems, onChange }: NavigationFormViewPro
                       <Button
                         variant="outline"
                         size="sm"
-                        onClick={() => addSubItem(index)}
+                        onClick={() => onAddSubItem(index)}
                         className="h-7 text-xs"
                       >
                         <Plus className="w-3 h-3 mr-1" />
@@ -165,18 +117,18 @@ export function NavigationFormView({ navItems, onChange }: NavigationFormViewPro
                           <div className="flex-1 grid grid-cols-2 gap-3">
                             <BilingualInput
                               value={subItem.name}
-                              onChange={(val) => updateSubItemName(index, subIndex, val)}
+                              onChange={(val) => onUpdateSubItemName(index, subIndex, val)}
                               placeholder={{ zh: '子菜单名', en: 'Sub Menu' }}
                             />
                             <LinkSelector
                               value={subItem}
-                              onChange={(val) => updateSubItemLink(index, subIndex, val)}
+                              onChange={(val) => onUpdateSubItemLink(index, subIndex, val)}
                             />
                           </div>
                           <Button
                             variant="ghost"
                             size="sm"
-                            onClick={() => removeSubItem(index, subIndex)}
+                            onClick={() => onRemoveSubItem(index, subIndex)}
                             className="text-red-500 mt-6 h-8 w-8 p-0"
                           >
                             <Trash2 className="w-4 h-4" />
