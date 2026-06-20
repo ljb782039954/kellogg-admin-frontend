@@ -44,8 +44,10 @@ src/
 
 ## 权威文档
 
-- [设计说明](superpowers/specs/2026-06-19-ui-context-cleanup-design.md)
-- [实施计划](superpowers/plans/2026-06-19-ui-context-cleanup.md)
+- [原始需求](需求描述.md)
+- [可替换项目 Package 架构设计](superpowers/specs/2026-06-20-project-package-architecture-design.md)
+
+新的实施计划将在本设计确认后编写。此前以 UI 路径清理为目标的设计与计划已废止。
 
 ## 已迁移路由
 
