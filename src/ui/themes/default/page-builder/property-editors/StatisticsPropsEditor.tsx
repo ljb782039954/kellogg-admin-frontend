@@ -1,3 +1,4 @@
+import type { PropertyEditorProps } from '@/features/page-builder';
 import { useState } from 'react';
 import { Plus, Trash2, GripVertical } from 'lucide-react';
 import { motion } from 'framer-motion';
@@ -7,18 +8,15 @@ import { Label } from '@/ui/primitives/label';
 import BilingualInput from '@/ui/forms/BilingualInput';
 import type { Statistic, StatisticProps } from '@/components/blocks/Statistics';
 
-export interface StatisticsPropsEditorProps {
-  props: StatisticProps;
-  onUpdate: (props: StatisticProps) => void;
-}
 
 
-export function StatisticsPropsEditor({ props, onUpdate }: StatisticsPropsEditorProps) {
-  const [localData, setLocalData] = useState<Statistic[]>(props.items || []);
+
+export function StatisticsPropsEditor({ value, onChange }: PropertyEditorProps<StatisticProps>) {
+  const [localData, setLocalData] = useState<Statistic[]>(value.items || []);
 
   const saveStats = (items: Statistic[]) => {
     setLocalData(items);
-    onUpdate({ ...props, items });
+    onChange({ ...value, items });
   };
 
   const addItem = () => {
@@ -49,13 +47,13 @@ export function StatisticsPropsEditor({ props, onUpdate }: StatisticsPropsEditor
         <h4 className="font-medium text-sm text-gray-700">标题设置 (Heading)</h4>
         <BilingualInput
           label="标题"
-          value={props.title || { zh: '数据统计', en: 'Statistics' }}
-          onChange={(val) => onUpdate({ ...props, title: val })}
+          value={value.title || { zh: '数据统计', en: 'Statistics' }}
+          onChange={(val) => onChange({ ...value, title: val })}
         />
         <BilingualInput
           label="副标题"
-          value={props.subtitle || { zh: '记录我们的成长时刻', en: 'Moments of our growth' }}
-          onChange={(val) => onUpdate({ ...props, subtitle: val })}
+          value={value.subtitle || { zh: '记录我们的成长时刻', en: 'Moments of our growth' }}
+          onChange={(val) => onChange({ ...value, subtitle: val })}
         />
       </div>
 

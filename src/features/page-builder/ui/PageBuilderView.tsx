@@ -8,15 +8,24 @@ import { AddBlockDialog } from './block-picker/AddBlockDialog';
 import { BlockPropertyPanel } from './property-panel/BlockPropertyPanel';
 import { PageSettingsEditor } from './page-settings/PageSettingsEditor';
 import { SEOEditor } from './seo-settings/SEOEditor';
-import type { PageBuilderViewModel, PageBuilderActions } from '../model/pageBuilder.types';
+import { type ComponentType } from 'react';
+import type { PageBuilderViewModel, PageBuilderActions, PropertyEditorResources } from '../model/pageBuilder.types';
 
 interface PageBuilderViewProps {
   viewModel: PageBuilderViewModel;
   actions: PageBuilderActions;
+  editors?: Record<string, ComponentType<any>>;
+  resources?: PropertyEditorResources;
   onBack(): void;
 }
 
-export function PageBuilderView({ viewModel, actions, onBack }: PageBuilderViewProps) {
+export function PageBuilderView({
+  viewModel,
+  actions,
+  editors = {},
+  resources = { categories: [], products: [], pages: [], isLoading: false, error: null },
+  onBack,
+}: PageBuilderViewProps) {
   const { language } = useLanguage();
   const [addDialogOpen, setAddDialogOpen] = useState(false);
 
@@ -172,6 +181,8 @@ export function PageBuilderView({ viewModel, actions, onBack }: PageBuilderViewP
             <BlockPropertyPanel
               block={viewModel.selectedBlock}
               onChange={(content) => actions.updateBlock(viewModel.selectedBlock!.id, content)}
+              editors={editors}
+              resources={resources}
             />
           )}
         </div>

@@ -101,3 +101,11 @@ export interface PropertyEditorResources {
   isLoading: boolean;
   error: string | null;
 }
+
+export interface PropertyEditorProps<T = any> {
+  value: T;
+  onChange: (value: T) => void;
+  resources: PropertyEditorResources;
+  disabled?: boolean;
+  errors?: Record<string, string>;
+}

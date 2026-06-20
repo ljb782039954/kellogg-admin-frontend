@@ -1,3 +1,4 @@
+import type { PropertyEditorProps } from '@/features/page-builder';
 // 图片横幅属性编辑器
 import { Label } from '@/ui/primitives/label';
 import { Input } from '@/ui/primitives/input';
@@ -13,15 +14,12 @@ import BilingualInput from '@/ui/forms/BilingualInput';
 import ImageInput from '@/ui/media/ImageInput';
 import type { ImageBannerProps } from '@/components/blocks/ImageBanner';
 
-export interface ImageBannerPropsEditorProps {
-  props: ImageBannerProps;
-  onUpdate: (props: ImageBannerProps) => void;
-}
 
 
-export function ImageBannerPropsEditor({ props, onUpdate }: ImageBannerPropsEditorProps) {
-  const handleChange = (key: string, value: unknown) => {
-    onUpdate({ ...props, [key]: value });
+
+export function ImageBannerPropsEditor({ value, onChange }: PropertyEditorProps<ImageBannerProps>) {
+  const handleChange = (key: string, val: unknown) => {
+    onChange({ ...value, [key]: val });
   };
 
   return (
@@ -30,7 +28,7 @@ export function ImageBannerPropsEditor({ props, onUpdate }: ImageBannerPropsEdit
       <div className="space-y-2">
         <Label>横幅图片</Label>
         <ImageInput
-          value={props.image || ''}
+          value={value.image || ''}
           onChange={(value) => handleChange('image', value)}
         />
       </div>
@@ -39,7 +37,7 @@ export function ImageBannerPropsEditor({ props, onUpdate }: ImageBannerPropsEdit
       <div className="space-y-2">
         <Label>标题（可选）</Label>
         <BilingualInput
-          value={props.title || { zh: '', en: '' }}
+          value={value.title || { zh: '', en: '' }}
           onChange={(value) => handleChange('title', value)}
           placeholder={{ zh: '请输入中文标题', en: 'Enter English title' }}
         />
@@ -49,7 +47,7 @@ export function ImageBannerPropsEditor({ props, onUpdate }: ImageBannerPropsEdit
       <div className="space-y-2">
         <Label>副标题（可选）</Label>
         <BilingualInput
-          value={props.subtitle || { zh: '', en: '' }}
+          value={value.subtitle || { zh: '', en: '' }}
           onChange={(value) => handleChange('subtitle', value)}
           placeholder={{ zh: '请输入中文副标题', en: 'Enter English subtitle' }}
         />
@@ -59,13 +57,13 @@ export function ImageBannerPropsEditor({ props, onUpdate }: ImageBannerPropsEdit
       <div className="space-y-2">
         <Label>按钮文字</Label>
         <BilingualInput
-          value={props.buttonText || { zh: '', en: '' }}
+          value={value.buttonText || { zh: '', en: '' }}
           onChange={(value) => handleChange('ctaText', value)}
           placeholder={{ zh: '请输入中文按钮文字', en: 'Enter English button text' }}
         />
         <Label>点击链接 (URL)</Label>
         <Input
-          value={props.linkUrl || ''}
+          value={value.linkUrl || ''}
           onChange={(e) => handleChange('linkUrl', e.target.value)}
           placeholder="https://example.com/page"
         />
@@ -75,7 +73,7 @@ export function ImageBannerPropsEditor({ props, onUpdate }: ImageBannerPropsEdit
       <div className="space-y-2">
         <Label>横幅高度</Label>
         <Select
-          value={props.height || 'medium'}
+          value={value.height || 'medium'}
           onValueChange={(value) =>
             handleChange('height', value)
           }
@@ -101,7 +99,7 @@ export function ImageBannerPropsEditor({ props, onUpdate }: ImageBannerPropsEdit
           </p>
         </div>
         <Switch
-          checked={props.overlay || false}
+          checked={value.overlay || false}
           onCheckedChange={(checked) => handleChange('overlay', checked)}
         />
       </div>

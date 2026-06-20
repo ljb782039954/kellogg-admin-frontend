@@ -1,17 +1,15 @@
+import type { PropertyEditorProps } from '@/features/page-builder';
 // 图片横幅属性编辑器
 import { Label } from '@/ui/primitives/label';
 import BilingualInput from '@/ui/forms/BilingualInput';
 import ImageInput from '@/ui/media/ImageInput';
 import type { ImageBannerTagProps } from '@/components/blocks/ImageBannerTag';
 
-export interface ImageBannerTagPropsEditorProps {
-  props: ImageBannerTagProps;
-  onUpdate: (props: ImageBannerTagProps) => void;
-}
 
-export function ImageBannerTagPropsEditor({ props, onUpdate }: ImageBannerTagPropsEditorProps) {
-  const handleChange = (key: string, value: unknown) => {
-    onUpdate({ ...props, [key]: value });
+
+export function ImageBannerTagPropsEditor({ value, onChange }: PropertyEditorProps<ImageBannerTagProps>) {
+  const handleChange = (key: string, val: unknown) => {
+    onChange({ ...value, [key]: val });
   };
 
   return (
@@ -20,7 +18,7 @@ export function ImageBannerTagPropsEditor({ props, onUpdate }: ImageBannerTagPro
       <div className="space-y-2">
         <Label>横幅图片</Label>
         <ImageInput
-          value={props.image || ''}
+          value={value.image || ''}
           onChange={(value) => handleChange('image', value)}
         />
       </div>
@@ -29,7 +27,7 @@ export function ImageBannerTagPropsEditor({ props, onUpdate }: ImageBannerTagPro
       <div className="space-y-2">
         <Label>标签</Label>
         <BilingualInput
-          value={props.tag || { zh: '', en: '' }}
+          value={value.tag || { zh: '', en: '' }}
           onChange={(value) => handleChange('tag', value)}
           placeholder={{ zh: '请输入中文标签', en: 'Enter English tag' }}
         />
@@ -39,7 +37,7 @@ export function ImageBannerTagPropsEditor({ props, onUpdate }: ImageBannerTagPro
       <div className="space-y-2">
         <Label>标题（可选）</Label>
         <BilingualInput
-          value={props.title || { zh: '', en: '' }}
+          value={value.title || { zh: '', en: '' }}
           onChange={(value) => handleChange('title', value)}
           placeholder={{ zh: '请输入中文标题', en: 'Enter English title' }}
         />
@@ -49,7 +47,7 @@ export function ImageBannerTagPropsEditor({ props, onUpdate }: ImageBannerTagPro
       <div className="space-y-2">
         <Label>副标题（可选）</Label>
         <BilingualInput
-          value={props.subtitle || { zh: '', en: '' }}
+          value={value.subtitle || { zh: '', en: '' }}
           onChange={(value) => handleChange('subtitle', value)}
           placeholder={{ zh: '请输入中文副标题', en: 'Enter English subtitle' }}
         />

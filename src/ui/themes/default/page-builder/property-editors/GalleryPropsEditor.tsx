@@ -1,3 +1,4 @@
+import type { PropertyEditorProps } from '@/features/page-builder';
 // 图片画廊组件属性编辑器
 
 // import { Label } from '@/ui/primitives/label';
@@ -14,30 +15,27 @@ import BilingualInput from '@/ui/forms/BilingualInput';
 import ImageInput from '@/ui/media/ImageInput';
 import type { GalleryProps } from '@/components/blocks/Gallery';
 
-export interface GalleryPropsEditorProps {
-  props: GalleryProps;
-  onUpdate: (props: GalleryProps) => void;
-}
 
-export function GalleryPropsEditor({ props, onUpdate }: GalleryPropsEditorProps) {
-  const items = props.items || [];
+
+export function GalleryPropsEditor({ value, onChange }: PropertyEditorProps<GalleryProps>) {
+  const items = value.items || [];
 
   const addItem = () => {
-    onUpdate({
-      ...props,
+    onChange({
+      ...value,
       items: [...items, { src: '', caption: { zh: '', en: '' } }],
     });
   };
 
-  const updateItem = (index: number, field: string, value: unknown) => {
+  const updateItem = (index: number, field: string, val: unknown) => {
     const newItems = [...items];
-    newItems[index] = { ...newItems[index], [field]: value };
-    onUpdate({ ...props, items: newItems });
+    newItems[index] = { ...newItems[index], [field]: val };
+    onChange({ ...value, items: newItems });
   };
 
   const removeItem = (index: number) => {
     const newItems = items.filter((_, i) => i !== index);
-    onUpdate({ ...props, items: newItems });
+    onChange({ ...value, items: newItems });
   };
 
   return (
@@ -47,13 +45,13 @@ export function GalleryPropsEditor({ props, onUpdate }: GalleryPropsEditorProps)
         <h4 className="font-medium text-sm text-gray-700">标题设置</h4>
         <BilingualInput
           label="标题"
-          value={props.title || { zh: '', en: '' }}
-          onChange={(val) => onUpdate({ ...props, title: val })}
+          value={value.title || { zh: '', en: '' }}
+          onChange={(val) => onChange({ ...value, title: val })}
         />
         <BilingualInput
           label="副标题"
-          value={props.subtitle || { zh: '', en: '' }}
-          onChange={(val) => onUpdate({ ...props, subtitle: val })}
+          value={value.subtitle || { zh: '', en: '' }}
+          onChange={(val) => onChange({ ...value, subtitle: val })}
         />
       </div>
 
@@ -64,8 +62,8 @@ export function GalleryPropsEditor({ props, onUpdate }: GalleryPropsEditorProps)
           <div className="space-y-2">
             <Label>布局方式</Label>
             <Select
-              value={props.layout || 'grid'}
-              onValueChange={(val) => onUpdate({ ...props, layout: val })}
+              value={value.layout || 'grid'}
+              onValueChange={(val) => onChange({ ...value, layout: val })}
             >
               <SelectTrigger>
                 <SelectValue />
@@ -79,8 +77,8 @@ export function GalleryPropsEditor({ props, onUpdate }: GalleryPropsEditorProps)
           <div className="space-y-2">
             <Label>列数</Label>
             <Select
-              value={String(props.columns || 3)}
-              onValueChange={(val) => onUpdate({ ...props, columns: parseInt(val) })}
+              value={String(value.columns || 3)}
+              onValueChange={(val) => onChange({ ...value, columns: parseInt(val) })}
             >
               <SelectTrigger>
                 <SelectValue />

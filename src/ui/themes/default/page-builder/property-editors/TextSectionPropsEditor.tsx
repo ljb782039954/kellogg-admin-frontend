@@ -1,3 +1,4 @@
+import type { PropertyEditorProps } from '@/features/page-builder';
 // 文本区块属性编辑器
 import { Label } from '@/ui/primitives/label';
 import {
@@ -11,14 +12,11 @@ import BilingualInput from '@/ui/forms/BilingualInput';
 import BilingualRichInput from '@/ui/forms/rich-text/BilingualRichInput';
 import type { TextSectionProps } from '@/components/blocks/TextSection';
 
-export interface TextSectionPropsEditorProps {
-  props: TextSectionProps;
-  onUpdate: (props: TextSectionProps) => void;
-}
 
-export function TextSectionPropsEditor({ props, onUpdate }: TextSectionPropsEditorProps) {
-  const handleChange = (key: string, value: unknown) => {
-    onUpdate({ ...props, [key]: value });
+
+export function TextSectionPropsEditor({ value, onChange }: PropertyEditorProps<TextSectionProps>) {
+  const handleChange = (key: string, val: unknown) => {
+    onChange({ ...value, [key]: val });
   };
 
   return (
@@ -27,7 +25,7 @@ export function TextSectionPropsEditor({ props, onUpdate }: TextSectionPropsEdit
       <div className="space-y-2">
         <Label>标题</Label>
         <BilingualInput
-          value={props.title || { zh: '', en: '' }}
+          value={value.title || { zh: '', en: '' }}
           onChange={(value) => handleChange('title', value)}
           placeholder={{ zh: '请输入中文标题', en: 'Enter English title' }}
         />
@@ -36,7 +34,7 @@ export function TextSectionPropsEditor({ props, onUpdate }: TextSectionPropsEdit
       {/* 内容 */}
       <BilingualRichInput
         label="内容"
-        value={props.content || { zh: '', en: '' }}
+        value={value.content || { zh: '', en: '' }}
         onChange={(val) => handleChange('content', val)}
         placeholder={{ zh: '请输入中文内容', en: 'Enter English content' }}
       />
@@ -45,7 +43,7 @@ export function TextSectionPropsEditor({ props, onUpdate }: TextSectionPropsEdit
       <div className="space-y-2">
         <Label>对齐方式</Label>
         <Select
-          value={props.alignment || 'center'}
+          value={value.alignment || 'center'}
           onValueChange={(value) =>
             handleChange('alignment', value)
           }
@@ -65,7 +63,7 @@ export function TextSectionPropsEditor({ props, onUpdate }: TextSectionPropsEdit
       <div className="space-y-2">
         <Label>上下间距</Label>
         <Select
-          value={props.paddingY || 'medium'}
+          value={value.paddingY || 'medium'}
           onValueChange={(value) =>
             handleChange('paddingY', value)
           }
@@ -87,13 +85,13 @@ export function TextSectionPropsEditor({ props, onUpdate }: TextSectionPropsEdit
         <div className="flex gap-2">
           <input
             type="color"
-            value={props.backgroundColor || '#ffffff'}
+            value={value.backgroundColor || '#ffffff'}
             onChange={(e) => handleChange('backgroundColor', e.target.value)}
             className="w-10 h-10 rounded border cursor-pointer"
           />
           <input
             type="text"
-            value={props.backgroundColor || ''}
+            value={value.backgroundColor || ''}
             onChange={(e) => handleChange('backgroundColor', e.target.value)}
             placeholder="#ffffff"
             className="flex-1 px-3 py-2 border rounded-md text-sm"

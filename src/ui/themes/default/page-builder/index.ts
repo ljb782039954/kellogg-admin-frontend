@@ -1,1 +1,1 @@
-// Default theme page-builder exports
+export { defaultPropertyEditorRegistry } from './propertyEditorRegistry';

@@ -9,22 +9,20 @@ import BilingualInput from '@/ui/forms/BilingualInput';
 import ImageInput from '@/ui/media/ImageInput';
 import { LinkSelector } from '@/ui/navigation/LinkSelector';
 import { ensureNavLink } from '@/lib/linkUtils';
-import type { CarouselValues,CarouselProps } from '@/components/blocks/Carousel';
-import { usePageOptions } from '@/features/pages';
+import type { CarouselValues, CarouselProps } from '@/components/blocks/Carousel';
+import type { PropertyEditorProps } from '@/features/page-builder';
 
-export interface CarouselPropsEditorProps {
-  props: CarouselProps;
-  onUpdate: (props: CarouselProps) => void;
-}
-
-
-export function CarouselPropsEditor({ props, onUpdate }: CarouselPropsEditorProps) {
-  const { pages } = usePageOptions();
-  const [localData, setLocalData] = useState<CarouselValues[]>(props.items || []);
+export function CarouselPropsEditor({
+  value,
+  onChange,
+  resources,
+}: PropertyEditorProps<CarouselProps>) {
+  const { pages } = resources;
+  const [localData, setLocalData] = useState<CarouselValues[]>(value.items || []);
 
   const saveItems = (items: CarouselValues[]) => {
     setLocalData(items);
-    onUpdate({ ...props, items });
+    onChange({ ...value, items });
   };
 
   const addItem = () => {
@@ -41,9 +39,13 @@ export function CarouselPropsEditor({ props, onUpdate }: CarouselPropsEditorProp
     ]);
   };
 
-  const updateItems = <K extends keyof CarouselValues>(index: number, field: K, value: CarouselValues[K]) => {
+  const updateItems = <K extends keyof CarouselValues>(
+    index: number,
+    field: K,
+    itemValue: CarouselValues[K]
+  ) => {
     const newItems = [...localData];
-    newItems[index] = { ...newItems[index], [field]: value };
+    newItems[index] = { ...newItems[index], [field]: itemValue };
     saveItems(newItems);
   };
 
@@ -59,8 +61,8 @@ export function CarouselPropsEditor({ props, onUpdate }: CarouselPropsEditorProp
         <div className="flex items-center justify-between">
           <Label>自动播放</Label>
           <Switch
-            checked={props.autoPlay !== false}
-            onCheckedChange={(checked) => onUpdate({ ...props, autoPlay: checked })}
+            checked={value.autoPlay !== false}
+            onCheckedChange={(checked) => onChange({ ...value, autoPlay: checked })}
           />
         </div>
         <div className="space-y-2">
@@ -69,8 +71,8 @@ export function CarouselPropsEditor({ props, onUpdate }: CarouselPropsEditorProp
             type="number"
             min={1000}
             step={500}
-            value={props.interval || 5000}
-            onChange={(e) => onUpdate({ ...props, interval: parseInt(e.target.value) || 5000 })}
+            value={value.interval || 5000}
+            onChange={(e) => onChange({ ...value, interval: parseInt(e.target.value) || 5000 })}
           />
         </div>
       </div>
@@ -141,7 +143,7 @@ export function CarouselPropsEditor({ props, onUpdate }: CarouselPropsEditorProp
                         newItems[index] = {
                           ...newItems[index],
                           link: val,
-                          cta: val.name // 同步按钮文字
+                          cta: val.name, // 同步按钮文字
                         };
                         saveItems(newItems);
                       }}

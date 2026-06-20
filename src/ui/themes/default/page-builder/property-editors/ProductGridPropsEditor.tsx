@@ -1,3 +1,4 @@
+import type { PropertyEditorProps } from '@/features/page-builder';
 // 产品网格属性编辑器
 import { Label } from '@/ui/primitives/label';
 import {
@@ -9,15 +10,12 @@ import {
 } from '@/ui/primitives/select';
 import type { ProductGridProps } from '@/components/blocks/ProductGrid';
 
-export interface ProductGridPropsEditorProps {
-  props: ProductGridProps;
-  onUpdate: (props: ProductGridProps) => void;
-}
 
-export function ProductGridPropsEditor({ props, onUpdate }: ProductGridPropsEditorProps) {
 
-  const handleChange = (key: string, value: unknown) => {
-    onUpdate({ ...props, [key]: value });
+export function ProductGridPropsEditor({ value, onChange }: PropertyEditorProps<ProductGridProps>) {
+
+  const handleChange = (key: string, val: unknown) => {
+    onChange({ ...value, [key]: val });
   };
 
   return (
@@ -26,7 +24,7 @@ export function ProductGridPropsEditor({ props, onUpdate }: ProductGridPropsEdit
       <div className="space-y-2">
         <Label>每页显示数量</Label>
         <Select
-          value={String(props.itemsPerPage || 12)}
+          value={String(value.itemsPerPage || 12)}
           onValueChange={(val) => handleChange('itemsPerPage', parseInt(val) || 12)}
         >
           <SelectTrigger className="w-full">

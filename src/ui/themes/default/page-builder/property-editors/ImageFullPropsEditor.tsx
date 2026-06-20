@@ -1,3 +1,4 @@
+import type { PropertyEditorProps } from '@/features/page-builder';
 // 单张大图属性编辑器
 import { Label } from '@/ui/primitives/label';
 import { Switch } from '@/ui/primitives/switch';
@@ -12,15 +13,12 @@ import BilingualInput from '@/ui/forms/BilingualInput';
 import ImageInput from '@/ui/media/ImageInput';
 import type { ImageFullProps } from '@/components/blocks/ImageFull';
 
-export interface ImageFullPropsEditorProps {
-  props: ImageFullProps;
-  onUpdate: (props: ImageFullProps) => void;
-}
 
 
-export function ImageFullPropsEditor({ props, onUpdate }: ImageFullPropsEditorProps) {
-  const handleChange = (key: string, value: unknown) => {
-    onUpdate({ ...props, [key]: value });
+
+export function ImageFullPropsEditor({ value, onChange }: PropertyEditorProps<ImageFullProps>) {
+  const handleChange = (key: string, val: unknown) => {
+    onChange({ ...value, [key]: val });
   };
 
   return (
@@ -29,7 +27,7 @@ export function ImageFullPropsEditor({ props, onUpdate }: ImageFullPropsEditorPr
       <div className="space-y-2">
         <Label>单张大图片</Label>
         <ImageInput
-          value={props.image || ''}
+          value={value.image || ''}
           onChange={(value) => handleChange('image', value)}
         />
       </div>
@@ -37,7 +35,7 @@ export function ImageFullPropsEditor({ props, onUpdate }: ImageFullPropsEditorPr
       <div className="space-y-2">
         <Label>图片alt</Label>
         <BilingualInput
-          value={props.alt || { zh: '', en: '' }}
+          value={value.alt || { zh: '', en: '' }}
           onChange={(value) => handleChange('alt', value)}
           placeholder={{ zh: '请输入中文alt', en: 'Enter English alt' }}
         />
@@ -47,7 +45,7 @@ export function ImageFullPropsEditor({ props, onUpdate }: ImageFullPropsEditorPr
       <div className="space-y-2">
         <Label>描述文字 (显示在遮罩上)</Label>
         <BilingualInput
-          value={props.description || { zh: '', en: '' }}
+          value={value.description || { zh: '', en: '' }}
           onChange={(value) => handleChange('description', value)}
           placeholder={{ zh: '请输入描述文字', en: 'Enter description text' }}
         />
@@ -57,7 +55,7 @@ export function ImageFullPropsEditor({ props, onUpdate }: ImageFullPropsEditorPr
       <div className="space-y-2">
         <Label>组件宽度</Label>
         <Select
-          value={props.width || 'full'}
+          value={value.width || 'full'}
           onValueChange={(value) =>
             handleChange('width', value)
           }
@@ -78,7 +76,7 @@ export function ImageFullPropsEditor({ props, onUpdate }: ImageFullPropsEditorPr
       <div className="space-y-2">
         <Label>单张大图高度</Label>
         <Select
-          value={props.height || 'medium'}
+          value={value.height || 'medium'}
           onValueChange={(value) =>
             handleChange('height', value)
           }
@@ -104,7 +102,7 @@ export function ImageFullPropsEditor({ props, onUpdate }: ImageFullPropsEditorPr
           </p>
         </div>
         <Switch
-          checked={props.overlay || false}
+          checked={value.overlay || false}
           onCheckedChange={(checked) => handleChange('overlay', checked)}
         />
       </div>

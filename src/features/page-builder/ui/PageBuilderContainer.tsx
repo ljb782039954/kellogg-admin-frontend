@@ -1,10 +1,17 @@
+import { type ComponentType } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Loader2 } from 'lucide-react';
 import { Button } from '@/ui/primitives/button';
 import { usePageBuilderController } from '../model/usePageBuilderController';
 import { PageBuilderView } from './PageBuilderView';
+import type { PropertyEditorResources } from '../model/pageBuilder.types';
 
-export function PageBuilderContainer() {
+export interface PageBuilderContainerProps {
+  editors: Record<string, ComponentType<any>>;
+  resources: PropertyEditorResources;
+}
+
+export function PageBuilderContainer({ editors, resources }: PageBuilderContainerProps) {
   const { pageId } = useParams<{ pageId: string }>();
   const navigate = useNavigate();
   const result = usePageBuilderController(pageId);
@@ -49,6 +56,8 @@ export function PageBuilderContainer() {
     <PageBuilderView
       viewModel={result.viewModel}
       actions={result.actions}
+      editors={editors}
+      resources={resources}
       onBack={() => result.actions.requestExit(() => navigate('/pages'))}
     />
   );

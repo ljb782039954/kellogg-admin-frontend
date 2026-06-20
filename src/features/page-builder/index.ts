@@ -3,4 +3,5 @@ export type {
   PageBuilderActions,
   PageBuilderViewModel,
   PropertyEditorResources,
+  PropertyEditorProps,
 } from './model/pageBuilder.types';

@@ -7,7 +7,7 @@ import Overview from './admin/Overview';
 
 // 页面管理
 import { PagesManager } from '@/features/pages';
-import { PageBuilderContainer } from '@/features/page-builder';
+import DefaultPageBuilderRoute from '@/app/adapters/page-builder/DefaultPageBuilderRoute';
 import ComponentsPreview from './admin/BlocksPreview';
 
 // 编辑器
@@ -32,7 +32,7 @@ function App() {
             <Route path="dashboard" element={<Overview />} />
 
             <Route path="pages" element={<PagesManager />} />
-            <Route path="pages/:pageId/edit" element={<PageBuilderContainer />} />
+            <Route path="pages/:pageId/edit" element={<DefaultPageBuilderRoute />} />
             <Route path="components" element={<ComponentsPreview />} />
             <Route path="page-layout" element={<Navigate to="/pages" replace />} />
 

@@ -1,3 +1,4 @@
+import type { PropertyEditorProps } from '@/features/page-builder';
 import { useState } from 'react';
 import { Plus, Trash2, GripVertical } from 'lucide-react';
 import { motion } from 'framer-motion';
@@ -8,17 +9,14 @@ import { Textarea } from '@/ui/primitives/textarea';
 import BilingualInput from '@/ui/forms/BilingualInput';
 import type { FAQItem, FAQProps } from '@/components/blocks/Faq';
 
-export interface FAQPropsEditorPropsEditorProps {
-  props: FAQProps;
-  onUpdate: (props: FAQProps) => void;
-}
 
-export function FAQPropsEditor({ props, onUpdate }: FAQPropsEditorPropsEditorProps) {
-  const [localItems, setLocalItems] = useState<FAQItem[]>(props.items || []);
+
+export function FAQPropsEditor({ value, onChange }: PropertyEditorProps<FAQProps>) {
+  const [localItems, setLocalItems] = useState<FAQItem[]>(value.items || []);
 
   const saveItems = (items: FAQItem[]) => {
     setLocalItems(items);
-    onUpdate({ ...props, items });
+    onChange({ ...value, items });
   };
 
   const addItem = () => {
@@ -52,13 +50,13 @@ export function FAQPropsEditor({ props, onUpdate }: FAQPropsEditorPropsEditorPro
         <h4 className="font-medium text-sm text-gray-700">标题设置 (Heading)</h4>
         <BilingualInput
           label="标题"
-          value={props.title || { zh: '常见问题', en: 'FAQ' }}
-          onChange={(val) => onUpdate({ ...props, title: val })}
+          value={value.title || { zh: '常见问题', en: 'FAQ' }}
+          onChange={(val) => onChange({ ...value, title: val })}
         />
         <BilingualInput
           label="副标题"
-          value={props.subtitle || { zh: '在这里您可以找到常见问题的解答', en: 'Find answers to common questions here' }}
-          onChange={(val) => onUpdate({ ...props, subtitle: val })}
+          value={value.subtitle || { zh: '在这里您可以找到常见问题的解答', en: 'Find answers to common questions here' }}
+          onChange={(val) => onChange({ ...value, subtitle: val })}
         />
       </div>
 

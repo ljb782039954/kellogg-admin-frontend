@@ -1,20 +1,18 @@
 // 分类导航组件属性编辑器（轻量版）
-import { useCategoriesQuery } from '@/features/categories';
 import { Label } from '@/ui/primitives/label';
 import { Switch } from '@/ui/primitives/switch';
 import { Info } from 'lucide-react';
 import { Alert, AlertDescription } from '@/ui/primitives/alert';
 import AdminImage from '@/ui/media/AdminImage';
 import type { CategoriesProps } from '@/components/blocks/Categories';
+import type { PropertyEditorProps } from '@/features/page-builder';
 
-export interface CategoriesPropsEditorProps {
-  props: CategoriesProps;
-  onUpdate: (props: CategoriesProps) => void;
-}
-
-
-export function CategoriesPropsEditor({ props, onUpdate }: CategoriesPropsEditorProps) {
-  const { categories } = useCategoriesQuery();
+export function CategoriesPropsEditor({
+  value,
+  onChange,
+  resources,
+}: PropertyEditorProps<CategoriesProps>) {
+  const { categories } = resources;
 
   return (
     <div className="space-y-6">
@@ -24,8 +22,8 @@ export function CategoriesPropsEditor({ props, onUpdate }: CategoriesPropsEditor
         <div className="flex items-center justify-between">
           <Label>显示全部分类</Label>
           <Switch
-            checked={props.showAll !== false}
-            onCheckedChange={(checked) => onUpdate({ ...props, showAll: checked })}
+            checked={value.showAll !== false}
+            onCheckedChange={(checked) => onChange({ ...value, showAll: checked })}
           />
         </div>
       </div>

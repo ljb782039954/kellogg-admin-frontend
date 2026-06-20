@@ -12,18 +12,16 @@ import ImageInput from '@/ui/media/ImageInput';
 import { LinkSelector } from '@/ui/navigation/LinkSelector';
 import { ensureNavLink } from '@/lib/linkUtils';
 import type { CtaBannerProps } from '@/components/blocks/CtaBanner';
-import { usePageOptions } from '@/features/pages';
+import type { PropertyEditorProps } from '@/features/page-builder';
 
-export interface CtaBannerPropsEditorProps {
-  props: CtaBannerProps;
-  onUpdate: (props: CtaBannerProps) => void;
-}
-
-
-export function CtaBannerPropsEditor({ props, onUpdate }: CtaBannerPropsEditorProps) {
-  const { pages } = usePageOptions();
-  const primaryButton = ensureNavLink(props.values?.primaryButton, { zh: '立即行动', en: 'Take Action' });
-  const secondaryButton = ensureNavLink(props.values?.secondaryButton, { zh: '了解更多', en: 'Learn More' });
+export function CtaBannerPropsEditor({
+  value,
+  onChange,
+  resources,
+}: PropertyEditorProps<CtaBannerProps>) {
+  const { pages } = resources;
+  const primaryButton = ensureNavLink(value.values?.primaryButton, { zh: '立即行动', en: 'Take Action' });
+  const secondaryButton = ensureNavLink(value.values?.secondaryButton, { zh: '了解更多', en: 'Learn More' });
 
   return (
     <div className="space-y-6">
@@ -32,13 +30,13 @@ export function CtaBannerPropsEditor({ props, onUpdate }: CtaBannerPropsEditorPr
         <h4 className="font-medium text-sm text-gray-700">文本内容</h4>
         <BilingualInput
           label="标题"
-          value={props.title || { zh: '', en: '' }}
-          onChange={(val) => onUpdate({ ...props, title: val })}
+          value={value.title || { zh: '', en: '' }}
+          onChange={(val) => onChange({ ...value, title: val })}
         />
         <BilingualInput
           label="副标题"
-          value={props.subtitle || { zh: '', en: '' }}
-          onChange={(val) => onUpdate({ ...props, subtitle: val })}
+          value={value.subtitle || { zh: '', en: '' }}
+          onChange={(val) => onChange({ ...value, subtitle: val })}
         />
       </div>
 
@@ -48,7 +46,7 @@ export function CtaBannerPropsEditor({ props, onUpdate }: CtaBannerPropsEditorPr
         <LinkSelector
           value={primaryButton}
           pages={pages}
-          onChange={(val) => onUpdate({ ...props, values: { ...props.values, primaryButton: val } })}
+          onChange={(val) => onChange({ ...value, values: { ...value.values, primaryButton: val } })}
         />
       </div>
 
@@ -58,7 +56,7 @@ export function CtaBannerPropsEditor({ props, onUpdate }: CtaBannerPropsEditorPr
         <LinkSelector
           value={secondaryButton}
           pages={pages}
-          onChange={(val) => onUpdate({ ...props, values: { ...props.values, secondaryButton: val } })}
+          onChange={(val) => onChange({ ...value, values: { ...value.values, secondaryButton: val } })}
         />
         <p className="text-xs text-gray-400">若不需要次按钮，请将链接设为空并通过删除按钮移除。</p>
       </div>
@@ -68,8 +66,8 @@ export function CtaBannerPropsEditor({ props, onUpdate }: CtaBannerPropsEditorPr
         <h4 className="font-medium text-sm text-gray-700">样式设置</h4>
         <ImageInput
           label="背景图片（可选）"
-          value={props.values?.backgroundImage || ''}
-          onChange={(val) => onUpdate({ ...props, values: { ...props.values, backgroundImage: val } })}
+          value={value.values?.backgroundImage || ''}
+          onChange={(val) => onChange({ ...value, values: { ...value.values, backgroundImage: val } })}
           aspectRatio="banner"
         />
         <div className="space-y-2">
@@ -77,14 +75,14 @@ export function CtaBannerPropsEditor({ props, onUpdate }: CtaBannerPropsEditorPr
           <div className="flex gap-2">
             <Input
               type="color"
-              value={props.values?.backgroundColor || ''}
-              onChange={(e) => onUpdate({ ...props, values: { ...props.values, backgroundColor: e.target.value } })}
+              value={value.values?.backgroundColor || ''}
+              onChange={(e) => onChange({ ...value, values: { ...value.values, backgroundColor: e.target.value } })}
               className="w-12 h-10 p-1"
             />
             <Input
               type="text"
-              value={props.values?.backgroundColor || ''}
-              onChange={(e) => onUpdate({ ...props, values: { ...props.values, backgroundColor: e.target.value } })}
+              value={value.values?.backgroundColor || ''}
+              onChange={(e) => onChange({ ...value, values: { ...value.values, backgroundColor: e.target.value } })}
               className="flex-1"
               placeholder="留空使用默认渐变"
             />
@@ -93,8 +91,8 @@ export function CtaBannerPropsEditor({ props, onUpdate }: CtaBannerPropsEditorPr
         <div className="space-y-2">
           <Label>对齐方式</Label>
           <Select
-            value={props.values?.alignment || 'center'}
-            onValueChange={(val: 'left' | 'center' | 'right') => onUpdate({ ...props, values: { ...props.values, alignment: val } })}
+            value={value.values?.alignment || 'center'}
+            onValueChange={(val: 'left' | 'center' | 'right') => onChange({ ...value, values: { ...value.values, alignment: val } })}
           >
             <SelectTrigger>
               <SelectValue />

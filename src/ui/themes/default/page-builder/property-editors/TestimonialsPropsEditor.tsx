@@ -1,3 +1,4 @@
+import type { PropertyEditorProps } from '@/features/page-builder';
 // 客户评价组件属性编辑器（轻量版）
 import { useState } from 'react';
 import { Plus, Trash2, GripVertical } from 'lucide-react';
@@ -10,18 +11,15 @@ import { BilingualTextarea } from '@/ui/forms/BilingualTextarea';
 import ImageInput from '@/ui/media/ImageInput';
 import type { Testimonial, TestimonialProps } from '@/components/blocks/Testimonials';
 
-export interface TestimonialsPropsEditorProps {
-  props: TestimonialProps;
-  onUpdate: (props: TestimonialProps) => void;
-}
 
 
-export function TestimonialsPropsEditor({ props, onUpdate }: TestimonialsPropsEditorProps) {
-  const [localData, setLocalData] = useState<Testimonial[]>(props.items || []);
+
+export function TestimonialsPropsEditor({ value, onChange }: PropertyEditorProps<TestimonialProps>) {
+  const [localData, setLocalData] = useState<Testimonial[]>(value.items || []);
 
   const saveItems = (items: Testimonial[]) => {
     setLocalData(items);
-    onUpdate({ ...props, items });
+    onChange({ ...value, items });
   };
 
   const addItem = () => {
@@ -57,13 +55,13 @@ export function TestimonialsPropsEditor({ props, onUpdate }: TestimonialsPropsEd
         <h4 className="font-medium text-sm text-gray-700">标题设置 (Heading)</h4>
         <BilingualInput
           label="标题"
-          value={props.title || { zh: '客户好评', en: 'Testimonials' }}
-          onChange={(val) => onUpdate({ ...props, title: val })}
+          value={value.title || { zh: '客户好评', en: 'Testimonials' }}
+          onChange={(val) => onChange({ ...value, title: val })}
         />
         <BilingualInput
           label="副标题"
-          value={props.subtitle || { zh: '听听我们的客户怎么说', en: 'What our customers say' }}
-          onChange={(val) => onUpdate({ ...props, subtitle: val })}
+          value={value.subtitle || { zh: '听听我们的客户怎么说', en: 'What our customers say' }}
+          onChange={(val) => onChange({ ...value, subtitle: val })}
         />
       </div>
 
@@ -76,8 +74,8 @@ export function TestimonialsPropsEditor({ props, onUpdate }: TestimonialsPropsEd
             type="number"
             min={1}
             max={20}
-            value={props.maxItems || 6}
-            onChange={(e) => onUpdate({ ...props, maxItems: parseInt(e.target.value) || 6 })}
+            value={value.maxItems || 6}
+            onChange={(e) => onChange({ ...value, maxItems: parseInt(e.target.value) || 6 })}
           />
         </div>
       </div>

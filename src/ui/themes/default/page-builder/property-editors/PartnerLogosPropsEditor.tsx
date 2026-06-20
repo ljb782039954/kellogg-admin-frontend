@@ -1,3 +1,4 @@
+import type { PropertyEditorProps } from '@/features/page-builder';
 // 合作伙伴组件属性编辑器
 
 import { Label } from '@/ui/primitives/label';
@@ -15,31 +16,28 @@ import { Plus, Trash2 } from 'lucide-react';
 import BilingualInput from '@/ui/forms/BilingualInput';
 import ImageInput from '@/ui/media/ImageInput';
 import type { PartnerProps } from '@/components/blocks/PartnerLogos';
-export interface PartnerLogosPropsEditorProps {
-  props: PartnerProps;
-  onUpdate: (props: PartnerProps) => void;
-}
 
-export function PartnerLogosPropsEditor({ props, onUpdate }: PartnerLogosPropsEditorProps) {
-  const items = props.items || [];
+
+export function PartnerLogosPropsEditor({ value, onChange }: PropertyEditorProps<PartnerProps>) {
+  const items = value.items || [];
 
   const addItem = () => {
-    onUpdate({
-      ...props,
+    onChange({
+      ...value,
       items: [...items, { id: nanoid(8), logo: '', name: '', link: '' }],
     });
   };
 
-  const updateItem = (id: string, field: string, value: string) => {
+  const updateItem = (id: string, field: string, val: string) => {
     const newItems = items.map(item => 
-      item.id === id ? { ...item, [field]: value } : item
+      item.id === id ? { ...item, [field]: val } : item
     );
-    onUpdate({ ...props, items: newItems });
+    onChange({ ...value, items: newItems });
   };
 
   const removeItem = (id: string) => {
     const newItems = items.filter((item) => item.id !== id);
-    onUpdate({ ...props, items: newItems });
+    onChange({ ...value, items: newItems });
   };
 
   return (
@@ -49,13 +47,13 @@ export function PartnerLogosPropsEditor({ props, onUpdate }: PartnerLogosPropsEd
         <h4 className="font-medium text-sm text-gray-700">标题设置</h4>
         <BilingualInput
           label="标题"
-          value={props.title || { zh: '', en: '' }}
-          onChange={(val) => onUpdate({ ...props, title: val })}
+          value={value.title || { zh: '', en: '' }}
+          onChange={(val) => onChange({ ...value, title: val })}
         />
         <BilingualInput
           label="副标题"
-          value={props.subtitle || { zh: '', en: '' }}
-          onChange={(val) => onUpdate({ ...props, subtitle: val })}
+          value={value.subtitle || { zh: '', en: '' }}
+          onChange={(val) => onChange({ ...value, subtitle: val })}
         />
       </div>
 
@@ -66,8 +64,8 @@ export function PartnerLogosPropsEditor({ props, onUpdate }: PartnerLogosPropsEd
           <div className="space-y-2">
             <Label>布局方式</Label>
             <Select
-              value={props.layout || 'grid'}
-              onValueChange={(val: 'row' | 'grid') => onUpdate({ ...props, layout: val })}
+              value={value.layout || 'grid'}
+              onValueChange={(val: 'row' | 'grid') => onChange({ ...value, layout: val })}
             >
               <SelectTrigger>
                 <SelectValue />

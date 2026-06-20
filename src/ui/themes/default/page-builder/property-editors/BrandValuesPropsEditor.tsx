@@ -1,3 +1,4 @@
+import type { PropertyEditorProps } from '@/features/page-builder';
 import { useState } from 'react';
 import { Plus, Trash2, GripVertical } from 'lucide-react';
 import { motion } from 'framer-motion';
@@ -8,10 +9,7 @@ import BilingualRichInput from '@/ui/forms/rich-text/BilingualRichInput';
 import type { BrandValue, BrandValuesProps } from '@/components/blocks/BrandValues';
 // import { iconOptions } from '@/types';
 
-export interface BrandValuesPropsEditorProps {
-  props: BrandValuesProps;
-  onUpdate: (props: BrandValuesProps) => void;
-}
+
 
 const iconOptions = [
   { value: 'Leaf', label: '🌿 环保 (Eco)' },
@@ -25,12 +23,12 @@ const iconOptions = [
 ];
 
 
-export function BrandValuesPropsEditor({ props, onUpdate }: BrandValuesPropsEditorProps) {
-  const [localItems, setLocalItems] = useState<BrandValue[]>(props.items || []);
+export function BrandValuesPropsEditor({ value, onChange }: PropertyEditorProps<BrandValuesProps>) {
+  const [localItems, setLocalItems] = useState<BrandValue[]>(value.items || []);
 
   const saveItems = (items: BrandValue[]) => {
     setLocalItems(items);
-    onUpdate({ ...props, items });
+    onChange({ ...value, items });
   };
 
   const addItems = () => {
@@ -62,13 +60,13 @@ export function BrandValuesPropsEditor({ props, onUpdate }: BrandValuesPropsEdit
         <h4 className="font-medium text-sm text-gray-700">标题设置 (Heading)</h4>
         <BilingualInput
           label="标题"
-          value={props.title || { zh: '品牌价值', en: 'Brand Values' }}
-          onChange={(val) => onUpdate({ ...props, title: val })}
+          value={value.title || { zh: '品牌价值', en: 'Brand Values' }}
+          onChange={(val) => onChange({ ...value, title: val })}
         />
         <BilingualInput
           label="副标题"
-          value={props.subtitle || { zh: '我们坚持的品质与承诺', en: 'Our commitment to quality and excellence' }}
-          onChange={(val) => onUpdate({ ...props, subtitle: val })}
+          value={value.subtitle || { zh: '我们坚持的品质与承诺', en: 'Our commitment to quality and excellence' }}
+          onChange={(val) => onChange({ ...value, subtitle: val })}
         />
       </div>
 

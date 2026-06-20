@@ -1,3 +1,4 @@
+import type { PropertyEditorProps } from '@/features/page-builder';
 // 布局属性编辑器（用于全局数据组件的局部配置）
 import { type PageBlock } from '@/types';
 import { Label } from '@/ui/primitives/label';
@@ -19,22 +20,19 @@ import {
 import { ChevronDown } from 'lucide-react';
 import { useState } from 'react';
 
-interface Props {
-  block: PageBlock;
-  onUpdate: (content: any) => void;
-}
 
-export function LayoutPropsEditor({ block, onUpdate }: Props) {
+
+export function LayoutPropsEditor({ value, onChange }: PropertyEditorProps<PageBlock>) {
   const [isOpen, setIsOpen] = useState(true);
-  const content = block.content as Record<string, unknown>;
+  const content = value.content as Record<string, unknown>;
 
   // 根据组件类型决定显示哪些布局选项
-  const layoutOptions = getLayoutOptions(block.type);
+  const layoutOptions = getLayoutOptions(value.type);
 
   if (layoutOptions.length === 0) return null;
 
-  const handleChange = (key: string, value: unknown) => {
-    onUpdate({ ...content, [key]: value });
+  const handleChange = (key: string, val: unknown) => {
+    onChange({ ...value, content: { ...content, [key]: val } });
   };
 
   return (

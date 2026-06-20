@@ -1,38 +1,29 @@
 // 精选商品组件属性编辑器（轻量版）
-import { useProductPreviewData } from '@/features/products';
 import { Input } from '@/ui/primitives/input';
 import { Label } from '@/ui/primitives/label';
-// import {
-//   Select,
-//   SelectContent,
-//   SelectItem,
-//   SelectTrigger,
-//   SelectValue,
-// } from '@/ui/primitives/select';
 import { Info } from 'lucide-react';
 import { Alert, AlertDescription } from '@/ui/primitives/alert';
 import BilingualInput from '@/ui/forms/BilingualInput';
 import { getPreviewUrl } from '@/lib/utils';
 import type { FeaturedProductsProps } from '@/components/blocks/FeaturedProducts';
+import type { PropertyEditorProps } from '@/features/page-builder';
 
-export interface FeaturedProductsPropsEditorProps {
-  props: FeaturedProductsProps;
-  onUpdate: (props: FeaturedProductsProps) => void;
-}
-
-
-export function FeaturedProductsPropsEditor({ props, onUpdate }: FeaturedProductsPropsEditorProps) {
-  const { products } = useProductPreviewData();
+export function FeaturedProductsPropsEditor({
+  value,
+  onChange,
+  resources,
+}: PropertyEditorProps<FeaturedProductsProps>) {
+  const { products } = resources;
 
   // 获取精选商品 (isFeatured 为 true 的商品)
   const featuredProducts = (products || [])
     .filter(p => p.isFeatured)
-    .slice(0, props.maxItems || 8);
+    .slice(0, value.maxItems || 8);
 
   // 如果没有标记为精选的商品，则显示前几个
   const displayProducts = featuredProducts.length > 0
     ? featuredProducts
-    : (products || []).slice(0, props.maxItems || 8);
+    : (products || []).slice(0, value.maxItems || 8);
 
   return (
     <div className="space-y-6">
@@ -41,13 +32,13 @@ export function FeaturedProductsPropsEditor({ props, onUpdate }: FeaturedProduct
         <h4 className="font-medium text-sm text-gray-700">区块标题 (Heading)</h4>
         <BilingualInput
           label="主标题"
-          value={props.title || { zh: '精选商品', en: 'Featured Products' }}
-          onChange={(val) => onUpdate({ ...props, title: val })}
+          value={value.title || { zh: '精选商品', en: 'Featured Products' }}
+          onChange={(val) => onChange({ ...value, title: val })}
         />
         <BilingualInput
           label="副标题"
-          value={props.subtitle || { zh: '精选商品', en: 'Featured Products' }}
-          onChange={(val) => onUpdate({ ...props, subtitle: val })}
+          value={value.subtitle || { zh: '精选商品', en: 'Featured Products' }}
+          onChange={(val) => onChange({ ...value, subtitle: val })}
         />
       </div>
 
@@ -61,25 +52,10 @@ export function FeaturedProductsPropsEditor({ props, onUpdate }: FeaturedProduct
               type="number"
               min={1}
               max={20}
-              value={props.maxItems || 8}
-              onChange={(e) => onUpdate({ ...props, maxItems: parseInt(e.target.value) || 8 })}
+              value={value.maxItems || 8}
+              onChange={(e) => onChange({ ...value, maxItems: parseInt(e.target.value) || 8 })}
             />
           </div>
-          {/* <div className="space-y-2">
-            <Label>布局方式</Label>
-            <Select
-              value={props.layout || 'grid'}
-              onValueChange={(val) => onUpdate({ ...props, layout: val })}
-            >
-              <SelectTrigger>
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="grid">网格展示 (Grid)</SelectItem>
-                <SelectItem value="slider">滑动展示 (Slider)</SelectItem>
-              </SelectContent>
-            </Select>
-          </div> */}
         </div>
       </div>
 

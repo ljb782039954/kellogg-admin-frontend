@@ -1,16 +1,22 @@
+import { type ComponentType } from 'react';
 import * as LucideIcons from 'lucide-react';
 import type { PageBlock } from '@/types';
 import { getBlockCatalogItem } from '../../model/blockCatalog';
-import { propertyEditorRegistry } from './propertyEditorRegistry.js';
-import { LayoutPropsEditor } from '@/ui/themes/default/page-builder/property-editors/LayoutPropsEditor';
-import { ProductGridPropsEditor } from '@/ui/themes/default/page-builder/property-editors/ProductGridPropsEditor';
+import type { PropertyEditorResources } from '../../model/pageBuilder.types';
 
 interface BlockPropertyPanelProps {
   block: PageBlock;
   onChange(content: unknown): void;
+  editors: Record<string, ComponentType<any>>;
+  resources: PropertyEditorResources;
 }
 
-export function BlockPropertyPanel({ block, onChange }: BlockPropertyPanelProps) {
+export function BlockPropertyPanel({
+  block,
+  onChange,
+  editors,
+  resources,
+}: BlockPropertyPanelProps) {
   const meta = getBlockCatalogItem(block.type);
 
   if (!meta) {
@@ -25,7 +31,7 @@ export function BlockPropertyPanel({ block, onChange }: BlockPropertyPanelProps)
 
   const IconComponent = (LucideIcons as any)[meta.icon] || LucideIcons.Square;
 
-  const EditorComponent = propertyEditorRegistry[block.type];
+  const EditorComponent = editors[block.type];
 
   return (
     <div className="h-full flex flex-col">
@@ -41,17 +47,11 @@ export function BlockPropertyPanel({ block, onChange }: BlockPropertyPanelProps)
 
       <div className="flex-1 overflow-y-auto">
         {EditorComponent ? (
-          block.type === 'productGrid' ? (
-            <div className="space-y-4">
-              <LayoutPropsEditor block={block} onUpdate={(content) => onChange(content)} />
-              <ProductGridPropsEditor
-                props={(block.content as Record<string, unknown>).productGrid ?? block.content}
-                onUpdate={(val) => onChange({ ...block.content as Record<string, unknown>, productGrid: val })}
-              />
-            </div>
-          ) : (
-            <EditorComponent value={block.content} onChange={onChange} />
-          )
+          <EditorComponent
+            value={block.content}
+            onChange={onChange}
+            resources={resources}
+          />
         ) : (
           <div className="text-center py-8 text-gray-500">
             暂无属性编辑器

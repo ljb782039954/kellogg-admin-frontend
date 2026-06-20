@@ -1,34 +1,25 @@
 // 新品组件属性编辑器（轻量版）
-import { useProductPreviewData } from '@/features/products';
 import { Input } from '@/ui/primitives/input';
 import { Label } from '@/ui/primitives/label';
-// import {
-//   Select,
-//   SelectContent,
-//   SelectItem,
-//   SelectTrigger,
-//   SelectValue,
-// } from '@/ui/primitives/select';
 import { Info } from 'lucide-react';
 import { Alert, AlertDescription } from '@/ui/primitives/alert';
 import BilingualInput from '@/ui/forms/BilingualInput';
 import { getPreviewUrl } from '@/lib/utils';
 import type { NewArrivalsProps } from '@/components/blocks/NewArrivals';
+import type { PropertyEditorProps } from '@/features/page-builder';
 
-export interface NewArrivalsPropsEditorProps {
-  props: NewArrivalsProps;
-  onUpdate: (props: NewArrivalsProps) => void;
-}
-
-
-export function NewArrivalsPropsEditor({ props, onUpdate }: NewArrivalsPropsEditorProps) {
-  const { products } = useProductPreviewData();
+export function NewArrivalsPropsEditor({
+  value,
+  onChange,
+  resources,
+}: PropertyEditorProps<NewArrivalsProps>) {
+  const { products } = resources;
 
   // 按发布日期排序获取最新商品
   const newProducts = [...(products || [])]
     .filter((p) => p.releaseDate)
     .sort((a, b) => new Date(b.releaseDate!).getTime() - new Date(a.releaseDate!).getTime())
-    .slice(0, props.maxItems || 8);
+    .slice(0, value.maxItems || 8);
 
   return (
     <div className="space-y-6">
@@ -37,8 +28,8 @@ export function NewArrivalsPropsEditor({ props, onUpdate }: NewArrivalsPropsEdit
         <h4 className="font-medium text-sm text-gray-700">区块标题 (Heading)</h4>
         <BilingualInput
           label="标题"
-          value={props.title || { zh: '新品上市', en: 'New Arrivals' }}
-          onChange={(val) => onUpdate({ ...props, title: val })}
+          value={value.title || { zh: '新品上市', en: 'New Arrivals' }}
+          onChange={(val) => onChange({ ...value, title: val })}
         />
       </div>
 
@@ -52,25 +43,10 @@ export function NewArrivalsPropsEditor({ props, onUpdate }: NewArrivalsPropsEdit
               type="number"
               min={1}
               max={20}
-              value={props.maxItems || 8}
-              onChange={(e) => onUpdate({ ...props, maxItems: parseInt(e.target.value) || 8 })}
+              value={value.maxItems || 8}
+              onChange={(e) => onChange({ ...value, maxItems: parseInt(e.target.value) || 8 })}
             />
           </div>
-          {/* <div className="space-y-2">
-            <Label>布局方式</Label>
-            <Select
-              value={props.layout || 'slider'}
-              onValueChange={(val) => onUpdate({ ...props, layout: val })}
-            >
-              <SelectTrigger>
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="slider">滑动展示 (Slider)</SelectItem>
-                <SelectItem value="grid">网格展示 (Grid)</SelectItem>
-              </SelectContent>
-            </Select>
-          </div> */}
         </div>
       </div>
 

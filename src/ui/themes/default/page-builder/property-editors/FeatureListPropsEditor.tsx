@@ -1,3 +1,4 @@
+import type { PropertyEditorProps } from '@/features/page-builder';
 // 特性列表组件属性编辑器
 
 import { Label } from '@/ui/primitives/label';
@@ -23,30 +24,27 @@ const commonFeatureIcons = [
 ];
 
 
-export interface FeatureListPropsEditorProps {
-  props: FeatureListProps;
-  onUpdate: (props: FeatureListProps) => void;
-}
 
-export function FeatureListPropsEditor({ props, onUpdate }: FeatureListPropsEditorProps) {
-  const items = props.items || [];
+
+export function FeatureListPropsEditor({ value, onChange }: PropertyEditorProps<FeatureListProps>) {
+  const items = value.items || [];
 
   const addItems = () => {
-    onUpdate({
-      ...props,
+    onChange({
+      ...value,
       items: [...items, { icon: 'Star', title: { zh: '', en: '' }, description: { zh: '', en: '' } }],
     });
   };
 
-  const updateItems = (index: number, field: string, value: unknown) => {
+  const updateItems = (index: number, field: string, val: unknown) => {
     const newItems = [...items];
-    newItems[index] = { ...newItems[index], [field]: value };
-    onUpdate({ ...props, items: newItems });
+    newItems[index] = { ...newItems[index], [field]: val };
+    onChange({ ...value, items: newItems });
   };
 
   const removeItems = (index: number) => {
     const newItems = items.filter((_, i) => i !== index);
-    onUpdate({ ...props, items: newItems });
+    onChange({ ...value, items: newItems });
   };
 
   return (
@@ -56,13 +54,13 @@ export function FeatureListPropsEditor({ props, onUpdate }: FeatureListPropsEdit
         <h4 className="font-medium text-sm text-gray-700">标题设置</h4>
         <BilingualInput
           label="标题"
-          value={props.title || { zh: '', en: '' }}
-          onChange={(val) => onUpdate({ ...props, title: val })}
+          value={value.title || { zh: '', en: '' }}
+          onChange={(val) => onChange({ ...value, title: val })}
         />
         <BilingualInput
           label="副标题"
-          value={props.subtitle || { zh: '', en: '' }}
-          onChange={(val) => onUpdate({ ...props, subtitle: val })}
+          value={value.subtitle || { zh: '', en: '' }}
+          onChange={(val) => onChange({ ...value, subtitle: val })}
         />
       </div>
 
@@ -73,8 +71,8 @@ export function FeatureListPropsEditor({ props, onUpdate }: FeatureListPropsEdit
           <div className="space-y-2">
             <Label>布局方式</Label>
             <Select
-              value={props.layout || 'grid'}
-              onValueChange={(val) => onUpdate({ ...props, layout: val })}
+              value={value.layout || 'grid'}
+              onValueChange={(val) => onChange({ ...value, layout: val })}
             >
               <SelectTrigger>
                 <SelectValue />
@@ -85,12 +83,12 @@ export function FeatureListPropsEditor({ props, onUpdate }: FeatureListPropsEdit
               </SelectContent>
             </Select>
           </div>
-          {props.layout !== 'list' && (
+          {value.layout !== 'list' && (
             <div className="space-y-2">
               <Label>列数</Label>
               <Select
-                value={String(props.columns || 3)}
-                onValueChange={(val) => onUpdate({ ...props, columns: parseInt(val) })}
+                value={String(value.columns || 3)}
+                onValueChange={(val) => onChange({ ...value, columns: parseInt(val) })}
               >
                 <SelectTrigger>
                   <SelectValue />

@@ -1,3 +1,4 @@
+import type { PropertyEditorProps } from '@/features/page-builder';
 // 图文组件属性编辑器
 
 import { Label } from '@/ui/primitives/label';
@@ -13,12 +14,9 @@ import BilingualRichInput from '@/ui/forms/rich-text/BilingualRichInput';
 import ImageInput from '@/ui/media/ImageInput';
 import type { ImageTextProps } from '@/components/blocks/ImageText';
 
-export interface ImageTextPropsEditorProps {
-  props: ImageTextProps;
-  onUpdate: (props: ImageTextProps) => void;
-}
 
-export function ImageTextPropsEditor({ props, onUpdate }: ImageTextPropsEditorProps) {
+
+export function ImageTextPropsEditor({ value, onChange }: PropertyEditorProps<ImageTextProps>) {
   return (
     <div className="space-y-6">
       {/* 图片设置 */}
@@ -26,15 +24,15 @@ export function ImageTextPropsEditor({ props, onUpdate }: ImageTextPropsEditorPr
         <h4 className="font-medium text-sm text-gray-700">图片设置</h4>
         <ImageInput
           label="图片"
-          value={props.image || ''}
-          onChange={(val) => onUpdate({ ...props, image: val })}
+          value={value.image || ''}
+          onChange={(val) => onChange({ ...value, image: val })}
           aspectRatio="video"
         />
         <div className="space-y-2">
           <Label>图片位置</Label>
           <Select
-            value={props.imagePosition || 'left'}
-            onValueChange={(val: "left" | "right") => onUpdate({ ...props, imagePosition: val })}
+            value={value.imagePosition || 'left'}
+            onValueChange={(val: "left" | "right") => onChange({ ...value, imagePosition: val })}
           >
             <SelectTrigger>
               <SelectValue />
@@ -52,15 +50,15 @@ export function ImageTextPropsEditor({ props, onUpdate }: ImageTextPropsEditorPr
         <h4 className="font-medium text-sm text-gray-700">文本内容</h4>
         <BilingualInput
           label="标题"
-          value={props.title || { zh: '', en: '' }}
-          onChange={(val) => onUpdate({ ...props, title: val })}
+          value={value.title || { zh: '', en: '' }}
+          onChange={(val) => onChange({ ...value, title: val })}
         />
         <p className="text-sm font-bold text-gray-400 uppercase">参数内容 (值)</p>
 
         <BilingualRichInput
           label="内容"
-          value={props.content || { zh: '', en: '' }}
-          onChange={(val) => onUpdate({ ...props, content: val })}
+          value={value.content || { zh: '', en: '' }}
+          onChange={(val) => onChange({ ...value, content: val })}
         />
       </div>
 
@@ -69,8 +67,8 @@ export function ImageTextPropsEditor({ props, onUpdate }: ImageTextPropsEditorPr
         <h4 className="font-medium text-sm text-gray-700">按钮设置（可选）</h4>
         <BilingualInput
           label="按钮文字"
-          value={props.buttonText || { zh: '', en: '' }}
-          onChange={(val) => onUpdate({ ...props, buttonText: val })}
+          value={value.buttonText || { zh: '', en: '' }}
+          onChange={(val) => onChange({ ...value, buttonText: val })}
         />
         <div className="space-y-2">
           <Label>按钮链接</Label>
@@ -78,8 +76,8 @@ export function ImageTextPropsEditor({ props, onUpdate }: ImageTextPropsEditorPr
             type="text"
             className="w-full px-3 py-2 border rounded-lg text-sm"
             placeholder="输入链接地址，如 /products"
-            value={props.buttonLink || ''}
-            onChange={(e) => onUpdate({ ...props, buttonLink: e.target.value })}
+            value={value.buttonLink || ''}
+            onChange={(e) => onChange({ ...value, buttonLink: e.target.value })}
           />
         </div>
       </div>

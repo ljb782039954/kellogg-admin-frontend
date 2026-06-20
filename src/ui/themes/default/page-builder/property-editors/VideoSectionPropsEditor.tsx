@@ -1,3 +1,4 @@
+import type { PropertyEditorProps } from '@/features/page-builder';
 import { Label } from '@/ui/primitives/label';
 import { Input } from '@/ui/primitives/input';
 import { Switch } from '@/ui/primitives/switch';
@@ -5,21 +6,18 @@ import BilingualInput from '@/ui/forms/BilingualInput';
 import ImageInput from '@/ui/media/ImageInput';
 import type { VideoSectionProps } from '@/components/blocks/VideoSection';
 
-export interface VideoSectionPropsEditorProps {
-  props: VideoSectionProps;
-  onUpdate: (props: VideoSectionProps) => void;
-}
 
 
-export function VideoSectionPropsEditor({ props, onUpdate }: VideoSectionPropsEditorProps) {
-  const handleChange = (key: string, value: unknown) => {
-    onUpdate({ ...props, [key]: value });
+
+export function VideoSectionPropsEditor({ value, onChange }: PropertyEditorProps<VideoSectionProps>) {
+  const handleChange = (key: string, val: unknown) => {
+    onChange({ ...value, [key]: val });
   };
 
-  const handleValueChange = (key: string, value: unknown) => {
-    onUpdate({ 
-      ...props, 
-      values: { ...props.values, [key]: value } 
+  const handleValueChange = (key: string, val: unknown) => {
+    onChange({ 
+      ...value, 
+      values: { ...value.values, [key]: val } 
     });
   };
 
@@ -29,7 +27,7 @@ export function VideoSectionPropsEditor({ props, onUpdate }: VideoSectionPropsEd
       <div className="space-y-2">
         <Label>视频标题 (Title)</Label>
         <BilingualInput
-          value={props.title || { zh: '', en: '' }}
+          value={value.title || { zh: '', en: '' }}
           onChange={(value) => handleChange('title', value)}
           placeholder={{ zh: '请输入中文标题', en: 'Enter English title' }}
         />
@@ -39,7 +37,7 @@ export function VideoSectionPropsEditor({ props, onUpdate }: VideoSectionPropsEd
       <div className="space-y-2">
         <Label>副标题 (Subtitle)</Label>
         <BilingualInput
-          value={props.subtitle || { zh: '', en: '' }}
+          value={value.subtitle || { zh: '', en: '' }}
           onChange={(value) => handleChange('subtitle', value)}
           placeholder={{ zh: '请输入中文副标题', en: 'Enter English subtitle' }}
         />
@@ -50,7 +48,7 @@ export function VideoSectionPropsEditor({ props, onUpdate }: VideoSectionPropsEd
         <Label>视频地址 (Video URL)</Label>
         <div className="space-y-3">
           <Input
-            value={props.videoUrl || props.values?.videoUrl || ''}
+            value={value.videoUrl || value.values?.videoUrl || ''}
             onChange={(e) => handleChange('videoUrl', e.target.value)}
             placeholder="YouTube link, TikTok link, or MP4 URL"
           />
@@ -64,7 +62,7 @@ export function VideoSectionPropsEditor({ props, onUpdate }: VideoSectionPropsEd
       <div className="space-y-2">
         <Label>封面图 (Poster Image)</Label>
         <ImageInput
-          value={props.values?.posterImage || ''}
+          value={value.values?.posterImage || ''}
           onChange={(value) => handleValueChange('posterImage', value)}
         />
         <p className="text-xs text-gray-500">
@@ -79,7 +77,7 @@ export function VideoSectionPropsEditor({ props, onUpdate }: VideoSectionPropsEd
             <Label className="text-xs">自动播放</Label>
           </div>
           <Switch
-            checked={props.values?.autoPlay || false}
+            checked={value.values?.autoPlay || false}
             onCheckedChange={(checked) => handleValueChange('autoPlay', checked)}
           />
         </div>
@@ -90,7 +88,7 @@ export function VideoSectionPropsEditor({ props, onUpdate }: VideoSectionPropsEd
             <Label className="text-xs">循环播放</Label>
           </div>
           <Switch
-            checked={props.values?.loop || false}
+            checked={value.values?.loop || false}
             onCheckedChange={(checked) => handleValueChange('loop', checked)}
           />
         </div>
