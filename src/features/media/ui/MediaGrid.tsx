@@ -1,10 +1,10 @@
 import { Image as ImageIcon, Loader2 } from 'lucide-react';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import { Badge } from '@/components/ui/badge';
+import { ScrollArea } from '@/ui/primitives/scroll-area';
+import { Badge } from '@/ui/primitives/badge';
 import { cn } from '@/lib/utils';
 import { type R2Image } from '@/types';
 import type { UsageInfo } from '../model/media.types';
-import AdminImage from '@/admin/components/AdminImage';
+import AdminImage from '@/ui/media/AdminImage';
 
 interface MediaGridProps {
   images: R2Image[];

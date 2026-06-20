@@ -9,11 +9,11 @@ import {
   Link as LinkIcon,
   AlertCircle,
 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
+import { Button } from '@/ui/primitives/button';
+import { Badge } from '@/ui/primitives/badge';
 import { type R2Image } from '@/types';
 import { format } from 'date-fns';
-import AdminImage from '@/admin/components/AdminImage';
+import AdminImage from '@/ui/media/AdminImage';
 import type { UsageInfo } from '../model/media.types';
 
 interface SimilarImageDisplay {

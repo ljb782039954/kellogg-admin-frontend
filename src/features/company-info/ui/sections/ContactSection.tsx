@@ -1,8 +1,8 @@
 import { Controller, type Control, type FormState } from 'react-hook-form';
 import { Phone, Mail, MapPin } from 'lucide-react';
-import { Label } from '@/components/ui/label';
-import { Input } from '@/components/ui/input';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Label } from '@/ui/primitives/label';
+import { Input } from '@/ui/primitives/input';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/ui/primitives/card';
 import { BilingualTextControl } from '@/shared/forms/controls/BilingualTextControl';
 import type { CompanyInfoFormValues } from '../../model/companyInfo.mapper';
 

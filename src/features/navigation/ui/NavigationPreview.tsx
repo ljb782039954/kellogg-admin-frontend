@@ -1,6 +1,6 @@
 import { Globe, Share2, Menu } from 'lucide-react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/ui/primitives/card';
+import { Badge } from '@/ui/primitives/badge';
 import siteSettings from '@/config/siteSettings.json';
 import { getPreviewUrl } from '@/lib/utils';
 import type { HeaderContent } from '@/types';

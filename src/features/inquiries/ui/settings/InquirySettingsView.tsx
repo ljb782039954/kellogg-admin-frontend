@@ -1,8 +1,8 @@
 import { Save, Loader2, FileText, Info } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { type UseFormReturn } from 'react-hook-form';
-import BilingualInput from '@/admin/components/BilingualInput';
-import BilingualInputAera from '@/admin/components/BilingualInputAera';
+import { BilingualInput } from '@/ui/forms';
+import { BilingualTextarea } from '@/ui/forms';
 import type { InquirySettingsFormValues } from '../../model/inquiry.schema';
 
 interface InquirySettingsViewProps {
@@ -64,7 +64,7 @@ export function InquirySettingsView({ form, isSaving, error, onSubmit }: Inquiry
           </div>
 
           <div>
-            <BilingualInputAera
+            <BilingualTextarea
               label="描述性文字"
               value={description}
               onChange={(val) => form.setValue('description', val, { shouldValidate: true })}

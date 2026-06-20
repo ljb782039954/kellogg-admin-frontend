@@ -118,7 +118,7 @@ export function useBlogCategoriesManager() {
 
   const saveEditingRow = useCallback(async () => {
     if (!editingRow) return;
-    const { name, slug } = editingRow.form;
+    const { name } = editingRow.form;
     if (!name.zh.trim() || !name.en.trim()) {
       toast.error('中文名称和英文名称均为必填项');
       return;

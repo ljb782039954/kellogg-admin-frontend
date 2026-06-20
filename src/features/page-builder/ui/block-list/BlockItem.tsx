@@ -4,13 +4,13 @@ import { GripVertical, Eye, EyeOff, Trash2, ChevronUp, ChevronDown } from 'lucid
 import { cn } from '@/lib/utils';
 import { type PageBlock } from '@/types';
 import { getBlockCatalogItem } from '../../model/blockCatalog';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/ui/primitives/button';
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from '@/components/ui/tooltip';
+} from '@/ui/primitives/tooltip';
 import BlockThumbnail from '../block-picker/BlockThumbnail';
 
 interface BlockItemProps {

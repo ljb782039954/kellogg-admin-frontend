@@ -5,6 +5,7 @@ import { navigationKeys } from '../api/navigation.keys';
 import { getHeader, updateHeader } from '../api/navigation.api';
 import { getPagesIndex } from '../api/pagesIndex.api';
 import { toHeaderForm } from './navigation.mapper';
+import type { PageOption } from '@/ui/navigation';
 import {
   addNavItem,
   removeNavItem,
@@ -50,6 +51,17 @@ export function useNavigationEditor() {
 
   const header = draft ?? toHeaderForm(query.data);
   const pages = useMemo(() => pagesQuery.data ?? [], [pagesQuery.data]);
+
+  const pageOptions = useMemo<PageOption[]>(
+    () =>
+      pages.map((p) => ({
+        pageId: p.id,
+        path: p.path,
+        title: p.title,
+        isFixed: p.isFixed,
+      })),
+    [pages]
+  );
 
   const mutation = useMutation({
     mutationFn: updateHeader,
@@ -144,6 +156,7 @@ export function useNavigationEditor() {
       handleUpdateSubItemLink,
       updateHeader: updateHeaderDraft,
       save,
+      pages: pageOptions,
     }),
     [
       header, query.isLoading, mutation.isPending, saved, error,
@@ -151,7 +164,7 @@ export function useNavigationEditor() {
       handleAddItem, handleRemoveItem, handleUpdateItemName,
       handleAddSubItem, handleRemoveSubItem,
       handleUpdateSubItemName, handleUpdateSubItemLink,
-      updateHeaderDraft, save,
+      updateHeaderDraft, save, pageOptions,
     ],
   );
 }

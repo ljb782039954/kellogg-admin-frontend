@@ -1,11 +1,11 @@
 import { useState } from 'react';
 import { X, Youtube, Image as ImageIcon, AlertCircle, Loader2 } from 'lucide-react';
 import { Controller, type UseFormReturn } from 'react-hook-form';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { Label } from '@/components/ui/label';
-import ImageInput from '@/admin/components/ImageInput';
+import { Button } from '@/ui/primitives/button';
+import { Input } from '@/ui/primitives/input';
+import { Textarea } from '@/ui/primitives/textarea';
+import { Label } from '@/ui/primitives/label';
+import ImageInput from '@/ui/media/ImageInput';
 import { parseYouTubeUrl } from '../model/reviewMedia';
 import type { ReviewFormValues } from '../model/review.types';
 

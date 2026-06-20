@@ -68,27 +68,54 @@ export default defineConfig([
         {
           paths: [
             {
-              name: '@/lib/api',
-              message: 'Feature UI must call a controller or feature query, not the legacy API facade.',
-            },
-            {
               name: '@/shared/api/client',
               message: 'Feature UI must not call the shared API client directly.',
-            },
-            {
-              name: '@/context/ContentContext',
-              message: 'New feature UI must not add dependencies on ContentContext.',
             },
           ],
           patterns: [
             ...privateFeatureImports,
             {
-              regex: '^\\.\\./\\.\\./(?:\\.\\./)?(?!lib/|shared/|context/)[^/]+/(api|model|ui)(/.*)?$',
-              message: 'Import another feature through its public index.ts only.',
+              group: ['**/lib/api', '**/shared/api/client', '**/context/ContentContext',
+                      '**/admin/components', '**/admin/pageBuilder'],
+              message: 'Feature UI must not use legacy admin paths.',
             },
+          ],
+        },
+      ],
+    },
+  },
+  {
+    files: ['src/features/*/api/**/*.{ts,tsx}', 'src/features/*/model/**/*.{ts,tsx}'],
+    rules: {
+      'no-restricted-imports': [
+        'error',
+        {
+          patterns: [
             {
-              group: ['**/lib/api', '**/shared/api/client', '**/context/ContentContext'],
-              message: 'Feature UI must call a controller or feature query, not lower-level app infrastructure.',
+              group: ['**/ui/**', '**/ui/primitives/**', '**/ui/themes/**'],
+              message: 'Feature api/model must not depend on ui.',
+            },
+          ],
+        },
+      ],
+    },
+  },
+  {
+    files: ['src/ui/**/*.{ts,tsx}'],
+    rules: {
+      'no-restricted-imports': [
+        'error',
+        {
+          paths: [
+            {
+              name: '@/shared/api/client',
+              message: 'UI must not call the API client directly.',
+            },
+          ],
+          patterns: [
+            {
+              group: ['**/features/*/api/**', '**/features/*/model/**', '**/features/*/ui/**'],
+              message: 'UI must not import feature internal paths.',
             },
           ],
         },

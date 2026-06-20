@@ -15,7 +15,7 @@ vi.mock('../api/companyInfo.api', () => ({
   saveCompanyInfo: saveCompanyInfoMock,
 }));
 
-vi.mock('@/admin/components/ImageInput', () => ({
+vi.mock('@/ui/media/ImageInput', () => ({
   default: ({ value, onChange, label }: { value: string; onChange: (value: string) => void; label: string }) => (
     <button type="button" onClick={() => onChange('/logo.png')}>
       {label}: {value}

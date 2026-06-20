@@ -1,11 +1,11 @@
 import { useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { Plus, Trash2, Save, GripVertical, AlertTriangle, Mail, Phone, MapPin, Facebook, Instagram, Twitter, Youtube } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import BilingualInput from '@/admin/components/BilingualInput';
-import LinkSelector from '@/admin/components/LinkSelector';
+import { Button } from '@/ui/primitives/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/ui/primitives/card';
+import { Badge } from '@/ui/primitives/badge';
+import BilingualInput from '@/ui/forms/BilingualInput';
+import { LinkSelector, type PageOption } from '@/ui/navigation/LinkSelector';
 import siteSettings from '@/config/siteSettings.json';
 import type { FooterContent, FooterLink, FooterLinkGroup, Translation } from '@/types';
 
@@ -115,6 +115,7 @@ interface FooterEditorProps {
   saved: boolean;
   previewLang: 'zh' | 'en';
   hasDeletedPages: boolean;
+  pages: PageOption[];
   onSave: () => void;
   onPreviewLangChange: (lang: 'zh' | 'en') => void;
   onUpdateNewsletterPlaceholder: (value: Translation) => void;
@@ -132,6 +133,7 @@ export function FooterEditorView({
   saved,
   previewLang,
   hasDeletedPages,
+  pages,
   onSave,
   onPreviewLangChange,
   onUpdateNewsletterPlaceholder,
@@ -333,6 +335,7 @@ export function FooterEditorView({
                               <div className="pt-2 border-t">
                                 <LinkSelector
                                   value={link}
+                                  pages={pages}
                                   onChange={(value) => onUpdateLink(groupIndex, linkIndex, value as FooterLink)}
                                 />
                               </div>

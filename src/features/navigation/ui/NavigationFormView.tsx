@@ -1,15 +1,16 @@
 import { motion } from 'framer-motion';
 import { Plus, Trash2, GripVertical, AlertTriangle } from 'lucide-react';
-import BilingualInput from '@/admin/components/BilingualInput';
-import LinkSelector from '@/admin/components/LinkSelector';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
+import BilingualInput from '@/ui/forms/BilingualInput';
+import { LinkSelector, type PageOption } from '@/ui/navigation';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/ui/primitives/card';
+import { Button } from '@/ui/primitives/button';
+import { Badge } from '@/ui/primitives/badge';
 import { MAX_MAIN_NAV } from '../model/navigation.commands';
 import type { NavLink, Translation } from '@/types';
 
 interface NavigationFormViewProps {
   navItems: NavLink[];
+  pages: PageOption[];
   maxMainNav?: number;
   onAddItem: () => void;
   onRemoveItem: (index: number) => void;
@@ -22,6 +23,7 @@ interface NavigationFormViewProps {
 
 export function NavigationFormView({
   navItems,
+  pages,
   maxMainNav = MAX_MAIN_NAV,
   onAddItem,
   onRemoveItem,
@@ -122,6 +124,7 @@ export function NavigationFormView({
                             />
                             <LinkSelector
                               value={subItem}
+                              pages={pages}
                               onChange={(val) => onUpdateSubItemLink(index, subIndex, val)}
                             />
                           </div>

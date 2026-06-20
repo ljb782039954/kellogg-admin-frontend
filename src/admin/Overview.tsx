@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import {
   ExternalLink,
   FileText,
@@ -8,11 +9,12 @@ import {
   RefreshCw,
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { useContent } from '../context/ContentContext';
+import { useProductsSummary } from '@/features/products';
 
 export default function Overview() {
   const navigate = useNavigate();
-  const { allProducts, isLoading, error, refreshData, clearError } = useContent();
+  const { total, isLoading, error, refetch } = useProductsSummary();
+  const [dismissedError, setDismissedError] = useState(false);
 
   // 快捷入口
   const quickLinks = [
@@ -32,7 +34,7 @@ export default function Overview() {
     },
     {
       name: '产品管理',
-      description: `共 ${allProducts.length} 件产品`,
+      description: `共 ${total} 件产品`,
       path: '/products',
       icon: ShoppingBag,
       color: 'bg-green-500',
@@ -49,7 +51,7 @@ export default function Overview() {
         </div>
         <div className="flex items-center gap-2">
           <button
-            onClick={refreshData}
+            onClick={() => refetch()}
             disabled={isLoading}
             className="flex items-center gap-2 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors disabled:opacity-50"
             title="刷新数据"
@@ -78,24 +80,24 @@ export default function Overview() {
       </div>
 
       {/* 错误提示 */}
-      {error && (
+      {error && !dismissedError && (
         <div className="bg-red-50 border border-red-200 rounded-xl p-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <AlertCircle className="w-5 h-5 text-red-500" />
             <div>
               <p className="font-medium text-red-800">加载数据失败</p>
-              <p className="text-sm text-red-600">{error}</p>
+              <p className="text-sm text-red-600">{error.message}</p>
             </div>
           </div>
           <div className="flex items-center gap-2">
             <button
-              onClick={refreshData}
+              onClick={() => refetch()}
               className="px-3 py-1.5 text-sm bg-red-100 text-red-700 rounded hover:bg-red-200 transition-colors"
             >
               重试
             </button>
             <button
-              onClick={clearError}
+              onClick={() => setDismissedError(true)}
               className="px-3 py-1.5 text-sm text-red-500 hover:text-red-700"
             >
               关闭

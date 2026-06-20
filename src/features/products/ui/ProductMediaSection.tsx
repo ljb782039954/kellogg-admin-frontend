@@ -1,6 +1,6 @@
 import { Plus, Trash2, Tag } from 'lucide-react';
 import type { UseFormSetValue, UseFormWatch } from 'react-hook-form';
-import ImageInput from '@/admin/components/ImageInput';
+import ImageInput from '@/ui/media/ImageInput';
 import type { ProductFormValues } from '../model/product.schema';
 
 interface ProductMediaSectionProps {

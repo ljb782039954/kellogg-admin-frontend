@@ -5,9 +5,9 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-} from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
+} from '@/ui/primitives/dialog';
+import { Button } from '@/ui/primitives/button';
+import { Badge } from '@/ui/primitives/badge';
 import { cn } from '@/lib/utils';
 import type { BlockType, ComponentCategory } from '@/types';
 import {

@@ -1,9 +1,9 @@
 import { type FormState, type UseFormRegister } from 'react-hook-form';
 import { Share2 } from 'lucide-react';
-import { Label } from '@/components/ui/label';
-import { Input } from '@/components/ui/input';
-import { Separator } from '@/components/ui/separator';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Label } from '@/ui/primitives/label';
+import { Input } from '@/ui/primitives/input';
+import { Separator } from '@/ui/primitives/separator';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/ui/primitives/card';
 import type { CompanyInfoFormValues } from '../../model/companyInfo.mapper';
 
 interface SocialMediaSectionProps {

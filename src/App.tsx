@@ -1,13 +1,9 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { Toaster } from 'sonner';
 import { LanguageProvider } from './context/LanguageContext';
-import { ContentProvider } from './context/ContentContext';
 
-// Admin 组件
-// import Login from './admin/Login';
 import Dashboard from './admin/Dashboard';
 import Overview from './admin/Overview';
-// import AccountSettings from './admin/AccountSettings';
 
 // 页面管理
 import { PagesManager } from '@/features/pages';
@@ -29,48 +25,36 @@ import { ReviewsManager } from '@/features/reviews';
 function App() {
   return (
     <LanguageProvider>
-      <ContentProvider>
-        <BrowserRouter>
-          <Routes>
-            {/* <Route path="/login" element={<Login />} /> */}
-            <Route path="/" element={<Dashboard />}>
-              <Route index element={<Navigate to="/dashboard" replace />} />
-              <Route path="dashboard" element={<Overview />} />
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<Dashboard />}>
+            <Route index element={<Navigate to="/dashboard" replace />} />
+            <Route path="dashboard" element={<Overview />} />
 
-              {/* 页面管理 */}
-              <Route path="pages" element={<PagesManager />} />
-              <Route path="pages/:pageId/edit" element={<PageBuilderContainer />} />
-              <Route path="components" element={<ComponentsPreview />} />
+            <Route path="pages" element={<PagesManager />} />
+            <Route path="pages/:pageId/edit" element={<PageBuilderContainer />} />
+            <Route path="components" element={<ComponentsPreview />} />
+            <Route path="page-layout" element={<Navigate to="/pages" replace />} />
 
-              {/* 兼容旧路由 */}
-              <Route path="page-layout" element={<Navigate to="/pages" replace />} />
-
-              {/* 公司信息和组件管理 */}
-              <Route path="company" element={<CompanyInfoEditor />} />
-              <Route path="header" element={<NavigationEditor />} />
-              <Route path="footer" element={<FooterEditor />} />
-
-              <Route path="products" element={<ProductsEditor />} />
-              <Route path="categories" element={<CategoriesEditor />} />
-              <Route path="inquiries" element={<InquiriesManager />} />
-              <Route path="media" element={<MediaManager />} />
-              <Route path="inquiry-editor" element={<InquirySettingsEditor />} />
-              {/* Blog Management */}
-              <Route path="blog" element={<BlogsManager />} />
-              <Route path="blog/new" element={<BlogEditor />} />
-              <Route path="blog/:id/edit" element={<BlogEditor />} />
-              <Route path="blog-categories" element={<BlogCategoriesManager />} />
-              <Route path="reviews" element={<ReviewsManager />} />
-              {/* <Route path="account" element={<AccountSettings />} /> */}
-            </Route>
-          </Routes>
-        </BrowserRouter>
-        <Toaster position="top-right" richColors />
-      </ContentProvider>
+            <Route path="company" element={<CompanyInfoEditor />} />
+            <Route path="header" element={<NavigationEditor />} />
+            <Route path="footer" element={<FooterEditor />} />
+            <Route path="products" element={<ProductsEditor />} />
+            <Route path="categories" element={<CategoriesEditor />} />
+            <Route path="inquiries" element={<InquiriesManager />} />
+            <Route path="media" element={<MediaManager />} />
+            <Route path="inquiry-editor" element={<InquirySettingsEditor />} />
+            <Route path="blog" element={<BlogsManager />} />
+            <Route path="blog/new" element={<BlogEditor />} />
+            <Route path="blog/:id/edit" element={<BlogEditor />} />
+            <Route path="blog-categories" element={<BlogCategoriesManager />} />
+            <Route path="reviews" element={<ReviewsManager />} />
+          </Route>
+        </Routes>
+      </BrowserRouter>
+      <Toaster position="top-right" richColors />
     </LanguageProvider>
   );
 }
 
 export default App;
-
-// 修改

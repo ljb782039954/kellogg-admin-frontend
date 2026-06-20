@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion';
 import { Save, Loader2 } from 'lucide-react';
 import { type UseFormReturn } from 'react-hook-form';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/ui/primitives/button';
 import type { CompanyInfoFormValues } from '../model/companyInfo.mapper';
 import { BasicInfoSection } from './sections/BasicInfoSection';
 import { ContactSection } from './sections/ContactSection';

@@ -1,6 +1,6 @@
 import { Layers, Star, Trash2, Loader2 } from 'lucide-react';
-import AdminImage from '@/admin/components/AdminImage';
-import { Switch } from '@/components/ui/switch';
+import AdminImage from '@/ui/media/AdminImage';
+import { Switch } from '@/ui/primitives/switch';
 import type { Category, Product } from '@/types';
 
 interface ProductListSectionProps {

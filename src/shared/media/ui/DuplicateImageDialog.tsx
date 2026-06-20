@@ -1,5 +1,5 @@
-import AdminImage from '@/admin/components/AdminImage';
-import { Button } from '@/components/ui/button';
+import AdminImage from '@/ui/media/AdminImage';
+import { Button } from '@/ui/primitives/button';
 import {
   Dialog,
   DialogContent,
@@ -7,8 +7,8 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from '@/components/ui/dialog';
-import { ScrollArea } from '@/components/ui/scroll-area';
+} from '@/ui/primitives/dialog';
+import { ScrollArea } from '@/ui/primitives/scroll-area';
 import type { DuplicateImageMatch } from '../domain/findDuplicateImages';
 
 interface DuplicateImageDialogProps {
@@ -32,11 +32,10 @@ export function DuplicateImageDialog({
         <DialogHeader>
           <DialogTitle className="text-base font-semibold text-gray-900 flex items-center gap-2">
             <span className="w-2 h-2 rounded-full bg-orange-500" />
-            检测到相似图片
+            妫€娴嬪埌鐩镐技鍥剧墖
           </DialogTitle>
           <DialogDescription className="text-xs text-gray-500">
-            系统检测到图库中已有与您当前上传内容高度相似（95% 以上）的图片，建议直接复用以节约存储空间并提升加载效率。
-          </DialogDescription>
+            绯荤粺妫€娴嬪埌鍥惧簱涓凡鏈変笌鎮ㄥ綋鍓嶄笂浼犲唴瀹归珮搴︾浉浼硷紙95% 浠ヤ笂锛夌殑鍥剧墖锛屽缓璁洿鎺ュ鐢ㄤ互鑺傜害瀛樺偍绌洪棿骞舵彁鍗囧姞杞芥晥鐜囥€?          </DialogDescription>
         </DialogHeader>
 
         <ScrollArea className="max-h-60 mt-3 border rounded-xl overflow-hidden">
@@ -56,7 +55,7 @@ export function DuplicateImageDialog({
                     {image.name}
                   </p>
                   <p className="text-[10px] text-gray-400 mt-0.5">
-                    {image.dimensions || '未知尺寸'} • 相似度:{' '}
+                    {image.dimensions || '鏈煡灏哄'} 鈥?鐩镐技搴?{' '}
                     <span className="font-bold text-orange-600">
                       {(similarity * 100).toFixed(1)}%
                     </span>
@@ -69,7 +68,7 @@ export function DuplicateImageDialog({
                   className="text-xs font-medium text-primary hover:text-primary-hover hover:bg-primary/5 h-8 shrink-0"
                   onClick={() => onReuse(image.url)}
                 >
-                  复用此图
+                  澶嶇敤姝ゅ浘
                 </Button>
               </div>
             ))}
@@ -78,7 +77,7 @@ export function DuplicateImageDialog({
 
         <DialogFooter className="mt-4 pt-3 border-t flex gap-2 sm:justify-end">
           <Button type="button" variant="ghost" onClick={onCancel} className="text-xs text-gray-500">
-            取消
+            鍙栨秷
           </Button>
           <Button
             type="button"
@@ -87,7 +86,7 @@ export function DuplicateImageDialog({
             disabled={isUploading}
             className="text-xs"
           >
-            坚持上传新图
+            鍧氭寔涓婁紶鏂板浘
           </Button>
         </DialogFooter>
       </DialogContent>

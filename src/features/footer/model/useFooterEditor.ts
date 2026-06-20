@@ -5,6 +5,7 @@ import { footerKeys } from '../api/footer.keys';
 import { getFooter, updateFooter } from '../api/footer.api';
 import { getPagesIndex, navigationKeys } from '@/features/navigation';
 import { toFooterForm, checkPageExists, createEmptyFooterLink, createEmptyFooterGroup } from './footer.mapper';
+import type { PageOption } from '@/ui/navigation';
 
 function hasDeletedPage(footer: FooterContent, pages: CustomPage[]): boolean {
   return footer.linkGroups.some((group) =>
@@ -36,6 +37,17 @@ export function useFooterEditor() {
 
   const footer = draft ?? toFooterForm(query.data);
   const pages = useMemo(() => pagesQuery.data ?? [], [pagesQuery.data]);
+
+  const pageOptions = useMemo<PageOption[]>(
+    () =>
+      pages.map((p) => ({
+        pageId: p.id,
+        path: p.path,
+        title: p.title,
+        isFixed: p.isFixed,
+      })),
+    [pages]
+  );
 
   const mutation = useMutation({
     mutationFn: updateFooter,
@@ -147,6 +159,7 @@ export function useFooterEditor() {
       removeLinkFromGroup,
       updateLink,
       save,
+      pages: pageOptions,
     }),
     [
       footer,
@@ -165,6 +178,7 @@ export function useFooterEditor() {
       removeLinkFromGroup,
       updateLink,
       save,
+      pageOptions,
     ],
   );
 }

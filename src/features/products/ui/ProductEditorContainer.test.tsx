@@ -22,7 +22,7 @@ vi.mock('@/features/categories/api/categories.api', () => ({
   getCategories: getCategoriesMock,
 }));
 
-vi.mock('@/admin/components/ImageInput', () => ({
+vi.mock('@/ui/media/ImageInput', () => ({
   default: ({ value, onChange, label }: { value: string; onChange: (value: string) => void; label: string }) => (
     <button type="button" onClick={() => onChange('/img.png')}>
       {label}: {value}

@@ -5,9 +5,9 @@ import { Plus, Search, Copy, Settings, Trash2, Loader2, FileText } from 'lucide-
 import { useLanguage } from '@/context/LanguageContext';
 import { usePageList } from '../model/usePageList';
 import type { PageIndexEntry } from '../model/pages.mapper';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+import { Button } from '@/ui/primitives/button';
+import { Input } from '@/ui/primitives/input';
+import { Label } from '@/ui/primitives/label';
 
 export function PagesManager() {
   const navigate = useNavigate();

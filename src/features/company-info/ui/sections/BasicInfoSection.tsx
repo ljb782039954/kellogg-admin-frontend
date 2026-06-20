@@ -1,10 +1,10 @@
 import { Controller, type Control, type FormState } from 'react-hook-form';
 import { Building2 } from 'lucide-react';
-import { Label } from '@/components/ui/label';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Label } from '@/ui/primitives/label';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/ui/primitives/card';
 import { BilingualTextControl } from '@/shared/forms/controls/BilingualTextControl';
 import { BilingualTextareaControl } from '@/shared/forms/controls/BilingualTextareaControl';
-import ImageInput from '@/admin/components/ImageInput';
+import ImageInput from '@/ui/media/ImageInput';
 import type { CompanyInfoFormValues } from '../../model/companyInfo.mapper';
 
 interface BasicInfoSectionProps {

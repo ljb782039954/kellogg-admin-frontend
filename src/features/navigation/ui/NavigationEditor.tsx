@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import { Save, Loader2, AlertTriangle } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/ui/primitives/button';
 import { useNavigationEditor } from '../model/useNavigationEditor';
 import { NavigationFormView } from './NavigationFormView';
 import { NavigationPreview } from './NavigationPreview';
@@ -23,6 +23,7 @@ export function NavigationEditor() {
     handleUpdateSubItemName,
     handleUpdateSubItemLink,
     save,
+    pages,
   } = useNavigationEditor();
 
   if (isLoading) {
@@ -97,6 +98,7 @@ export function NavigationEditor() {
 
       <NavigationFormView
         navItems={header.navItems}
+        pages={pages}
         onAddItem={handleAddItem}
         onRemoveItem={handleRemoveItem}
         onUpdateItemName={handleUpdateItemName}

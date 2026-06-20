@@ -14,7 +14,7 @@ import {
   Info,
   Link,
 } from 'lucide-react';
-import ImageInput from '@/admin/components/ImageInput';
+import ImageInput from '@/ui/media/ImageInput';
 import type { BlogCategory } from '@/types';
 import type { BlogFormValues } from '../model/blog.schema';
 import { MarkdownEditor } from './MarkdownEditor';

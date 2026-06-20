@@ -13,7 +13,7 @@ import {
   BookOpen,
 } from 'lucide-react';
 import type { Blog } from '@/types';
-import AdminImage from '@/admin/components/AdminImage';
+import AdminImage from '@/ui/media/AdminImage';
 
 const STATUS_LABELS = {
   draft: { label: '草稿', class: 'bg-gray-100 text-gray-500' },

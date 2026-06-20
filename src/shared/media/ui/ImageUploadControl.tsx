@@ -1,6 +1,6 @@
 import { useId, useRef } from 'react';
 import { Loader2, RefreshCw, Upload, X } from 'lucide-react';
-import AdminImage from '@/admin/components/AdminImage';
+import AdminImage from '@/ui/media/AdminImage';
 import { getPreviewUrl } from '@/lib/utils';
 
 interface ImageUploadControlProps {
@@ -95,7 +95,7 @@ export function ImageUploadControl({
           ) : (
             <>
               <Upload className="w-6 h-6" />
-              <span className="text-xs font-medium">本地上传</span>
+              <span className="text-xs font-medium">鏈湴涓婁紶</span>
             </>
           )}
         </button>
@@ -127,7 +127,7 @@ export function ImageUploadControl({
                 type="button"
                 onClick={openFilePicker}
                 className="p-2 bg-white rounded-full shadow-lg hover:bg-gray-100 transition-colors"
-                title="更换图片"
+                title="鏇存崲鍥剧墖"
               >
                 <RefreshCw className="w-4 h-4 text-gray-700" />
               </button>
@@ -136,7 +136,7 @@ export function ImageUploadControl({
                 type="button"
                 onClick={clearImage}
                 className="p-2 bg-white rounded-full shadow-lg hover:bg-red-50 transition-colors"
-                title="删除图片"
+                title="鍒犻櫎鍥剧墖"
               >
                 <X className="w-4 h-4 text-red-500" />
               </button>

@@ -1,6 +1,6 @@
 import { Plus, Trash2, ClipboardList, Palette } from 'lucide-react';
 import type { UseFormSetValue } from 'react-hook-form';
-import ImageInput from '@/admin/components/ImageInput';
+import ImageInput from '@/ui/media/ImageInput';
 import type { ProductFormValues } from '../model/product.schema';
 
 interface ProductVariantsSectionProps {

@@ -2,8 +2,8 @@ import * as LucideIcons from 'lucide-react';
 import type { PageBlock } from '@/types';
 import { getBlockCatalogItem } from '../../model/blockCatalog';
 import { propertyEditorRegistry } from './propertyEditorRegistry.js';
-import { LayoutPropsEditor } from '@/admin/pageBuilder/propsEditors/LayoutPropsEditor';
-import { ProductGridPropsEditor } from '@/admin/pageBuilder/propsEditors/ProductGridPropsEditor';
+import { LayoutPropsEditor } from '@/ui/themes/default/page-builder/property-editors/LayoutPropsEditor';
+import { ProductGridPropsEditor } from '@/ui/themes/default/page-builder/property-editors/ProductGridPropsEditor';
 
 interface BlockPropertyPanelProps {
   block: PageBlock;

@@ -3,7 +3,10 @@ import type {
   ComponentCategory,
   PageBlock,
   Translation,
+  Category,
+  Product,
 } from '@/types';
+import type { PageOption } from '@/features/pages';
 
 export type PageBuilderPanel =
   | { type: 'page-settings' }
@@ -90,3 +93,11 @@ export type PageBuilderCommandError =
   | 'BLOCK_NOT_FOUND'
   | 'DUPLICATE_SINGLETON'
   | 'INVALID_TARGET_INDEX';
+
+export interface PropertyEditorResources {
+  categories: Category[];
+  products: Product[];
+  pages: PageOption[];
+  isLoading: boolean;
+  error: string | null;
+}

@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useLanguage } from '@/context/LanguageContext';
 import { ArrowLeft, Save, Settings, Search, Loader2 } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/ui/primitives/button';
 import { BlockList } from './block-list/BlockList';
 import { AddBlockDialog } from './block-picker/AddBlockDialog';
 import { BlockPropertyPanel } from './property-panel/BlockPropertyPanel';

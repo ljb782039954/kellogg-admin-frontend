@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { Trash2, GripVertical } from 'lucide-react';
 import type { Category } from '@/types';
 import { BilingualTextControl } from '@/shared/forms/controls/BilingualTextControl';
-import ImageInput from '@/admin/components/ImageInput';
+import ImageInput from '@/ui/media/ImageInput';
 
 interface CategoryListItemProps {
   category: Category;

@@ -3,26 +3,26 @@ import type { BlockType } from '@/types';
 import type { BlockPropertyEditorProps, PropertyEditorComponent } from './propertyEditor.types';
 
 // Original editor components from admin/pageBuilder
-import { TextSectionPropsEditor } from '@/admin/pageBuilder/propsEditors/TextSectionPropsEditor';
-import { ImageBannerPropsEditor } from '@/admin/pageBuilder/propsEditors/ImageBannerPropsEditor';
-import { ImageFullPropsEditor } from '@/admin/pageBuilder/propsEditors/ImageFullPropsEditor';
-import { ImageBannerTagPropsEditor } from '@/admin/pageBuilder/propsEditors/ImageBannerTagPropsEditor';
-import { ProductGridPropsEditor } from '@/admin/pageBuilder/propsEditors/ProductGridPropsEditor';
-import { CarouselPropsEditor } from '@/admin/pageBuilder/propsEditors/CarouselPropsEditor';
-import { BrandValuesPropsEditor } from '@/admin/pageBuilder/propsEditors/BrandValuesPropsEditor';
-import { StatisticsPropsEditor } from '@/admin/pageBuilder/propsEditors/StatisticsPropsEditor';
-import { TestimonialsPropsEditor } from '@/admin/pageBuilder/propsEditors/TestimonialsPropsEditor';
-import { CategoriesPropsEditor } from '@/admin/pageBuilder/propsEditors/CategoriesPropsEditor';
-import { NewArrivalsPropsEditor } from '@/admin/pageBuilder/propsEditors/NewArrivalsPropsEditor';
-import { FeaturedProductsPropsEditor } from '@/admin/pageBuilder/propsEditors/FeaturedProductsPropsEditor';
-import { ImageTextPropsEditor } from '@/admin/pageBuilder/propsEditors/ImageTextPropsEditor';
-import { CountdownPropsEditor } from '@/admin/pageBuilder/propsEditors/CountdownPropsEditor';
-import { PartnerLogosPropsEditor } from '@/admin/pageBuilder/propsEditors/PartnerLogosPropsEditor';
-import { GalleryPropsEditor } from '@/admin/pageBuilder/propsEditors/GalleryPropsEditor';
-import { FeatureListPropsEditor } from '@/admin/pageBuilder/propsEditors/FeatureListPropsEditor';
-import { CtaBannerPropsEditor } from '@/admin/pageBuilder/propsEditors/CtaBannerPropsEditor';
-import { VideoSectionPropsEditor } from '@/admin/pageBuilder/propsEditors/VideoSectionPropsEditor';
-import { FAQPropsEditor } from '@/admin/pageBuilder/propsEditors/FAQPropsEditor';
+import { TextSectionPropsEditor } from '@/ui/themes/default/page-builder/property-editors/TextSectionPropsEditor';
+import { ImageBannerPropsEditor } from '@/ui/themes/default/page-builder/property-editors/ImageBannerPropsEditor';
+import { ImageFullPropsEditor } from '@/ui/themes/default/page-builder/property-editors/ImageFullPropsEditor';
+import { ImageBannerTagPropsEditor } from '@/ui/themes/default/page-builder/property-editors/ImageBannerTagPropsEditor';
+import { ProductGridPropsEditor } from '@/ui/themes/default/page-builder/property-editors/ProductGridPropsEditor';
+import { CarouselPropsEditor } from '@/ui/themes/default/page-builder/property-editors/CarouselPropsEditor';
+import { BrandValuesPropsEditor } from '@/ui/themes/default/page-builder/property-editors/BrandValuesPropsEditor';
+import { StatisticsPropsEditor } from '@/ui/themes/default/page-builder/property-editors/StatisticsPropsEditor';
+import { TestimonialsPropsEditor } from '@/ui/themes/default/page-builder/property-editors/TestimonialsPropsEditor';
+import { CategoriesPropsEditor } from '@/ui/themes/default/page-builder/property-editors/CategoriesPropsEditor';
+import { NewArrivalsPropsEditor } from '@/ui/themes/default/page-builder/property-editors/NewArrivalsPropsEditor';
+import { FeaturedProductsPropsEditor } from '@/ui/themes/default/page-builder/property-editors/FeaturedProductsPropsEditor';
+import { ImageTextPropsEditor } from '@/ui/themes/default/page-builder/property-editors/ImageTextPropsEditor';
+import { CountdownPropsEditor } from '@/ui/themes/default/page-builder/property-editors/CountdownPropsEditor';
+import { PartnerLogosPropsEditor } from '@/ui/themes/default/page-builder/property-editors/PartnerLogosPropsEditor';
+import { GalleryPropsEditor } from '@/ui/themes/default/page-builder/property-editors/GalleryPropsEditor';
+import { FeatureListPropsEditor } from '@/ui/themes/default/page-builder/property-editors/FeatureListPropsEditor';
+import { CtaBannerPropsEditor } from '@/ui/themes/default/page-builder/property-editors/CtaBannerPropsEditor';
+import { VideoSectionPropsEditor } from '@/ui/themes/default/page-builder/property-editors/VideoSectionPropsEditor';
+import { FAQPropsEditor } from '@/ui/themes/default/page-builder/property-editors/FAQPropsEditor';
 
 function adaptEditor<T>(
   OldEditor: ComponentType<{ props: T; onUpdate: (props: T) => void }>,

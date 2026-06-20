@@ -10,6 +10,7 @@ export function FooterEditor() {
     saved: controller.saved,
     previewLang: controller.previewLang,
     hasDeletedPages: controller.hasDeletedPages,
+    pages: controller.pages,
     onSave: controller.save,
     onPreviewLangChange: controller.setPreviewLang,
     onUpdateNewsletterPlaceholder: (value) =>

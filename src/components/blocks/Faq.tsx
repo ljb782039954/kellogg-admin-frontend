@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { ChevronDown, } from 'lucide-react';
 
-import { Button } from '@/components/ui/button';
+import { Button } from '@/ui/primitives/button';
 import MotionHeader from '../custom/motionHeader';
 import { AnimatePresence, motion } from 'framer-motion';
 import type { Translation } from '@/types';

@@ -6,8 +6,8 @@ import type { BlockType } from '@/types';
 import * as LucideIcons from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { Badge } from '@/components/ui/badge';
-import { ScrollArea } from '@/components/ui/scroll-area';
+import { Badge } from '@/ui/primitives/badge';
+import { ScrollArea } from '@/ui/primitives/scroll-area';
 import { useLanguage } from '@/context/LanguageContext';
 
 import * as previewData from '@/config/blocksContentPreview';
