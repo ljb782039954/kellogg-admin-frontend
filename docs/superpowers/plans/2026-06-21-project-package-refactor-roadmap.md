@@ -91,21 +91,25 @@ shared ──→ 第三方依赖
 - 依赖边界测试：`core` 不导入 `@/features|@/components|@/ui|@/app|@/types`；`shared` 不导入 `core|package|features`。
 - `npm test`、`npm run build` 全绿；应用照常启动。
 
-### P2 — 建立 Kellogg package
+### P2 — 建立 Kellogg package（体量过大，再拆为 2a/2b/2c 子计划）
 
 **做什么**：把"项目专属"内容搬进 `package`，并让 `main.tsx` 通过 `createAdminApp(kelloggPackage)` 启动。
 
-**关键迁移映射**：
-- `src/config/adminCredentials.ts` + `siteSettings.json` + 品牌信息 → `package/identity/config.ts`（`ProjectIdentity`）。
-- `App.tsx` 路由表 → `package/routes/*`（`AdminRouteDefinition[]`，携带 menu 分组/排序/screenId）。
-- `src/types/{products,blog,review,baseEditor,blocks}.ts` 的业务实体/Input/DTO/Filters → `package/types/*`。
-- `src/features/<domain>/api` + `model/*.mapper.ts` → 暂以 `package/adapters/*`（`EntityAdapter`）+ `package/entities/*`（`EntityDefinition`）承接；通用 Query/Mutation 编排留到 P4 提取。
-- `src/admin/{Dashboard,Overview}.tsx`、`src/features/<domain>/ui/*` 业务页面 → `package/ui/screens/*`（以 screenId 注册）。
-- `src/ui/{primitives,forms,media,navigation}` → `package/ui/{primitives,forms,media}`。
-- Shell（登录页/AdminLayout/Sidebar/Header/ErrorPage）→ `package/ui/shell/*`（设计 §7）。
-- 建立 `package/ui/index.ts`（`defineProjectUi`）与 `package/index.ts`（`defineProjectPackage`）。
+勘察实证：P2 触及 shell、全部 UI 层、路由、13 个业务域屏幕、实体定义与 DTO Adapter，且 features 间有跨域耦合（pages/categories/navigation 被多处引用）。单一 bite-sized 计划过大，故与顶层"路线图+逐阶段细化"同构地再拆为三个子计划，每个独立产出可运行软件：
 
-**验收**：`main.tsx` 仅 `createAdminApp(projectPackage).mount()`；菜单/路由/实体页面均由 package 驱动；所有 React 视觉组件位于 `package/ui`；`npm test`/`build` 通过；应用功能等价于重构前。
+**已确认的两项策略决定（2026-06-21）：**
+1. **垂直切片 + 包装器**：2a 先建真实 Shell + identity + 路由，让 `main.tsx` 尽早切到 `createAdminApp(projectPackage)`；`package/ui/screens` 暂为"薄包装器"委托给现有 feature 组件，使 app 立刻跑在 package 上、所有路由可用、最早验证整条契约链。迁移期允许 `package → features` 临时兼容导入（P5 删除）。后续 2c 再把屏幕真身搬入 package。（替代方案"水平分层迁移"已否决——风险集中在最后切换点，且很久看不到 package 真正驱动 app。）
+2. **core 据 routes 构建菜单**：扩展 P1 的 `AdminShellDefinition`，Layout 接收 core 从 `routes`（`menu.group/order`）+ 包级 `menuGroups`（分组标题/图标）构建的菜单模型、identity 与当前语言；Shell 用稳定 id 渲染菜单，不硬编码路由。
+
+| 子计划 | 范围 | 详细计划 |
+|---|---|---|
+| **2a** | 包脚手架 + identity + 真实 Shell（从 Dashboard 移植菜单/品牌/语言切换）+ `package/routes` + `package/ui/screens` 薄包装器 + 扩展 shell 契约 + `main.tsx` 切换。**结果：app 从 package 启动，全部现有路由经 package shell 渲染。** | [`2026-06-21-phase-2a-boot-from-package.md`](2026-06-21-phase-2a-boot-from-package.md) ✅ 已编写 |
+| **2b** | UI 基础层 `src/ui/{primitives,forms,media,navigation}` → `package/ui/{primitives,forms,media}` + `src/lib/utils`(cn) → `shared/utils`；旧路径兼容 re-export。 | 待 2a 完成后编写 |
+| **2c** | 每个业务域：薄包装器 → `package/ui/screens` 真身；建立 `package/types`、`package/entities`(EntityDefinition)、`package/adapters`(EntityAdapter)；处理配置型单例（company/header/footer）与特殊业务（inquiries/build）。 | 待 2b 完成后编写 |
+
+**P2 整体验收**：`main.tsx` 仅 `createAdminApp(projectPackage).mount()`；菜单/路由/实体页面均由 package 驱动；所有 React 视觉组件位于 `package/ui`；`npm test`/`build` 通过；应用功能等价于重构前。
+
+**P2 暂缓项**（明确不在 P2 做）：真实 `pageBuilder` 定义与 `blockViews`/`blockEditors`（P3）；通用 Query/Mutation/CRUD 提取到 core（P4）；删除旧 `features`/`ui`/`admin`/`config` 路径与兼容层（P5）。2a 的 `ProjectPackage.entities` 暂为空、`pageBuilder` 暂省略；page-builder 路由经薄包装器委托给现有实现。
 
 ### P3 — 迁移 Blocks 与 Editors
 
