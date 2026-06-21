@@ -1,11 +1,6 @@
-// Language type
-export type Language = 'zh' | 'en';
+export type { Language, Translation } from '@/shared/i18n/translation';
 
-// Translation interface
-export interface Translation {
-  zh: string;
-  en: string;
-}
+import type { Translation } from '@/shared/i18n/translation';
 
 export type LinkType = 'internal' | 'external';
 
