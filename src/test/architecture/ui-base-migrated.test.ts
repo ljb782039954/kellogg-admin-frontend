@@ -24,11 +24,12 @@ describe('Phase 2b: UI 基础层已迁入 package/ui', () => {
 
   it('旧 src/ui/{primitives,forms,media,navigation} 仅含 re-export 垫片', () => {
     const reExportOnly = /^(\s*(\/\/.*|export \* from '[^']+';|export (type )?\{[^}]*\} from '[^']+';))+\s*$/;
-    for (const dir of ['ui/primitives', 'ui/forms', 'ui/media', 'ui/navigation']) {
-      for (const f of files(join(SRC, dir))) {
-        const body = readFileSync(f, 'utf8').trim();
-        expect(reExportOnly.test(body), `${f} 应只含 re-export`).toBe(true);
-      }
+    const dirs = ['ui/primitives', 'ui/forms', 'ui/media', 'ui/navigation'];
+    const all = dirs.flatMap((dir) => files(join(SRC, dir)));
+    expect(all.length, '旧址应仍存在垫片文件，否则守卫空通过').toBeGreaterThan(0);
+    for (const f of all) {
+      const body = readFileSync(f, 'utf8').trim();
+      expect(reExportOnly.test(body), `${f} 应只含 re-export`).toBe(true);
     }
   });
 });
