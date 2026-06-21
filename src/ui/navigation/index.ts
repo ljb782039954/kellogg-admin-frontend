@@ -1,2 +1,2 @@
-export { LinkSelector } from './LinkSelector';
-export type { PageOption } from './LinkSelector';
+export { LinkSelector } from '@/package/ui/forms/LinkSelector';
+export type { PageOption } from '@/package/ui/forms/LinkSelector';
