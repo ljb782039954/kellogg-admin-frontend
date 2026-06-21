@@ -4,12 +4,13 @@ import { join } from 'node:path';
 
 const SRC = join(process.cwd(), 'src');
 
+// 只扫描生产代码；测试文件可合法跨边界导入
 function collectFiles(dir: string): string[] {
   const out: string[] = [];
   for (const name of readdirSync(dir)) {
     const full = join(dir, name);
     if (statSync(full).isDirectory()) out.push(...collectFiles(full));
-    else if (/\.tsx?$/.test(name)) out.push(full);
+    else if (/\.tsx?$/.test(name) && !/\.test\.tsx?$/.test(name)) out.push(full);
   }
   return out;
 }
