@@ -10,6 +10,9 @@ import type { ProjectPackage } from '@/core/contracts';
 function clone(): ProjectPackage {
   return {
     ...fakeProjectPackage,
+    menuGroups: fakeProjectPackage.menuGroups
+      ? fakeProjectPackage.menuGroups.map((g) => ({ ...g }))
+      : undefined,
     routes: fakeProjectPackage.routes.map((r) => ({ ...r })),
     entities: fakeProjectPackage.entities.map((e) => ({ ...e })),
     pageBuilder: fakeProjectPackage.pageBuilder
@@ -57,6 +60,13 @@ describe('validateProjectPackage', () => {
     const errors = validateProjectPackage(pkg);
     expect(errors.some((e) => e.includes('previewId'))).toBe(true);
     expect(errors.some((e) => e.includes('editorId'))).toBe(true);
+  });
+
+  it('检出 menu.group 不存在于 menuGroups', () => {
+    const pkg = clone();
+    pkg.menuGroups = [{ id: 'other', title: { zh: '其它', en: 'Other' }, order: 1 }];
+    const errors = validateProjectPackage(pkg);
+    expect(errors.some((e) => e.includes('menuGroups'))).toBe(true);
   });
 });
 

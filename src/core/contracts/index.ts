@@ -12,10 +12,16 @@ export type {
   PageBuilderDefinition,
 } from './page-builder';
 export type {
+  AdminMenuGroupDefinition,
+  AdminMenuItem,
+  AdminMenuGroup,
+  AdminShellProps,
+  AdminShellDefinition,
+} from './shell';
+export type {
   AdminScreenProps,
   BlockPreviewProps,
   BlockEditorProps,
-  AdminShellDefinition,
   ProjectUiDefinition,
 } from './ui';
 export type { ProjectPackage } from './package';

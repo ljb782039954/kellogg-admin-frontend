@@ -5,6 +5,8 @@ import { defineProjectUi } from './defineProjectUi';
 export function validateProjectPackage(pkg: ProjectPackage): string[] {
   const errors: string[] = [];
 
+  const groupIds = new Set((pkg.menuGroups ?? []).map((g) => g.id));
+
   const routeIds = new Set<string>();
   const routePaths = new Set<string>();
   for (const route of pkg.routes) {
@@ -15,6 +17,11 @@ export function validateProjectPackage(pkg: ProjectPackage): string[] {
     if (!pkg.ui.screens[route.screenId]) {
       errors.push(
         `route "${route.id}" 引用的 screenId "${route.screenId}" 不存在于 ui.screens`,
+      );
+    }
+    if (route.menu && !groupIds.has(route.menu.group)) {
+      errors.push(
+        `route "${route.id}" 的 menu.group "${route.menu.group}" 不存在于 menuGroups`,
       );
     }
   }

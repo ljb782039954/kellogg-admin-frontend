@@ -1,5 +1,4 @@
-import type { ReactNode } from 'react';
-import type { ProjectPackage } from '@/core/contracts';
+import type { AdminShellProps, ProjectPackage } from '@/core/contracts';
 
 function Screen() {
   return <div>screen</div>;
@@ -10,8 +9,12 @@ function BlockView() {
 function BlockEditor() {
   return <div>editor</div>;
 }
-function Layout({ children }: { children: ReactNode }) {
-  return <div data-testid="layout">{children}</div>;
+function Layout({ children, identity, menu }: AdminShellProps) {
+  return (
+    <div data-testid="layout" data-brand={identity.name.en} data-groups={menu.length}>
+      {children}
+    </div>
+  );
 }
 function LoginPage() {
   return <div>login</div>;
@@ -20,7 +23,6 @@ function ErrorPage() {
   return <div>error</div>;
 }
 
-/** 测试用最小合法项目包：所有 screenId/previewId/editorId 均可解析。 */
 export const fakeProjectPackage: ProjectPackage = {
   identity: {
     key: 'fake',
@@ -28,6 +30,7 @@ export const fakeProjectPackage: ProjectPackage = {
     languages: ['zh', 'en'],
     defaultLanguage: 'zh',
   },
+  menuGroups: [{ id: 'main', title: { zh: '主菜单', en: 'Main' }, order: 1 }],
   routes: [
     {
       id: 'dashboard',
