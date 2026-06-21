@@ -1,2 +1,2 @@
-export { BilingualInput } from './BilingualInput';
-export { BilingualTextarea } from './BilingualTextarea';
+export { BilingualInput } from '@/package/ui/forms/BilingualInput';
+export { BilingualTextarea } from '@/package/ui/forms/BilingualTextarea';
