@@ -44,4 +44,9 @@ describe('依赖边界', () => {
     const forbidden = /^@\//;
     expect(offenders(join(SRC, 'shared', 'i18n'), forbidden)).toEqual([]);
   });
+
+  it('shared/utils 不导入任何 @/ 业务路径', () => {
+    const forbidden = /^@\//;
+    expect(offenders(join(SRC, 'shared', 'utils'), forbidden)).toEqual([]);
+  });
 });
