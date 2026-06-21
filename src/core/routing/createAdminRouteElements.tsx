@@ -1,23 +1,16 @@
 import type { ReactElement } from 'react';
-import { Routes, Route, Navigate, Outlet } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import type { ProjectPackage } from '@/core/contracts';
+import { ShellHost } from '@/core/app/ShellHost';
 
-/** 根据项目包定义构建后台路由树：shell.Layout 包裹 Outlet，按 screenId 渲染 screen。 */
+/** 据项目包构建后台路由树：ShellHost 提供 Shell 布局，按 screenId 渲染 screen。 */
 export function createAdminRouteElements(pkg: ProjectPackage): ReactElement {
-  const { shell, screens } = pkg.ui;
-  const Layout = shell.Layout;
+  const { screens } = pkg.ui;
   const firstPath = pkg.routes[0]?.path;
 
   return (
     <Routes>
-      <Route
-        path="/"
-        element={
-          <Layout>
-            <Outlet />
-          </Layout>
-        }
-      >
+      <Route path="/" element={<ShellHost projectPackage={pkg} />}>
         {firstPath && (
           <Route index element={<Navigate to={firstPath} replace />} />
         )}
