@@ -15,7 +15,7 @@ import { BlogCategoriesManager } from '@/features/blog-categories';
 import { ProductsEditor } from '@/features/products';
 import { CategoriesEditor } from '@/features/categories';
 import { InquiriesManager, InquirySettingsEditor } from '@/features/inquiries';
-import { ReviewsManager } from '@/features/reviews';
+import { ReviewsScreen } from './reviews';
 
 /** 迁移期薄包装器：委托给现有 feature/admin 组件；2c 将逐个替换为 package 内真身。 */
 const wrap = (Component: ComponentType): ComponentType<AdminScreenProps> => {
@@ -46,6 +46,6 @@ export const screens: Record<string, ComponentType<AdminScreenProps>> = {
   categories: wrap(CategoriesEditor),
   inquiries: wrap(InquiriesManager),
   'inquiry-settings': wrap(InquirySettingsEditor),
-  reviews: wrap(ReviewsManager),
+  reviews: ReviewsScreen,
   'page-layout-redirect': PageLayoutRedirect,
 };
