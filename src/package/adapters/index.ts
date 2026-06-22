@@ -1,1 +1,1 @@
-export {};
+export { reviewAdapter } from './review.adapter';
