@@ -1,4 +1,5 @@
 import type { Translation } from '@/types';
+export type { ReviewListFilters } from '@/package/types';
 
 export type ReviewFormValues = {
   clientName: string;
@@ -12,11 +13,4 @@ export type ReviewFormValues = {
   sortOrder: number;
   status: 'published' | 'draft';
 };
-
-export interface ReviewListFilters {
-  page: number;
-  pageSize: number;
-  search?: string;
-  status?: 'published' | 'draft';
-}
 
