@@ -13,7 +13,7 @@ import {
   ChevronLeft,
   ChevronRight,
 } from 'lucide-react';
-import type { CustomerReview } from '@/types';
+import type { CustomerReview } from '@/package/types';
 
 function StarDisplay({ rating }: { rating: number }) {
   const stars = [];

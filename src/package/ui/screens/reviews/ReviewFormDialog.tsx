@@ -1,5 +1,5 @@
-import type { CustomerReview } from '@/types';
-import { useReviewEditor } from '../model/useReviewEditor';
+import type { CustomerReview } from '@/package/types';
+import { useReviewEditor } from '@/features/reviews/model/useReviewEditor';
 import { ReviewFormView } from './ReviewFormView';
 
 interface ReviewFormDialogProps {

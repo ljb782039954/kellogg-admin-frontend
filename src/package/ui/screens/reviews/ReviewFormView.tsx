@@ -1,13 +1,13 @@
 import { useState } from 'react';
 import { X, Youtube, Image as ImageIcon, AlertCircle, Loader2 } from 'lucide-react';
 import { Controller, type UseFormReturn } from 'react-hook-form';
-import { Button } from '@/ui/primitives/button';
-import { Input } from '@/ui/primitives/input';
-import { Textarea } from '@/ui/primitives/textarea';
-import { Label } from '@/ui/primitives/label';
-import ImageInput from '@/ui/media/ImageInput';
-import { parseYouTubeUrl } from '../model/reviewMedia';
-import type { ReviewFormValues } from '../model/review.types';
+import { Button } from '@/package/ui/primitives/button';
+import { Input } from '@/package/ui/primitives/input';
+import { Textarea } from '@/package/ui/primitives/textarea';
+import { Label } from '@/package/ui/primitives/label';
+import ImageInput from '@/package/ui/media/ImageInput';
+import { parseYouTubeUrl } from '@/features/reviews/model/reviewMedia';
+import type { ReviewFormValues } from '@/features/reviews/model/review.types';
 
 function StarRatingInput({ value, onChange }: { value: number; onChange: (v: number) => void }) {
   const [hovered, setHovered] = useState<number | null>(null);

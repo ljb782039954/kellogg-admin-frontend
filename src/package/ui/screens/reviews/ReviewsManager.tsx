@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'react';
-import type { CustomerReview } from '@/types';
-import { useReviewsList } from '../model/useReviewsList';
+import type { CustomerReview } from '@/package/types';
+import { useReviewsList } from '@/features/reviews/model/useReviewsList';
 import { ReviewsListView } from './ReviewsListView';
 import { ReviewFormDialog } from './ReviewFormDialog';
 

@@ -1,1 +1,1 @@
-export { ReviewsManager } from './ui/ReviewsManager';
+export { ReviewsManager } from '@/package/ui/screens/reviews';
