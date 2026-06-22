@@ -1,1 +1,1 @@
-export {};
+export { reviewEntity } from './review.entity';
