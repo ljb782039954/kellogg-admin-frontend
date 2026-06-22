@@ -15,7 +15,8 @@
 - **Phase 1 完成**（契约与稳定装配点）：`src/core/{contracts,app,routing}`、`src/shared/i18n`、`createAdminApp`、依赖边界测试。计划：`.../plans/2026-06-21-phase-1-contracts-and-assembly.md`。
 - **Phase 2a 完成**（app 从 package 启动）：`src/package/{identity,routes,ui/{shell,screens,index.ts},index.ts}`；`main.tsx` 现为 `createAdminApp(projectPackage).mount()`；`App.tsx` 已删。计划：`.../plans/2026-06-21-phase-2a-boot-from-package.md`。
 - **Phase 2b 完成**（UI 基础层迁移）：UI 基础层 primitives/forms/media/navigation → `package/ui`；cn → `shared/utils`；旧路径 `src/ui/{primitives,forms,media,navigation}` 留 re-export 垫片；新增架构锁测试 `src/test/architecture/ui-base-migrated.test.ts`。
-- 门禁状态：`npx vitest run` 全量 **367/367 绿**；`npx tsc -b` 绿；`npm run build` 绿；`npm run dev` 干净启动。
+- **Phase 2c-1 完成**（reviews 试点）：reviews 业务类型 → `package/types/review.ts`；数据适配器 → `package/adapters/review.adapter.ts`；业务实体 → `package/entities/review.entity.ts`；UI 屏幕真身（ReviewsManager/ReviewsListView/ReviewFormDialog/ReviewFormView）→ `package/ui/screens/reviews`；`src/features/reviews/index.ts` 为 re-export shim；reviewEntity 已接入 `ProjectPackage.entities`；新增架构守卫测试 `src/test/architecture/package-2c-reviews.test.ts`。
+- 门禁状态：`npx vitest run` 全量 **379/379 绿**；`npx tsc -b` 绿；`npm run build` 绿；架构守卫 3 断言绿。
 - 最新 commit：本任务。
 
 ## 架构现状（关键事实）
@@ -27,15 +28,32 @@
 - 边界测试只约束 `core` 与 `shared/i18n`（`src/test/architecture/dependency-boundaries.test.ts`，扫描跳过 `*.test.*`）；`shared/media`、`shared/forms/controls` 仍有 `@/ui`/`@/types` 遗留依赖，留待 P4/P5。
 
 ## 下一步
-1. **Phase 2c**（薄包装器→真身 + 核心业务包）：
-   - `package/ui/screens` 从薄包装器升级为真身页面组件（含 rich-text 编辑等）。
-   - 新增 `package/{types,entities,adapters}`：类型定义、业务实体、数据适配器。
-   - 包装器透传 `routeId`（`createElement(Component,{routeId})`）。
-   - 注意 `AdminLayout` 对 `@/features/build` 的 `BuildTrigger` 依赖，迁出策略须同步考量。
+1. **Phase 2c 后续批次**（按依赖顺序）：
+   - **2c-2 至 2c-N**：独立 CRUD 域名 → media / blogs / categories / products（各含 types/adapters/entities/ui-screens + features shim 模式）。
+   - **2c-N+1**：枢纽实体 pages / navigation（依赖多个 CRUD，在其后）。
+   - **后期单例**：company / footer（全局配置）。
+   - **特殊块**：page-builder / inquiries / admin（复杂依赖或权限）。
+
 2. 再 **P3**（Blocks/Editors）→ **P4**（提取 core 通用 CRUD/PageBuilder）→ **P5**（删旧路径+替换验证）。
 
-**遗留事项**（待后续阶段）：
-- `AdminLayout` 暂留 `@/features/build` 依赖；P2c/P3 考虑内移或包装。
+### 模式模板（2c-N 执行检清）
+每个业务域迁移遵循：
+```
+package/types/<entity>.ts          # 业务类型定义（导出 Entity/Input/Filters）
+package/adapters/<entity>.adapter.ts
+                                   # EntityAdapter<Entity, Entity, Input, Filters> 实现
+package/entities/<entity>.entity.ts
+                                   # EntityDefinition<...> 实现，接入 ProjectPackage.entities
+package/ui/screens/<entity>/       # 真身屏幕组件目录
+  ├─ index.tsx                     # Screen 包装（ComponentType<AdminScreenProps>）
+  ├─ <ScreenComponent>.tsx         # 页面真身（ReviewsManager/etc）
+  └─ ...其他组件
+features/<entity>/index.ts         # Re-export shim: export {...} from '@/package/ui/screens/<entity>'
+```
+
+### 关键坑（2c-1 经验）
+- **测试合并**：若目标 feature 已有 `index.test.ts`、既有测试，迁移时须**合并而非覆盖**（2c-1 Task 5 教训）。
+- `AdminLayout` 暂留 `@/features/build` 依赖；2c 考虑内移或包装。
 - `src/components/ui` 死副本（旧 UI 组件目录）；P5 清理。
 - `shared/media` 依赖 `@/ui` 旧引用（经 shim）；P4 迁移期目录结构稳定后补全。
 ## 工作方式（重要）
