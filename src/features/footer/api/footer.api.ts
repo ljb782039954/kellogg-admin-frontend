@@ -1,6 +1,6 @@
 import { apiClient } from '@/shared/api/client';
 import { isAppError } from '@/shared/api/errors';
-import type { FooterContent } from '@/types';
+import type { FooterContent } from '@/package/types';
 
 const configKey = 'footer_config';
 

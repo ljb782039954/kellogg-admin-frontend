@@ -1,5 +1,6 @@
 import { nanoid } from 'nanoid';
-import type { CustomPage, FooterContent, FooterLink, FooterLinkGroup } from '@/types';
+import type { CustomPage } from '@/types';
+import type { FooterContent, FooterLink, FooterLinkGroup } from '@/package/types';
 
 function migrateLinkType(link: FooterLink): FooterLink {
   if (link.linkType) return link;

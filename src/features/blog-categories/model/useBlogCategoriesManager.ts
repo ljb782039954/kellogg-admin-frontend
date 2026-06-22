@@ -1,7 +1,7 @@
 import { useCallback, useMemo, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
-import type { BlogCategory } from '@/types';
+import type { BlogCategory } from '@/package/types';
 import {
   getBlogCategories,
   createBlogCategory,

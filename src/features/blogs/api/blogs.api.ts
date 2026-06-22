@@ -1,24 +1,7 @@
 import { apiClient } from '@/shared/api/client';
-import type { Blog, BlogInput } from '@/types';
+import type { Blog, BlogInput, BlogsQuery, PaginatedBlogs } from '@/package/types';
 
-export interface BlogsQuery {
-  page?: number;
-  pageSize?: number;
-  status?: string;
-  category?: string;
-  search?: string;
-  sort?: string;
-}
-
-export interface PaginatedBlogs {
-  data: Blog[];
-  pagination: {
-    page: number;
-    pageSize: number;
-    total: number;
-    totalPages: number;
-  };
-}
+export type { BlogsQuery, PaginatedBlogs } from '@/package/types';
 
 export function getBlogs(params?: BlogsQuery): Promise<PaginatedBlogs> {
   const searchParams = new URLSearchParams();

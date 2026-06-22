@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useForm } from 'react-hook-form';
-import type { ProductInput } from '@/types';
+import type { Product, ProductInput } from '@/package/types';
 import { getCategories } from '@/features/categories/api/categories.api';
 import {
   getProducts,
@@ -19,6 +19,8 @@ import {
   toCreateProductInput,
   toUpdateProductInput,
 } from './product.mapper';
+
+const EMPTY_PRODUCTS: Product[] = [];
 
 export function useProductsManager() {
   const queryClient = useQueryClient();
@@ -38,7 +40,7 @@ export function useProductsManager() {
     queryFn: () => getProducts({ pageSize: 1000 }),
   });
 
-  const products = listData?.data ?? [];
+  const products = listData?.data ?? EMPTY_PRODUCTS;
 
   // Categories query
   const { data: categories = [] } = useQuery({

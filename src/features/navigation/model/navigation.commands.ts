@@ -1,5 +1,5 @@
 import { nanoid } from 'nanoid';
-import type { NavLink, HeaderContent } from '@/types';
+import type { NavLink, HeaderContent } from '@/package/types';
 
 export const MAX_MAIN_NAV = 5;
 

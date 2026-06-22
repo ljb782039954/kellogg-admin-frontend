@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import type { CategoryInput } from '@/types';
+import type { CategoryInput } from '@/package/types';
 import { categoryKeys } from '../api/categories.keys';
 import { getCategories, createCategory, updateCategory, deleteCategory } from '../api/categories.api';
 import { createDefaultCategory } from './category.defaults';

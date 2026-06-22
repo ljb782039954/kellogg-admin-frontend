@@ -2,13 +2,31 @@ import { defineProjectPackage } from '@/core/app/defineProjectPackage';
 import { identity } from './identity/config';
 import { routes, menuGroups } from './routes';
 import { projectUi } from './ui';
-import { reviewEntity } from './entities';
+import {
+  blogCategoryEntity,
+  blogEntity,
+  categoryEntity,
+  companyInfoEntity,
+  footerEntity,
+  navigationEntity,
+  productEntity,
+  reviewEntity,
+} from './entities';
 
 export const projectPackage = defineProjectPackage({
   identity,
   menuGroups,
   routes,
-  entities: [reviewEntity],
+  entities: [
+    blogCategoryEntity,
+    blogEntity,
+    categoryEntity,
+    companyInfoEntity,
+    footerEntity,
+    navigationEntity,
+    productEntity,
+    reviewEntity,
+  ],
   ui: projectUi,
 });
 

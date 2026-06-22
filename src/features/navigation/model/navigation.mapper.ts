@@ -1,5 +1,5 @@
 import { nanoid } from 'nanoid';
-import type { HeaderContent, NavLink } from '@/types';
+import type { HeaderContent, NavLink } from '@/package/types';
 
 function migrateNavLink(link: NavLink): NavLink {
   const linkType = link.linkType || (link.href?.startsWith('http') ? 'external' : 'internal');

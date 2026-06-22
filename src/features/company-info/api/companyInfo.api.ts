@@ -1,4 +1,4 @@
-import type { CompanyInfo } from '@/types';
+import type { CompanyInfo } from '@/package/types';
 import { apiClient } from '@/shared/api/client';
 import { isAppError } from '@/shared/api/errors';
 import { blankCompanyInfo } from '../model/companyInfo.defaults';

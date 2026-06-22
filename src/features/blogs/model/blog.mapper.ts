@@ -1,4 +1,4 @@
-import type { Blog, BlogInput } from '@/types';
+import type { Blog, BlogInput } from '@/package/types';
 import { blogSchema, type BlogFormValues } from './blog.schema';
 import { createDefaultBlog } from './blog.defaults';
 

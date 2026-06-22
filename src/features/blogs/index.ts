@@ -1,3 +1,2 @@
-export { BlogsManager } from './ui/BlogsManager';
-export { BlogEditor } from './ui/BlogEditor';
+export { BlogEditor, BlogsManager } from '@/package/ui/screens/blogs';
 export type { BlogFormValues } from './model/blog.schema';

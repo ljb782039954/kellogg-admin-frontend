@@ -1,12 +1,7 @@
 import { apiClient } from '@/shared/api/client';
-import type { BlogCategory } from '@/types';
+import type { BlogCategory, BlogCategoryInput } from '@/package/types';
 
-export interface BlogCategoryInput {
-  name_zh: string;
-  name_en: string;
-  slug?: string;
-  sort_order?: number;
-}
+export type { BlogCategoryInput } from '@/package/types';
 
 export function getBlogCategories(): Promise<BlogCategory[]> {
   return apiClient.request<BlogCategory[]>('/api/blog-categories');

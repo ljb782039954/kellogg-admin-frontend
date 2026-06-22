@@ -1,16 +1,11 @@
-import type { BlogCategory } from '@/types';
+import type { BlogCategory, BlogCategoryInput } from '@/package/types';
 import { blogCategorySchema, type BlogCategoryFormValues } from './blogCategory.schema';
 import { createDefaultBlogCategory } from './blogCategory.defaults';
 
 export { blogCategorySchema };
 export type { BlogCategoryFormValues };
 
-export function toBlogCategoryInput(form: BlogCategoryFormValues): {
-  name_zh: string;
-  name_en: string;
-  slug?: string;
-  sort_order?: number;
-} {
+export function toBlogCategoryInput(form: BlogCategoryFormValues): BlogCategoryInput {
   return {
     name_zh: form.name.zh,
     name_en: form.name.en,

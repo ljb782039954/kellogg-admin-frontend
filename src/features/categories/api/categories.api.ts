@@ -1,5 +1,5 @@
 import { apiClient } from '@/shared/api/client';
-import type { Category, CategoryInput } from '@/types';
+import type { Category, CategoryInput } from '@/package/types';
 
 export function getCategories(): Promise<Category[]> {
   return apiClient.request<Category[]>('/api/categories');

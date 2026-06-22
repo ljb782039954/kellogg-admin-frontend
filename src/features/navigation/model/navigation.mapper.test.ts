@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { toHeaderForm, createEmptyNavLink, MAX_MAIN_NAV } from './navigation.mapper';
-import type { HeaderContent } from '@/types';
+import type { HeaderContent } from '@/package/types';
 
 describe('navigation.mapper', () => {
   it('provides defaults for missing data', () => {

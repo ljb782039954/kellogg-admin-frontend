@@ -1,22 +1,12 @@
 import { apiClient } from '@/shared/api/client';
-import type { Product, ProductInput } from '@/types';
+import type {
+  PaginatedProducts,
+  Product,
+  ProductInput,
+  ProductsQuery,
+} from '@/package/types';
 
-interface ProductsQuery {
-  page?: number;
-  pageSize?: number;
-  category?: string;
-  featured?: boolean;
-  sort?: 'newest' | 'price_asc' | 'price_desc' | 'sales';
-  search?: string;
-}
-
-interface PaginatedProducts {
-  data: Product[];
-  total: number;
-  page: number;
-  pageSize: number;
-  totalPages: number;
-}
+export type { PaginatedProducts, ProductsQuery } from '@/package/types';
 
 export function getProducts(params?: ProductsQuery): Promise<PaginatedProducts> {
   const searchParams = new URLSearchParams();

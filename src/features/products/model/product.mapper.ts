@@ -1,4 +1,4 @@
-import type { Product, ProductInput, BulkPrice } from '@/types';
+import type { BulkPrice, Product, ProductInput } from '@/package/types';
 import { productSchema, type ProductFormValues } from './product.schema';
 import { createDefaultProduct } from './product.defaults';
 

@@ -1,13 +1,14 @@
 import { useCallback, useMemo, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
-import type { Blog } from '@/types';
+import type { Blog, BlogStatusFilter } from '@/package/types';
 import { getBlogs, deleteBlog, updateBlog } from '../api/blogs.api';
 import { blogKeys } from '../api/blogs.keys';
 
-export type BlogStatusFilter = 'all' | 'draft' | 'published' | 'archived';
+export type { BlogStatusFilter } from '@/package/types';
 
 const PAGE_SIZE = 10;
+const EMPTY_BLOGS: Blog[] = [];
 
 export function useBlogsManager() {
   const queryClient = useQueryClient();
@@ -35,7 +36,7 @@ export function useBlogsManager() {
     queryFn: () => getBlogs(queryParams),
   });
 
-  const blogs = listData?.data ?? [];
+  const blogs = listData?.data ?? EMPTY_BLOGS;
   const total = listData?.pagination?.total ?? 0;
   const totalPages = listData?.pagination?.totalPages ?? 1;
 

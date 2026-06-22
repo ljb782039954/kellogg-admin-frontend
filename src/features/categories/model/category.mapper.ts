@@ -1,4 +1,4 @@
-import type { Category, CategoryInput } from '@/types';
+import type { Category, CategoryInput } from '@/package/types';
 import type { CategoryFormValues } from './category.schema';
 import { createDefaultCategory } from './category.defaults';
 

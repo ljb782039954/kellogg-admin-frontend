@@ -1,6 +1,6 @@
 import { apiClient } from '@/shared/api/client';
 import { isAppError } from '@/shared/api/errors';
-import type { HeaderContent } from '@/types';
+import type { HeaderContent } from '@/package/types';
 
 const configKey = 'header_config';
 

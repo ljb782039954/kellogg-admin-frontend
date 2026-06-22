@@ -1,11 +1,16 @@
 import { useCallback, useMemo, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import type { CustomPage, FooterContent, FooterLink, FooterLinkGroup } from '@/types';
+import type { CustomPage } from '@/types';
+import type {
+  FooterContent,
+  FooterLink,
+  FooterLinkGroup,
+  PageOption,
+} from '@/package/types';
 import { footerKeys } from '../api/footer.keys';
 import { getFooter, updateFooter } from '../api/footer.api';
 import { getPagesIndex, navigationKeys } from '@/features/navigation';
 import { toFooterForm, checkPageExists, createEmptyFooterLink, createEmptyFooterGroup } from './footer.mapper';
-import type { PageOption } from '@/ui/navigation';
 
 function hasDeletedPage(footer: FooterContent, pages: CustomPage[]): boolean {
   return footer.linkGroups.some((group) =>

@@ -1,1 +1,1 @@
-export { MediaManager } from './ui/MediaManager';
+export { MediaManager } from '@/package/ui/screens/media';

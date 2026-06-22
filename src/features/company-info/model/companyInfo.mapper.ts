@@ -1,4 +1,4 @@
-import type { CompanyInfo } from '@/types';
+import type { CompanyInfo } from '@/package/types';
 import { blankCompanyInfo } from './companyInfo.defaults';
 import { companyInfoSchema, type CompanyInfoFormValues } from './companyInfo.schema';
 

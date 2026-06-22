@@ -69,7 +69,7 @@ shared ──→ 第三方依赖
 | 阶段 | 名称 | 交付物 | 详细计划 |
 |---|---|---|---|
 | **P1** | 契约与稳定装配点 | `core/contracts`、`defineProjectPackage`/`defineProjectUi`、`createAdminApp` 路由引擎、边界/完整性测试（用 fixture 包验证，**不动现有 App**） | [`2026-06-21-phase-1-contracts-and-assembly.md`](2026-06-21-phase-1-contracts-and-assembly.md) ✅ 已编写 |
-| **P2** | 建立 Kellogg package | 品牌/菜单/路由/实体类型/DTO Adapter 迁入 `package`；Shell+基础组件+全部业务页面迁入 `package/ui`；`package/ui/index.ts` 与 `ProjectUiDefinition`；`main.tsx` 切换到真实包 | 待 P1 完成后编写 |
+| **P2** | 建立 Kellogg package（进行中） | 品牌/菜单/路由/实体类型/DTO Adapter 迁入 `package`；Shell+基础组件+全部业务页面迁入 `package/ui`；`package/ui/index.ts` 与 `ProjectUiDefinition`；`main.tsx` 切换到真实包 | 2a、2b 已完成；2c 已完成 reviews、blog-categories、blogs、categories、products、media UI、company-info、navigation、footer |
 | **P3** | 迁移 Blocks 与 Editors | 前端 Blocks UI→`package/ui/blocks`；Block 类型/默认值/元数据→`package/blocks`；属性编辑器→`package/ui/editors`；稳定 id 连接 type↔Preview↔Editor；package Page Builder definition + 资源 Adapter | 待 P2 完成后编写 |
 | **P4** | 提取通用内核 | 从 features 提取 Query/Mutation/CRUD 编排到 `core/entities`；提取 Page Builder 会话/命令/历史/保存到 `core/page-builder`；提取路由/Shell/Entity Controller；清除 core 中所有项目类型 | 待 P3 完成后编写 |
 | **P5** | 删旧路径 + 替换验证 | 删除已迁移的 `features`/`ui/themes/default`/`components/blocks`/`types` 旧路径与兼容导出；ESLint+架构测试落地；**最小替换包**与 **UI-only 替换包**双重验证 | 待 P4 完成后编写 |
@@ -105,7 +105,7 @@ shared ──→ 第三方依赖
 |---|---|---|
 | **2a** | 包脚手架 + identity + 真实 Shell（从 Dashboard 移植菜单/品牌/语言切换）+ `package/routes` + `package/ui/screens` 薄包装器 + 扩展 shell 契约 + `main.tsx` 切换。**结果：app 从 package 启动，全部现有路由经 package shell 渲染。** | [`2026-06-21-phase-2a-boot-from-package.md`](2026-06-21-phase-2a-boot-from-package.md) ✅ 已编写 |
 | **2b** | UI 基础层 `src/ui/{primitives,forms,media,navigation}` → `package/ui/{primitives,forms,media}` + `src/lib/utils`(cn) → `shared/utils`；旧路径兼容 re-export。 | 待 2a 完成后编写 |
-| **2c** | 每个业务域：薄包装器 → `package/ui/screens` 真身；建立 `package/types`、`package/entities`(EntityDefinition)、`package/adapters`(EntityAdapter)；处理配置型单例（company/header/footer）与特殊业务（inquiries/build）。 | 待 2b 完成后编写 |
+| **2c** | 每个业务域：薄包装器 → `package/ui/screens` 真身；建立 `package/types`、`package/entities`(EntityDefinition)、`package/adapters`(EntityAdapter)；处理配置型单例（company/header/footer）与特殊业务（inquiries/build）。**进行中：reviews、blog-categories、blogs、categories、products、media UI、company-info、navigation、footer 已完成。media 属技术能力，不建立伪业务 EntityDefinition；company-info、navigation 与 footer 以仅更新的配置单例接入。** | [`2026-06-22-phase-2c-1-reviews-pilot.md`](2026-06-22-phase-2c-1-reviews-pilot.md) |
 
 **P2 整体验收**：`main.tsx` 仅 `createAdminApp(projectPackage).mount()`；菜单/路由/实体页面均由 package 驱动；所有 React 视觉组件位于 `package/ui`；`npm test`/`build` 通过；应用功能等价于重构前。
 
@@ -164,4 +164,4 @@ shared ──→ 第三方依赖
 
 ## 5. 执行方式
 
-每个阶段的详细计划用 `superpowers:subagent-driven-development`（推荐）或 `superpowers:executing-plans` 逐任务实现，任务间设审查检查点。完成一个阶段、验收通过后，再编写下一阶段详细计划。
+后续按小型项目节奏直接推进：每次选择一个低耦合垂直切片，使用 CodeGraph 确认依赖，完成迁移后运行 TypeScript、Vitest 与生产构建门禁。无需使用 superpowers 工作流；完成一个阶段并验收后，再细化下一阶段。

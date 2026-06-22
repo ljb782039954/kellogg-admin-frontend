@@ -9,14 +9,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/package/ui/primitives/select';
-import type { NavLink, Translation } from '@/types';
+import type { NavLink, PageOption } from '@/package/types';
 
-export interface PageOption {
-  pageId: string;
-  path: string;
-  title: Translation;
-  isFixed: boolean;
-}
+export type { PageOption };
 
 interface LinkSelectorProps {
   value: NavLink;
