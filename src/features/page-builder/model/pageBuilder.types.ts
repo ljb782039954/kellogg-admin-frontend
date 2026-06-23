@@ -1,12 +1,12 @@
 import type {
+  AvailableBlock,
   BlockType,
-  ComponentCategory,
   PageBlock,
   Translation,
   Category,
   Product,
 } from '@/types';
-import type { PageOption } from '@/features/pages';
+import type { PageOption } from '@/package/types';
 
 export type PageBuilderPanel =
   | { type: 'page-settings' }
@@ -41,17 +41,7 @@ export interface PageBuilderState {
   error: string | null;
 }
 
-export interface AvailableBlock {
-  type: BlockType;
-  name: Translation;
-  description: Translation;
-  category: ComponentCategory;
-  icon: string;
-  singleton: boolean;
-  hasGlobalData: boolean;
-  canAdd: boolean;
-  disabledReason?: 'singleton-exists';
-}
+export type { AvailableBlock } from '@/package/types';
 
 export interface PageMetaChanges {
   title?: Translation;
@@ -102,7 +92,7 @@ export interface PropertyEditorResources {
   error: string | null;
 }
 
-export interface PropertyEditorProps<T = any> {
+export interface PropertyEditorProps<T = unknown> {
   value: T;
   onChange: (value: T) => void;
   resources: PropertyEditorResources;

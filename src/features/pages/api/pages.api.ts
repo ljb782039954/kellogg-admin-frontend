@@ -8,7 +8,7 @@ export function getPagesIndex(): Promise<CustomPage[]> {
   });
 }
 
-export { type PageIndexEntry } from '../model/pages.mapper';
+export type { PageIndexEntry } from '@/package/types';
 
 export function savePagesIndex(pages: Record<string, unknown>[]): Promise<{ success: boolean }> {
   return apiClient.request<{ success: boolean }>('/api/config', {

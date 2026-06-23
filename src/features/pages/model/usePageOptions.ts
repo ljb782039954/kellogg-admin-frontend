@@ -2,14 +2,7 @@ import { useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { getPagesIndex } from '../api/pages.api';
 import { pageKeys } from '../api/pages.keys';
-import type { Translation } from '@/types';
-
-export interface PageOption {
-  pageId: string;
-  path: string;
-  title: Translation;
-  isFixed: boolean;
-}
+import type { PageOption } from '@/package/types';
 
 export function usePageOptions(): {
   pages: PageOption[];

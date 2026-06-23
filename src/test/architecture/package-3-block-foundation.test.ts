@@ -1,0 +1,39 @@
+import { describe, expect, it } from 'vitest';
+import { existsSync, readFileSync } from 'node:fs';
+import { join } from 'node:path';
+
+const SRC = join(process.cwd(), 'src');
+
+describe('P3: Block 非 UI 基础已迁入 package', () => {
+  it('类型、业务 registry 与 page-builder definition 已就位', () => {
+    expect(existsSync(join(SRC, 'package/types/block.ts'))).toBe(true);
+    expect(existsSync(join(SRC, 'package/blocks/registry.ts'))).toBe(true);
+    expect(existsSync(join(SRC, 'package/page-builder/definition.ts'))).toBe(true);
+  });
+
+  it('旧类型与 blockCatalog 路径仅保留兼容导出', () => {
+    expect(readFileSync(join(SRC, 'types/blocks.ts'), 'utf8')).toContain(
+      "export * from '@/package/types/block';",
+    );
+    expect(readFileSync(
+      join(SRC, 'features/page-builder/model/blockCatalog.ts'),
+      'utf8',
+    )).toContain("from '@/package/blocks/registry'");
+  });
+
+  it('临时 UI registry 继续连接旧组件路径，不移动组件文件', () => {
+    expect(existsSync(join(SRC, 'package/ui/blocks/blocks/Carousel.tsx'))).toBe(true);
+    expect(existsSync(join(
+      SRC,
+      'ui/themes/default/page-builder/property-editors/CarouselPropsEditor.tsx',
+    ))).toBe(true);
+    expect(readFileSync(
+      join(SRC, 'package/ui/blocks/legacyRegistry.tsx'),
+      'utf8',
+    )).toContain("from '@/components/blocks'");
+    expect(readFileSync(
+      join(SRC, 'package/ui/editors/legacyRegistry.tsx'),
+      'utf8',
+    )).toContain("from '@/ui/themes/default/page-builder'");
+  });
+});

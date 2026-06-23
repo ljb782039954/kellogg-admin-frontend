@@ -3,26 +3,11 @@ import type {
   InquiryDto,
   InquirySettings,
   PaginatedInquiriesDto,
-} from './inquiry.types';
+} from '@/package/types';
+import { inquiryAdapter } from '@/package/adapters/inquiry.adapter';
 
 export function toInquiry(dto: InquiryDto): Inquiry {
-  if (dto.status !== 'pending' && dto.status !== 'processed') {
-    throw new Error(`Unknown inquiry status: ${dto.status}`);
-  }
-  return {
-    id: dto.id,
-    name: dto.name,
-    email: dto.email,
-    phone: dto.phone,
-    country: dto.country,
-    company: dto.company,
-    productType: dto.product_type,
-    quantity: dto.quantity,
-    message: dto.message,
-    status: dto.status as Inquiry['status'],
-    createdAt: dto.created_at,
-    updatedAt: dto.updated_at ?? null,
-  };
+  return inquiryAdapter.fromDto(dto);
 }
 
 export function toPaginatedInquiries(

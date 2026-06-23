@@ -32,6 +32,7 @@ function page(overrides: Partial<CustomPage> = {}): CustomPage {
 function indexEntry(overrides: Partial<CustomPage> = {}) {
   const p = page(overrides);
   const { blocks, seo, ...rest } = p;
+  void seo;
   return { ...rest, blockCount: blocks?.length ?? 0 };
 }
 

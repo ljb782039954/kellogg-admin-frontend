@@ -13,7 +13,7 @@ import type {
   GalleryProps, 
   FeatureListProps, 
   CtaBannerProps,
-} from '@/components/blocks';
+} from '@/package/ui/blocks/blocks/';
 
 // ============================================
 // 导出产品相关数据

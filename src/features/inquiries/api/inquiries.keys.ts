@@ -1,4 +1,4 @@
-import type { InquiryListFilters } from '../model/inquiry.types';
+import type { InquiryListFilters } from '@/package/types';
 
 export const inquiryKeys = {
   all: ['inquiries'] as const,

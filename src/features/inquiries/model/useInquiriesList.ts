@@ -1,7 +1,12 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useMemo, useRef, useState } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import type { Inquiry, InquiryListFilters, InquiryStatus } from './inquiry.types';
-import type { InquiriesViewModel, InquiriesActions } from './inquiry.types';
+import type {
+  InquiriesActions,
+  InquiriesViewModel,
+  Inquiry,
+  InquiryListFilters,
+  InquiryStatus,
+} from '@/package/types';
 import { getInquiries, updateInquiryStatus, deleteInquiry } from '../api/inquiries.api';
 import { inquiryKeys } from '../api/inquiries.keys';
 import { toPaginatedInquiries } from './inquiry.mapper';
@@ -37,8 +42,11 @@ export function useInquiriesList() {
     placeholderData: (prev) => prev,
   });
 
-  const paginated = rawData ? toPaginatedInquiries(rawData) : undefined;
-  const inquiries = paginated?.data ?? [];
+  const paginated = useMemo(
+    () => (rawData ? toPaginatedInquiries(rawData) : undefined),
+    [rawData],
+  );
+  const inquiries = useMemo(() => paginated?.data ?? [], [paginated?.data]);
   const pagination = paginated?.pagination;
   const pendingCount = inquiries.filter((i) => i.status === 'pending').length;
 
@@ -46,15 +54,9 @@ export function useInquiriesList() {
     ? inquiries.find((i) => i.id === selectedId) ?? null
     : null;
 
-  // Clear selection when the selected ID is no longer in the current page
-  useEffect(() => {
-    if (selectedId !== null && !inquiries.some((i) => i.id === selectedId)) {
-      setSelectedId(null);
-    }
-  }, [selectedId, inquiries]);
-
   const debouncedSetSearch = useCallback((value: string) => {
     setSearch(value);
+    setSelectedId(null);
     clearTimeout(debounceTimer.current);
     debounceTimer.current = setTimeout(() => {
       setPage(1);
@@ -85,6 +87,7 @@ export function useInquiriesList() {
     }, []),
     changePage: useCallback((newPage: number) => {
       setPage(newPage);
+      setSelectedId(null);
     }, []),
     selectInquiry: useCallback((id: number | null) => {
       setSelectedId(id);

@@ -1,19 +1,19 @@
 import React, { type ComponentType } from 'react';
 import type { AdminScreenProps } from '@/core/contracts';
 
-import Overview from '@/admin/Overview';
 import BlocksPreview from '@/admin/BlocksPreview';
 import DefaultPageBuilderRoute from '@/app/adapters/page-builder/DefaultPageBuilderRoute';
-import { PagesManager } from '@/features/pages';
-import { InquiriesManager, InquirySettingsEditor } from '@/features/inquiries';
 import { BlogCategoriesScreen } from './blog-categories';
 import { BlogEditorScreen, BlogsScreen } from './blogs';
 import { CategoriesScreen } from './categories';
 import { CompanyInfoScreen } from './company-info';
+import { DashboardScreen } from './dashboard';
 import { FooterScreen } from './footer';
+import { InquiriesScreen, InquirySettingsScreen } from './inquiries';
 import { MediaScreen } from './media';
 import { NavigationScreen } from './navigation';
 import { PageLayoutRedirect } from './PageLayoutRedirect';
+import { PagesScreen } from './pages';
 import { ProductsScreen } from './products';
 import { ReviewsScreen } from './reviews';
 
@@ -26,12 +26,12 @@ const wrap = (Component: ComponentType): ComponentType<AdminScreenProps> => {
 };
 
 export const screens: Record<string, ComponentType<AdminScreenProps>> = {
-  dashboard: wrap(Overview),
+  dashboard: DashboardScreen,
   company: CompanyInfoScreen,
   header: NavigationScreen,
   footer: FooterScreen,
   components: wrap(BlocksPreview),
-  pages: wrap(PagesManager),
+  pages: PagesScreen,
   'page-builder': wrap(DefaultPageBuilderRoute),
   media: MediaScreen,
   'blog-list': BlogsScreen,
@@ -40,8 +40,8 @@ export const screens: Record<string, ComponentType<AdminScreenProps>> = {
   'blog-categories': BlogCategoriesScreen,
   products: ProductsScreen,
   categories: CategoriesScreen,
-  inquiries: wrap(InquiriesManager),
-  'inquiry-settings': wrap(InquirySettingsEditor),
+  inquiries: InquiriesScreen,
+  'inquiry-settings': InquirySettingsScreen,
   reviews: ReviewsScreen,
   'page-layout-redirect': PageLayoutRedirect,
 };

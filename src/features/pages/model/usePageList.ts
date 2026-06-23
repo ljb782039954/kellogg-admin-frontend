@@ -2,10 +2,10 @@ import { useCallback, useState } from 'react';
 import { nanoid } from 'nanoid';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import type { CustomPage } from '@/types';
+import type { PageIndexEntry } from '@/package/types';
 import { getPagesIndex, savePagesIndex, savePageDetail, deletePageDetail } from '../api/pages.api';
 import { pageKeys } from '../api/pages.keys';
 import { sanitizePageIndex, createDefaultPage } from './pages.mapper';
-import type { PageIndexEntry } from './pages.mapper';
 
 export function usePageList() {
   const queryClient = useQueryClient();

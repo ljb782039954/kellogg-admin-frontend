@@ -1,6 +1,6 @@
 import { usePropertyEditorResources } from './usePropertyEditorResources';
 import { PageBuilderContainer } from '@/features/page-builder';
-import { defaultPropertyEditorRegistry } from '@/ui/themes/default/page-builder';
+import { legacyPropertyEditorRegistry } from '@/package/ui/editors/legacyRegistry';
 import { Loader2 } from 'lucide-react';
 
 export default function DefaultPageBuilderRoute() {
@@ -17,7 +17,7 @@ export default function DefaultPageBuilderRoute() {
 
   return (
     <PageBuilderContainer
-      editors={defaultPropertyEditorRegistry}
+      editors={legacyPropertyEditorRegistry}
       resources={resources}
     />
   );

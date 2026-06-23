@@ -77,4 +77,28 @@ describe('kellogg projectPackage', () => {
     expect(entity!.screens).toEqual({ editor: 'footer' });
     expect(projectPackage.ui.screens.footer).toBeDefined();
   });
+
+  it('pages 配置集合已接入列表与 page-builder screen', () => {
+    const entity = projectPackage.entities.find((item) => item.key === 'pages');
+    expect(entity).toBeDefined();
+    expect(entity!.screens).toEqual({ list: 'pages', editor: 'page-builder' });
+    expect(projectPackage.ui.screens.pages).toBeDefined();
+    expect(projectPackage.ui.screens['page-builder']).toBeDefined();
+  });
+
+  it('inquiries entity 已接入列表 screen，设置页作为独立业务 screen 注册', () => {
+    const entity = projectPackage.entities.find((item) => item.key === 'inquiries');
+    expect(entity).toBeDefined();
+    expect(entity!.screens).toEqual({ list: 'inquiries' });
+    expect(projectPackage.ui.screens.inquiries).toBeDefined();
+    expect(projectPackage.ui.screens['inquiry-settings']).toBeDefined();
+  });
+
+  it('pageBuilder 中每个 Block 都有稳定 preview/editor 实现', () => {
+    expect(projectPackage.pageBuilder?.blocks.length).toBeGreaterThan(0);
+    for (const block of projectPackage.pageBuilder!.blocks) {
+      expect(projectPackage.ui.blockViews[block.previewId]).toBeTypeOf('function');
+      expect(projectPackage.ui.blockEditors[block.editorId]).toBeTypeOf('function');
+    }
+  });
 });

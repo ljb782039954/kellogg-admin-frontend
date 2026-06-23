@@ -8,7 +8,7 @@ import {
   blockCatalog,
   componentsByCategory as catalogComponentsByCategory,
   categoryNames as catalogCategoryNames,
-} from '@/features/page-builder/model/blockCatalog';
+} from '@/package/blocks';
 
 export const componentRegistry: Record<BlockType, ComponentMeta> =
   Object.fromEntries(

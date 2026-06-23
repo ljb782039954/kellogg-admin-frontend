@@ -3,6 +3,8 @@ export { blogCategoryAdapter } from './blog-category.adapter';
 export { categoryAdapter } from './category.adapter';
 export { companyInfoAdapter } from './company-info.adapter';
 export { footerAdapter } from './footer.adapter';
+export { inquiryAdapter } from './inquiry.adapter';
 export { navigationAdapter } from './navigation.adapter';
+export { pagesAdapter } from './pages.adapter';
 export { productAdapter } from './product.adapter';
 export { reviewAdapter } from './review.adapter';

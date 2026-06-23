@@ -1,4 +1,4 @@
-import type { Inquiry } from './inquiry.types';
+import type { Inquiry } from '@/package/types';
 
 export function escapeCsvCell(value: unknown): string {
   if (value === null || value === undefined) return '';

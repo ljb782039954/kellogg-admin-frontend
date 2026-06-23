@@ -1,14 +1,5 @@
 import type { Translation, CustomPage } from '@/types';
-
-export interface PageIndexEntry {
-  id: string;
-  path: string;
-  title: Translation;
-  isFixed: boolean;
-  type?: 'fixed-block' | 'dynamic-block' | 'fixed-layout';
-  content?: unknown;
-  blockCount: number;
-}
+import type { PageIndexEntry } from '@/package/types';
 
 export function sanitizePageIndex(pages: { id: string; path: string; title: Translation; isFixed: boolean; type?: string; blocks?: unknown[]; content?: unknown; blockCount?: number }[]): PageIndexEntry[] {
   return pages.map((p) => ({

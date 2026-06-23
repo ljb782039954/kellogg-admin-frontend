@@ -226,6 +226,7 @@ export function FooterEditorView({
         </CardHeader>
         <CardContent className="space-y-4">
           <BilingualInput
+            colRow='row'
             label="输入框占位文字"
             value={footer.newsletterPlaceholder}
             onChange={onUpdateNewsletterPlaceholder}
@@ -233,6 +234,7 @@ export function FooterEditorView({
           />
 
           <BilingualInput
+            colRow='row'
             label="订阅按钮文字"
             value={footer.newsletterButton}
             onChange={onUpdateNewsletterButton}

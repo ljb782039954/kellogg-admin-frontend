@@ -1,3 +1,2 @@
-export { InquiriesManager } from './ui/inbox/InquiriesManager';
-export { InquirySettingsEditor } from './ui/settings/InquirySettingsEditor';
-export type { Inquiry, InquiryStatus } from './model/inquiry.types';
+export { InquiriesManager, InquirySettingsEditor } from '@/package/ui/screens/inquiries';
+export type { Inquiry, InquiryStatus } from '@/package/types';

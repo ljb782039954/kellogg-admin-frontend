@@ -3,6 +3,8 @@ export { blogCategoryEntity } from './blog-category.entity';
 export { categoryEntity } from './category.entity';
 export { companyInfoEntity } from './company-info.entity';
 export { footerEntity } from './footer.entity';
+export { inquiryEntity } from './inquiry.entity';
 export { navigationEntity } from './navigation.entity';
+export { pagesEntity } from './pages.entity';
 export { productEntity } from './product.entity';
 export { reviewEntity } from './review.entity';

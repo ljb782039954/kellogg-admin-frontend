@@ -91,6 +91,7 @@ export function NavigationFormView({
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <BilingualInput
+                      colRow='row'
                       value={item.name}
                       onChange={(value) => onUpdateItemName(index, value)}
                       placeholder={{ zh: '菜单中文名', en: 'Menu English name' }}
@@ -116,7 +117,7 @@ export function NavigationFormView({
                       {item.children?.map((subItem, subIndex) => (
                         <div
                           key={subItem.id || subIndex}
-                          className="flex gap-3 bg-white p-3 rounded border border-green-300 shadow-sm"
+                          className="flex gap-3 bg-white p-3 rounded-lg border border-green-300 shadow-sm"
                         >
                           <div className="flex-1 grid grid-cols-2 gap-3">
                             <BilingualInput

@@ -18,7 +18,7 @@ export function useInquirySettings() {
     if (!page) return;
     const settings = toInquirySettings(page.content);
     form.reset(settings);
-  }, [page]);
+  }, [form, page]);
 
   const submit = async () => {
     const values = form.getValues();

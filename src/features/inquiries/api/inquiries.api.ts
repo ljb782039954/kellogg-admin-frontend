@@ -2,7 +2,7 @@ import { apiClient } from '@/shared/api/client';
 import type {
   InquiryListFilters,
   PaginatedInquiriesDto,
-} from '../model/inquiry.types';
+} from '@/package/types';
 
 function buildQuery(filters: InquiryListFilters): string {
   const params = new URLSearchParams();
