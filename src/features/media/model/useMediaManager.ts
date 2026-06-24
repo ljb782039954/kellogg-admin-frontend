@@ -1,6 +1,6 @@
 import { useCallback, useMemo, useRef, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import type { R2Image } from '@/types';
+import type { R2Image } from '@/shared/media/types';
 import { toAppError } from '@/shared/api/errors';
 import { getImagesList, uploadImage, deleteImage } from '../api/media.api';
 import { mediaKeys } from '../api/media.keys';

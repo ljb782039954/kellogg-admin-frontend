@@ -1,4 +1,4 @@
-import { calculateImageHash, resizeImage } from '@/lib/image';
+import { calculateImageHash, resizeImage } from './imageProcessing';
 
 export interface PreparedImageUpload {
   file: File;

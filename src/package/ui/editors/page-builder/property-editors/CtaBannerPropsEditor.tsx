@@ -10,7 +10,7 @@ import {
 import BilingualInput from '@/package/ui/forms/BilingualInput';
 import ImageInput from '@/package/ui/media/ImageInput';
 import { LinkSelector } from '@/package/ui/forms/LinkSelector';
-import { ensureNavLink } from '@/lib/linkUtils';
+import { ensureNavLink } from '../linkUtils';
 import type { CtaBannerProps } from '@/package/ui/blocks/blocks/CtaBanner';
 import type { PropertyEditorProps } from '@/features/page-builder';
 

@@ -1,7 +1,8 @@
 import MotionHeader from '../custom/motionHeader';
 import ProductCardNew from '../custom/productCardNew';
 import { useMemo } from 'react';
-import type { Translation, Product } from '@/types';
+import type { Product } from '@/package/types';
+import type { Translation } from '@/shared/i18n/translation';
 
 export interface NewArrivalsProps {
   title?: Translation;

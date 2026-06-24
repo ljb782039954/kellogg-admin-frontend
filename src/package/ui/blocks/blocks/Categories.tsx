@@ -1,4 +1,4 @@
-import type { Category } from '@/types';
+import type { Category } from '@/package/types';
 
 export interface CategoriesProps {
   showAll?: boolean;

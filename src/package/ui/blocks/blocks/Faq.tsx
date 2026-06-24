@@ -4,7 +4,7 @@ import { ChevronDown, } from 'lucide-react';
 import { Button } from '@/package/ui/primitives/button';
 import MotionHeader from '../custom/motionHeader';
 import { AnimatePresence, motion } from 'framer-motion';
-import type { Translation } from '@/types';
+import type { Translation } from '@/shared/i18n/translation';
 
 export interface FAQItem {
   id: number;

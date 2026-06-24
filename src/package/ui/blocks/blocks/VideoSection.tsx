@@ -1,6 +1,6 @@
 
 import ProductVideo from '../custom/ProductVideo';
-import {type Translation} from '@/types';
+import type { Translation } from '@/shared/i18n/translation';
 
 export interface VideoSectionValues {
   videoUrl?: string;

@@ -3,7 +3,7 @@ import * as LucideIcons from 'lucide-react';
 import { cn } from '@/shared/utils';
 import { motion } from 'framer-motion';
 import MotionHeader from '../custom/motionHeader';
-import type { Translation } from '@/types';
+import type { Translation } from '@/shared/i18n/translation';
 
 export interface GalleryValues {
   src: string;

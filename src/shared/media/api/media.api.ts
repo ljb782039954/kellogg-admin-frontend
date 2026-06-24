@@ -1,5 +1,5 @@
 import { apiClient } from '@/shared/api/client';
-import type { R2Image } from '@/types';
+import type { R2Image } from '@/shared/media/types';
 
 export interface UploadedImage {
   url: string;

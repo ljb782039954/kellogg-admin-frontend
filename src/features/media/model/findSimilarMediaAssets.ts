@@ -1,5 +1,5 @@
-import type { R2Image } from '@/types';
-import { calculateHashSimilarity } from '@/lib/image';
+import type { R2Image } from '@/shared/media/types';
+import { calculateHashSimilarity } from '@/shared/media/domain/imageProcessing';
 import type { SimilarImage, SimilarMatchType } from './media.types';
 
 export interface SimilarityPolicy {

@@ -1,5 +1,5 @@
 import type { ProjectIdentity } from '@/core/contracts';
-import siteSettings from '@/config/siteSettings.json';
+import siteSettings from './siteSettings.json';
 
 export const identity: ProjectIdentity = {
   key: 'kellogg',

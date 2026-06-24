@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import type { R2Image } from '@/types';
+import type { R2Image } from '@/shared/media/types';
 import { findSimilarMediaAssets, similarMatchLabel } from './findSimilarMediaAssets';
 
 function image(key: string, overrides: Partial<R2Image> = {}): R2Image {

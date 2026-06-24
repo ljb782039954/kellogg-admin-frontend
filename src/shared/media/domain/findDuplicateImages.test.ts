@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import type { R2Image } from '@/types';
+import type { R2Image } from '@/shared/media/types';
 import { findDuplicateImages } from './findDuplicateImages';
 
 function image(key: string, hash?: string): R2Image {

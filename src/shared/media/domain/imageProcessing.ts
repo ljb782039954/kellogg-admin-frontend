@@ -5,7 +5,6 @@
  * @returns A Promise that resolves to the resized File object, or the original if it's already smaller
  */
 export async function resizeImage(file: File, maxWidth: number): Promise<File> {
-  // Return original file if it's not an image
   if (!file.type.startsWith('image/')) {
     return file;
   }
@@ -19,17 +18,14 @@ export async function resizeImage(file: File, maxWidth: number): Promise<File> {
       img.onload = () => {
         let { width, height } = img;
 
-        // If the image is already smaller than maxWidth, return original
         if (width <= maxWidth) {
           resolve(file);
           return;
         }
 
-        // Calculate new dimensions
         height = (height * maxWidth) / width;
         width = maxWidth;
 
-        // Create canvas and draw resized image
         const canvas = document.createElement('canvas');
         canvas.width = width;
         canvas.height = height;
@@ -42,7 +38,6 @@ export async function resizeImage(file: File, maxWidth: number): Promise<File> {
 
         ctx.drawImage(img, 0, 0, width, height);
 
-        // Convert canvas back to File
         canvas.toBlob(
           (blob) => {
             if (blob) {
@@ -56,7 +51,7 @@ export async function resizeImage(file: File, maxWidth: number): Promise<File> {
             }
           },
           file.type,
-          0.85 // Quality: 0.85 is a good balance for web
+          0.85,
         );
       };
       img.onerror = () => reject(new Error('Failed to load image for resizing'));
@@ -89,34 +84,32 @@ export async function calculateImageHash(file: File): Promise<string> {
           resolve('');
           return;
         }
-        
+
         ctx.drawImage(img, 0, 0, 8, 8);
-        let imgData;
+        let imgData: ImageData;
         try {
           imgData = ctx.getImageData(0, 0, 8, 8);
-        } catch (e) {
-          // Fallback if getImageData fails due to CORS or other canvas issues
+        } catch {
           resolve('');
           return;
         }
-        
-        const data = imgData.data;
+
+        const { data } = imgData;
         let sum = 0;
         const grays = new Uint8Array(64);
-        
-        for (let i = 0; i < 64; i++) {
+
+        for (let i = 0; i < 64; i += 1) {
           const r = data[i * 4];
           const g = data[i * 4 + 1];
           const b = data[i * 4 + 2];
-          // Classic gray formula
           const gray = Math.round(r * 0.299 + g * 0.587 + b * 0.114);
           grays[i] = gray;
           sum += gray;
         }
-        
+
         const avg = sum / 64;
         let hash = '';
-        for (let i = 0; i < 64; i++) {
+        for (let i = 0; i < 64; i += 1) {
           hash += grays[i] >= avg ? '1' : '0';
         }
         resolve(hash);
@@ -135,10 +128,10 @@ export function calculateHashSimilarity(hash1: string, hash2: string): number {
     return 0;
   }
   let diff = 0;
-  for (let i = 0; i < 64; i++) {
+  for (let i = 0; i < 64; i += 1) {
     if (hash1[i] !== hash2[i]) {
-      diff++;
+      diff += 1;
     }
   }
-  return 1 - (diff / 64);
+  return 1 - diff / 64;
 }

@@ -1,5 +1,5 @@
 import MotionHeader from "../custom/motionHeader";
-import type { Translation } from '@/types';
+import type { Translation } from '@/shared/i18n/translation';
 
 export interface Partner {
   id?: string;

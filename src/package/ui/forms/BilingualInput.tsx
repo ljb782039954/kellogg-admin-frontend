@@ -1,5 +1,5 @@
 import { BilingualTextControl } from '@/shared/forms/controls/BilingualTextControl';
-import type { Translation } from '@/types';
+import type { Translation } from '@/shared/i18n/translation';
 
 interface BilingualInputProps {
   label?: string;

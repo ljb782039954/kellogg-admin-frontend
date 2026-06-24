@@ -1,4 +1,4 @@
-import type { R2Image } from '@/types';
+import type { R2Image } from '@/shared/media/types';
 import type { UsageInfo } from './media.types';
 
 export function indexMediaUsages(images: R2Image[]): Record<string, UsageInfo[]> {

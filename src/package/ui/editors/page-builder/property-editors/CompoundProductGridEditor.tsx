@@ -1,33 +1,48 @@
 import type { PropertyEditorProps } from '@/features/page-builder';
 import { LayoutPropsEditor } from './LayoutPropsEditor';
 import { ProductGridPropsEditor } from './ProductGridPropsEditor';
-import type { PageBlock } from '@/types';
+import type { PageBlock } from '@/package/types';
+import type { ProductGridProps } from '@/package/ui/blocks/blocks/ProductGrid';
+
+type CompoundProductGridValue = Record<string, unknown> & {
+  productGrid?: ProductGridProps;
+};
+
+function toCompoundProductGridValue(value: unknown): CompoundProductGridValue {
+  if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+    return value as CompoundProductGridValue;
+  }
+
+  return {};
+}
 
 export function CompoundProductGridEditor({
   value,
   onChange,
   resources,
-}: PropertyEditorProps<any>) {
+}: PropertyEditorProps<CompoundProductGridValue>) {
   // 模拟 block 数据，以兼容原本接收 block 实例的 LayoutPropsEditor
-  const mockBlock = {
+  const mockBlock: PageBlock = {
+    id: 'compound-product-grid',
     type: 'productGrid',
     content: value,
+    isVisible: true,
   };
 
   const handleLayoutUpdate = (newBlock: PageBlock) => {
-    onChange(newBlock.content);
+    onChange(toCompoundProductGridValue(newBlock.content));
   };
 
-  const handleGridUpdate = (newGridProps: any) => {
+  const handleGridUpdate = (newGridProps: ProductGridProps) => {
     const nextContent = { ...value, productGrid: newGridProps };
     onChange(nextContent);
   };
 
   return (
     <div className="space-y-4">
-      <LayoutPropsEditor value={mockBlock as any} onChange={handleLayoutUpdate} resources={resources} />
+      <LayoutPropsEditor value={mockBlock} onChange={handleLayoutUpdate} resources={resources} />
       <ProductGridPropsEditor
-        value={value?.productGrid ?? value}
+        value={(value.productGrid ?? value) as ProductGridProps}
         onChange={handleGridUpdate}
         resources={resources}
       />

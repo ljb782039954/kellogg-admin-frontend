@@ -1,7 +1,7 @@
 import * as LucideIcons from 'lucide-react';
 import MotionHeader from '../custom/motionHeader';
 import { motion } from 'framer-motion';
-import type { Translation } from '@/types';
+import type { Translation } from '@/shared/i18n/translation';
 
 export interface FeatureListValues {
   icon: string;
@@ -32,7 +32,8 @@ export default function FeatureList({ t, props }: Props) {
         <MotionHeader t={t} title={title} subtitle={subtitle} />
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
           {items.map((item, index) => {
-            const Icon = (LucideIcons as any)[item.icon] || LucideIcons.Star;
+            const iconMap = LucideIcons as unknown as Record<string, typeof LucideIcons.Star>;
+            const Icon = iconMap[item.icon] || LucideIcons.Star;
             return (
               <motion.div
                 key={index}

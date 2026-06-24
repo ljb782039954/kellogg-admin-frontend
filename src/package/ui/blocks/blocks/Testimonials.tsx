@@ -1,7 +1,7 @@
 import * as LucideIcons from 'lucide-react';
 import MotionHeader from '../custom/motionHeader';
 import { motion } from 'framer-motion';
-import type { Translation } from '@/types';
+import type { Translation } from '@/shared/i18n/translation';
 
 export interface Testimonial {
   id: number;

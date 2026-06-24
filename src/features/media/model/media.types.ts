@@ -1,4 +1,4 @@
-import type { R2Image } from '@/types';
+import type { R2Image } from '@/shared/media/types';
 
 export interface UsageInfo {
   type: string;

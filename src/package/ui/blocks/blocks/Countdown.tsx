@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import MotionHeaderDark from '../custom/motionHeaderDark';
-import type { Translation } from '@/types';
+import type { Translation } from '@/shared/i18n/translation';
 
 export interface CountdownValues {
   endTime?: string;

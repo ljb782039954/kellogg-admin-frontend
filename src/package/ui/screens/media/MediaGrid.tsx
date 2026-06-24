@@ -2,7 +2,7 @@ import { Image as ImageIcon, Loader2 } from 'lucide-react';
 import { ScrollArea } from '@/package/ui/primitives/scroll-area';
 import { Badge } from '@/package/ui/primitives/badge';
 import { cn } from '@/shared/utils';
-import { type R2Image } from '@/types';
+import type { R2Image } from '@/shared/media/types';
 // eslint-disable-next-line no-restricted-imports -- P2c 迁移期保留 model，P4 清理 shared/media 边界后删除。
 import type { UsageInfo } from '@/features/media/model/media.types';
 import AdminImage from '@/package/ui/media/AdminImage';

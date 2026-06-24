@@ -66,7 +66,7 @@ export function handleFormatHelper(
 export function getPreviewHtml(text: string): { __html: string } {
   try {
     return { __html: marked.parse(text || '') as string };
-  } catch (e) {
+  } catch {
     return { __html: text || '' };
   }
 }

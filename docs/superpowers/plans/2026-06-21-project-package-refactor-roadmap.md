@@ -140,9 +140,6 @@ Page Builder 可继续正常增删改排序、撤销重做、实时预览；Bloc
 
 **做什么**：把散在 features 的通用业务逻辑提到 `core`，并清空 core 的项目依赖。
 
-**当前进度（2026-06-23）**：Block 增删、移动、显隐与内容更新等无项目语义的纯命令已迁入
-`core/page-builder`；Kellogg Block catalog、默认内容与 singleton 规则继续留在 package/适配层。
-
 **关键提取**：
 - `core/entities`：列表/详情/分页查询、搜索排序筛选状态、增改删 Mutation、Query Key/缓存失效/乐观更新、表单草稿/保存状态/错误重试、列表页与编辑页通用 Controller（泛型，消费 `EntityDefinition`+`EntityAdapter`）。
 - `core/page-builder`：从 `features/page-builder/model`（reducer/blockCommands/usePageBuilderController）提取编辑会话、命令、历史、草稿、保存流程，只认 `CoreBlock`。

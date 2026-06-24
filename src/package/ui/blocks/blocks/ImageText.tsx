@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import type { Translation } from '@/types';
+import type { Translation } from '@/shared/i18n/translation';
 
 export interface ImageTextProps {
   title?: Translation;
@@ -33,7 +33,7 @@ export default function ImageText({
       if (url.origin === window.location.origin) {
         return url.pathname + url.search + url.hash;
       }
-    } catch (e) {
+    } catch {
       // 不是有效的绝对 URL，保持原样
     }
     return null;

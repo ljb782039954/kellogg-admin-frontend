@@ -2,7 +2,7 @@ import MotionHeaderDark from "../custom/motionHeaderDark";
 import { motion } from 'framer-motion';
 import { useEffect, useRef, useState } from "react";
 import { useInView } from "framer-motion";
-import type { Translation } from "@/types";
+import type { Translation } from '@/shared/i18n/translation';
 
 export interface Statistic {
   id: number;

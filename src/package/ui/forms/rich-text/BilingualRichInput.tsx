@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import type { Translation } from '@/types';
+import type { Translation } from '@/shared/i18n/translation';
 import RichInput from './RichInput';
 import BilingualRichInputModal from './BilingualRichInputModal';
 

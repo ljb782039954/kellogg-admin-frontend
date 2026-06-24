@@ -1,6 +1,7 @@
 import { cn } from '@/shared/utils';
 import MotionHeaderDark from '../custom/motionHeaderDark';
-import type { Translation, NavLink } from '@/types';
+import type { NavLink } from '@/package/types';
+import type { Translation } from '@/shared/i18n/translation';
 
 export interface CtaBannerValues {
   primaryButton?: NavLink;

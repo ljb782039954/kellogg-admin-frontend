@@ -15,7 +15,7 @@ import * as LucideIcons from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import BilingualInput from '@/package/ui/forms/BilingualInput';
 import BilingualRichInput from '@/package/ui/forms/rich-text/BilingualRichInput';
-// import { commonFeatureIcons } from '@/types/editor';
+// import { commonFeatureIcons } from '@/package/types';
 import type { FeatureListProps } from '@/package/ui/blocks/blocks/FeatureList';
 
 const commonFeatureIcons = [

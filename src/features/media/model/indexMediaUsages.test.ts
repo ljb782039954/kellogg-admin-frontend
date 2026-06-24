@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import type { R2Image } from '@/types';
+import type { R2Image } from '@/shared/media/types';
 import { indexMediaUsages } from './indexMediaUsages';
 
 function image(key: string, usages?: R2Image['usages']): R2Image {

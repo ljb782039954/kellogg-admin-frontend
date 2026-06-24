@@ -1,5 +1,5 @@
 import { BilingualTextareaControl } from '@/shared/forms/controls/BilingualTextareaControl';
-import type { Translation } from '@/types';
+import type { Translation } from '@/shared/i18n/translation';
 
 interface BilingualTextareaProps {
   label?: string;

@@ -1,6 +1,6 @@
 import * as LucideIcons from 'lucide-react';
 import MotionHeader from '../custom/motionHeader';
-import type { Translation } from '@/types';
+import type { Translation } from '@/shared/i18n/translation';
 
 export interface BrandValue {
   id: number;
@@ -31,7 +31,8 @@ export default function BrandValues({ t, props }: Props) {
         <MotionHeader t={t} title={title} subtitle={subtitle} />
         <div className="flex flex-row justify-between max-w-6xl mx-auto gap-2 md:gap-4">
           {items.map((item, i) => {
-            const Icon = (LucideIcons as any)[item.icon] || LucideIcons.Star;
+            const iconMap = LucideIcons as unknown as Record<string, typeof LucideIcons.Star>;
+            const Icon = iconMap[item.icon] || LucideIcons.Star;
             return (
               <div key={i} className="text-center group">
                 <div className="w-12 h-12 mx-auto bg-primary/10 rounded-full flex items-center justify-center mb-3 group-hover:bg-primary/20 transition-colors">

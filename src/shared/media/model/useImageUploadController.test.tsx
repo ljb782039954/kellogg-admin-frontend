@@ -1,6 +1,6 @@
 import { act, renderHook } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import type { R2Image } from '@/types';
+import type { R2Image } from '@/shared/media/types';
 
 const { prepareImageUploadMock, getImagesListMock, uploadImageMock } = vi.hoisted(() => ({
   prepareImageUploadMock: vi.fn(),

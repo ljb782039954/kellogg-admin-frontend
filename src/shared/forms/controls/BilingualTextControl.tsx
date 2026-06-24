@@ -1,4 +1,4 @@
-import type { Translation } from '@/types';
+import type { Translation } from '@/shared/i18n/translation';
 
 interface BilingualTextControlProps {
   label?: string;

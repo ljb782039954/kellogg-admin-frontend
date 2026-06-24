@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Maximize2, X } from 'lucide-react';
-import type { Translation } from "@/types";
+import type { Translation } from '@/shared/i18n/translation';
 
 export interface ImageFullProps {
     image?: string;

@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { X, Save, Languages } from 'lucide-react';
-import type { Translation } from '@/types';
+import type { Translation } from '@/shared/i18n/translation';
 import RichInput from './RichInput';
 import { getPreviewHtml } from './utils';
 
@@ -14,23 +14,29 @@ interface BilingualRichInputModalProps {
 
 export default function BilingualRichInputModal({
   isOpen,
+  value,
+  ...props
+}: BilingualRichInputModalProps) {
+  if (!isOpen) return null;
+
+  return (
+    <BilingualRichInputModalContent
+      key={`${value.zh ?? ''}\u0000${value.en ?? ''}`}
+      value={value}
+      {...props}
+    />
+  );
+}
+
+function BilingualRichInputModalContent({
   onClose,
   value,
   onChange,
   placeholder = {},
-}: BilingualRichInputModalProps) {
+}: Omit<BilingualRichInputModalProps, 'isOpen'>) {
   const [activeTab, setActiveTab] = useState<'zh' | 'en' | 'compare'>('zh');
-  const [localZh, setLocalZh] = useState('');
-  const [localEn, setLocalEn] = useState('');
-
-  useEffect(() => {
-    if (isOpen) {
-      setLocalZh(value.zh || '');
-      setLocalEn(value.en || '');
-    }
-  }, [isOpen, value]);
-
-  if (!isOpen) return null;
+  const [localZh, setLocalZh] = useState(value.zh || '');
+  const [localEn, setLocalEn] = useState(value.en || '');
 
   const handleSave = () => {
     onChange({ zh: localZh, en: localEn });

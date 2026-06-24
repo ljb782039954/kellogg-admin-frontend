@@ -1,7 +1,8 @@
 import MotionHeader from '../custom/motionHeader';
 import { Link } from 'react-router-dom';
 import ProductCardFeatured from '../custom/ProductCardFeatured';
-import type { Translation, Product } from '@/types';
+import type { Product } from '@/package/types';
+import type { Translation } from '@/shared/i18n/translation';
 
 export interface FeaturedProductsProps {
   title?: Translation;

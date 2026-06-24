@@ -11,7 +11,7 @@ import {
 } from 'lucide-react';
 import { Button } from '@/package/ui/primitives/button';
 import { Badge } from '@/package/ui/primitives/badge';
-import { type R2Image } from '@/types';
+import type { R2Image } from '@/shared/media/types';
 import { format } from 'date-fns';
 import AdminImage from '@/package/ui/media/AdminImage';
 // eslint-disable-next-line no-restricted-imports -- P2c 迁移期保留 model，P4 清理 shared/media 边界后删除。

@@ -4,7 +4,7 @@
 
 ## 项目概览
 
-请阅读:`docs/project.md`
+请阅读:`docs/README.md`
 
 ## 运行（测试）
 

@@ -1,7 +1,8 @@
 import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import type { Translation, NavLink } from '@/types';
+import type { NavLink } from '@/package/types';
+import type { Translation } from '@/shared/i18n/translation';
 
 export interface CarouselValues {
   id: number;
