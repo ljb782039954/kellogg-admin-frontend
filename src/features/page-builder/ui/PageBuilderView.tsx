@@ -1,8 +1,16 @@
 import { useState } from 'react';
-import { useLanguage } from '@/context/LanguageContext';
-import { ArrowLeft, Save, Settings, Search, Loader2 } from 'lucide-react';
+import { useLanguage } from '@/core/app/LanguageContext';
+import {
+  ArrowLeft,
+  Save,
+  Settings,
+  Search,
+  Loader2,
+  Undo2,
+  Redo2,
+} from 'lucide-react';
 import { motion } from 'framer-motion';
-import { Button } from '@/ui/primitives/button';
+import { Button } from '@/package/ui/primitives/button';
 import { BlockList } from './block-list/BlockList';
 import { AddBlockDialog } from './block-picker/AddBlockDialog';
 import { BlockPropertyPanel } from './property-panel/BlockPropertyPanel';
@@ -14,6 +22,8 @@ import type { PageBuilderViewModel, PageBuilderActions, PropertyEditorResources 
 interface PageBuilderViewProps {
   viewModel: PageBuilderViewModel;
   actions: PageBuilderActions;
+  // Legacy editors use different content props until the P5 compatibility layer is removed.
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   editors?: Record<string, ComponentType<any>>;
   resources?: PropertyEditorResources;
   onBack(): void;
@@ -129,6 +139,28 @@ export function PageBuilderView({
                   : '选择左侧积木开始编辑'}
           </h3>
           <div className="flex items-center gap-2">
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
+              onClick={actions.undo}
+              disabled={!viewModel.canUndo}
+              aria-label="撤销"
+              title="撤销"
+            >
+              <Undo2 className="w-4 h-4" />
+            </Button>
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
+              onClick={actions.redo}
+              disabled={!viewModel.canRedo}
+              aria-label="重做"
+              title="重做"
+            >
+              <Redo2 className="w-4 h-4" />
+            </Button>
             {viewModel.saveStatus === 'saved' && (
               <span className="text-xs text-green-600 font-medium">已保存</span>
             )}

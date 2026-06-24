@@ -1,22 +1,22 @@
-import { useCallback, useMemo, useRef, useState } from 'react';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useCallback, useRef, useState } from 'react';
 import type {
   InquiriesActions,
   InquiriesViewModel,
   Inquiry,
   InquiryListFilters,
+  PaginatedInquiriesDto,
   InquiryStatus,
 } from '@/package/types';
 import { getInquiries, updateInquiryStatus, deleteInquiry } from '../api/inquiries.api';
 import { inquiryKeys } from '../api/inquiries.keys';
 import { toPaginatedInquiries } from './inquiry.mapper';
 import { buildInquiryText, buildInquiriesCsv, buildInquiryTextFilename, buildInquiriesCsvFilename, downloadTextFile } from './inquiry.exports';
+import { usePaginatedEntityListController } from '@/core/entities';
 
 const PAGE_SIZE = 20;
 const DEBOUNCE_MS = 400;
 
 export function useInquiriesList() {
-  const queryClient = useQueryClient();
   const [search, setSearch] = useState('');
   const [status, setStatus] = useState<'all' | InquiryStatus>('all');
   const [page, setPage] = useState(1);
@@ -30,24 +30,62 @@ export function useInquiriesList() {
     status: status === 'all' ? undefined : status,
   };
 
-  const {
-    data: rawData,
-    isLoading,
-    isFetching,
-    error,
-    refetch,
-  } = useQuery({
-    queryKey: inquiryKeys.list(filters),
-    queryFn: () => getInquiries(filters),
-    placeholderData: (prev) => prev,
+  const listController = usePaginatedEntityListController<
+    Inquiry,
+    InquiryListFilters,
+    PaginatedInquiriesDto,
+    PaginatedInquiriesDto['pagination'],
+    { id: number; status: InquiryStatus },
+    number
+  >({
+    keys: inquiryKeys,
+    filters,
+    load: getInquiries,
+    preservePreviousData: true,
+    select: (response) => {
+      const mapped = toPaginatedInquiries(response);
+      return {
+        items: mapped.data,
+        pagination: mapped.pagination,
+      };
+    },
+    mutations: {
+      update: {
+        execute: ({ id, status: nextStatus }) =>
+          updateInquiryStatus(id, nextStatus),
+        updateCachedLists: (current, _result, command) => {
+          if (!current) return current;
+          return {
+            ...current,
+            data: current.data.map((item) =>
+              item.id === command.id
+                ? { ...item, status: command.status }
+                : item,
+            ),
+          };
+        },
+        invalidateLists: false,
+      },
+      remove: {
+        execute: deleteInquiry,
+        updateCachedLists: (current, _result, deletedId) => {
+          if (!current) return current;
+          return {
+            ...current,
+            data: current.data.filter((item) => item.id !== deletedId),
+            pagination: {
+              ...current.pagination,
+              total: Math.max(0, current.pagination.total - 1),
+            },
+          };
+        },
+        invalidateLists: false,
+      },
+    },
   });
 
-  const paginated = useMemo(
-    () => (rawData ? toPaginatedInquiries(rawData) : undefined),
-    [rawData],
-  );
-  const inquiries = useMemo(() => paginated?.data ?? [], [paginated?.data]);
-  const pagination = paginated?.pagination;
+  const inquiries = listController.items;
+  const pagination = listController.pagination;
   const pendingCount = inquiries.filter((i) => i.status === 'pending').length;
 
   const selectedInquiry = selectedId !== null
@@ -73,9 +111,12 @@ export function useInquiriesList() {
     totalPages: pagination?.totalPages ?? 0,
     search,
     status,
-    isLoading,
-    isFetching,
-    error: error?.message ?? null,
+    isLoading: listController.isLoading,
+    isFetching: listController.isFetching,
+    error:
+      listController.mutationError?.message ??
+      listController.error?.message ??
+      null,
   };
 
   const actions: InquiriesActions = {
@@ -93,41 +134,15 @@ export function useInquiriesList() {
       setSelectedId(id);
     }, []),
     updateStatus: useCallback(async (id: number, newStatus: InquiryStatus) => {
-      await updateInquiryStatus(id, newStatus);
-      queryClient.setQueriesData<ReturnType<typeof toPaginatedInquiries>>(
-        { queryKey: inquiryKeys.lists() },
-        (old) => {
-          if (!old) return old;
-          return {
-            ...old,
-            data: old.data.map((i) =>
-              i.id === id ? { ...i, status: newStatus } : i,
-            ),
-          };
-        },
-      );
-    }, [queryClient]),
+      await listController.update({ id, status: newStatus });
+    }, [listController]),
     removeInquiry: useCallback(async (id: number) => {
-      await deleteInquiry(id);
-      queryClient.setQueriesData<ReturnType<typeof toPaginatedInquiries>>(
-        { queryKey: inquiryKeys.lists() },
-        (old) => {
-          if (!old) return old;
-          return {
-            ...old,
-            data: old.data.filter((i) => i.id !== id),
-            pagination: {
-              ...old.pagination,
-              total: Math.max(0, old.pagination.total - 1),
-            },
-          };
-        },
-      );
+      await listController.remove(id);
       if (selectedId === id) setSelectedId(null);
       if (inquiries.length <= 1 && page > 1) {
         setPage(page - 1);
       }
-    }, [queryClient, selectedId, inquiries.length, page]),
+    }, [listController, selectedId, inquiries.length, page]),
     exportInquiry: useCallback((inquiry: Inquiry) => {
       const content = buildInquiryText(inquiry);
       const filename = buildInquiryTextFilename(inquiry);
@@ -139,8 +154,8 @@ export function useInquiriesList() {
       downloadTextFile(content, filename, 'text/csv');
     }, [inquiries]),
     retry: useCallback(() => {
-      refetch();
-    }, [refetch]),
+      void listController.retry();
+    }, [listController]),
   };
 
   return { viewModel, actions };

@@ -1,22 +1,23 @@
-import { useEffect, useRef, useState, useCallback } from 'react';
+import { useCallback } from 'react';
 import { useResolvedPage, useSavePage } from '@/features/pages';
 import { toPageBuilderDraft, toSavablePage } from './pageBuilder.mapper';
 import { getAvailableBlocks } from './blockCatalog';
-import {
-  createPageBuilderState,
-  pageBuilderReducer,
-  isPageBuilderDirty,
-} from './pageBuilder.reducer';
+import { pageBuilderReducer } from './pageBuilder.reducer';
 import type {
   PageBuilderActions,
-  PageBuilderState,
+  PageBuilderDraft,
   PageBuilderViewModel,
   PageBuilderPanel,
+  PageBuilderState,
   PageSeo,
   PageMetaChanges,
 } from './pageBuilder.types';
 import type { BlockType } from '@/types';
-import type { PageBuilderAction } from './pageBuilder.reducer';
+import {
+  resolvePageBuilderLoadResult,
+  runPageBuilderSave,
+  usePageBuilderSessionController,
+} from '@/core/page-builder';
 
 type ControllerResult =
   | { status: 'loading' }
@@ -28,62 +29,42 @@ type ControllerResult =
       actions: PageBuilderActions;
     };
 
+function restorePageBuilderDraft(
+  state: PageBuilderState,
+  draft: PageBuilderDraft,
+): PageBuilderState {
+  const currentPanel = state.selectedPanel;
+  const selectedPanel =
+    currentPanel?.type === 'block' &&
+    !draft.blocks.some((block) => block.id === currentPanel.blockId)
+      ? null
+      : currentPanel;
+  return { ...state, draft, selectedPanel, error: null };
+}
+
 export function usePageBuilderController(
   pageId: string | undefined,
 ): ControllerResult {
   const { page, isLoading, error: pageError } = useResolvedPage(pageId);
   const { savePage, isSaving, error: saveError } = useSavePage();
 
-  const [state, setState] = useState<PageBuilderState | null>(null);
-  const prevPageIdRef = useRef(pageId);
-  const initializedRef = useRef(false);
-  const stateRef = useRef(state);
-  stateRef.current = state;
-
-  useEffect(() => {
-    if (!page) return;
-
-    if (initializedRef.current && prevPageIdRef.current === pageId) {
-      setState((prev) => {
-        if (!prev || isPageBuilderDirty(prev)) return prev;
-        return pageBuilderReducer(prev, {
-          type: 'replace-from-server',
-          page: toPageBuilderDraft(page),
-        });
-      });
-      return;
-    }
-
-    initializedRef.current = true;
-    prevPageIdRef.current = pageId;
-    setState(createPageBuilderState(toPageBuilderDraft(page)));
-  }, [page, pageId]);
-
-  useEffect(() => {
-    if (state?.saveStatus !== 'saved') return;
-    const timer = setTimeout(() => {
-      dispatch({ type: 'clear-save-feedback' });
-    }, 2000);
-    return () => clearTimeout(timer);
-  }, [state?.saveStatus]);
-
-  useEffect(() => {
-    if (!state) return;
-    const handler = (e: BeforeUnloadEvent) => {
-      if (isPageBuilderDirty(state)) {
-        e.preventDefault();
-      }
-    };
-    window.addEventListener('beforeunload', handler);
-    return () => window.removeEventListener('beforeunload', handler);
-  }, [state]);
-
-  const dispatch = useCallback((action: PageBuilderAction) => {
-    setState((prev) => {
-      if (!prev) return prev;
-      return pageBuilderReducer(prev, action);
-    });
-  }, []);
+  const {
+    state,
+    stateRef,
+    dispatch,
+    isDirty: dirty,
+    canUndo,
+    canRedo,
+    undo,
+    redo,
+    requestExit,
+  } = usePageBuilderSessionController({
+    sourceKey: pageId,
+    source: page,
+    toDraft: toPageBuilderDraft,
+    reduce: pageBuilderReducer,
+    restoreDraft: restorePageBuilderDraft,
+  });
 
   const selectPanel = useCallback(
     (panel: PageBuilderPanel | null) => dispatch({ type: 'select-panel', panel }),
@@ -130,68 +111,45 @@ export function usePageBuilderController(
   const save = useCallback(async () => {
     const current = stateRef.current;
     if (!current) return;
-    dispatch({ type: 'save-started' });
-    try {
-      const savable = toSavablePage(current.draft);
-      await savePage(savable);
-      dispatch({ type: 'save-succeeded', page: current.draft });
-    } catch (err) {
-      dispatch({
-        type: 'save-failed',
-        message: err instanceof Error ? err.message : '保存失败',
-      });
-    }
-  }, [savePage, dispatch]);
 
-  const requestExit = useCallback(
-    (onConfirmed: () => void) => {
-      const current = stateRef.current;
-      if (!current || !isPageBuilderDirty(current)) {
-        onConfirmed();
-        return;
-      }
-      if (window.confirm('有未保存的修改，确定要离开吗？')) {
-        onConfirmed();
-      }
-    },
-    [],
-  );
+    await runPageBuilderSave({
+      draft: current.draft,
+      serialize: toSavablePage,
+      persist: savePage,
+      dispatch,
+    });
+  }, [savePage, dispatch, stateRef]);
 
-  if (pageError) {
-    return { status: 'error', error: pageError.message };
-  }
+  const loadResult = resolvePageBuilderLoadResult({
+    source: page,
+    session: state,
+    isLoading,
+    error: pageError,
+  });
+  if (loadResult.status !== 'ready') return loadResult;
 
-  if (isLoading) {
-    return { status: 'loading' };
-  }
+  const readyPage = loadResult.source;
+  const readyState = loadResult.session;
+  const isFixedLayout = readyPage.type === 'fixed-layout';
 
-  if (!page) {
-    return { status: 'not-found' };
-  }
-
-  if (!state) {
-    return { status: 'loading' };
-  }
-
-  const isFixedLayout = page.type === 'fixed-layout';
-  const dirty = isPageBuilderDirty(state);
-
-  const selPanel = state.selectedPanel;
+  const selPanel = readyState.selectedPanel;
   const selectedBlock = selPanel?.type === 'block'
-    ? state.draft.blocks.find((b) => b.id === selPanel.blockId)
+    ? readyState.draft.blocks.find((block) => block.id === selPanel.blockId)
     : undefined;
 
   const viewModel: PageBuilderViewModel = {
-    page: state.draft,
-    selectedPanel: state.selectedPanel,
+    page: readyState.draft,
+    selectedPanel: readyState.selectedPanel,
     selectedBlock,
     availableBlocks: getAvailableBlocks(state.draft.blocks),
     isFixedLayout,
     isDirty: dirty,
     canSave: dirty && !isFixedLayout && !isSaving,
+    canUndo,
+    canRedo,
     isSaving,
-    saveStatus: state.saveStatus,
-    error: state.error ?? (saveError?.message ?? null),
+    saveStatus: readyState.saveStatus,
+    error: readyState.error ?? (saveError?.message ?? null),
   };
 
   const actions: PageBuilderActions = {
@@ -203,6 +161,8 @@ export function usePageBuilderController(
     updateBlock,
     updateMeta,
     updateSeo,
+    undo,
+    redo,
     save,
     requestExit,
   };

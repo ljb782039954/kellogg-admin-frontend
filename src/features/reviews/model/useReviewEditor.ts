@@ -9,6 +9,7 @@ import { reviewSchema } from './review.schema';
 import { createDefaultReview } from './review.defaults';
 import { toReviewFormValues, toCreateReviewInput, toUpdateReviewInput } from './review.mapper';
 import type { ReviewFormValues } from './review.types';
+import { invalidateEntityLists } from '@/core/entities';
 
 export function useReviewEditor(review?: CustomerReview | null) {
   const queryClient = useQueryClient();
@@ -33,7 +34,7 @@ export function useReviewEditor(review?: CustomerReview | null) {
       }
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: reviewKeys.lists() });
+      invalidateEntityLists(queryClient, reviewKeys);
     },
   });
 

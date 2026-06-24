@@ -1,14 +1,28 @@
 import { useCallback, useMemo, useState } from 'react';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
-import type { Blog, BlogStatusFilter } from '@/package/types';
+import type {
+  Blog,
+  BlogInput,
+  BlogsQuery,
+  BlogStatusFilter,
+  PaginatedBlogs,
+} from '@/package/types';
 import { getBlogs, deleteBlog, updateBlog } from '../api/blogs.api';
 import { blogKeys } from '../api/blogs.keys';
+import {
+  updateEntityDetail,
+  usePaginatedEntityListController,
+} from '@/core/entities';
 
 export type { BlogStatusFilter } from '@/package/types';
 
 const PAGE_SIZE = 10;
-const EMPTY_BLOGS: Blog[] = [];
+
+interface BlogUpdateCommand {
+  id: number;
+  data: Partial<BlogInput>;
+}
 
 export function useBlogsManager() {
   const queryClient = useQueryClient();
@@ -27,63 +41,67 @@ export function useBlogsManager() {
     [page, statusFilter, categoryFilter],
   );
 
-  const {
-    data: listData,
-    isLoading,
-    error: listError,
-  } = useQuery({
-    queryKey: blogKeys.list(queryParams),
-    queryFn: () => getBlogs(queryParams),
+  const listController = usePaginatedEntityListController<
+    Blog,
+    BlogsQuery,
+    PaginatedBlogs,
+    PaginatedBlogs['pagination'],
+    BlogUpdateCommand,
+    number
+  >({
+    keys: blogKeys,
+    filters: queryParams,
+    load: getBlogs,
+    select: (response) => ({
+      items: response.data,
+      pagination: response.pagination,
+    }),
+    mutations: {
+      update: {
+        execute: ({ id, data }) => updateBlog(id, data),
+        onSuccess: (_result, variables) => {
+          updateEntityDetail<Blog, number>(
+            queryClient,
+            blogKeys,
+            variables.id,
+            (old) => old ? { ...old, ...variables.data } : old,
+          );
+        },
+        onError: () => {
+          toast.error('状态切换失败');
+        },
+      },
+      remove: {
+        execute: deleteBlog,
+        onSuccess: () => {
+          toast.success('文章已删除');
+        },
+        onError: (error) => {
+          toast.error(error.message || '删除失败，请重试');
+        },
+      },
+    },
   });
 
-  const blogs = listData?.data ?? EMPTY_BLOGS;
-  const total = listData?.pagination?.total ?? 0;
-  const totalPages = listData?.pagination?.totalPages ?? 1;
-
-  const invalidateList = useCallback(() => {
-    return queryClient.invalidateQueries({ queryKey: blogKeys.lists() });
-  }, [queryClient]);
-
-  const deleteMutation = useMutation({
-    mutationFn: (id: number) => deleteBlog(id),
-    onSuccess: () => {
-      toast.success('文章已删除');
-      return invalidateList();
-    },
-    onError: (err) => {
-      toast.error(err instanceof Error ? err.message : '删除失败，请重试');
-    },
-  });
-
-  const updateMutation = useMutation({
-    mutationFn: ({ id, data }: { id: number; data: Partial<Parameters<typeof updateBlog>[1]> }) =>
-      updateBlog(id, data),
-    onSuccess: (_result, variables) => {
-      queryClient.setQueryData(blogKeys.detail(variables.id), (old: Blog | undefined) =>
-        old ? { ...old, ...variables.data } : old,
-      );
-      return invalidateList();
-    },
-    onError: () => {
-      toast.error('状态切换失败');
-    },
-  });
+  const blogs = listController.items;
+  const total = listController.pagination?.total ?? 0;
+  const totalPages = listController.pagination?.totalPages ?? 1;
 
   const removeBlog = useCallback(
     async (blog: Blog) => {
       if (!window.confirm(`确定要永久删除「${blog.title_zh}」吗？此操作不可撤销。`)) return;
-      await deleteMutation.mutateAsync(blog.id);
+      await listController.remove(blog.id);
     },
-    [deleteMutation],
+    [listController],
   );
 
   const toggleStatus = useCallback(
     (blog: Blog) => {
       const nextStatus = blog.status === 'published' ? 'draft' : 'published';
-      updateMutation.mutate({ id: blog.id, data: { status: nextStatus } });
+      void listController.update({ id: blog.id, data: { status: nextStatus } });
       toast.success(nextStatus === 'published' ? '已发布' : '已下架为草稿');
     },
-    [updateMutation],
+    [listController],
   );
 
   const setCategory = useCallback((value: string) => {
@@ -117,8 +135,8 @@ export function useBlogsManager() {
   return {
     blogs: filteredBlogs,
     allBlogs: blogs,
-    isLoading,
-    listError,
+    isLoading: listController.isLoading,
+    listError: listController.error,
     searchTerm,
     setSearchTerm,
     categoryFilter,
@@ -133,7 +151,7 @@ export function useBlogsManager() {
     prevPage: () => goToPage(page - 1),
     removeBlog,
     toggleStatus,
-    isDeleting: deleteMutation.isPending,
-    isUpdating: updateMutation.isPending,
+    isDeleting: listController.isRemoving,
+    isUpdating: listController.isUpdating,
   };
 }

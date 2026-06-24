@@ -40,6 +40,15 @@ describe('依赖边界', () => {
     expect(offenders(join(SRC, 'core'), forbidden)).toEqual([]);
   });
 
+  it('core 生产代码不包含项目实体或具体 Block 类型名称', () => {
+    const forbidden =
+      /\b(Product|Category|Blog|Inquiry|Review|CompanyInfo|FooterContent|HeaderContent|BlockType|CustomPage)\b/;
+    const found = collectFiles(join(SRC, 'core')).filter((file) =>
+      forbidden.test(readFileSync(file, 'utf8')),
+    );
+    expect(found).toEqual([]);
+  });
+
   it('shared/i18n 不导入任何 @/ 业务路径', () => {
     const forbidden = /^@\//;
     expect(offenders(join(SRC, 'shared', 'i18n'), forbidden)).toEqual([]);

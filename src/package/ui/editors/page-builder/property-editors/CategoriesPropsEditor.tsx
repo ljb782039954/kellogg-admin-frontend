@@ -1,10 +1,11 @@
 // 分类导航组件属性编辑器（轻量版）
-import { Label } from '@/ui/primitives/label';
-import { Switch } from '@/ui/primitives/switch';
+import { Label } from '@/package/ui/primitives/label';
+import { Switch } from '@/package/ui/primitives/switch';
 import { Info } from 'lucide-react';
-import { Alert, AlertDescription } from '@/ui/primitives/alert';
-import AdminImage from '@/ui/media/AdminImage';
+import { Alert, AlertDescription } from '@/package/ui/primitives/alert';
+import AdminImage from '@/package/ui/media/AdminImage';
 import type { CategoriesProps } from '@/package/ui/blocks/blocks/Categories';
+import type { Category } from '@/package/types';
 import type { PropertyEditorProps } from '@/features/page-builder';
 
 export function CategoriesPropsEditor({
@@ -46,7 +47,7 @@ export function CategoriesPropsEditor({
           </div>
         ) : (
           <div className="grid grid-cols-2 gap-2">
-            {categories.map((cat: any) => (
+            {categories.map((cat: Category) => (
               <div
                 key={cat.id}
                 className="flex items-center gap-2 p-2 bg-gray-50 rounded-lg text-sm"

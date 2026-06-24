@@ -1,17 +1,17 @@
 import type { PropertyEditorProps } from '@/features/page-builder';
 // 图文组件属性编辑器
 
-import { Label } from '@/ui/primitives/label';
+import { Label } from '@/package/ui/primitives/label';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/ui/primitives/select';
-import BilingualInput from '@/ui/forms/BilingualInput';
-import BilingualRichInput from '@/ui/forms/rich-text/BilingualRichInput';
-import ImageInput from '@/ui/media/ImageInput';
+} from '@/package/ui/primitives/select';
+import BilingualInput from '@/package/ui/forms/BilingualInput';
+import BilingualRichInput from '@/package/ui/forms/rich-text/BilingualRichInput';
+import ImageInput from '@/package/ui/media/ImageInput';
 import type { ImageTextProps } from '@/package/ui/blocks/blocks/ImageText';
 
 

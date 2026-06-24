@@ -5,10 +5,10 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-} from '@/ui/primitives/dialog';
-import { Button } from '@/ui/primitives/button';
-import { Badge } from '@/ui/primitives/badge';
-import { cn } from '@/lib/utils';
+} from '@/package/ui/primitives/dialog';
+import { Button } from '@/package/ui/primitives/button';
+import { Badge } from '@/package/ui/primitives/badge';
+import { cn } from '@/shared/utils';
 import type { BlockType, ComponentCategory } from '@/types';
 import {
   componentsByCategory,

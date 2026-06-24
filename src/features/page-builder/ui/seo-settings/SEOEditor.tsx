@@ -1,5 +1,5 @@
-import { Label } from '@/ui/primitives/label';
-import BilingualInput from '@/ui/forms/BilingualInput';
+import { Label } from '@/package/ui/primitives/label';
+import BilingualInput from '@/package/ui/forms/BilingualInput';
 import { Settings, Globe } from 'lucide-react';
 import type { PageSeo } from '../../model/pageBuilder.types';
 

@@ -6,8 +6,8 @@
 
 这是一个服装类外贸网站的后台管理项目，当前正准备进行重构改进。
 
-1. 简单的需求描述：`docs\需求描述.md` 
-2. 详细的重构设计：`docs\superpowers\specs\2026-06-20-project-package-architecture-design.md` 
+1. 详细的重构设计：`docs\superpowers\specs\2026-06-20-project-package-architecture-design.md` 
+2. 开发进度：`docs\superpowers\plans\2026-06-21-project-package-refactor-roadmap.md`
 
 ## 注意事项：
 1. 不要使用superpowers重量级的工程式的编码规范。

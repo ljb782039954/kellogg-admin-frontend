@@ -21,6 +21,8 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
   );
 }
 
+// Kept beside the provider as a stable compatibility entry until P5 removes legacy imports.
+// eslint-disable-next-line react-refresh/only-export-components
 export function useLanguage() {
   const context = useContext(LanguageContext);
   if (context === undefined) {

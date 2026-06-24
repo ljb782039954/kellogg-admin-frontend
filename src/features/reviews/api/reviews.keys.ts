@@ -1,7 +1,8 @@
 import type { ReviewListFilters } from '../model/review.types';
+import { createEntityQueryKeys } from '@/core/entities';
 
-export const reviewKeys = {
-  all: ['reviews'] as const,
-  lists: () => [...reviewKeys.all, 'list'] as const,
-  list: (filters?: ReviewListFilters) => [...reviewKeys.lists(), filters] as const,
-};
+export const reviewKeys = createEntityQueryKeys<
+  'reviews',
+  number,
+  ReviewListFilters
+>('reviews');

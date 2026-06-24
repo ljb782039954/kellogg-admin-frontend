@@ -1,6 +1,6 @@
-import { Label } from '@/ui/primitives/label';
-import { Input } from '@/ui/primitives/input';
-import BilingualInput from '@/ui/forms/BilingualInput';
+import { Label } from '@/package/ui/primitives/label';
+import { Input } from '@/package/ui/primitives/input';
+import BilingualInput from '@/package/ui/forms/BilingualInput';
 import { FileText, Info } from 'lucide-react';
 import { type Translation } from '@/types';
 

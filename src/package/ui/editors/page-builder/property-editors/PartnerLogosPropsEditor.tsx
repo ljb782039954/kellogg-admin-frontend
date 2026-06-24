@@ -1,20 +1,20 @@
 import type { PropertyEditorProps } from '@/features/page-builder';
 // 合作伙伴组件属性编辑器
 
-import { Label } from '@/ui/primitives/label';
-import { Input } from '@/ui/primitives/input';
-import { Button } from '@/ui/primitives/button';
+import { Label } from '@/package/ui/primitives/label';
+import { Input } from '@/package/ui/primitives/input';
+import { Button } from '@/package/ui/primitives/button';
 // import {
 //   Select,
 //   SelectContent,
 //   SelectItem,
 //   SelectTrigger,
 //   SelectValue,
-// } from '@/ui/primitives/select';
+// } from '@/package/ui/primitives/select';
 import { nanoid } from 'nanoid';
 import { Plus, Trash2 } from 'lucide-react';
-import BilingualInput from '@/ui/forms/BilingualInput';
-import ImageInput from '@/ui/media/ImageInput';
+import BilingualInput from '@/package/ui/forms/BilingualInput';
+import ImageInput from '@/package/ui/media/ImageInput';
 import type { PartnerProps } from '@/package/ui/blocks/blocks/PartnerLogos';
 
 

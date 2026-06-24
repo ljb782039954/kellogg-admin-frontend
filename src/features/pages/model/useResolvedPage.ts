@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import { useEntityDetailController } from '@/core/entities';
 import type { CustomPage } from '@/types';
 import { getPageById } from '../api/pages.api';
 import { pageKeys } from '../api/pages.keys';
@@ -14,13 +14,14 @@ export function useResolvedPage(pageId: string | undefined): {
   const indexEntry = pages.find((p) => p.id === pageId);
 
   const {
-    data: pageDetail,
+    model: pageDetail,
     isLoading: isDetailLoading,
     error,
-  } = useQuery({
-    queryKey: pageKeys.detail(pageId!),
-    queryFn: () => getPageById(pageId!),
+  } = useEntityDetailController({
+    id: pageId,
     enabled: !!pageId && !!indexEntry,
+    keys: pageKeys,
+    load: getPageById,
   });
 
   const isLoading = isIndexLoading || (!!pageId && isDetailLoading);

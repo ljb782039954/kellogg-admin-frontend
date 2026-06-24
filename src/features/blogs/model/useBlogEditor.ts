@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo } from 'react';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useNavigate } from 'react-router-dom';
@@ -10,20 +10,35 @@ import { blogKeys } from '../api/blogs.keys';
 import { blogSchema, type BlogFormValues } from './blog.schema';
 import { createDefaultBlog } from './blog.defaults';
 import { fromBlogResponse, toBlogInput } from './blog.mapper';
+import { useEntityEditorController } from '@/core/entities';
+import type { Blog, BlogInput } from '@/package/types';
 
 export function useBlogEditor(id: number | undefined) {
   const navigate = useNavigate();
-  const queryClient = useQueryClient();
   const isEdit = id !== undefined && id > 0;
 
-  const {
-    data: blog,
-    isLoading: isFetching,
-    error: fetchError,
-  } = useQuery({
-    queryKey: blogKeys.detail(id ?? 0),
-    queryFn: () => getBlog(id!),
+  const editor = useEntityEditorController<Blog, number, BlogInput>({
+    id,
     enabled: isEdit,
+    keys: blogKeys,
+    operations: {
+      load: getBlog,
+      create: async (payload) => {
+        const result = await createBlog(payload);
+        return result.id;
+      },
+      update: async (savedId, payload) => {
+        await updateBlog(savedId, payload);
+        return savedId;
+      },
+    },
+    onSaved: (savedId) => {
+      toast.success(isEdit ? '文章已更新' : '文章已创建');
+      navigate(`/blog/${savedId}/edit`);
+    },
+    onError: (error) => {
+      toast.error(error.message || '保存失败，请重试');
+    },
   });
 
   const { data: categories = [] } = useQuery({
@@ -33,9 +48,9 @@ export function useBlogEditor(id: number | undefined) {
   });
 
   const defaultValues = useMemo(() => {
-    if (isEdit && blog) return fromBlogResponse(blog);
+    if (isEdit && editor.model) return fromBlogResponse(editor.model);
     return createDefaultBlog();
-  }, [isEdit, blog]);
+  }, [isEdit, editor.model]);
 
   const form = useForm<BlogFormValues>({
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -46,26 +61,6 @@ export function useBlogEditor(id: number | undefined) {
   useEffect(() => {
     form.reset(defaultValues);
   }, [form, defaultValues]);
-
-  const saveMutation = useMutation({
-    mutationFn: async (values: BlogFormValues) => {
-      const payload = toBlogInput(values);
-      if (isEdit && id) {
-        await updateBlog(id, payload);
-        return id;
-      }
-      const result = await createBlog(payload);
-      return result.id;
-    },
-    onSuccess: (savedId) => {
-      queryClient.invalidateQueries({ queryKey: blogKeys.lists() });
-      toast.success(isEdit ? '文章已更新' : '文章已创建');
-      navigate(`/blog/${savedId}/edit`);
-    },
-    onError: (err) => {
-      toast.error(err instanceof Error ? err.message : '保存失败，请重试');
-    },
-  });
 
   const autoGenerateSlug = useCallback(() => {
     const titleEn = form.getValues('title.en');
@@ -94,17 +89,17 @@ export function useBlogEditor(id: number | undefined) {
       if (!payload.publishDate) {
         payload.publishDate = new Date().toISOString().split('T')[0];
       }
-      await saveMutation.mutateAsync(payload);
+      await editor.save(toBlogInput(payload));
     },
-    [form, saveMutation],
+    [form, editor],
   );
 
   return {
     form,
     isEdit,
-    isFetching,
-    fetchError,
-    isSaving: saveMutation.isPending,
+    isFetching: editor.isLoading,
+    fetchError: editor.fetchError,
+    isSaving: editor.isSaving,
     categories,
     onTitleEnChange,
     autoGenerateSlug,

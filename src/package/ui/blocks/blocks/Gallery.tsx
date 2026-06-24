@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import * as LucideIcons from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { cn } from '@/shared/utils';
 import { motion } from 'framer-motion';
 import MotionHeader from '../custom/motionHeader';
 import type { Translation } from '@/types';

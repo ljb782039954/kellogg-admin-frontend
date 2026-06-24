@@ -17,30 +17,25 @@ import {
   updatePageMeta,
   updateSeo,
 } from './blockCommands';
+import {
+  createPageBuilderSessionState,
+  isPageBuilderSessionDirty,
+  reducePageBuilderSession,
+} from '@/core/page-builder';
+import type { PageBuilderSessionAction } from '@/core/page-builder';
 
 export type PageBuilderAction =
-  | { type: 'select-panel'; panel: PageBuilderPanel | null }
+  | PageBuilderSessionAction<PageBuilderDraft, PageBuilderPanel>
   | { type: 'add-block'; blockType: BlockType }
   | { type: 'remove-block'; blockId: string }
   | { type: 'move-block'; blockId: string; targetIndex: number }
   | { type: 'toggle-block'; blockId: string }
   | { type: 'update-block'; blockId: string; content: unknown }
   | { type: 'update-meta'; changes: PageMetaChanges }
-  | { type: 'update-seo'; seo: PageSeo }
-  | { type: 'save-started' }
-  | { type: 'save-succeeded'; page: PageBuilderDraft }
-  | { type: 'save-failed'; message: string }
-  | { type: 'clear-save-feedback' }
-  | { type: 'replace-from-server'; page: PageBuilderDraft };
+  | { type: 'update-seo'; seo: PageSeo };
 
 export function createPageBuilderState(page: PageBuilderDraft): PageBuilderState {
-  return {
-    draft: structuredClone(page),
-    baseline: structuredClone(page),
-    selectedPanel: null,
-    saveStatus: 'idle',
-    error: null,
-  };
+  return createPageBuilderSessionState(page);
 }
 
 export function pageBuilderReducer(
@@ -49,7 +44,12 @@ export function pageBuilderReducer(
 ): PageBuilderState {
   switch (action.type) {
     case 'select-panel':
-      return { ...state, selectedPanel: action.panel, error: null };
+    case 'save-started':
+    case 'save-succeeded':
+    case 'save-failed':
+    case 'clear-save-feedback':
+    case 'replace-from-server':
+      return reducePageBuilderSession(state, action);
 
     case 'add-block': {
       const created = createBlock(action.blockType, () => `block_${nanoid(8)}`);
@@ -111,37 +111,11 @@ export function pageBuilderReducer(
       return { ...state, draft: updated.value, error: null };
     }
 
-    case 'save-started':
-      return { ...state, saveStatus: 'saving', error: null };
-
-    case 'save-succeeded':
-      return {
-        ...state,
-        draft: structuredClone(action.page),
-        baseline: structuredClone(action.page),
-        saveStatus: 'saved',
-        error: null,
-      };
-
-    case 'save-failed':
-      return { ...state, saveStatus: 'error', error: action.message };
-
-    case 'clear-save-feedback':
-      return { ...state, saveStatus: 'idle' };
-
-    case 'replace-from-server':
-      if (isPageBuilderDirty(state)) return state;
-      return {
-        ...state,
-        draft: structuredClone(action.page),
-        baseline: structuredClone(action.page),
-      };
-
     default:
       return state;
   }
 }
 
 export function isPageBuilderDirty(state: PageBuilderState): boolean {
-  return JSON.stringify(state.draft) !== JSON.stringify(state.baseline);
+  return isPageBuilderSessionDirty(state);
 }

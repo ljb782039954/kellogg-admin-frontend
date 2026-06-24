@@ -12,7 +12,6 @@ const ALL_BLOCK_TYPES: BlockType[] = [
   'faq', 'textSection', 'imageBanner', 'imageFull',
   'imageBannerTag', 'videoSection', 'imageText', 'ctaBanner',
   'countdown', 'partnerLogos', 'gallery', 'featureList',
-  'caseStudies',
 ];
 
 describe('package block registry', () => {

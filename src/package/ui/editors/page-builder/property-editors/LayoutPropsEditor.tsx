@@ -1,22 +1,22 @@
 import type { PropertyEditorProps } from '@/features/page-builder';
 // 布局属性编辑器（用于全局数据组件的局部配置）
 import { type PageBlock } from '@/types';
-import { Label } from '@/ui/primitives/label';
-import { Input } from '@/ui/primitives/input';
-import { Switch } from '@/ui/primitives/switch';
+import { Label } from '@/package/ui/primitives/label';
+import { Input } from '@/package/ui/primitives/input';
+import { Switch } from '@/package/ui/primitives/switch';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/ui/primitives/select';
-import BilingualInput from '@/ui/forms/BilingualInput';
+} from '@/package/ui/primitives/select';
+import BilingualInput from '@/package/ui/forms/BilingualInput';
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
-} from '@/ui/primitives/collapsible';
+} from '@/package/ui/primitives/collapsible';
 import { ChevronDown } from 'lucide-react';
 import { useState } from 'react';
 

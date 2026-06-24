@@ -2,6 +2,8 @@
 
 React 19 + TypeScript + Vite 7 + Tailwind CSS v3 + shadcn/ui。
 
+所有重构计划完成后，务必更新此文档。
+
 ## 当前目录导航
 
 ```text
@@ -42,13 +44,6 @@ src/
 - UI 替换应通过稳定的 props、ViewModel、Actions 和资源契约完成。
 - `src/admin/components`、`src/admin/pageBuilder`、`ContentContext`、`lib/api` 均已删除。
 
-## 权威文档
-
-- [原始需求](需求描述.md)
-- [可替换项目 Package 架构设计](superpowers/specs/2026-06-20-project-package-architecture-design.md)
-
-新的实施计划将在本设计确认后编写。此前以 UI 路径清理为目标的设计与计划已废止。
-
 ## 已迁移路由
 
 | 路由 | 模块 |
@@ -68,3 +63,4 @@ src/
 
 - `.env`：生产环境配置。
 - `.env.local`：本地开发配置；通过 `PUBLIC_IS_LOCAL_DEV` 决定是否访问本地服务。
+

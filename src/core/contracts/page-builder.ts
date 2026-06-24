@@ -11,7 +11,6 @@ export interface CoreBlock<Type extends string = string, Content = unknown> {
 
 export interface BlockDefinition<
   Block extends CoreBlock = CoreBlock,
-  _Resources = unknown,
 > {
   type: Block['type'];
   title: Translation;
@@ -27,8 +26,8 @@ export interface BlockDefinition<
 
 export interface PageBuilderDefinition<
   Block extends CoreBlock = CoreBlock,
-  _Resources = unknown,
+  Resources = unknown,
 > {
-  blocks: BlockDefinition<Block, _Resources>[];
-  // 资源加载器与页面 DTO Adapter 在 P3 扩充
+  blocks: BlockDefinition<Block>[];
+  resources?: Resources;
 }

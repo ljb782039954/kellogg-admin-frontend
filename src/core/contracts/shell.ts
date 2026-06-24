@@ -2,6 +2,7 @@ import type { ComponentType, ReactNode } from 'react';
 import type { Language, Translation } from '@/shared/i18n/translation';
 import type { ProjectIdentity } from './identity';
 import type { IconName } from './icon';
+import type { AdminLoginPageProps } from './auth';
 
 /** package 声明的菜单分组展示信息。 */
 export interface AdminMenuGroupDefinition {
@@ -39,6 +40,6 @@ export interface AdminShellProps {
 
 export interface AdminShellDefinition {
   Layout: ComponentType<AdminShellProps>;
-  LoginPage: ComponentType;
+  LoginPage: ComponentType<AdminLoginPageProps>;
   ErrorPage: ComponentType<{ error?: unknown }>;
 }

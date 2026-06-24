@@ -17,9 +17,11 @@ describe('Phase 2c: dashboard 已迁入 package', () => {
     expect(existsSync(join(SRC, 'admin/Overview.tsx'))).toBe(false);
   });
 
-  it('P3 负责的 components 与 page-builder 暂保留迁移包装器', () => {
+  it('P3 负责的 components 与 page-builder 均已进入 package/ui screen', () => {
     const body = readFileSync(join(SRC, 'package/ui/screens/index.tsx'), 'utf8');
-    expect(body).toContain('components: wrap(BlocksPreview)');
-    expect(body).toContain("'page-builder': wrap(DefaultPageBuilderRoute)");
+    expect(body).toContain('components: ComponentsPreviewScreen');
+    expect(body).not.toContain('@/admin/BlocksPreview');
+    expect(body).toContain("'page-builder': PageBuilderScreen");
+    expect(body).not.toContain('@/app/adapters/page-builder');
   });
 });

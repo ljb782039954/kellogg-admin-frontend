@@ -48,7 +48,9 @@ function createWrapper() {
   return {
     client,
     Wrapper({ children }: { children: ReactNode }) {
-      return <QueryClientProvider client={client}>{children}</QueryClientProvider>;
+      return (
+        <QueryClientProvider client={client}>{children}</QueryClientProvider>
+      );
     },
   };
 }
@@ -79,15 +81,18 @@ describe('usePageList', () => {
     await waitFor(() => expect(result.current.isLoading).toBe(false));
 
     await act(async () => {
-      await result.current.addPage({ zh: '新页', en: 'New' }, '/new', undefined, navigate);
+      await result.current.addPage(
+        { zh: '新页', en: 'New' },
+        '/new',
+        undefined,
+        navigate,
+      );
     });
 
-    // Should save detail first
     expect(savePageDetailMock).toHaveBeenCalledWith(
       'page_new12345',
       expect.objectContaining({ id: 'page_new12345', path: '/new' }),
     );
-    // Then save index (without blocks)
     expect(savePagesIndexMock).toHaveBeenCalled();
     const savedIndex = savePagesIndexMock.mock.calls[0][0];
     expect(savedIndex[0].blockCount).toBe(0);
@@ -97,24 +102,33 @@ describe('usePageList', () => {
 
   it('duplicates blocks with new IDs before saving the detail and index', async () => {
     getPagesIndexMock.mockResolvedValueOnce([]);
-    nanoidMock
-      .mockReturnValueOnce('copy1234')
-      .mockReturnValueOnce('block999');
+    nanoidMock.mockReturnValueOnce('copy1234').mockReturnValueOnce('block999');
     const source = page({
-      blocks: [{ id: 'old', type: 'textSection', content: { text: 'A' }, isVisible: true }],
+      blocks: [
+        {
+          id: 'old',
+          type: 'textSection',
+          content: { text: 'A' },
+          isVisible: true,
+        },
+      ],
     });
     const { Wrapper } = createWrapper();
     const { result } = renderHook(() => usePageList(), { wrapper: Wrapper });
     await waitFor(() => expect(result.current.isLoading).toBe(false));
 
     await act(async () => {
-      await result.current.addPage({ zh: '副本', en: 'Copy' }, '/copy', source);
+      await result.current.addPage(
+        { zh: '副本', en: 'Copy' },
+        '/copy',
+        source,
+      );
     });
 
     expect(nanoidMock).toHaveBeenCalledTimes(2);
-    // Detail has the duplicated block with new ID
-    expect(savePageDetailMock.mock.calls[0][1].blocks[0].id).toMatch(/^block_/);
-    // Index has blockCount
+    expect(savePageDetailMock.mock.calls[0][1].blocks[0].id).toMatch(
+      /^block_/,
+    );
     expect(savePagesIndexMock.mock.calls[0][0][0].blockCount).toBe(1);
   });
 
@@ -128,13 +142,18 @@ describe('usePageList', () => {
       await result.current.updatePageMeta('page_1', { path: '/updated' });
     });
     expect(savePagesIndexMock).toHaveBeenLastCalledWith(
-      expect.arrayContaining([expect.objectContaining({ id: 'page_1', path: '/updated' })]),
+      expect.arrayContaining([
+        expect.objectContaining({ id: 'page_1', path: '/updated' }),
+      ]),
     );
 
     await act(async () => result.current.deletePage('page_1'));
     expect(deletePageDetailMock).toHaveBeenCalledWith('page_1');
-    expect(savePagesIndexMock).toHaveBeenLastCalledWith(expect.arrayContaining([]));
-    expect(deletePageDetailMock.mock.invocationCallOrder[0])
-      .toBeLessThan(savePagesIndexMock.mock.invocationCallOrder.at(-1)!);
+    expect(savePagesIndexMock).toHaveBeenLastCalledWith(
+      expect.arrayContaining([]),
+    );
+    expect(deletePageDetailMock.mock.invocationCallOrder[0]).toBeLessThan(
+      savePagesIndexMock.mock.invocationCallOrder.at(-1)!,
+    );
   });
 });

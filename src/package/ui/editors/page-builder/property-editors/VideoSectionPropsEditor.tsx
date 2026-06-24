@@ -1,9 +1,9 @@
 import type { PropertyEditorProps } from '@/features/page-builder';
-import { Label } from '@/ui/primitives/label';
-import { Input } from '@/ui/primitives/input';
-import { Switch } from '@/ui/primitives/switch';
-import BilingualInput from '@/ui/forms/BilingualInput';
-import ImageInput from '@/ui/media/ImageInput';
+import { Label } from '@/package/ui/primitives/label';
+import { Input } from '@/package/ui/primitives/input';
+import { Switch } from '@/package/ui/primitives/switch';
+import BilingualInput from '@/package/ui/forms/BilingualInput';
+import ImageInput from '@/package/ui/media/ImageInput';
 import type { VideoSectionProps } from '@/package/ui/blocks/blocks/VideoSection';
 
 

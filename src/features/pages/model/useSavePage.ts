@@ -1,4 +1,5 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useQueryClient } from '@tanstack/react-query';
+import { useEntityMutationController } from '@/core/entities';
 import type { CustomPage } from '@/types';
 import { savePageDetail, savePagesIndex } from '../api/pages.api';
 import { pageKeys } from '../api/pages.keys';
@@ -7,8 +8,14 @@ import { sanitizePageIndex } from './pages.mapper';
 export function useSavePage() {
   const queryClient = useQueryClient();
 
-  const mutation = useMutation({
-    mutationFn: async (page: CustomPage) => {
+  const mutation = useEntityMutationController<
+    CustomPage,
+    CustomPage,
+    string,
+    CustomPage
+  >({
+    keys: pageKeys,
+    execute: async (page) => {
       await savePageDetail(page.id, page);
 
       const currentIndex = queryClient.getQueryData<CustomPage[]>(pageKeys.list()) ?? [];
@@ -19,14 +26,12 @@ export function useSavePage() {
 
       return page;
     },
-    onSuccess: (page) => {
-      queryClient.setQueryData(pageKeys.detail(page.id), page);
-      queryClient.invalidateQueries({ queryKey: pageKeys.list() });
-    },
+    resolveId: (page) => page.id,
+    selectModel: (page) => page,
   });
 
   return {
-    savePage: mutation.mutateAsync,
+    savePage: mutation.mutate,
     isSaving: mutation.isPending,
     error: mutation.error,
   };

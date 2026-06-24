@@ -1,9 +1,9 @@
 import { useCallback, useEffect, useState } from 'react';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import type { CustomerReview } from '@/types';
 import { getReviews, deleteReview, updateReview } from '../api/reviews.api';
 import { reviewKeys } from '../api/reviews.keys';
 import type { ReviewListFilters } from './review.types';
+import { usePaginatedEntityListController } from '@/core/entities';
 
 const PAGE_SIZE = 15;
 
@@ -17,7 +17,6 @@ function buildFilters(searchTerm: string, statusFilter: 'all' | 'published' | 'd
 }
 
 export function useReviewsList() {
-  const queryClient = useQueryClient();
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState<'all' | 'published' | 'draft'>('all');
   const [page, setPage] = useState(1);
@@ -33,25 +32,34 @@ export function useReviewsList() {
 
   const filters = buildFilters(debouncedSearch, statusFilter, page);
 
-  const query = useQuery({
-    queryKey: reviewKeys.list(filters),
-    queryFn: () => getReviews(filters),
+  const listController = usePaginatedEntityListController<
+    CustomerReview,
+    ReviewListFilters,
+    Awaited<ReturnType<typeof getReviews>>,
+    Awaited<ReturnType<typeof getReviews>>['pagination'],
+    { id: number; status: 'published' | 'draft' },
+    number
+  >({
+    keys: reviewKeys,
+    filters,
+    load: getReviews,
+    select: (response) => ({
+      items: response.data,
+      pagination: response.pagination,
+    }),
+    mutations: {
+      update: {
+        execute: ({ id, status }) => updateReview(id, { status }),
+      },
+      remove: {
+        execute: deleteReview,
+      },
+    },
   });
 
-  const reviews = query.data?.data ?? [];
-  const totalPages = query.data?.pagination?.totalPages ?? 1;
-  const total = query.data?.pagination?.total ?? 0;
-
-  const deleteMutation = useMutation({
-    mutationFn: (id: number) => deleteReview(id),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: reviewKeys.lists() }),
-  });
-
-  const toggleMutation = useMutation({
-    mutationFn: ({ id, status }: { id: number; status: 'published' | 'draft' }) =>
-      updateReview(id, { status }),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: reviewKeys.lists() }),
-  });
+  const reviews = listController.items;
+  const totalPages = listController.pagination?.totalPages ?? 1;
+  const total = listController.pagination?.total ?? 0;
 
   const changeSearch = useCallback((value: string) => {
     setSearchTerm(value);
@@ -68,17 +76,17 @@ export function useReviewsList() {
 
   const removeReview = useCallback(
     async (id: number) => {
-      await deleteMutation.mutateAsync(id);
+      await listController.remove(id);
     },
-    [deleteMutation],
+    [listController],
   );
 
   const toggleStatus = useCallback(
     async (review: CustomerReview) => {
       const next = review.status === 'published' ? 'draft' : 'published';
-      await toggleMutation.mutateAsync({ id: review.id, status: next });
+      await listController.update({ id: review.id, status: next });
     },
-    [toggleMutation],
+    [listController],
   );
 
   return {
@@ -86,8 +94,8 @@ export function useReviewsList() {
     total,
     totalPages,
     page,
-    isLoading: query.isLoading,
-    queryError: query.error,
+    isLoading: listController.isLoading,
+    queryError: listController.error,
     searchTerm,
     statusFilter,
     changeSearch,

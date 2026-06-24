@@ -1,6 +1,10 @@
 import { useCallback, useMemo, useState } from 'react';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
+import {
+  invalidateEntityLists,
+  useEntityCollectionController,
+} from '@/core/entities';
 import type { BlogCategory } from '@/package/types';
 import {
   getBlogCategories,
@@ -23,57 +27,36 @@ export function useBlogCategoriesManager() {
   const [editingRow, setEditingRow] = useState<EditingRow | null>(null);
 
   const {
-    data: categories = [],
+    items: categories,
     isLoading,
-    error: loadError,
-  } = useQuery({
-    queryKey: blogCategoryKeys.lists(),
-    queryFn: getBlogCategories,
+    queryError: loadError,
+    isCreating,
+    isUpdating,
+    deleteCommand,
+    create,
+    update,
+    remove,
+  } = useEntityCollectionController<
+    BlogCategory,
+    number,
+    BlogCategoryFormValues,
+    { id: number; form: BlogCategoryFormValues },
+    number
+  >({
+    keys: blogCategoryKeys,
+    operations: {
+      load: getBlogCategories,
+      create: (form) => createBlogCategory(toBlogCategoryInput(form)),
+      update: ({ id, form }) =>
+        updateBlogCategory(id, toBlogCategoryInput(form)),
+      remove: deleteBlogCategory,
+    },
   });
 
   const sortedCategories = useMemo(
     () => [...categories].sort((a, b) => a.sort_order - b.sort_order),
     [categories],
   );
-
-  const invalidateList = useCallback(() => {
-    return queryClient.invalidateQueries({ queryKey: blogCategoryKeys.lists() });
-  }, [queryClient]);
-
-  const createMutation = useMutation({
-    mutationFn: (form: BlogCategoryFormValues) => createBlogCategory(toBlogCategoryInput(form)),
-    onSuccess: () => {
-      toast.success('分类创建成功');
-      setEditingRow(null);
-      return invalidateList();
-    },
-    onError: (err) => {
-      toast.error(err instanceof Error ? err.message : '创建失败');
-    },
-  });
-
-  const updateMutation = useMutation({
-    mutationFn: ({ id, form }: { id: number; form: BlogCategoryFormValues }) => updateBlogCategory(id, toBlogCategoryInput(form)),
-    onSuccess: () => {
-      toast.success('分类更新成功');
-      setEditingRow(null);
-      return invalidateList();
-    },
-    onError: (err) => {
-      toast.error(err instanceof Error ? err.message : '更新失败');
-    },
-  });
-
-  const deleteMutation = useMutation({
-    mutationFn: (id: number) => deleteBlogCategory(id),
-    onSuccess: () => {
-      toast.success('分类已删除');
-      return invalidateList();
-    },
-    onError: (err) => {
-      toast.error(err instanceof Error ? err.message : '删除失败');
-    },
-  });
 
   const reorderMutation = useMutation({
     mutationFn: async ({ from, to }: { from: BlogCategory; to: BlogCategory }) => {
@@ -82,7 +65,7 @@ export function useBlogCategoriesManager() {
         updateBlogCategory(to.id, { sort_order: from.sort_order }),
       ]);
     },
-    onSuccess: () => invalidateList(),
+    onSuccess: () => invalidateEntityLists(queryClient, blogCategoryKeys),
     onError: () => {
       toast.error('排序更新失败');
     },
@@ -125,11 +108,23 @@ export function useBlogCategoriesManager() {
     }
 
     if (editingRow.id === null) {
-      await createMutation.mutateAsync(editingRow.form);
+      try {
+        await create(editingRow.form);
+        toast.success('分类创建成功');
+        setEditingRow(null);
+      } catch (error) {
+        toast.error(error instanceof Error ? error.message : '创建失败');
+      }
     } else {
-      await updateMutation.mutateAsync({ id: editingRow.id, form: editingRow.form });
+      try {
+        await update({ id: editingRow.id, form: editingRow.form });
+        toast.success('分类更新成功');
+        setEditingRow(null);
+      } catch (error) {
+        toast.error(error instanceof Error ? error.message : '更新失败');
+      }
     }
-  }, [editingRow, createMutation, updateMutation]);
+  }, [create, editingRow, update]);
 
   const removeCategory = useCallback(
     async (category: BlogCategory) => {
@@ -138,9 +133,14 @@ export function useBlogCategoriesManager() {
         return;
       }
       if (!window.confirm(`确定要删除分类「${category.name_zh} / ${category.name_en}」吗？`)) return;
-      await deleteMutation.mutateAsync(category.id);
+      try {
+        await remove(category.id);
+        toast.success('分类已删除');
+      } catch (error) {
+        toast.error(error instanceof Error ? error.message : '删除失败');
+      }
     },
-    [deleteMutation],
+    [remove],
   );
 
   const reorder = useCallback(
@@ -158,8 +158,8 @@ export function useBlogCategoriesManager() {
     isLoading,
     loadError,
     editingRow,
-    isSaving: createMutation.isPending || updateMutation.isPending,
-    deletingId: deleteMutation.variables ?? null,
+    isSaving: isCreating || isUpdating,
+    deletingId: deleteCommand ?? null,
     startNew,
     startEdit,
     cancelEdit,

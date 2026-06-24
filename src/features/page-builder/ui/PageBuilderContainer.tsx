@@ -1,12 +1,14 @@
 import { type ComponentType } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Loader2 } from 'lucide-react';
-import { Button } from '@/ui/primitives/button';
+import { Button } from '@/package/ui/primitives/button';
 import { usePageBuilderController } from '../model/usePageBuilderController';
 import { PageBuilderView } from './PageBuilderView';
 import type { PropertyEditorResources } from '../model/pageBuilder.types';
 
 export interface PageBuilderContainerProps {
+  // Legacy editors use different content props until the P5 compatibility layer is removed.
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   editors: Record<string, ComponentType<any>>;
   resources: PropertyEditorResources;
 }

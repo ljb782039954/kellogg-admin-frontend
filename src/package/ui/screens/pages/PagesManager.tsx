@@ -2,7 +2,7 @@ import { useCallback, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Plus, Search, Copy, Settings, Trash2, Loader2, FileText } from 'lucide-react';
-import { useLanguage } from '@/context/LanguageContext';
+import { useLanguage } from '@/core/app/LanguageContext';
 // eslint-disable-next-line no-restricted-imports -- P2c 迁移期保留 model，P4 提取到 core 后删除。
 import { usePageList } from '@/features/pages/model/usePageList';
 import type { PageIndexEntry } from '@/package/types';

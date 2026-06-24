@@ -1,38 +1,30 @@
-import React, { type ComponentType } from 'react';
+import type { ComponentType } from 'react';
 import type { AdminScreenProps } from '@/core/contracts';
 
-import BlocksPreview from '@/admin/BlocksPreview';
-import DefaultPageBuilderRoute from '@/app/adapters/page-builder/DefaultPageBuilderRoute';
 import { BlogCategoriesScreen } from './blog-categories';
 import { BlogEditorScreen, BlogsScreen } from './blogs';
 import { CategoriesScreen } from './categories';
 import { CompanyInfoScreen } from './company-info';
+import { ComponentsPreviewScreen } from './components';
 import { DashboardScreen } from './dashboard';
 import { FooterScreen } from './footer';
 import { InquiriesScreen, InquirySettingsScreen } from './inquiries';
 import { MediaScreen } from './media';
 import { NavigationScreen } from './navigation';
+import { PageBuilderScreen } from './page-builder';
 import { PageLayoutRedirect } from './PageLayoutRedirect';
 import { PagesScreen } from './pages';
 import { ProductsScreen } from './products';
 import { ReviewsScreen } from './reviews';
-
-/** 迁移期薄包装器：委托给现有 feature/admin 组件；2c 将逐个替换为 package 内真身。 */
-const wrap = (Component: ComponentType): ComponentType<AdminScreenProps> => {
-  function Screen() {
-    return React.createElement(Component);
-  }
-  return Screen;
-};
 
 export const screens: Record<string, ComponentType<AdminScreenProps>> = {
   dashboard: DashboardScreen,
   company: CompanyInfoScreen,
   header: NavigationScreen,
   footer: FooterScreen,
-  components: wrap(BlocksPreview),
+  components: ComponentsPreviewScreen,
   pages: PagesScreen,
-  'page-builder': wrap(DefaultPageBuilderRoute),
+  'page-builder': PageBuilderScreen,
   media: MediaScreen,
   'blog-list': BlogsScreen,
   'blog-new': BlogEditorScreen,

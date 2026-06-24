@@ -21,19 +21,24 @@ describe('P3: Block 非 UI 基础已迁入 package', () => {
     )).toContain("from '@/package/blocks/registry'");
   });
 
-  it('临时 UI registry 继续连接旧组件路径，不移动组件文件', () => {
+  it('Blocks 与 Editors 视觉文件已迁入 package/ui', () => {
     expect(existsSync(join(SRC, 'package/ui/blocks/blocks/Carousel.tsx'))).toBe(true);
     expect(existsSync(join(
       SRC,
-      'ui/themes/default/page-builder/property-editors/CarouselPropsEditor.tsx',
+      'package/ui/editors/page-builder/property-editors/CarouselPropsEditor.tsx',
     ))).toBe(true);
+    expect(existsSync(join(SRC, 'components/blocks/Carousel.tsx'))).toBe(false);
+    expect(existsSync(join(
+      SRC,
+      'ui/themes/default/page-builder/property-editors/CarouselPropsEditor.tsx',
+    ))).toBe(false);
     expect(readFileSync(
       join(SRC, 'package/ui/blocks/legacyRegistry.tsx'),
       'utf8',
-    )).toContain("from '@/components/blocks'");
+    )).toContain("from './blocks'");
     expect(readFileSync(
       join(SRC, 'package/ui/editors/legacyRegistry.tsx'),
       'utf8',
-    )).toContain("from '@/ui/themes/default/page-builder'");
+    )).toContain("from './page-builder'");
   });
 });

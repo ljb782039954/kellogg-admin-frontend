@@ -19,10 +19,6 @@ vi.mock('@/shared/media/model/useImageUploadController', () => ({
   useImageUploadController: vi.fn(() => controllerMock),
 }));
 
-vi.mock('@/admin/components/AdminImage', () => ({
-  default: ({ alt }: { alt: string }) => <img alt={alt} />,
-}));
-
 import ImageInput from './ImageInput';
 
 describe('ImageInput compatibility wrapper', () => {

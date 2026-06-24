@@ -135,6 +135,41 @@ describe('usePageBuilderController', () => {
     expect(ctrl.viewModel.page.blocks).toHaveLength(3);
   });
 
+  it('undoes and redoes draft changes', async () => {
+    useResolvedPageMock.mockReturnValue({
+      page: page(),
+      isLoading: false,
+      error: null,
+    });
+    useSavePageMock.mockReturnValue({
+      savePage: vi.fn(),
+      isSaving: false,
+      error: null,
+    });
+
+    const { Wrapper } = createWrapper();
+    const { result } = renderHook(
+      () => usePageBuilderController('page_1'),
+      { wrapper: Wrapper },
+    );
+
+    await waitFor(() => expect(result.current.status).toBe('ready'));
+    let controller = result.current as any;
+    act(() => controller.actions.addBlock('gallery'));
+    controller = result.current as any;
+    expect(controller.viewModel.canUndo).toBe(true);
+    expect(controller.viewModel.page.blocks).toHaveLength(3);
+
+    act(() => controller.actions.undo());
+    controller = result.current as any;
+    expect(controller.viewModel.page.blocks).toHaveLength(2);
+    expect(controller.viewModel.canRedo).toBe(true);
+
+    act(() => controller.actions.redo());
+    controller = result.current as any;
+    expect(controller.viewModel.page.blocks).toHaveLength(3);
+  });
+
   it('shows availableBlocks with singleton state', async () => {
     useResolvedPageMock.mockReturnValue({ page: page(), isLoading: false, error: null });
     useSavePageMock.mockReturnValue({ savePage: vi.fn(), isSaving: false, error: null });

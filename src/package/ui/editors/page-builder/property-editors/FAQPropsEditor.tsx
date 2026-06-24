@@ -2,11 +2,11 @@ import type { PropertyEditorProps } from '@/features/page-builder';
 import { useState } from 'react';
 import { Plus, Trash2, GripVertical } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { Button } from '@/ui/primitives/button';
-import { Input } from '@/ui/primitives/input';
-import { Label } from '@/ui/primitives/label';
-import { Textarea } from '@/ui/primitives/textarea';
-import BilingualInput from '@/ui/forms/BilingualInput';
+import { Button } from '@/package/ui/primitives/button';
+import { Input } from '@/package/ui/primitives/input';
+import { Label } from '@/package/ui/primitives/label';
+import { Textarea } from '@/package/ui/primitives/textarea';
+import BilingualInput from '@/package/ui/forms/BilingualInput';
 import type { FAQItem, FAQProps } from '@/package/ui/blocks/blocks/Faq';
 
 

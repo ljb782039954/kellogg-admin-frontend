@@ -1,9 +1,9 @@
 import type { PropertyEditorProps } from '@/features/page-builder';
 // 倒计时促销组件属性编辑器
 
-import { Label } from '@/ui/primitives/label';
-import { Input } from '@/ui/primitives/input';
-import BilingualInput from '@/ui/forms/BilingualInput';
+import { Label } from '@/package/ui/primitives/label';
+import { Input } from '@/package/ui/primitives/input';
+import BilingualInput from '@/package/ui/forms/BilingualInput';
 import type { CountdownProps } from '@/package/ui/blocks/blocks/Countdown';
 
 

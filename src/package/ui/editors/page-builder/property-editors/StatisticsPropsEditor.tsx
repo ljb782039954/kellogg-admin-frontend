@@ -2,10 +2,10 @@ import type { PropertyEditorProps } from '@/features/page-builder';
 import { useState } from 'react';
 import { Plus, Trash2, GripVertical } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { Button } from '@/ui/primitives/button';
-import { Input } from '@/ui/primitives/input';
-import { Label } from '@/ui/primitives/label';
-import BilingualInput from '@/ui/forms/BilingualInput';
+import { Button } from '@/package/ui/primitives/button';
+import { Input } from '@/package/ui/primitives/input';
+import { Label } from '@/package/ui/primitives/label';
+import BilingualInput from '@/package/ui/forms/BilingualInput';
 import type { Statistic, StatisticProps } from '@/package/ui/blocks/blocks/Statistics';
 
 
@@ -30,7 +30,11 @@ export function StatisticsPropsEditor({ value, onChange }: PropertyEditorProps<S
     ]);
   };
 
-  const updateItem = (index: number, field: keyof Statistic, value: any) => {
+  const updateItem = (
+    index: number,
+    field: keyof Statistic,
+    value: Statistic[keyof Statistic],
+  ) => {
     const newItems = [...localData];
     newItems[index] = { ...newItems[index], [field]: value };
     saveStats(newItems);

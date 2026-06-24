@@ -1,18 +1,18 @@
 import type { PropertyEditorProps } from '@/features/page-builder';
 // 图片画廊组件属性编辑器
 
-// import { Label } from '@/ui/primitives/label';
-import { Button } from '@/ui/primitives/button';
+// import { Label } from '@/package/ui/primitives/label';
+import { Button } from '@/package/ui/primitives/button';
 // import {
 //   Select,
 //   SelectContent,
 //   SelectItem,
 //   SelectTrigger,
 //   SelectValue,
-// } from '@/ui/primitives/select';
+// } from '@/package/ui/primitives/select';
 import { Plus, Trash2 } from 'lucide-react';
-import BilingualInput from '@/ui/forms/BilingualInput';
-import ImageInput from '@/ui/media/ImageInput';
+import BilingualInput from '@/package/ui/forms/BilingualInput';
+import ImageInput from '@/package/ui/media/ImageInput';
 import type { GalleryProps } from '@/package/ui/blocks/blocks/Gallery';
 
 

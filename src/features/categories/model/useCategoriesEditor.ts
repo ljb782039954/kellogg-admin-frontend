@@ -1,40 +1,31 @@
 import { useCallback } from 'react';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import type { CategoryInput } from '@/package/types';
+import type { Category, CategoryInput } from '@/package/types';
 import { categoryKeys } from '../api/categories.keys';
 import { getCategories, createCategory, updateCategory, deleteCategory } from '../api/categories.api';
 import { createDefaultCategory } from './category.defaults';
 import { toCategoryInput } from './category.mapper';
 import type { CategoryFormValues } from './category.schema';
+import { useEntityCollectionController } from '@/core/entities';
+
+interface CategoryUpdateCommand {
+  id: string;
+  name?: { zh: string; en: string };
+  image?: string;
+}
 
 export function useCategoriesEditor() {
-  const queryClient = useQueryClient();
-
-  const { data: categories = [], isLoading } = useQuery({
-    queryKey: categoryKeys.list(),
-    queryFn: getCategories,
-  });
-
-  const invalidateList = useCallback(
-    () => queryClient.invalidateQueries({ queryKey: categoryKeys.list() }),
-    [queryClient],
-  );
-
-  const createMutation = useMutation({
-    mutationFn: (form: CategoryFormValues) => createCategory(toCategoryInput(form)),
-    onSuccess: () => invalidateList(),
-  });
-
-  const updateMutation = useMutation({
-    mutationFn: ({
-      id,
-      name,
-      image,
-    }: {
-      id: string;
-      name?: { zh: string; en: string };
-      image?: string;
-    }) => {
+  const controller = useEntityCollectionController<
+    Category,
+    string,
+    CategoryFormValues,
+    CategoryUpdateCommand,
+    string
+  >({
+    keys: categoryKeys,
+    operations: {
+      load: getCategories,
+      create: (form) => createCategory(toCategoryInput(form)),
+      update: ({ id, name, image }) => {
       const data: Partial<CategoryInput> = {};
       if (name) {
         data.name_zh = name.zh;
@@ -42,49 +33,42 @@ export function useCategoriesEditor() {
       }
       if (image !== undefined) data.image = image;
       return updateCategory(id, data);
+      },
+      remove: deleteCategory,
     },
-    onSuccess: () => invalidateList(),
-  });
-
-  const deleteMutation = useMutation({
-    mutationFn: (id: string) => deleteCategory(id),
-    onSuccess: () => invalidateList(),
   });
 
   const addCategory = useCallback(async () => {
     const form = createDefaultCategory();
-    await createMutation.mutateAsync(form);
-  }, [createMutation]);
+    await controller.create(form);
+  }, [controller]);
 
   const updateCategoryName = useCallback(
     async (id: string, name: { zh: string; en: string }) => {
-      await updateMutation.mutateAsync({ id, name });
+      await controller.update({ id, name });
     },
-    [updateMutation],
+    [controller],
   );
 
   const updateCategoryImage = useCallback(
     async (id: string, image: string) => {
-      await updateMutation.mutateAsync({ id, image });
+      await controller.update({ id, image });
     },
-    [updateMutation],
+    [controller],
   );
 
   const removeCategory = useCallback(
     async (id: string) => {
-      await deleteMutation.mutateAsync(id);
+      await controller.remove(id);
     },
-    [deleteMutation],
+    [controller],
   );
 
-  const error =
-    (createMutation.error || updateMutation.error || deleteMutation.error)?.message ?? null;
-
   return {
-    categories,
-    isLoading,
-    isSaving: createMutation.isPending || updateMutation.isPending || deleteMutation.isPending,
-    error,
+    categories: controller.items,
+    isLoading: controller.isLoading,
+    isSaving: controller.isSaving,
+    error: controller.error,
     addCategory,
     updateCategoryName,
     updateCategoryImage,

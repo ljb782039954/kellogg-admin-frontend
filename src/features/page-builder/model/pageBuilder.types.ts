@@ -3,15 +3,15 @@ import type {
   BlockType,
   PageBlock,
   Translation,
-  Category,
-  Product,
 } from '@/types';
-import type { PageOption } from '@/package/types';
+import type { PropertyEditorResources } from '@/package/page-builder';
+import type {
+  PageBuilderPanel as CorePageBuilderPanel,
+  PageBuilderSaveStatus as CorePageBuilderSaveStatus,
+  PageBuilderSessionState,
+} from '@/core/page-builder';
 
-export type PageBuilderPanel =
-  | { type: 'page-settings' }
-  | { type: 'seo-settings' }
-  | { type: 'block'; blockId: string };
+export type PageBuilderPanel = CorePageBuilderPanel;
 
 export interface PageSeo {
   title: Translation;
@@ -31,15 +31,12 @@ export interface PageBuilderDraft {
   seo: PageSeo;
 }
 
-export type PageBuilderSaveStatus = 'idle' | 'saving' | 'saved' | 'error';
+export type PageBuilderSaveStatus = CorePageBuilderSaveStatus;
 
-export interface PageBuilderState {
-  draft: PageBuilderDraft;
-  baseline: PageBuilderDraft;
-  selectedPanel: PageBuilderPanel | null;
-  saveStatus: PageBuilderSaveStatus;
-  error: string | null;
-}
+export type PageBuilderState = PageBuilderSessionState<
+  PageBuilderDraft,
+  PageBuilderPanel
+>;
 
 export type { AvailableBlock } from '@/package/types';
 
@@ -56,6 +53,8 @@ export interface PageBuilderViewModel {
   isFixedLayout: boolean;
   isDirty: boolean;
   canSave: boolean;
+  canUndo: boolean;
+  canRedo: boolean;
   isSaving: boolean;
   saveStatus: PageBuilderSaveStatus;
   error: string | null;
@@ -70,6 +69,8 @@ export interface PageBuilderActions {
   updateBlock(blockId: string, content: unknown): void;
   updateMeta(changes: PageMetaChanges): void;
   updateSeo(seo: PageSeo): void;
+  undo(): void;
+  redo(): void;
   save(): Promise<void>;
   requestExit(onConfirmed: () => void): void;
 }
@@ -84,13 +85,7 @@ export type PageBuilderCommandError =
   | 'DUPLICATE_SINGLETON'
   | 'INVALID_TARGET_INDEX';
 
-export interface PropertyEditorResources {
-  categories: Category[];
-  products: Product[];
-  pages: PageOption[];
-  isLoading: boolean;
-  error: string | null;
-}
+export type { PropertyEditorResources } from '@/package/page-builder';
 
 export interface PropertyEditorProps<T = unknown> {
   value: T;

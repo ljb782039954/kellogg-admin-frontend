@@ -1,15 +1,15 @@
-import { Label } from '@/ui/primitives/label';
-import { Input } from '@/ui/primitives/input';
+import { Label } from '@/package/ui/primitives/label';
+import { Input } from '@/package/ui/primitives/input';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/ui/primitives/select';
-import BilingualInput from '@/ui/forms/BilingualInput';
-import ImageInput from '@/ui/media/ImageInput';
-import { LinkSelector } from '@/ui/navigation/LinkSelector';
+} from '@/package/ui/primitives/select';
+import BilingualInput from '@/package/ui/forms/BilingualInput';
+import ImageInput from '@/package/ui/media/ImageInput';
+import { LinkSelector } from '@/package/ui/forms/LinkSelector';
 import { ensureNavLink } from '@/lib/linkUtils';
 import type { CtaBannerProps } from '@/package/ui/blocks/blocks/CtaBanner';
 import type { PropertyEditorProps } from '@/features/page-builder';

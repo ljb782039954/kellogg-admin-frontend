@@ -70,8 +70,8 @@ shared ──→ 第三方依赖
 |---|---|---|---|
 | **P1** | 契约与稳定装配点 | `core/contracts`、`defineProjectPackage`/`defineProjectUi`、`createAdminApp` 路由引擎、边界/完整性测试（用 fixture 包验证，**不动现有 App**） | [`2026-06-21-phase-1-contracts-and-assembly.md`](2026-06-21-phase-1-contracts-and-assembly.md) ✅ 已编写 |
 | **P2** | 建立 Kellogg package（业务 screen 已完成） | 品牌/菜单/路由/实体类型/DTO Adapter 迁入 `package`；Shell+基础组件+全部业务页面迁入 `package/ui`；`package/ui/index.ts` 与 `ProjectUiDefinition`；`main.tsx` 切换到真实包 | 2a、2b 已完成；2c 业务 screen 已完成（含 dashboard）。仅 `components` 与 `page-builder` 包装器留待 P3 随 Blocks/Editors 整体迁移 |
-| **P3** | 迁移 Blocks 与 Editors（自动化基础已完成） | Block/Page 类型、业务 registry、稳定 preview/editor id、PageBuilderDefinition 与 legacy UI adapter 已接入；Blocks/Editors 组件文件由维护者后续人工迁入 `package/ui` | 人工 UI 文件迁移待完成 |
-| **P4** | 提取通用内核 | 从 features 提取 Query/Mutation/CRUD 编排到 `core/entities`；提取 Page Builder 会话/命令/历史/保存到 `core/page-builder`；提取路由/Shell/Entity Controller；清除 core 中所有项目类型 | 待 P3 完成后编写 |
+| **P3** | 迁移 Blocks 与 Editors ✅ | Block/Page 类型、业务 registry、稳定 preview/editor id、PageBuilderDefinition 与 legacy UI adapter 已接入；Blocks/Editors 组件文件已迁入 `package/ui` | 已完成 |
+| **P4** | 提取通用内核（进行中） | 从 features 提取 Query/Mutation/CRUD 编排到 `core/entities`；提取 Page Builder 会话/命令/历史/保存到 `core/page-builder`；提取路由/Shell/Entity Controller；清除 core 中所有项目类型 | 已开始：Block 通用命令已迁入 `core/page-builder` |
 | **P5** | 删旧路径 + 替换验证 | 删除已迁移的 `features`/`ui/themes/default`/`components/blocks`/`types` 旧路径与兼容导出；ESLint+架构测试落地；**最小替换包**与 **UI-only 替换包**双重验证 | 待 P4 完成后编写 |
 
 ---
@@ -115,30 +115,33 @@ shared ──→ 第三方依赖
 
 **做什么**：拆分 Block 的"数据/元数据"与"视觉"，全部视觉集中到 `package/ui`。
 
-**执行调整（2026-06-23）**：为避免小型项目产生大量机械搬运与 import 改写，本阶段不自动移动
-`src/components/blocks` 与 `src/ui/themes/default/page-builder/property-editors` 中的组件文件。
-这些 Blocks/Editors 将由项目维护者后续人工放入 `package/ui`。当前自动化重构只负责：
+**执行结果（2026-06-23）**：自动化重构先完成非 UI 基础，随后由项目维护者将
+`src/components/blocks` 与 `src/ui/themes/default/page-builder/property-editors` 中的组件文件
+迁入 `package/ui`。本阶段已经完成：
 
 - 将 Block/Page 数据类型迁入 `package/types` 或 `package/blocks/types`。
 - 将默认数据、分类、singleton 等业务元数据迁入 `package/blocks`。
 - 建立稳定的 preview/editor id registry 与 `PageBuilderDefinition`。
-- 建立临时 UI 适配入口，继续连接现有 Blocks/Editors 文件路径。
-- 保持现有组件实现和内部 import 路径不变。
+- 建立 UI 适配入口并连接迁移后的 Blocks/Editors。
+- 删除旧 Blocks/Editors 文件路径。
 
 **关键迁移映射**：
-- `src/components/blocks/*.tsx`（21 个）→ 后续人工迁入 `package/ui/blocks/*.tsx`。
+- `src/components/blocks/*.tsx`（21 个）→ `package/ui/blocks/blocks/*.tsx`。
 - `src/types/blocks.ts` 的 `BlockType`/Content + `src/features/page-builder/model/blockCatalog.ts` 默认值/元数据 → `package/blocks/types/*` + `package/blocks/registry.ts`（无 React）。
-- `src/ui/themes/default/page-builder/property-editors/*`（22 个）→ 后续人工迁入 `package/ui/editors/*`。
+- `src/ui/themes/default/page-builder/property-editors/*`（22 个）→ `package/ui/editors/page-builder/property-editors/*`。
 - `package/ui/blocks/registry.ts`（type↔previewId）、`package/ui/editors/registry.ts`（type↔editorId）、`package/ui/blocks/renderer.tsx`（按 type 渲染 Preview）。
 - `src/app/adapters/page-builder` + `src/config/blocksContentPreview` → `package/page-builder/{definition,resources,adapters}.ts`，组装 `PageBuilderDefinition`。
 
-**当前自动化验收**：每个 Block 有稳定且一致的 preview/editor id；`package/blocks` 无 React；
-Page Builder 可继续正常增删改排序、撤销重做、实时预览。`package/ui/blocks` 与
-`package/ui/editors` 的物理路径验收在人工迁移完成后执行。
+**验收**：每个 Block 有稳定且一致的 preview/editor id；`package/blocks` 无 React；
+Page Builder 可继续正常增删改排序、撤销重做、实时预览；Blocks 与 Editors 的视觉文件均位于
+`package/ui`，旧视觉路径已删除。
 
 ### P4 — 提取通用内核
 
 **做什么**：把散在 features 的通用业务逻辑提到 `core`，并清空 core 的项目依赖。
+
+**当前进度（2026-06-23）**：Block 增删、移动、显隐与内容更新等无项目语义的纯命令已迁入
+`core/page-builder`；Kellogg Block catalog、默认内容与 singleton 规则继续留在 package/适配层。
 
 **关键提取**：
 - `core/entities`：列表/详情/分页查询、搜索排序筛选状态、增改删 Mutation、Query Key/缓存失效/乐观更新、表单草稿/保存状态/错误重试、列表页与编辑页通用 Controller（泛型，消费 `EntityDefinition`+`EntityAdapter`）。

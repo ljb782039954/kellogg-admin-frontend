@@ -2,7 +2,7 @@ import { Globe, Share2, Menu } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/package/ui/primitives/card';
 import { Badge } from '@/package/ui/primitives/badge';
 import { identity } from '@/package/identity/config';
-import { getPreviewUrl } from '@/lib/utils';
+import { getPreviewUrl } from '@/shared/utils';
 import type { HeaderContent } from '@/package/types';
 
 interface NavigationPreviewProps {

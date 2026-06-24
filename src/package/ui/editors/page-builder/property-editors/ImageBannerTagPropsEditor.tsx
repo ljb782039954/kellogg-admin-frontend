@@ -1,8 +1,8 @@
 import type { PropertyEditorProps } from '@/features/page-builder';
 // 图片横幅属性编辑器
-import { Label } from '@/ui/primitives/label';
-import BilingualInput from '@/ui/forms/BilingualInput';
-import ImageInput from '@/ui/media/ImageInput';
+import { Label } from '@/package/ui/primitives/label';
+import BilingualInput from '@/package/ui/forms/BilingualInput';
+import ImageInput from '@/package/ui/media/ImageInput';
 import type { ImageBannerTagProps } from '@/package/ui/blocks/blocks/ImageBannerTag';
 
 

@@ -18,14 +18,13 @@ describe('blockCatalog', () => {
       'faq', 'textSection', 'imageBanner', 'imageFull',
       'imageBannerTag', 'videoSection', 'imageText', 'ctaBanner',
       'countdown', 'partnerLogos', 'gallery', 'featureList',
-      'caseStudies',
     ];
     for (const type of all) {
       expect(getBlockCatalogItem(type), `Missing catalog entry for ${type}`).toBeDefined();
     }
   });
 
-  it('has categories in the current componentRegistry order', () => {
+  it('has categories in the current package block catalog order', () => {
     const types = Object.keys(blockCatalog) as BlockType[];
     const expectedCategories = [
       ...types.filter((t) => blockCatalog[t].category === 'product'),

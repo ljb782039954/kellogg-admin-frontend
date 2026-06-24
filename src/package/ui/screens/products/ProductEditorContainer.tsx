@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import { Plus, Save, Trash2, Loader2 } from 'lucide-react';
-import { useLanguage } from '@/context/LanguageContext';
+import { useLanguage } from '@/core/app/LanguageContext';
 // eslint-disable-next-line no-restricted-imports -- P2c 迁移期保留 model，P4 提取到 core 后删除。
 import { useProductsManager } from '@/features/products/model/useProductForm';
 import { ProductEditorView } from './ProductEditorView';

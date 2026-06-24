@@ -1,6 +1,6 @@
 import { useImageUploadController } from '@/shared/media/model/useImageUploadController';
-import { DuplicateImageDialog } from '@/shared/media/ui/DuplicateImageDialog';
-import { ImageUploadControl } from '@/shared/media/ui/ImageUploadControl';
+import { DuplicateImageDialog } from './DuplicateImageDialog';
+import { ImageUploadControl } from './ImageUploadControl';
 
 interface ImageInputProps {
   label?: string;

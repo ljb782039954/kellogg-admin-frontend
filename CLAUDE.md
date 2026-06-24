@@ -6,22 +6,12 @@
 
 这是一个服装类外贸网站的后台管理项目，当前正准备进行重构改进。
 
-1. 简单的需求描述：`docs\需求描述.md` 
-2. 详细的重构设计：`docs\superpowers\specs\2026-06-20-project-package-architecture-design.md` 
-
-当前项目已经安装了一些skills 和 codegraph 代码知识图谱mcp工具，能有效辅助开发。
+1. 详细的重构设计：`docs\superpowers\specs\2026-06-20-project-package-architecture-design.md` 
+2. 开发进度：`docs\superpowers\plans\2026-06-21-project-package-refactor-roadmap.md`
 
 ## 注意事项：
-由于此前对话中出现了会话中积压过大的文件数据的问题:
-```
-Request too large (max 32MB). Double press esc to go back and try with a smaller file.
-```
-并且还无法进行compact:
-```
- /compact                                                                                                                                                                                                          
-  ⎿  Compaction failed · attached media exceeds size limits
-```
-所以在开发过程中注意这个问题。
+1. 不要使用superpowers重量级的工程式的编码规范。
+2. 不要运行全量测试，只需要测试与当前批次任务相关的测试即可。
 
 
 <!-- rtk-instructions v2 -->

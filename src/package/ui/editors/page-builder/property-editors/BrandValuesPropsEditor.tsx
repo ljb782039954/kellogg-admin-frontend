@@ -2,10 +2,10 @@ import type { PropertyEditorProps } from '@/features/page-builder';
 import { useState } from 'react';
 import { Plus, Trash2, GripVertical } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { Button } from '@/ui/primitives/button';
-import { Label } from '@/ui/primitives/label';
-import BilingualInput from '@/ui/forms/BilingualInput';
-import BilingualRichInput from '@/ui/forms/rich-text/BilingualRichInput';
+import { Button } from '@/package/ui/primitives/button';
+import { Label } from '@/package/ui/primitives/label';
+import BilingualInput from '@/package/ui/forms/BilingualInput';
+import BilingualRichInput from '@/package/ui/forms/rich-text/BilingualRichInput';
 import type { BrandValue, BrandValuesProps } from '@/package/ui/blocks/blocks/BrandValues';
 // import { iconOptions } from '@/types';
 
@@ -43,7 +43,11 @@ export function BrandValuesPropsEditor({ value, onChange }: PropertyEditorProps<
     ]);
   };
 
-  const updateItems = (index: number, field: keyof BrandValue, value: any) => {
+  const updateItems = (
+    index: number,
+    field: keyof BrandValue,
+    value: BrandValue[keyof BrandValue],
+  ) => {
     const newItems = [...localItems];
     newItems[index] = { ...newItems[index], [field]: value };
     saveItems(newItems);

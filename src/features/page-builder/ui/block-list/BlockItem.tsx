@@ -1,16 +1,16 @@
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { GripVertical, Eye, EyeOff, Trash2, ChevronUp, ChevronDown } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { cn } from '@/shared/utils';
 import { type PageBlock } from '@/types';
 import { getBlockCatalogItem } from '../../model/blockCatalog';
-import { Button } from '@/ui/primitives/button';
+import { Button } from '@/package/ui/primitives/button';
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from '@/ui/primitives/tooltip';
+} from '@/package/ui/primitives/tooltip';
 import BlockThumbnail from '../block-picker/BlockThumbnail';
 
 interface BlockItemProps {

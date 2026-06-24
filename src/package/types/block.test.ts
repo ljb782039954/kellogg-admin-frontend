@@ -29,7 +29,6 @@ describe('package/types/block', () => {
       | 'partnerLogos'
       | 'gallery'
       | 'featureList'
-      | 'caseStudies'
     >();
     expectTypeOf<PageBlock>().toHaveProperty('content').toEqualTypeOf<unknown>();
     expectTypeOf<CustomPage>().toHaveProperty('blocks').toEqualTypeOf<PageBlock[]>();

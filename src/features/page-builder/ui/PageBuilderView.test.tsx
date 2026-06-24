@@ -2,7 +2,7 @@ import type { ReactNode } from 'react';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, it, vi } from 'vitest';
-import { LanguageProvider } from '@/context/LanguageContext';
+import { LanguageProvider } from '@/core/app/LanguageContext';
 import type { PageBuilderViewModel, PageBuilderActions } from '../model/pageBuilder.types';
 import { createDefaultSeo } from '../model/pageBuilder.defaults';
 import { PageBuilderView } from './PageBuilderView';
@@ -29,6 +29,8 @@ const baseViewModel: PageBuilderViewModel = {
   isFixedLayout: false,
   isDirty: false,
   canSave: false,
+  canUndo: false,
+  canRedo: false,
   isSaving: false,
   saveStatus: 'idle',
   error: null,
@@ -43,6 +45,8 @@ const baseActions: PageBuilderActions = {
   updateBlock: vi.fn(),
   updateMeta: vi.fn(),
   updateSeo: vi.fn(),
+  undo: vi.fn(),
+  redo: vi.fn(),
   save: vi.fn(),
   requestExit: vi.fn(),
 };
@@ -86,6 +90,26 @@ describe('PageBuilderView', () => {
     const vm = { ...baseViewModel, saveStatus: 'saved' as const };
     render(<WithLang><PageBuilderView viewModel={vm} actions={baseActions} onBack={vi.fn()} /></WithLang>);
     expect(screen.getByText('已保存')).toBeTruthy();
+  });
+
+  it('enables history buttons and invokes undo and redo', async () => {
+    const actions = { ...baseActions, undo: vi.fn(), redo: vi.fn() };
+    const viewModel = { ...baseViewModel, canUndo: true, canRedo: true };
+    render(
+      <WithLang>
+        <PageBuilderView
+          viewModel={viewModel}
+          actions={actions}
+          onBack={vi.fn()}
+        />
+      </WithLang>,
+    );
+
+    await userEvent.click(screen.getByRole('button', { name: '撤销' }));
+    await userEvent.click(screen.getByRole('button', { name: '重做' }));
+
+    expect(actions.undo).toHaveBeenCalledOnce();
+    expect(actions.redo).toHaveBeenCalledOnce();
   });
 
   it('shows error message when present', () => {

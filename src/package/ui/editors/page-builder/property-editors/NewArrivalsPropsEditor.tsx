@@ -1,11 +1,12 @@
 // 新品组件属性编辑器（轻量版）
-import { Input } from '@/ui/primitives/input';
-import { Label } from '@/ui/primitives/label';
+import { Input } from '@/package/ui/primitives/input';
+import { Label } from '@/package/ui/primitives/label';
 import { Info } from 'lucide-react';
-import { Alert, AlertDescription } from '@/ui/primitives/alert';
-import BilingualInput from '@/ui/forms/BilingualInput';
-import { getPreviewUrl } from '@/lib/utils';
+import { Alert, AlertDescription } from '@/package/ui/primitives/alert';
+import BilingualInput from '@/package/ui/forms/BilingualInput';
+import { getPreviewUrl } from '@/shared/utils';
 import type { NewArrivalsProps } from '@/package/ui/blocks/blocks/NewArrivals';
+import type { Product } from '@/package/types';
 import type { PropertyEditorProps } from '@/features/page-builder';
 
 export function NewArrivalsPropsEditor({
@@ -68,7 +69,7 @@ export function NewArrivalsPropsEditor({
           </div>
         ) : (
           <div className="grid grid-cols-4 gap-2">
-            {newProducts.slice(0, 8).map((product: any) => (
+            {newProducts.slice(0, 8).map((product: Product) => (
               <div
                 key={product.id}
                 className="aspect-square bg-gray-100 rounded-lg overflow-hidden border"

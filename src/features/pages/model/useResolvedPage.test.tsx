@@ -30,8 +30,8 @@ function page(overrides: Partial<CustomPage> = {}): CustomPage {
 }
 
 function indexEntry(overrides: Partial<CustomPage> = {}) {
-  const p = page(overrides);
-  const { blocks, seo, ...rest } = p;
+  const currentPage = page(overrides);
+  const { blocks, seo, ...rest } = currentPage;
   void seo;
   return { ...rest, blockCount: blocks?.length ?? 0 };
 }
@@ -43,7 +43,9 @@ function createWrapper() {
   return {
     client,
     Wrapper({ children }: { children: ReactNode }) {
-      return <QueryClientProvider client={client}>{children}</QueryClientProvider>;
+      return (
+        <QueryClientProvider client={client}>{children}</QueryClientProvider>
+      );
     },
   };
 }
@@ -55,14 +57,31 @@ describe('useResolvedPage', () => {
   });
 
   it('merges index metadata with page detail', async () => {
-    usePageListMock.mockReturnValue({ pages: [indexEntry()], isLoading: false });
-    getPageByIdMock.mockResolvedValueOnce(page({
-      blocks: [{ id: 'b1', type: 'textSection', content: { text: 'A' }, isVisible: true }],
-      seo: { title: { zh: 'SEO', en: 'SEO' }, description: { zh: '描述', en: 'Description' } },
-    }));
+    usePageListMock.mockReturnValue({
+      pages: [indexEntry()],
+      isLoading: false,
+    });
+    getPageByIdMock.mockResolvedValueOnce(
+      page({
+        blocks: [
+          {
+            id: 'b1',
+            type: 'textSection',
+            content: { text: 'A' },
+            isVisible: true,
+          },
+        ],
+        seo: {
+          title: { zh: 'SEO', en: 'SEO' },
+          description: { zh: '描述', en: 'Description' },
+        },
+      }),
+    );
 
     const { Wrapper } = createWrapper();
-    const { result } = renderHook(() => useResolvedPage('page_1'), { wrapper: Wrapper });
+    const { result } = renderHook(() => useResolvedPage('page_1'), {
+      wrapper: Wrapper,
+    });
 
     await waitFor(() => expect(result.current.isLoading).toBe(false));
     expect(result.current.page?.id).toBe('page_1');
@@ -73,9 +92,14 @@ describe('useResolvedPage', () => {
   });
 
   it('does not fetch detail when pageId is empty', async () => {
-    usePageListMock.mockReturnValue({ pages: [indexEntry()], isLoading: false });
+    usePageListMock.mockReturnValue({
+      pages: [indexEntry()],
+      isLoading: false,
+    });
     const { Wrapper } = createWrapper();
-    const { result } = renderHook(() => useResolvedPage(undefined), { wrapper: Wrapper });
+    const { result } = renderHook(() => useResolvedPage(undefined), {
+      wrapper: Wrapper,
+    });
 
     await waitFor(() => expect(result.current.isLoading).toBe(false));
     expect(result.current.page).toBeUndefined();
@@ -85,7 +109,9 @@ describe('useResolvedPage', () => {
   it('returns undefined when page is not found in index', async () => {
     usePageListMock.mockReturnValue({ pages: [], isLoading: false });
     const { Wrapper } = createWrapper();
-    const { result } = renderHook(() => useResolvedPage('nonexistent'), { wrapper: Wrapper });
+    const { result } = renderHook(() => useResolvedPage('nonexistent'), {
+      wrapper: Wrapper,
+    });
 
     await waitFor(() => expect(result.current.isLoading).toBe(false));
     expect(result.current.page).toBeUndefined();

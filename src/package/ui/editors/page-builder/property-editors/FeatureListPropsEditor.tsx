@@ -1,19 +1,20 @@
 import type { PropertyEditorProps } from '@/features/page-builder';
 // 特性列表组件属性编辑器
 
-import { Label } from '@/ui/primitives/label';
-import { Button } from '@/ui/primitives/button';
+import { Label } from '@/package/ui/primitives/label';
+import { Button } from '@/package/ui/primitives/button';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/ui/primitives/select';
+} from '@/package/ui/primitives/select';
 import { Plus, Trash2 } from 'lucide-react';
 import * as LucideIcons from 'lucide-react';
-import BilingualInput from '@/ui/forms/BilingualInput';
-import BilingualRichInput from '@/ui/forms/rich-text/BilingualRichInput';
+import type { LucideIcon } from 'lucide-react';
+import BilingualInput from '@/package/ui/forms/BilingualInput';
+import BilingualRichInput from '@/package/ui/forms/rich-text/BilingualRichInput';
 // import { commonFeatureIcons } from '@/types/editor';
 import type { FeatureListProps } from '@/package/ui/blocks/blocks/FeatureList';
 
@@ -122,7 +123,10 @@ export function FeatureListPropsEditor({ value, onChange }: PropertyEditorProps<
         ) : (
           <div className="space-y-4">
             {items.map((feature, index) => {
-              const SelectedIcon = (LucideIcons as any)[feature.icon] || LucideIcons.Star;
+              const SelectedIcon =
+                (LucideIcons as unknown as Record<string, LucideIcon>)[
+                  feature.icon
+                ] || LucideIcons.Star;
               return (
                 <div key={index} className="p-4 bg-gray-50 rounded-lg space-y-3">
                   <div className="flex items-center justify-between">
@@ -151,7 +155,7 @@ export function FeatureListPropsEditor({ value, onChange }: PropertyEditorProps<
                       </SelectTrigger>
                       <SelectContent>
                         {commonFeatureIcons.map((iconName) => {
-                          const Icon = (LucideIcons as any)[iconName];
+                          const Icon = (LucideIcons as unknown as Record<string, LucideIcon>)[iconName];
                           return (
                             <SelectItem key={iconName} value={iconName}>
                               <div className="flex items-center gap-2">

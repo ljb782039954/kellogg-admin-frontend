@@ -1,4 +1,8 @@
+import { createEntityQueryKeys } from '@/core/entities';
+
+const entityKeys = createEntityQueryKeys<'categories', string>('categories');
+
 export const categoryKeys = {
-  all: ['categories'] as const,
-  list: () => [...categoryKeys.all, 'list'] as const,
+  ...entityKeys,
+  list: entityKeys.lists,
 };

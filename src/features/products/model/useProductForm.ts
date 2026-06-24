@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useForm } from 'react-hook-form';
 import type { Product, ProductInput } from '@/package/types';
 import { getCategories } from '@/features/categories/api/categories.api';
@@ -19,8 +19,16 @@ import {
   toCreateProductInput,
   toUpdateProductInput,
 } from './product.mapper';
+import {
+  invalidateEntityDetail,
+  useEntityEditorController,
+  usePaginatedEntityListController,
+} from '@/core/entities';
 
-const EMPTY_PRODUCTS: Product[] = [];
+interface ProductUpdateCommand {
+  id: number;
+  data: Partial<ProductInput>;
+}
 
 export function useProductsManager() {
   const queryClient = useQueryClient();
@@ -30,33 +38,72 @@ export function useProductsManager() {
   const [error, setError] = useState<string | null>(null);
   const sessionIdRef = useRef(0);
 
-  // Product list query
-  const {
-    data: listData,
-    isLoading: isListLoading,
-    error: listError,
-  } = useQuery({
-    queryKey: productKeys.lists(),
-    queryFn: () => getProducts({ pageSize: 1000 }),
+  const listController = usePaginatedEntityListController<
+    Product,
+    { pageSize: number },
+    Awaited<ReturnType<typeof getProducts>>,
+    {
+      page: number;
+      pageSize: number;
+      total: number;
+      totalPages: number;
+    },
+    ProductUpdateCommand,
+    number
+  >({
+    keys: {
+      lists: productKeys.lists,
+      list: () => productKeys.lists(),
+    },
+    filters: { pageSize: 1000 },
+    load: getProducts,
+    select: (response) => ({
+      items: response.data,
+      pagination: {
+        page: response.page,
+        pageSize: response.pageSize,
+        total: response.total,
+        totalPages: response.totalPages,
+      },
+    }),
+    mutations: {
+      update: {
+        execute: ({ id, data }) => updateProduct(id, data),
+        onSuccess: (_result, variables) => {
+          if (editingId === variables.id) {
+            return invalidateEntityDetail(
+              queryClient,
+              productKeys,
+              variables.id,
+            );
+          }
+        },
+        onError: (mutationError) => {
+          setError(mutationError.message || '更新失败');
+        },
+      },
+      remove: {
+        execute: deleteProduct,
+        onSuccess: (_result, deletedId) => {
+          if (editingId === deletedId) {
+            setEditingId(null);
+            form.reset(createDefaultProduct());
+          }
+        },
+        onError: (mutationError) => {
+          setError(mutationError.message || '删除失败');
+        },
+      },
+    },
   });
 
-  const products = listData?.data ?? EMPTY_PRODUCTS;
+  const products = listController.items;
 
   // Categories query
   const { data: categories = [] } = useQuery({
     queryKey: ['categories', 'list'],
     queryFn: getCategories,
     staleTime: 60_000,
-  });
-
-  // Single product detail query
-  const {
-    data: productDetail,
-    isLoading: isDetailLoading,
-  } = useQuery({
-    queryKey: productKeys.detail(editingId!),
-    queryFn: () => getProduct(editingId!),
-    enabled: editingId !== null && editingId > 0,
   });
 
   // Form with Zod validation
@@ -67,87 +114,62 @@ export function useProductsManager() {
     mode: 'onChange',
   });
 
+  const editorController = useEntityEditorController<
+    Product,
+    number,
+    ProductFormValues,
+    Product
+  >({
+    id: editingId !== null && editingId > 0 ? editingId : undefined,
+    enabled: editingId !== null && editingId > 0,
+    keys: productKeys,
+    operations: {
+      load: getProduct,
+      create: (values) => createProduct(toCreateProductInput(values)),
+      update: (id, values) => updateProduct(id, toUpdateProductInput(values)),
+    },
+    resolveSavedId: (product) => product.id,
+    selectSavedModel: (product) => product,
+    onSaved: (savedId, product) => {
+      form.reset(fromProductResponse(product));
+      setEditingId(savedId);
+      setSaved(true);
+      window.setTimeout(() => setSaved(false), 2000);
+    },
+    onError: (saveError) => {
+      setError(saveError.message || '保存失败');
+    },
+  });
+
   // Initialize form when product detail loads — bound to session to prevent stale overwrites
   useEffect(() => {
-    if (productDetail && editingId !== null && editingId > 0) {
+    if (editorController.model && editingId !== null && editingId > 0) {
       const currentSession = sessionIdRef.current;
       const sid = currentSession;
       // Only reset if this is still the active session
       requestAnimationFrame(() => {
         if (sessionIdRef.current === sid) {
-          form.reset(fromProductResponse(productDetail));
+          form.reset(fromProductResponse(editorController.model!));
         }
       });
     }
-  }, [form, productDetail, editingId]);
-
-  // Save mutation via validated submit
-  const saveMutation = useMutation({
-    mutationFn: async (values: ProductFormValues) => {
-      if (values.id > 0) {
-        return updateProduct(values.id, toUpdateProductInput(values));
-      }
-      const created = await createProduct(toCreateProductInput(values));
-      return created;
-    },
-    onSuccess: (result) => {
-      queryClient.setQueryData(productKeys.detail(result.id), result);
-      queryClient.invalidateQueries({ queryKey: productKeys.lists() });
-      form.reset(fromProductResponse(result));
-      setEditingId(result.id);
-      setSaved(true);
-      window.setTimeout(() => setSaved(false), 2000);
-    },
-    onError: (err) => {
-      setError(err instanceof Error ? err.message : '保存失败');
-    },
-  });
+  }, [form, editorController.model, editingId]);
 
   // Validated submit — the only save entry point
   const validatedSubmit = form.handleSubmit(
     async (values) => {
       setError(null);
-      await saveMutation.mutateAsync(values);
+      await editorController.save(values);
     },
   );
 
-  // Toggle mutations
-  const updateSingleMutation = useMutation({
-    mutationFn: ({ id, data }: { id: number; data: Partial<ProductInput> }) =>
-      updateProduct(id, data),
-    onSuccess: (_result, variables) => {
-      queryClient.invalidateQueries({ queryKey: productKeys.lists() });
-      if (editingId === variables.id) {
-        queryClient.invalidateQueries({ queryKey: productKeys.detail(variables.id) });
-      }
-    },
-    onError: (err) => {
-      setError(err instanceof Error ? err.message : '更新失败');
-    },
-  });
-
   const toggleFeatured = useCallback((id: number, isFeatured: boolean) => {
-    updateSingleMutation.mutate({ id, data: { is_featured: isFeatured } });
-  }, [updateSingleMutation]);
+    void listController.update({ id, data: { is_featured: isFeatured } });
+  }, [listController]);
 
   const toggleActive = useCallback((id: number, isActive: boolean) => {
-    updateSingleMutation.mutate({ id, data: { is_active: isActive } });
-  }, [updateSingleMutation]);
-
-  // Delete mutation
-  const deleteMutation = useMutation({
-    mutationFn: (id: number) => deleteProduct(id),
-    onSuccess: (_result, deletedId) => {
-      queryClient.invalidateQueries({ queryKey: productKeys.lists() });
-      if (editingId === deletedId) {
-        setEditingId(null);
-        form.reset(createDefaultProduct());
-      }
-    },
-    onError: (err) => {
-      setError(err instanceof Error ? err.message : '删除失败');
-    },
-  });
+    void listController.update({ id, data: { is_active: isActive } });
+  }, [listController]);
 
   // Open/close with dirty protection
   const requestOpenEditor = useCallback((id: number) => {
@@ -198,7 +220,7 @@ export function useProductsManager() {
     const failed: { id: number; error: string }[] = [];
     for (const id of selectedIds) {
       try {
-        await deleteMutation.mutateAsync(id);
+        await listController.remove(id);
         succeeded.push(id);
       } catch (err) {
         failed.push({ id, error: err instanceof Error ? err.message : '删除失败' });
@@ -211,19 +233,19 @@ export function useProductsManager() {
     } else {
       setError(`已删除 ${succeeded.length} 项，${failed.length} 项失败`);
     }
-  }, [selectedIds, deleteMutation]);
+  }, [selectedIds, listController]);
 
   const removeProduct = useCallback(async (id: number) => {
     setError(null);
-    await deleteMutation.mutateAsync(id);
-  }, [deleteMutation]);
+    await listController.remove(id);
+  }, [listController]);
 
   return {
     products,
     categories,
-    isLoading: isListLoading,
-    isDetailLoading,
-    listError,
+    isLoading: listController.isLoading,
+    isDetailLoading: editorController.isLoading,
+    listError: listController.error,
     selectedIds,
     toggleSelect,
     toggleSelectAll,
@@ -235,7 +257,7 @@ export function useProductsManager() {
     isEditing: editingId !== null,
     form,
     validatedSubmit,
-    isSaving: saveMutation.isPending,
+    isSaving: editorController.isSaving,
     saved,
     error,
     setError,

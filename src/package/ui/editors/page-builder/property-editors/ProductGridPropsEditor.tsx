@@ -1,13 +1,13 @@
 import type { PropertyEditorProps } from '@/features/page-builder';
 // 产品网格属性编辑器
-import { Label } from '@/ui/primitives/label';
+import { Label } from '@/package/ui/primitives/label';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/ui/primitives/select';
+} from '@/package/ui/primitives/select';
 import type { ProductGridProps } from '@/package/ui/blocks/blocks/ProductGrid';
 
 

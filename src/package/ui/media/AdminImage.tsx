@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { getPreviewUrl } from '@/lib/utils';
+import { getPreviewUrl } from '@/shared/utils';
 import { Loader2, Image as ImageIcon } from 'lucide-react';
 import { cn } from '@/shared/utils';
 
@@ -32,6 +32,7 @@ export default function AdminImage({
   const [hasError, setHasError] = useState(() => !resolvedUrl);
 
   // Sync state if resolvedUrl changes (e.g. key change or dynamic updates)
+  /* eslint-disable react-hooks/set-state-in-effect */
   useEffect(() => {
     if (!resolvedUrl) {
       setHasError(true);
@@ -43,6 +44,7 @@ export default function AdminImage({
       setCurrentSrc(resolvedUrl);
     }
   }, [resolvedUrl]);
+  /* eslint-enable react-hooks/set-state-in-effect */
 
   if (hasError) {
     if (fallback !== undefined) {
