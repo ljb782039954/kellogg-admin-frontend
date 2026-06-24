@@ -1,10 +1,11 @@
 import { motion } from 'framer-motion';
 import { Plus, Trash2, GripVertical, AlertTriangle } from 'lucide-react';
 import BilingualInput from '@/package/ui/forms/BilingualInput';
-import { LinkSelector, type PageOption } from '@/package/ui/forms/LinkSelector';
+import type { PageOption } from '@/package/ui/forms/LinkSelector';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/package/ui/primitives/card';
 import { Button } from '@/package/ui/primitives/button';
 import { Badge } from '@/package/ui/primitives/badge';
+import { EditableLinkCard } from '@/package/ui/screens/primitives';
 // eslint-disable-next-line no-restricted-imports -- P2c 迁移期保留 model 常量，P4 提取到 core 后删除。
 import { MAX_MAIN_NAV } from '@/features/navigation/model/navigation.commands';
 import type { NavLink } from '@/package/types';
@@ -113,33 +114,18 @@ export function NavigationFormView({
                       </Button>
                     </div>
 
-                    <div className="space-y-3 flex-1 grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <div className="space-y-3 flex-1 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
                       {item.children?.map((subItem, subIndex) => (
-                        <div
+                        <EditableLinkCard
                           key={subItem.id || subIndex}
-                          className="flex gap-3 bg-white p-3 rounded-lg border border-green-300 shadow-sm"
-                        >
-                          <div className="flex-1 grid grid-cols-2 gap-3">
-                            <BilingualInput
-                              value={subItem.name}
-                              onChange={(val) => onUpdateSubItemName(index, subIndex, val)}
-                              placeholder={{ zh: '子菜单名', en: 'Sub Menu' }}
-                            />
-                            <LinkSelector
-                              value={subItem}
-                              pages={pages}
-                              onChange={(val) => onUpdateSubItemLink(index, subIndex, val)}
-                            />
-                          </div>
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => onRemoveSubItem(index, subIndex)}
-                            className="text-red-500 mt-6 h-8 w-8 p-0"
-                          >
-                            <Trash2 className="w-4 h-4" />
-                          </Button>
-                        </div>
+                          link={subItem}
+                          pages={pages}
+                          namePlaceholder={{ zh: '子菜单名', en: 'Sub Menu' }}
+                          className="p-3 shadow-sm"
+                          onNameChange={(val) => onUpdateSubItemName(index, subIndex, val)}
+                          onLinkChange={(val) => onUpdateSubItemLink(index, subIndex, val)}
+                          onRemove={() => onRemoveSubItem(index, subIndex)}
+                        />
                       ))}
                       {(!item.children || item.children.length === 0) && (
                         <div className="text-xs text-gray-400 py-2">暂无子菜单，悬停不显示下拉框。</div>

@@ -35,13 +35,14 @@ src/
 │     ├─ shell/             AdminLayout、LoginPage、ErrorPage
 │     ├─ screens/           业务页面与 Page Builder 页面
 │     ├─ primitives/        shadcn/ui 基础组件
+│     ├─ hooks/             UI 专用 hooks，例如 use-mobile
 │     ├─ forms/             主题化表单控件
 │     ├─ media/             AdminImage、ImageInput 等媒体 UI
 │     ├─ blocks/            前台 Block 预览组件
 │     └─ editors/           Page Builder 属性编辑器
 ├─ features/                迁移中的业务 API/model 层；UI 已迁往 package/ui
 ├─ test/                    Vitest、Testing Library、架构边界测试
-└─ App.tsx / app / admin / ui / types / config / lib
+└─ App.tsx / app / admin / components / ui / hooks / types / context / config / lib
    已删除或不再作为新架构入口使用
 ```
 
@@ -72,6 +73,7 @@ src/
 - `core` 只认契约和泛型流程，不出现 Product、Blog、Kellogg、BlockType 字面量等项目语义。
 - `package` 承载 Kellogg 业务定义：identity、routes、types、entities、adapters、blocks、page-builder、ui。
 - `package/ui` 是唯一默认视觉实现区域；业务页面、Shell、Blocks、Editors 均集中在这里。
+- UI 专用 hooks 位于 `package/ui/hooks`，不再使用顶层 `src/hooks`。
 - `shared` 只放技术能力：API client、错误模型、i18n、无主题控件、媒体算法与通用工具。
 - routes / blocks / editors 通过稳定 id 装配，避免非 UI 层直接 import 具体 UI 文件。
 - 迁移期保留 `features/*/api|model`，但 feature UI 已迁入 `package/ui/screens`。

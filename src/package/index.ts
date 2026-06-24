@@ -16,6 +16,8 @@ import {
   reviewEntity,
 } from './entities';
 
+// primitives
+
 export const projectPackage = defineProjectPackage({
   identity,
   menuGroups,

@@ -5,7 +5,7 @@ import { Button } from '@/package/ui/primitives/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/package/ui/primitives/card';
 import { Badge } from '@/package/ui/primitives/badge';
 import BilingualInput from '@/package/ui/forms/BilingualInput';
-import { LinkSelector } from '@/package/ui/forms/LinkSelector';
+import { EditableLinkCard } from '@/package/ui/screens/primitives';
 import { identity } from '@/package/identity/config';
 import { siteProfile } from '@/package/identity/site-profile';
 import type {
@@ -312,54 +312,21 @@ export function FooterEditorView({
                   ) : (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                       {group.links.map((link, linkIndex) => (
-                        <div
+                        <EditableLinkCard
                           key={link.id || linkIndex}
-                          className={`p-4 rounded-lg border ${
-                            link.pageDeleted
-                              ? 'border-red-300 bg-red-50'
-                              : 'border-gray-200 bg-gray-50'
-                          }`}
-                        >
-                          <div className="flex items-start gap-3">
-                            <div className="flex-1 space-y-4">
-                              <div className="flex items-center gap-2">
-                                <span className="text-sm font-medium text-gray-700">链接名称</span>
-                                {link.pageDeleted && (
-                                  <Badge variant="destructive" className="text-xs">
-                                    <AlertTriangle className="w-3 h-3 mr-1" />
-                                    页面已删除
-                                  </Badge>
-                                )}
-                              </div>
-                              <BilingualInput
-                                value={link.name}
-                                onChange={(value) => {
-                                  const next = [...footer.linkGroups];
-                                  next[groupIndex].links[linkIndex] = { ...link, name: value };
-                                  onUpdateLink(groupIndex, linkIndex, next[groupIndex].links[linkIndex]);
-                                }}
-                                placeholder={{ zh: '链接中文名', en: 'Link English name' }}
-                              />
-
-                              <div className="pt-2 border-t">
-                                <LinkSelector
-                                  value={link}
-                                  pages={pages}
-                                  onChange={(value) => onUpdateLink(groupIndex, linkIndex, value as FooterLink)}
-                                />
-                              </div>
-                            </div>
-
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              onClick={() => onRemoveLink(groupIndex, linkIndex)}
-                              className="text-red-500 hover:text-red-700 hover:bg-red-50"
-                            >
-                              <Trash2 className="w-4 h-4" />
-                            </Button>
-                          </div>
-                        </div>
+                          link={link}
+                          pages={pages}
+                          title="链接名称"
+                          namePlaceholder={{ zh: '链接中文名', en: 'Link English name' }}
+                          className="p-4"
+                          onNameChange={(value) => {
+                            const next = [...footer.linkGroups];
+                            next[groupIndex].links[linkIndex] = { ...link, name: value };
+                            onUpdateLink(groupIndex, linkIndex, next[groupIndex].links[linkIndex]);
+                          }}
+                          onLinkChange={(value) => onUpdateLink(groupIndex, linkIndex, value)}
+                          onRemove={() => onRemoveLink(groupIndex, linkIndex)}
+                        />
                       ))}
                     </div>
                   )}
