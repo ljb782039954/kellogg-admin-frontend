@@ -1,4 +1,4 @@
-import type { PropertyEditorProps } from '@/features/page-builder';
+import type { PropertyEditorProps } from '@/package/page-builder';
 // 单张大图属性编辑器
 import { Label } from '@/package/ui/primitives/label';
 import { Switch } from '@/package/ui/primitives/switch';

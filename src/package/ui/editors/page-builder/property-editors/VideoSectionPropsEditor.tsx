@@ -1,4 +1,4 @@
-import type { PropertyEditorProps } from '@/features/page-builder';
+import type { PropertyEditorProps } from '@/package/page-builder';
 import { Label } from '@/package/ui/primitives/label';
 import { Input } from '@/package/ui/primitives/input';
 import { Switch } from '@/package/ui/primitives/switch';

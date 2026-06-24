@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { blockCatalog, getBlockCatalogItem, getAvailableBlocks } from './blockCatalog';
-import type { BlockType } from '@/types';
+import type { BlockType } from '@/package/types';
 
 describe('blockCatalog', () => {
   it('every createDefaultContent() returns unique nested objects', () => {

@@ -1,4 +1,4 @@
-import type { CustomPage } from '@/types';
+import type { CustomPage } from '@/package/types';
 import type { PageBuilderDraft } from './pageBuilder.types';
 import { createDefaultSeo } from './pageBuilder.defaults';
 

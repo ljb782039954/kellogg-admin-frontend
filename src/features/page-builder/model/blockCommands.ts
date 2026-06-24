@@ -1,4 +1,4 @@
-import type { BlockType, PageBlock } from '@/types';
+import type { BlockType, PageBlock } from '@/package/types';
 import type {
   PageBuilderDraft,
   PageMetaChanges,

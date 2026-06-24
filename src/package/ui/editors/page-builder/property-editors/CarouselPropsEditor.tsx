@@ -10,7 +10,7 @@ import ImageInput from '@/package/ui/media/ImageInput';
 import { LinkSelector } from '@/package/ui/forms/LinkSelector';
 import { ensureNavLink } from '../linkUtils';
 import type { CarouselValues, CarouselProps } from '@/package/ui/blocks/blocks/Carousel';
-import type { PropertyEditorProps } from '@/features/page-builder';
+import type { PropertyEditorProps } from '@/package/page-builder';
 
 export function CarouselPropsEditor({
   value,

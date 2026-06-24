@@ -1,4 +1,5 @@
-import type { Translation, CustomPage } from '@/types';
+import type { CustomPage } from '@/package/types';
+import type { Translation } from '@/shared/i18n/translation';
 import type { PageIndexEntry } from '@/package/types';
 
 export function sanitizePageIndex(pages: { id: string; path: string; title: Translation; isFixed: boolean; type?: string; blocks?: unknown[]; content?: unknown; blockCount?: number }[]): PageIndexEntry[] {

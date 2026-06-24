@@ -1,5 +1,5 @@
 import { nanoid } from 'nanoid';
-import type { BlockType } from '@/types';
+import type { BlockType } from '@/package/types';
 import type {
   PageBuilderDraft,
   PageBuilderPanel,

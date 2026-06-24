@@ -1,4 +1,4 @@
-import type { PropertyEditorProps } from '@/features/page-builder';
+import type { PropertyEditorProps } from '@/package/page-builder';
 // 客户评价组件属性编辑器（轻量版）
 import { useState } from 'react';
 import { Plus, Trash2, GripVertical } from 'lucide-react';

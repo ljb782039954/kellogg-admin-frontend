@@ -9,12 +9,11 @@ import {
 import { Button } from '@/package/ui/primitives/button';
 import { Badge } from '@/package/ui/primitives/badge';
 import { cn } from '@/shared/utils';
-import type { BlockType, ComponentCategory } from '@/types';
+import type { AvailableBlock, BlockType, ComponentCategory } from '@/package/types';
 import {
   componentsByCategory,
   categoryNames,
-} from '@/features/page-builder/model/blockCatalog';
-import type { AvailableBlock } from '@/features/page-builder/model/pageBuilder.types';
+} from '@/package/blocks';
 import BlockThumbnail from './BlockThumbnail';
 
 interface AddBlockDialogProps {

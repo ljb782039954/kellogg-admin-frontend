@@ -12,7 +12,7 @@ import type {
   PageSeo,
   PageMetaChanges,
 } from './pageBuilder.types';
-import type { BlockType } from '@/types';
+import type { BlockType } from '@/package/types';
 import {
   resolvePageBuilderLoadResult,
   runPageBuilderSave,

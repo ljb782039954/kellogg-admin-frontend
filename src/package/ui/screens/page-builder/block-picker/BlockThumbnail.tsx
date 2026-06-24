@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import type { BlockType } from '@/types';
+import type { BlockType } from '@/package/types';
 
 interface BlockThumbnailProps {
   type: BlockType;

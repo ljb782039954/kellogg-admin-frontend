@@ -2,8 +2,8 @@ import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { GripVertical, Eye, EyeOff, Trash2, ChevronUp, ChevronDown } from 'lucide-react';
 import { cn } from '@/shared/utils';
-import { type PageBlock } from '@/types';
-import { getBlockCatalogItem } from '@/features/page-builder/model/blockCatalog';
+import type { PageBlock } from '@/package/types';
+import { getBlockCatalogItem } from '@/package/blocks';
 import { Button } from '@/package/ui/primitives/button';
 import {
   Tooltip,

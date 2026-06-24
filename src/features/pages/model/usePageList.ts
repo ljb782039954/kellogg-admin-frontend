@@ -2,7 +2,7 @@ import { useCallback, useState } from 'react';
 import { nanoid } from 'nanoid';
 import { useQueryClient } from '@tanstack/react-query';
 import { useEntityCollectionController } from '@/core/entities';
-import type { CustomPage } from '@/types';
+import type { CustomPage } from '@/package/types';
 import type { PageIndexEntry } from '@/package/types';
 import {
   deletePageDetail,

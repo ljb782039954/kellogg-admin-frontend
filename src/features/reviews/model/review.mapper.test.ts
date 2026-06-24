@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import type { CustomerReview } from '@/types';
+import type { CustomerReview } from '@/package/types';
 import {
   toCreateReviewInput,
   toReviewFormValues,

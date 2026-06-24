@@ -1,5 +1,5 @@
 import type { ComponentType } from 'react';
-import type { PropertyEditorProps } from '@/features/page-builder';
+import type { PropertyEditorProps } from '@/package/page-builder';
 
 import { CarouselPropsEditor } from './property-editors/CarouselPropsEditor';
 import { CategoriesPropsEditor } from './property-editors/CategoriesPropsEditor';
@@ -24,7 +24,7 @@ import { CtaBannerPropsEditor } from './property-editors/CtaBannerPropsEditor';
 
 export const defaultPropertyEditorRegistry: Record<
   string,
-  ComponentType<PropertyEditorProps<any>>
+  ComponentType<PropertyEditorProps>
 > = {
   carousel: CarouselPropsEditor,
   categories: CategoriesPropsEditor,

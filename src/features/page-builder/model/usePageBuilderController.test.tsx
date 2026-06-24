@@ -13,8 +13,20 @@ vi.mock('@/features/pages', () => ({
   useSavePage: useSavePageMock,
 }));
 
-import type { CustomPage } from '@/types';
+import type { CustomPage } from '@/package/types';
 import { usePageBuilderController } from './usePageBuilderController';
+
+type PageBuilderController = ReturnType<typeof usePageBuilderController>;
+type ReadyPageBuilderController = Extract<PageBuilderController, { status: 'ready' }>;
+
+function ready(controller: PageBuilderController): ReadyPageBuilderController {
+  expect(controller.status).toBe('ready');
+  if (controller.status !== 'ready') {
+    throw new Error('Expected page builder controller to be ready');
+  }
+
+  return controller;
+}
 
 function page(overrides: Partial<CustomPage> = {}): CustomPage {
   return {
@@ -95,7 +107,7 @@ describe('usePageBuilderController', () => {
     const { result } = renderHook(() => usePageBuilderController('page_1'), { wrapper: Wrapper });
 
     await waitFor(() => expect(result.current.status).toBe('ready'));
-    const r0 = result.current as any;
+    const r0 = ready(result.current);
     expect(r0.viewModel.page.id).toBe('page_1');
     expect(r0.viewModel.selectedPanel).toBeNull();
     expect(r0.viewModel.isDirty).toBe(false);
@@ -112,7 +124,7 @@ describe('usePageBuilderController', () => {
     const { result } = renderHook(() => usePageBuilderController('page_1'), { wrapper: Wrapper });
 
     await waitFor(() => expect(result.current.status).toBe('ready'));
-    const ctrl1 = result.current as any;
+    const ctrl1 = ready(result.current);
     expect(ctrl1.viewModel.isFixedLayout).toBe(true);
     expect(ctrl1.viewModel.canSave).toBe(false);
   });
@@ -126,9 +138,9 @@ describe('usePageBuilderController', () => {
 
     await waitFor(() => expect(result.current.status).toBe('ready'));
 
-    let ctrl = result.current as any;
+    let ctrl = ready(result.current);
     act(() => ctrl.actions.addBlock('gallery'));
-    ctrl = result.current as any;
+    ctrl = ready(result.current);
     expect(ctrl.viewModel.isDirty).toBe(true);
     expect(ctrl.viewModel.canSave).toBe(true);
     expect(ctrl.viewModel.selectedBlock?.type).toBe('gallery');
@@ -154,19 +166,19 @@ describe('usePageBuilderController', () => {
     );
 
     await waitFor(() => expect(result.current.status).toBe('ready'));
-    let controller = result.current as any;
+    let controller = ready(result.current);
     act(() => controller.actions.addBlock('gallery'));
-    controller = result.current as any;
+    controller = ready(result.current);
     expect(controller.viewModel.canUndo).toBe(true);
     expect(controller.viewModel.page.blocks).toHaveLength(3);
 
     act(() => controller.actions.undo());
-    controller = result.current as any;
+    controller = ready(result.current);
     expect(controller.viewModel.page.blocks).toHaveLength(2);
     expect(controller.viewModel.canRedo).toBe(true);
 
     act(() => controller.actions.redo());
-    controller = result.current as any;
+    controller = ready(result.current);
     expect(controller.viewModel.page.blocks).toHaveLength(3);
   });
 
@@ -178,12 +190,12 @@ describe('usePageBuilderController', () => {
     const { result } = renderHook(() => usePageBuilderController('page_1'), { wrapper: Wrapper });
 
     await waitFor(() => expect(result.current.status).toBe('ready'));
-    const r2 = result.current as any;
-    const carousel = r2.viewModel.availableBlocks.find((a: any) => a.type === 'carousel');
+    const r2 = ready(result.current);
+    const carousel = r2.viewModel.availableBlocks.find((a) => a.type === 'carousel');
     expect(carousel?.canAdd).toBe(false);
     expect(carousel?.disabledReason).toBe('singleton-exists');
 
-    const textSection = r2.viewModel.availableBlocks.find((a: any) => a.type === 'textSection');
+    const textSection = r2.viewModel.availableBlocks.find((a) => a.type === 'textSection');
     expect(textSection?.canAdd).toBe(true);
   });
 
@@ -195,14 +207,14 @@ describe('usePageBuilderController', () => {
     const { result } = renderHook(() => usePageBuilderController('page_1'), { wrapper: Wrapper });
 
     await waitFor(() => expect(result.current.status).toBe('ready'));
-    let r3 = result.current as any;
+    let r3 = ready(result.current);
     act(() => r3.actions.selectPanel({ type: 'block', blockId: 'b1' }));
-    r3 = result.current as any;
+    r3 = ready(result.current);
     expect(r3.viewModel.selectedPanel).toEqual({ type: 'block', blockId: 'b1' });
     expect(r3.viewModel.selectedBlock?.type).toBe('carousel');
 
     act(() => r3.actions.selectPanel({ type: 'page-settings' }));
-    r3 = result.current as any;
+    r3 = ready(result.current);
     expect(r3.viewModel.selectedBlock).toBeUndefined();
   });
 
@@ -215,13 +227,13 @@ describe('usePageBuilderController', () => {
     const { result } = renderHook(() => usePageBuilderController('page_1'), { wrapper: Wrapper });
 
     await waitFor(() => expect(result.current.status).toBe('ready'));
-    let r4 = result.current as any;
+    let r4 = ready(result.current);
     act(() => r4.actions.addBlock('gallery'));
-    r4 = result.current as any;
+    r4 = ready(result.current);
     expect(r4.viewModel.isDirty).toBe(true);
 
     await act(async () => r4.actions.save());
-    r4 = result.current as any;
+    r4 = ready(result.current);
     expect(savePage).toHaveBeenCalled();
     expect(r4.viewModel.isDirty).toBe(false);
     expect(r4.viewModel.saveStatus).toBe('saved');
@@ -236,12 +248,12 @@ describe('usePageBuilderController', () => {
     const { result } = renderHook(() => usePageBuilderController('page_1'), { wrapper: Wrapper });
 
     await waitFor(() => expect(result.current.status).toBe('ready'));
-    let r5 = result.current as any;
+    let r5 = ready(result.current);
     act(() => r5.actions.addBlock('gallery'));
-    r5 = result.current as any;
+    r5 = ready(result.current);
 
     await act(async () => r5.actions.save());
-    r5 = result.current as any;
+    r5 = ready(result.current);
     expect(r5.viewModel.isDirty).toBe(true);
     expect(r5.viewModel.saveStatus).toBe('error');
   });
@@ -254,15 +266,15 @@ describe('usePageBuilderController', () => {
     const { result } = renderHook(() => usePageBuilderController('page_1'), { wrapper: Wrapper });
 
     await waitFor(() => expect(result.current.status).toBe('ready'));
-    let r6 = result.current as any;
+    let r6 = ready(result.current);
     act(() => r6.actions.updateMeta({ path: '/updated' }));
-    r6 = result.current as any;
+    r6 = ready(result.current);
     expect(r6.viewModel.page.path).toBe('/updated');
     expect(r6.viewModel.isDirty).toBe(true);
 
     const newSeo = { title: { zh: '新SEO', en: 'New' }, description: { zh: '', en: '' }, keywords: { zh: '', en: '' }, targetCountry: '' };
     act(() => r6.actions.updateSeo(newSeo));
-    r6 = result.current as any;
+    r6 = ready(result.current);
     expect(r6.viewModel.page.seo.title.zh).toBe('新SEO');
   });
 
@@ -274,7 +286,7 @@ describe('usePageBuilderController', () => {
     const { result } = renderHook(() => usePageBuilderController('page_1'), { wrapper: Wrapper });
 
     await waitFor(() => expect(result.current.status).toBe('ready'));
-    const r = result.current as any;
+    const r = ready(result.current);
     const onConfirmed = vi.fn();
     r.actions.requestExit(onConfirmed);
     expect(onConfirmed).toHaveBeenCalled();
@@ -289,7 +301,7 @@ describe('usePageBuilderController', () => {
     const { result } = renderHook(() => usePageBuilderController('page_1'), { wrapper: Wrapper });
 
     await waitFor(() => expect(result.current.status).toBe('ready'));
-    const r = result.current as any;
+    const r = ready(result.current);
     act(() => r.actions.addBlock('gallery'));
 
     const onConfirmed = vi.fn();
@@ -308,7 +320,7 @@ describe('usePageBuilderController', () => {
     const { result } = renderHook(() => usePageBuilderController('page_1'), { wrapper: Wrapper });
 
     await waitFor(() => expect(result.current.status).toBe('ready'));
-    const r = result.current as any;
+    const r = ready(result.current);
     act(() => r.actions.addBlock('gallery'));
 
     const onConfirmed = vi.fn();
@@ -326,17 +338,17 @@ describe('usePageBuilderController', () => {
     const { result } = renderHook(() => usePageBuilderController('page_1'), { wrapper: Wrapper });
 
     await waitFor(() => expect(result.current.status).toBe('ready'));
-    let r7 = result.current as any;
+    let r7 = ready(result.current);
     act(() => r7.actions.moveBlock('b2', 0));
-    r7 = result.current as any;
+    r7 = ready(result.current);
     expect(r7.viewModel.page.blocks[0].type).toBe('textSection');
 
     act(() => r7.actions.toggleBlock('b1'));
-    r7 = result.current as any;
-    expect(r7.viewModel.page.blocks.find((b: any) => b.id === 'b1')?.isVisible).toBe(false);
+    r7 = ready(result.current);
+    expect(r7.viewModel.page.blocks.find((b) => b.id === 'b1')?.isVisible).toBe(false);
 
     act(() => r7.actions.removeBlock('b1'));
-    r7 = result.current as any;
+    r7 = ready(result.current);
     expect(r7.viewModel.page.blocks).toHaveLength(1);
   });
 });

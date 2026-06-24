@@ -1,4 +1,4 @@
-import type { PropertyEditorProps } from '@/features/page-builder';
+import type { PropertyEditorProps } from '@/package/page-builder';
 // 布局属性编辑器（用于全局数据组件的局部配置）
 import type { PageBlock } from '@/package/types';
 import { Label } from '@/package/ui/primitives/label';

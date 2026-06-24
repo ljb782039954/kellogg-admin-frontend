@@ -1,5 +1,5 @@
 import { apiClient } from '@/shared/api/client';
-import type { CustomerReview, ReviewInput } from '@/types';
+import type { CustomerReview, ReviewInput } from '@/package/types';
 import type { ReviewListFilters } from '../model/review.types';
 
 interface PaginatedReviews {

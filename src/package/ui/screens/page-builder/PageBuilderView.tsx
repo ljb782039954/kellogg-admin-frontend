@@ -17,14 +17,17 @@ import { BlockPropertyPanel } from './property-panel/BlockPropertyPanel';
 import { PageSettingsEditor } from './page-settings/PageSettingsEditor';
 import { SEOEditor } from './seo-settings/SEOEditor';
 import { type ComponentType } from 'react';
-import type { PageBuilderViewModel, PageBuilderActions, PropertyEditorResources } from '@/features/page-builder/model/pageBuilder.types';
+import type {
+  PageBuilderActions,
+  PageBuilderViewModel,
+  PropertyEditorProps,
+  PropertyEditorResources,
+} from '@/package/page-builder';
 
 interface PageBuilderViewProps {
   viewModel: PageBuilderViewModel;
   actions: PageBuilderActions;
-  // Legacy editors use different content props until the P5 compatibility layer is removed.
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  editors?: Record<string, ComponentType<any>>;
+  editors?: Record<string, ComponentType<PropertyEditorProps>>;
   resources?: PropertyEditorResources;
   onBack(): void;
 }

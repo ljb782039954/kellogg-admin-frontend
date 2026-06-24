@@ -1,5 +1,5 @@
 import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
-import { type PageBlock } from '@/types';
+import type { PageBlock } from '@/package/types';
 import { BlockItem } from './BlockItem';
 
 interface BlockListProps {

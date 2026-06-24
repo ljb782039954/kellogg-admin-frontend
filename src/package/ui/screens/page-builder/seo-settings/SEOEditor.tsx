@@ -1,7 +1,7 @@
 import { Label } from '@/package/ui/primitives/label';
 import BilingualInput from '@/package/ui/forms/BilingualInput';
 import { Settings, Globe } from 'lucide-react';
-import type { PageSeo } from '@/features/page-builder/model/pageBuilder.types';
+import type { PageSeo } from '@/package/page-builder';
 
 interface SEOEditorProps {
   value: PageSeo;

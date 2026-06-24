@@ -2,7 +2,7 @@ import { Label } from '@/package/ui/primitives/label';
 import { Input } from '@/package/ui/primitives/input';
 import BilingualInput from '@/package/ui/forms/BilingualInput';
 import { FileText, Info } from 'lucide-react';
-import { type Translation } from '@/types';
+import type { Translation } from '@/shared/i18n/translation';
 
 interface PageSettingsEditorProps {
   title: Translation;

@@ -1,4 +1,4 @@
-import type { PropertyEditorProps } from '@/features/page-builder';
+import type { PropertyEditorProps } from '@/package/page-builder';
 // 图片画廊组件属性编辑器
 
 // import { Label } from '@/package/ui/primitives/label';

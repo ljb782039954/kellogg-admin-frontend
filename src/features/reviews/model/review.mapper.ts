@@ -1,4 +1,4 @@
-import type { CustomerReview, ReviewInput } from '@/types';
+import type { CustomerReview, ReviewInput } from '@/package/types';
 import type { ReviewFormValues } from './review.types';
 import { createDefaultReview } from './review.defaults';
 

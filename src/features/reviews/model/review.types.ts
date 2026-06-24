@@ -1,4 +1,4 @@
-import type { Translation } from '@/types';
+import type { Translation } from '@/shared/i18n/translation';
 export type { ReviewListFilters } from '@/package/types';
 
 export type ReviewFormValues = {
@@ -13,4 +13,3 @@ export type ReviewFormValues = {
   sortOrder: number;
   status: 'published' | 'draft';
 };
-

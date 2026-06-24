@@ -2,7 +2,7 @@ import type { ReactNode } from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { act, renderHook, waitFor } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import type { CustomerReview } from '@/types';
+import type { CustomerReview } from '@/package/types';
 
 const { getReviewsMock, deleteReviewMock, updateReviewMock } = vi.hoisted(() => ({
   getReviewsMock: vi.fn(),

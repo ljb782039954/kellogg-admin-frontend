@@ -1,13 +1,13 @@
 import { type ComponentType } from 'react';
 import * as LucideIcons from 'lucide-react';
-import type { PageBlock } from '@/types';
-import { getBlockCatalogItem } from '@/features/page-builder/model/blockCatalog';
-import type { PropertyEditorResources } from '@/features/page-builder/model/pageBuilder.types';
+import type { PageBlock } from '@/package/types';
+import { getBlockCatalogItem } from '@/package/blocks';
+import type { PropertyEditorProps, PropertyEditorResources } from '@/package/page-builder';
 
 interface BlockPropertyPanelProps {
   block: PageBlock;
   onChange(content: unknown): void;
-  editors: Record<string, ComponentType<any>>;
+  editors: Record<string, ComponentType<PropertyEditorProps>>;
   resources: PropertyEditorResources;
 }
 
@@ -29,7 +29,8 @@ export function BlockPropertyPanel({
     );
   }
 
-  const IconComponent = (LucideIcons as any)[meta.icon] || LucideIcons.Square;
+  const iconMap = LucideIcons as unknown as Record<string, typeof LucideIcons.Square>;
+  const IconComponent = iconMap[meta.icon] || LucideIcons.Square;
 
   const EditorComponent = editors[block.type];
 

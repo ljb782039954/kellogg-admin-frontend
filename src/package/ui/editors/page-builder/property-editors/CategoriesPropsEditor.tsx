@@ -6,7 +6,7 @@ import { Alert, AlertDescription } from '@/package/ui/primitives/alert';
 import AdminImage from '@/package/ui/media/AdminImage';
 import type { CategoriesProps } from '@/package/ui/blocks/blocks/Categories';
 import type { Category } from '@/package/types';
-import type { PropertyEditorProps } from '@/features/page-builder';
+import type { PropertyEditorProps } from '@/package/page-builder';
 
 export function CategoriesPropsEditor({
   value,

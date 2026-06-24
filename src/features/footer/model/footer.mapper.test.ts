@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { toFooterForm, createEmptyFooterLink, createEmptyFooterGroup, checkPageExists } from './footer.mapper';
-import type { CustomPage } from '@/types';
+import type { CustomPage } from '@/package/types';
 import type { FooterContent } from '@/package/types';
 
 describe('footer.mapper', () => {

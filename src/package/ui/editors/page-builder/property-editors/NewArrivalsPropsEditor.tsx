@@ -7,7 +7,7 @@ import BilingualInput from '@/package/ui/forms/BilingualInput';
 import { getPreviewUrl } from '@/shared/utils';
 import type { NewArrivalsProps } from '@/package/ui/blocks/blocks/NewArrivals';
 import type { Product } from '@/package/types';
-import type { PropertyEditorProps } from '@/features/page-builder';
+import type { PropertyEditorProps } from '@/package/page-builder';
 
 export function NewArrivalsPropsEditor({
   value,

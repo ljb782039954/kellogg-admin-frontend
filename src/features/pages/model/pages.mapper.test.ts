@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import type { CustomPage } from '@/types';
+import type { CustomPage } from '@/package/types';
 import { createDefaultPage, sanitizePageIndex } from './pages.mapper';
 
 function page(overrides: Partial<CustomPage> = {}): CustomPage {

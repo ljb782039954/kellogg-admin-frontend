@@ -1,5 +1,5 @@
 import { apiClient } from '@/shared/api/client';
-import type { CustomPage } from '@/types';
+import type { CustomPage } from '@/package/types';
 
 export function getPagesIndex(): Promise<CustomPage[]> {
   return apiClient.request<CustomPage[]>('/api/config/pages_index').catch((err) => {

@@ -2,7 +2,7 @@ import { QueryClientProvider } from '@tanstack/react-query';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { createAppQueryClient } from '@/app/queryClient';
+import { createAppQueryClient } from '@/core/app/queryClient';
 // eslint-disable-next-line no-restricted-imports -- P2c 迁移期测试沿用 feature model 默认值。
 import { blankCompanyInfo } from '@/features/company-info/model/companyInfo.defaults';
 

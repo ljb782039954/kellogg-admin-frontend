@@ -5,7 +5,7 @@ import type { BlockType } from '@/package/types';
 import type {
   PropertyEditorProps,
   PropertyEditorResources,
-} from '@/features/page-builder';
+} from '@/package/page-builder';
 import { defaultPropertyEditorRegistry } from './page-builder';
 
 export const legacyPropertyEditorRegistry = defaultPropertyEditorRegistry;

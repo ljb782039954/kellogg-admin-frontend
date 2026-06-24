@@ -2,9 +2,9 @@ import type {
   AvailableBlock,
   BlockType,
   PageBlock,
-  Translation,
-} from '@/types';
-import type { PropertyEditorResources } from '@/package/page-builder';
+} from '@/package/types';
+import type { Translation } from '@/shared/i18n/translation';
+import type { PropertyEditorResources } from '@/package/page-builder/resources';
 import type {
   PageBuilderPanel as CorePageBuilderPanel,
   PageBuilderSaveStatus as CorePageBuilderSaveStatus,
@@ -85,7 +85,7 @@ export type PageBuilderCommandError =
   | 'DUPLICATE_SINGLETON'
   | 'INVALID_TARGET_INDEX';
 
-export type { PropertyEditorResources } from '@/package/page-builder';
+export type { PropertyEditorResources } from '@/package/page-builder/resources';
 
 export interface PropertyEditorProps<T = unknown> {
   value: T;

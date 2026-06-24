@@ -2,7 +2,7 @@ import { useCallback, useEffect } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import type { CustomerReview } from '@/types';
+import type { CustomerReview } from '@/package/types';
 import { createReview, updateReview } from '../api/reviews.api';
 import { reviewKeys } from '../api/reviews.keys';
 import { reviewSchema } from './review.schema';

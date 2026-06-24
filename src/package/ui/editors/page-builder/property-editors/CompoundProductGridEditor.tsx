@@ -1,4 +1,4 @@
-import type { PropertyEditorProps } from '@/features/page-builder';
+import type { PropertyEditorProps } from '@/package/page-builder';
 import { LayoutPropsEditor } from './LayoutPropsEditor';
 import { ProductGridPropsEditor } from './ProductGridPropsEditor';
 import type { PageBlock } from '@/package/types';

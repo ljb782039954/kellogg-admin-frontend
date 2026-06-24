@@ -1,6 +1,6 @@
 import { useQueryClient } from '@tanstack/react-query';
 import { useEntityMutationController } from '@/core/entities';
-import type { CustomPage } from '@/types';
+import type { CustomPage } from '@/package/types';
 import { savePageDetail, savePagesIndex } from '../api/pages.api';
 import { pageKeys } from '../api/pages.keys';
 import { sanitizePageIndex } from './pages.mapper';

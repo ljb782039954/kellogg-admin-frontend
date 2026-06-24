@@ -1,6 +1,6 @@
 import { useCallback, useMemo, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import type { CustomPage } from '@/types';
+import type { CustomPage } from '@/package/types';
 import type { HeaderContent, NavLink, PageOption } from '@/package/types';
 import { navigationKeys } from '../api/navigation.keys';
 import { getHeader, updateHeader } from '../api/navigation.api';

@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { useEntityDetailController } from '@/core/entities';
-import type { CustomPage } from '@/types';
+import type { CustomPage } from '@/package/types';
 import { getPageById } from '../api/pages.api';
 import { pageKeys } from '../api/pages.keys';
 import { usePageList } from './usePageList';

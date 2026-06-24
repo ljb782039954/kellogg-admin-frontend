@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import type { CustomerReview } from '@/types';
+import type { CustomerReview } from '@/package/types';
 import { getReviews, deleteReview, updateReview } from '../api/reviews.api';
 import { reviewKeys } from '../api/reviews.keys';
 import type { ReviewListFilters } from './review.types';

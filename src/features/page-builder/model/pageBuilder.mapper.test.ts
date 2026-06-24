@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import type { CustomPage } from '@/types';
+import type { CustomPage } from '@/package/types';
 import { toPageBuilderDraft, toSavablePage } from './pageBuilder.mapper';
 
 function fullPage(overrides: Partial<CustomPage> = {}): CustomPage {

@@ -11,10 +11,8 @@ describe('P3: Block 非 UI 基础已迁入 package', () => {
     expect(existsSync(join(SRC, 'package/page-builder/definition.ts'))).toBe(true);
   });
 
-  it('旧类型与 blockCatalog 路径仅保留兼容导出', () => {
-    expect(readFileSync(join(SRC, 'types/blocks.ts'), 'utf8')).toContain(
-      "export * from '@/package/types/block';",
-    );
+  it('旧类型兼容导出已删除，blockCatalog 只委托 package/blocks', () => {
+    expect(existsSync(join(SRC, 'types/blocks.ts'))).toBe(false);
     expect(readFileSync(
       join(SRC, 'features/page-builder/model/blockCatalog.ts'),
       'utf8',
