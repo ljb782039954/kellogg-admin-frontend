@@ -13,8 +13,8 @@ import type { BlockType, ComponentCategory } from '@/types';
 import {
   componentsByCategory,
   categoryNames,
-} from '../../model/blockCatalog';
-import type { AvailableBlock } from '../../model/pageBuilder.types';
+} from '@/features/page-builder/model/blockCatalog';
+import type { AvailableBlock } from '@/features/page-builder/model/pageBuilder.types';
 import BlockThumbnail from './BlockThumbnail';
 
 interface AddBlockDialogProps {

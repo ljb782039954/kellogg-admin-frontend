@@ -17,7 +17,7 @@ import { BlockPropertyPanel } from './property-panel/BlockPropertyPanel';
 import { PageSettingsEditor } from './page-settings/PageSettingsEditor';
 import { SEOEditor } from './seo-settings/SEOEditor';
 import { type ComponentType } from 'react';
-import type { PageBuilderViewModel, PageBuilderActions, PropertyEditorResources } from '../model/pageBuilder.types';
+import type { PageBuilderViewModel, PageBuilderActions, PropertyEditorResources } from '@/features/page-builder/model/pageBuilder.types';
 
 interface PageBuilderViewProps {
   viewModel: PageBuilderViewModel;

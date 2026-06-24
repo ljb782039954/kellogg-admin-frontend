@@ -2,9 +2,9 @@ import { type ComponentType } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Loader2 } from 'lucide-react';
 import { Button } from '@/package/ui/primitives/button';
-import { usePageBuilderController } from '../model/usePageBuilderController';
+import { usePageBuilderController } from '@/features/page-builder/model/usePageBuilderController';
 import { PageBuilderView } from './PageBuilderView';
-import type { PropertyEditorResources } from '../model/pageBuilder.types';
+import type { PropertyEditorResources } from '@/features/page-builder/model/pageBuilder.types';
 
 export interface PageBuilderContainerProps {
   // Legacy editors use different content props until the P5 compatibility layer is removed.

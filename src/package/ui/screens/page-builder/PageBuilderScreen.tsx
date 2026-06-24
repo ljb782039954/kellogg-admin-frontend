@@ -1,5 +1,5 @@
 import { Loader2 } from 'lucide-react';
-import { PageBuilderContainer } from '@/features/page-builder';
+import { PageBuilderContainer } from './PageBuilderContainer';
 import { usePageBuilderResources } from '@/package/page-builder';
 import { legacyPropertyEditorRegistry } from '@/package/ui/editors/legacyRegistry';
 

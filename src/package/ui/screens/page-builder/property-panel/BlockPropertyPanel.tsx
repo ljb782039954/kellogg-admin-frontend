@@ -1,8 +1,8 @@
 import { type ComponentType } from 'react';
 import * as LucideIcons from 'lucide-react';
 import type { PageBlock } from '@/types';
-import { getBlockCatalogItem } from '../../model/blockCatalog';
-import type { PropertyEditorResources } from '../../model/pageBuilder.types';
+import { getBlockCatalogItem } from '@/features/page-builder/model/blockCatalog';
+import type { PropertyEditorResources } from '@/features/page-builder/model/pageBuilder.types';
 
 interface BlockPropertyPanelProps {
   block: PageBlock;

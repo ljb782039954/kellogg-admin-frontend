@@ -3,8 +3,8 @@ import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, it, vi } from 'vitest';
 import { LanguageProvider } from '@/core/app/LanguageContext';
-import type { PageBuilderViewModel, PageBuilderActions } from '../model/pageBuilder.types';
-import { createDefaultSeo } from '../model/pageBuilder.defaults';
+import type { PageBuilderViewModel, PageBuilderActions } from '@/features/page-builder/model/pageBuilder.types';
+import { createDefaultSeo } from '@/features/page-builder/model/pageBuilder.defaults';
 import { PageBuilderView } from './PageBuilderView';
 
 function WithLang({ children }: { children: ReactNode }) {

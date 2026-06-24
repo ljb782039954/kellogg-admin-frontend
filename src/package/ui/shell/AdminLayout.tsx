@@ -7,7 +7,8 @@ import {
 } from 'lucide-react';
 import { toast } from 'sonner';
 import type { AdminShellProps, AdminMenuGroup } from '@/core/contracts';
-import { useBuildManager, BuildTrigger } from '@/features/build';
+import { useBuildManager,} from '@/features/build';
+import { BuildTrigger } from '@/package/ui/screens/build';
 
 const ICONS: Record<string, ComponentType<LucideProps>> = {
   LayoutDashboard, Building2, PanelTop, PanelBottom, Layers, FileText,
