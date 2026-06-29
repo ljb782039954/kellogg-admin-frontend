@@ -14,9 +14,9 @@ import {
   ArrowDown,
   Globe,
 } from 'lucide-react';
-import { api } from '@/lib/api';
+import { api } from '@/core/lib/api';
 import { toast } from 'sonner';
-import type { BlogCategory } from '@/types';
+import type { BlogCategory } from '@/core/types';
 
 const INPUT_CLASS = 'w-full px-3 py-2 text-sm border border-gray-200 rounded-xl bg-white focus:ring-2 focus:ring-gray-900 focus:border-transparent transition-all placeholder-gray-300';
 

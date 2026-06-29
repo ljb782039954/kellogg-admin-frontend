@@ -1,9 +1,9 @@
 import { useState, useEffect, useMemo, useRef } from 'react';
-import { useContent } from '@/context/ContentContext';
-import { type R2Image } from '@/types';
+import { useContent } from '@/core/context/ContentContext';
+import { type R2Image } from '@/core/types';
 import { toast } from 'sonner';
-import { useImageUsage } from '@/hooks/useImageUsage';
-import { calculateHashSimilarity } from '@/lib/image';
+import { useImageUsage } from '@/core/hooks/useImageUsage';
+import { calculateHashSimilarity } from '@/core/lib/image';
 
 // 子组件
 import { MediaHeader } from './media/MediaHeader';

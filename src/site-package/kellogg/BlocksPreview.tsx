@@ -5,7 +5,7 @@ import { componentRegistry, componentsByCategory, categoryNames } from '@/site-p
 import type { BlockType } from './types/blocks';
 import * as LucideIcons from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
-import { cn } from '@/core/lib/utils';
+import { cn } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { useLanguage } from '@/core/context/LanguageContext';

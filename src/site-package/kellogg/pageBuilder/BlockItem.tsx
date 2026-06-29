@@ -3,7 +3,7 @@
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { GripVertical, Eye, EyeOff, Trash2, ChevronUp, ChevronDown } from 'lucide-react';
-import { cn } from '@/core/lib/utils';
+import { cn } from '@/lib/utils';
 import { type PageBlock } from '../types/blocks';
 import { componentRegistry } from '../metadata/componentRegistry';
 import { Button } from '@/components/ui/button';

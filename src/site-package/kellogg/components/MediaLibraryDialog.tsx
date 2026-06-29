@@ -22,7 +22,7 @@ import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { useContent } from '@/core/context/ContentContext';
 import { type R2Image } from '@/core/types';
-import { cn } from '@/core/lib/utils';
+import { cn } from '@/lib/utils';
 import { format } from 'date-fns';
 import AdminImage from './AdminImage';
 

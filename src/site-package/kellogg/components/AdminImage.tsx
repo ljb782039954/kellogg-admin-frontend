@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { getPreviewUrl } from '@/lib/utils';
+import { getPreviewUrl } from '@/core/lib/utils';
 import { Loader2, Image as ImageIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
 

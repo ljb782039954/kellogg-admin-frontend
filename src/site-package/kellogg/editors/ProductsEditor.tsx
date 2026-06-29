@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Plus, Trash2, Save, Layers, Star, Loader2 } from 'lucide-react';
-import { useContent } from '@/context/ContentContext';
-import { useLanguage } from '@/context/LanguageContext';
+import { useContent } from '@/core/context/ContentContext';
+import { useLanguage } from '@/core/context/LanguageContext';
 
 // Subcomponents
 import ProductSummary from './product/ProductSummary';
@@ -12,7 +12,7 @@ import ProductVariantsSection from './product/ProductVariantsSection';
 import ProductCustomFields from './product/ProductCustomFields';
 import BulkPriceSection from './product/BulkPriceSection';
 
-import type { Product } from '@/types';
+import type { Product } from '@/core/types';
 
 export default function ProductsEditor() {
   const {

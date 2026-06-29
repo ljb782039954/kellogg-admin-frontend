@@ -14,9 +14,9 @@ import {
   ChevronLeft,
   ChevronRight,
 } from 'lucide-react';
-import { api } from '@/lib/api';
+import { api } from '@/core/lib/api';
 import { toast } from 'sonner';
-import type { CustomerReview } from '@/types';
+import type { CustomerReview } from '@/core/types';
 import ReviewFormDialog from './ReviewFormDialog';
 
 // ---- Star renderer (read-only) ----

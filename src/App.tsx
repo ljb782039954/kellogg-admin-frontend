@@ -1,31 +1,31 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { Toaster } from 'sonner';
-import { LanguageProvider } from './context/LanguageContext';
-import { ContentProvider } from './context/ContentContext';
+import { LanguageProvider } from '@/core/context/LanguageContext';
+import { ContentProvider } from '@/core/context/ContentContext';
 
 // Admin 组件
-// import Login from './admin/Login';
-import Dashboard from './admin/Dashboard';
-import Overview from './admin/Overview';
-// import AccountSettings from './admin/AccountSettings';
+// import Login from './site-package/kellogg/Login';
+import Dashboard from './site-package/kellogg/Dashboard';
+import Overview from './site-package/kellogg/Overview';
+// import AccountSettings from './site-package/kellogg/AccountSettings';
 
 // 页面管理
-import { DynamicPagesManager, PageLayoutEditor } from './admin/pageBuilder';
-import ComponentsPreview from './admin/BlocksPreview';
+import { DynamicPagesManager, PageLayoutEditor } from './site-package/kellogg/pageBuilder';
+import ComponentsPreview from './site-package/kellogg/BlocksPreview';
 
 // 编辑器
-import CompanyInfoEditor from './admin/editors/CompanyInfoEditor';
-import HeaderEditor from './admin/editors/headerEditor';
-import ProductsEditor from './admin/editors/ProductsEditor';
-import CategoriesEditor from './admin/editors/CategoriesEditor';
-import FooterEditor from './admin/editors/FooterEditor';
-import InquiryEditor from './admin/editors/InquiryEditor';
-import InquiryManagement from './admin/InquiryManagement';
-import MediaManager from './admin/MediaManager';
-import BlogManagement from './admin/BlogManagement';
-import BlogEditor from './admin/BlogEditor';
-import BlogCategoryManager from './admin/BlogCategoryManager';
-import CustomerReviewsManagement from './admin/CustomerReviewsManagement';
+import CompanyInfoEditor from './site-package/kellogg/editors/CompanyInfoEditor';
+import HeaderEditor from './site-package/kellogg/editors/headerEditor';
+import ProductsEditor from './site-package/kellogg/editors/ProductsEditor';
+import CategoriesEditor from './site-package/kellogg/editors/CategoriesEditor';
+import FooterEditor from './site-package/kellogg/editors/FooterEditor';
+import InquiryEditor from './site-package/kellogg/editors/InquiryEditor';
+import InquiryManagement from './site-package/kellogg/InquiryManagement';
+import MediaManager from './site-package/kellogg/MediaManager';
+import BlogManagement from './site-package/kellogg/BlogManagement';
+import BlogEditor from './site-package/kellogg/BlogEditor';
+import BlogCategoryManager from './site-package/kellogg/BlogCategoryManager';
+import CustomerReviewsManagement from './site-package/kellogg/CustomerReviewsManagement';
 
 function App() {
   return (

@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { type R2Image } from '@/types';
+import { type R2Image } from '../types';
 
 export interface UsageInfo {
   type: string;

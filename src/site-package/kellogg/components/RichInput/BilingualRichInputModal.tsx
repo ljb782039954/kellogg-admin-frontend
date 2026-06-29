@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { X, Save, Languages } from 'lucide-react';
-import type { Translation } from '@/types';
+import type { Translation } from '@/core/types';
 import RichInput from './RichInput';
 import { getPreviewHtml } from './utils';
 

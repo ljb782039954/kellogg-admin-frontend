@@ -18,7 +18,7 @@ import {
   ChevronRight,
   User
 } from 'lucide-react';
-import { api } from '@/lib/api';
+import { api } from '@/core/lib/api';
 import { toast } from 'sonner';
 
 interface Inquiry {
