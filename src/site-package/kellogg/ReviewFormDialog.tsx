@@ -1,26 +1,9 @@
 import { useState, useEffect } from 'react';
 import { X, Youtube, Image as ImageIcon, Star, AlertCircle, Loader2 } from 'lucide-react';
-import { api } from '@/core/lib/api';
 import { toast } from 'sonner';
-import type { CustomerReview, ReviewInput } from '@/core/types';
+import { useReviewForm } from '@/core/items/review';
+import type { CustomerReview } from '@/core/types';
 import ImageInput from './components/ImageInput';
-
-// ---- YouTube ID extractor ----
-function extractYoutubeId(url: string): string | null {
-  if (!url) return null;
-  // Handle youtube.com/watch?v=ID, youtu.be/ID, youtube.com/embed/ID
-  const patterns = [
-    /[?&]v=([a-zA-Z0-9_-]{11})/,
-    /youtu\.be\/([a-zA-Z0-9_-]{11})/,
-    /youtube\.com\/embed\/([a-zA-Z0-9_-]{11})/,
-    /youtube\.com\/shorts\/([a-zA-Z0-9_-]{11})/,
-  ];
-  for (const pat of patterns) {
-    const m = url.match(pat);
-    if (m) return m[1];
-  }
-  return null;
-}
 
 const LABEL = 'block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1.5';
 const INPUT = 'w-full px-3 py-2 text-sm border border-gray-200 rounded-xl bg-white focus:ring-2 focus:ring-gray-900 focus:border-transparent transition-all placeholder-gray-300';
@@ -76,67 +59,23 @@ interface Props {
 }
 
 export default function ReviewFormDialog({ review, onClose, onSaved }: Props) {
-  const isEdit = !!review;
-
-  const [form, setForm] = useState<ReviewInput>({
-    client_name: review?.client_name ?? '',
-    country: review?.country ?? '',
-    rating: review?.rating ?? 5,
-    media_type: review?.media_type ?? 'video',
-    media_url: review?.media_url ?? '',
-    review_text_zh: review?.review_text_zh ?? '',
-    review_text_en: review?.review_text_en ?? '',
-    sort_order: review?.sort_order ?? 0,
-    status: review?.status ?? 'published',
+  const {
+    form,
+    isEdit,
+    isSaving,
+    youtubeId,
+    youtubeThumbnail,
+    handleSave,
+    setField,
+  } = useReviewForm({
+    review,
+    onClose,
+    onSaved,
+    notify: {
+      success: message => toast.success(message),
+      error: message => toast.error(message),
+    },
   });
-
-  const [isSaving, setIsSaving] = useState(false);
-
-  // Live YouTube preview
-  const youtubeId = form.media_type === 'video' ? extractYoutubeId(form.media_url) : null;
-  const youtubeThumbnail = youtubeId
-    ? `https://img.youtube.com/vi/${youtubeId}/hqdefault.jpg`
-    : null;
-
-  const setField = <K extends keyof ReviewInput>(key: K, value: ReviewInput[K]) => {
-    setForm(prev => ({ ...prev, [key]: value }));
-  };
-
-  const handleSave = async () => {
-    if (!form.client_name.trim()) {
-      toast.error('请填写客户名称');
-      return;
-    }
-    if (!form.media_url.trim()) {
-      toast.error('请填写媒体链接或上传图片');
-      return;
-    }
-    if (form.media_type === 'video' && !youtubeId) {
-      toast.error('YouTube 链接无效，请检查格式');
-      return;
-    }
-    if (!form.review_text_zh.trim() || !form.review_text_en.trim()) {
-      toast.error('请填写中英文评价内容');
-      return;
-    }
-
-    setIsSaving(true);
-    try {
-      if (isEdit && review) {
-        await api.updateReview(review.id, form);
-        toast.success('评价已更新');
-      } else {
-        await api.createReview(form);
-        toast.success('评价已创建');
-      }
-      onSaved();
-      onClose();
-    } catch (err: any) {
-      toast.error(err?.message || '保存失败，请重试');
-    } finally {
-      setIsSaving(false);
-    }
-  };
 
   // Prevent background scroll
   useEffect(() => {

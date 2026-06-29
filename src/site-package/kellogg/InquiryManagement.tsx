@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Inbox, 
@@ -18,138 +18,31 @@ import {
   ChevronRight,
   User
 } from 'lucide-react';
-import { api } from '@/core/lib/api';
 import { toast } from 'sonner';
-
-interface Inquiry {
-  id: number;
-  name: string;
-  email: string;
-  phone: string | null;
-  country: string | null;
-  company: string | null;
-  product_type: string | null;
-  quantity: string | null;
-  message: string | null;
-  status: 'pending' | 'processed';
-  created_at: string;
-}
+import { useInquiryManagement } from '@/core/items/inquiry';
 
 export default function InquiryManagement() {
-  const [inquiries, setInquiries] = useState<Inquiry[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [statusFilter, setStatusFilter] = useState<'all' | 'pending' | 'processed'>('all');
-  const [selectedInquiry, setSelectedInquiry] = useState<Inquiry | null>(null);
-
-  useEffect(() => {
-    fetchInquiries();
-  }, []);
-
-  const fetchInquiries = async () => {
-    setIsLoading(true);
-    try {
-      const resp = await api.getInquiries();
-      setInquiries(resp.data || []);
-    } catch (err) {
-      toast.error('无法获取询盘数据');
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const updateStatus = async (id: number, status: 'pending' | 'processed') => {
-    try {
-      await api.patchInquiry(id, { status });
-      setInquiries(prev => prev.map(inq => inq.id === id ? { ...inq, status } : inq));
-      if (selectedInquiry?.id === id) {
-        setSelectedInquiry({ ...selectedInquiry, status });
-      }
-      toast.success(status === 'processed' ? '已标记为已处理' : '已还原为待处理');
-    } catch (err) {
-      toast.error('更新状态失败');
-    }
-  };
-
-  const deleteInquiry = async (id: number) => {
-    if (!confirm('确定要删除这条询盘吗？此操作不可撤销。')) return;
-    try {
-      await api.deleteInquiry(id);
-      setInquiries(prev => prev.filter(inq => inq.id !== id));
-      if (selectedInquiry?.id === id) {
-        setSelectedInquiry(null);
-      }
-      toast.success('已删除询盘');
-    } catch (err) {
-      toast.error('删除失败');
-    }
-  };
-
-  const exportToTxt = (inq: Inquiry) => {
-    const content = `
-Inquiry Details
-----------------
-ID: ${inq.id}
-Time: ${new Date(inq.created_at).toLocaleString()}
-Status: ${inq.status}
-
-Contact:
-- Name: ${inq.name}
-- Email: ${inq.email}
-- Phone: ${inq.phone || 'N/A'}
-- Country: ${inq.country || 'N/A'}
-- Company: ${inq.company || 'N/A'}
-
-Request:
-- Product Type: ${inq.product_type || 'N/A'}
-- Quantity: ${inq.quantity || 'N/A'}
-
-Message:
-${inq.message}
-    `.trim();
-
-    const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = `inquiry_${inq.id}_${inq.name}.txt`;
-    link.click();
-    URL.revokeObjectURL(url);
-  };
-
-  const exportAllToCsv = () => {
-    const headers = ['ID', 'Name', 'Email', 'Phone', 'Country', 'Company', 'Product Type', 'Quantity', 'Status', 'Date', 'Message'];
-    const rows = filteredInquiries.map(inq => [
-      inq.id,
-      `"${inq.name}"`,
-      inq.email,
-      inq.phone || '',
-      inq.country || '',
-      `"${inq.company || ''}"`,
-      `"${inq.product_type || ''}"`,
-      inq.quantity || '',
-      inq.status,
-      new Date(inq.created_at).toLocaleString(),
-      `"${(inq.message || '').replace(/"/g, '""')}"`
-    ]);
-
-    const csvContent = [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = `inquiries_export_${new Date().toISOString().split('T')[0]}.csv`;
-    link.click();
-    URL.revokeObjectURL(url);
-    toast.success('导出成功');
-  };
-
-  const filteredInquiries = inquiries.filter(inq => {
-    const matchesSearch = inq.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
-                          inq.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                          (inq.company || '').toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesStatus = statusFilter === 'all' || inq.status === statusFilter;
-    return matchesSearch && matchesStatus;
+  const notify = useMemo(() => ({
+    success: (message: string) => toast.success(message),
+    error: (message: string) => toast.error(message),
+  }), []);
+  const {
+    filteredInquiries,
+    isLoading,
+    pendingCount,
+    searchTerm,
+    selectedInquiry,
+    statusFilter,
+    deleteInquiry,
+    exportAllToCsv,
+    exportToTxt,
+    setSearchTerm,
+    setSelectedInquiry,
+    setStatusFilter,
+    updateStatus,
+  } = useInquiryManagement({
+    confirmDelete: message => window.confirm(message),
+    notify,
   });
 
   return (
@@ -160,7 +53,7 @@ ${inq.message}
           <h1 className="text-2xl font-bold text-gray-800 tracking-tight flex items-center gap-2">
             客户询盘管理
             <span className="text-xs bg-gray-100 text-gray-400 px-2 py-1 rounded-full font-mono">
-              {inquiries.filter(i => i.status === 'pending').length} 待处理
+              {pendingCount} 待处理
             </span>
           </h1>
           <p className="text-gray-500 mt-1 text-sm">查看并处理来自全球客户的产品询价及合作意向。</p>

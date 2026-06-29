@@ -7,37 +7,10 @@ import {
   AlertCircle,
   RefreshCw,
 } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
 import { useContent } from '@/core/context/ContentContext';
 
 export default function Overview() {
-  const navigate = useNavigate();
-  const { allProducts, isLoading, error, refreshData, clearError } = useContent();
-
-  // 快捷入口
-  const quickLinks = [
-    {
-      name: '页面管理',
-      description: '管理网站页面和布局',
-      path: '/pages',
-      icon: FileText,
-      color: 'bg-blue-500',
-    },
-    {
-      name: '预定义组件',
-      description: '查看所有可用组件',
-      path: '/components',
-      icon: Layers,
-      color: 'bg-purple-500',
-    },
-    {
-      name: '产品管理',
-      description: `共 ${allProducts.length} 件产品`,
-      path: '/products',
-      icon: ShoppingBag,
-      color: 'bg-green-500',
-    },
-  ];
+  const { allProducts, allBlogs , allReviews ,isLoading, error, refreshData, clearError } = useContent();
 
   return (
     <div className="space-y-8">
@@ -112,25 +85,8 @@ export default function Overview() {
         </div>
       )}
 
-      {/* 快捷入口 */}
-      <div>
-        <h2 className="text-lg font-semibold text-gray-800 mb-4">快捷入口</h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {quickLinks.map((item) => (
-            <button
-              key={item.path}
-              onClick={() => navigate(item.path)}
-              className="bg-white p-6 rounded-xl shadow-sm hover:shadow-md transition-all text-left group"
-            >
-              <div className={`w-12 h-12 ${item.color} rounded-lg flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}>
-                <item.icon className="w-6 h-6 text-white" />
-              </div>
-              <h3 className="font-semibold text-gray-800">{item.name}</h3>
-              <p className="text-sm text-gray-500 mt-1">{item.description}</p>
-            </button>
-          ))}
-        </div>
-      </div>
+      {/* 显示统计数据：有多少产品、博文、询盘 */}
+
 
       {/* Quick Tips */}
       <div className="bg-blue-50 border border-blue-100 rounded-xl p-6">

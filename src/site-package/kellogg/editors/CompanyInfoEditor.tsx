@@ -1,5 +1,4 @@
 // 公司信息管理编辑器
-import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Save, Building2, Phone, Mail, MapPin, Share2, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -10,58 +9,18 @@ import { Separator } from '@/components/ui/separator';
 import BilingualInput from '../components/BilingualInput';
 import BilingualInputAera from '../components/BilingualInputAera';
 import ImageInput from '../components/ImageInput';
-import type { CompanyInfo } from '@/core/types';
-import { useContent } from '@/core/context/ContentContext';
+import { useCompanyInfoEditor } from '@/core/items/site';
 
 export default function CompanyInfoEditor() {
-  const { content, updateSiteSettings } = useContent();
-  const [localInfo, setLocalInfo] = useState<CompanyInfo>(content.companyInfo);
-  const [saved, setSaved] = useState(false);
-  const [isSaving, setIsSaving] = useState(false);
-
-  // 同步全局数据
-  useEffect(() => {
-    setLocalInfo(content.companyInfo);
-  }, [content.companyInfo]);
-
-  // 更新公司信息
-  const updateInfo = <K extends keyof CompanyInfo>(field: K, value: CompanyInfo[K]) => {
-    setLocalInfo((prev) => ({ ...prev, [field]: value }));
-  };
-
-  // 更新联系方式
-  const updateContact = <K extends keyof CompanyInfo['contact']>(
-    field: K,
-    value: CompanyInfo['contact'][K]
-  ) => {
-    setLocalInfo((prev) => ({
-      ...prev,
-      contact: { ...prev.contact, [field]: value },
-    }));
-  };
-
-  // 更新社交媒体
-  const updateSocialMedia = <K extends keyof CompanyInfo['socialMedia']>(
-    field: K,
-    value: string
-  ) => {
-    setLocalInfo((prev) => ({
-      ...prev,
-      socialMedia: { ...prev.socialMedia, [field]: value || undefined },
-    }));
-  };
-
-  // 保存
-  const handleSave = async () => {
-    setIsSaving(true);
-    try {
-      await updateSiteSettings(localInfo);
-      setSaved(true);
-      setTimeout(() => setSaved(false), 2000);
-    } finally {
-      setIsSaving(false);
-    }
-  };
+  const {
+    isSaving,
+    localInfo,
+    saved,
+    handleSave,
+    updateContact,
+    updateInfo,
+    updateSocialMedia,
+  } = useCompanyInfoEditor();
 
   return (
     <div className="space-y-6">

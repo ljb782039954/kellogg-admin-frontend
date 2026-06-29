@@ -16,7 +16,7 @@ import {
   Link,
 } from 'lucide-react';
 import { toast } from 'sonner';
-import { useBlogEditor } from '@/core/blog';
+import { useBlogEditor } from '@/core/items/blog';
 import ImageInput from './components/ImageInput';
 import { MarkdownEditor, TagInput } from './components/blog';
 

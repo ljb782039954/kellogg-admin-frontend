@@ -1,7 +1,5 @@
 // 动态页面管理 - 页面列表视图
-import { useState, useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { nanoid } from 'nanoid';
 import {
   Plus,
   Trash2,
@@ -14,7 +12,7 @@ import {
   Settings,
   Layers
 } from 'lucide-react';
-import { useContent } from '@/core/context/ContentContext';
+import { useDynamicPagesManager } from '@/core/items/page-builder';
 import { type CustomPage } from '../types/blocks';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -51,201 +49,34 @@ import BilingualInput from '../components/BilingualInput';
 export function DynamicPagesManager() {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { content, addPage, deletePage, updatePage } = useContent();
-  const [searchQuery, setSearchQuery] = useState('');
-  const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
-  const [deletePageId, setDeletePageId] = useState<string | null>(null);
-  const [duplicateSourcePage, setDuplicateSourcePage] = useState<CustomPage | null>(null);
-  const [editPage, setEditPage] = useState<CustomPage | null>(null);
-
-  // 新页面表单状态
-  const [newPageTitle, setNewPageTitle] = useState({ zh: '', en: '' });
-  const [newPagePath, setNewPagePath] = useState('');
-
-  // 创建新页面
-  const handleCreatePage = useCallback(async () => {
-    if (!newPageTitle.zh.trim() || !newPagePath.trim()) {
-      toast({
-        title: '请填写完整信息',
-        description: '页面标题（中文）和 URL 路径不能为空',
-        variant: 'destructive',
-      });
-      return;
-    }
-
-    const path = `/${newPagePath.replace(/^\//, '')}`;
-
-    // 检查 path 是否已存在
-    const pathExists = content.pages.some((p) => p.path === path);
-    if (pathExists) {
-      toast({
-        title: 'URL 路径已存在',
-        description: '请使用其他 URL 路径',
-        variant: 'destructive',
-      });
-      return;
-    }
-
-    // 生成唯一 ID
-    const pageId = `page_${nanoid(8)}`;
-
-    // 创建新页面结构 (默认是 dynamic-block 自定义营销积木页)
-    const newPage: CustomPage = {
-      id: pageId,
-      path,
-      title: {
-        zh: newPageTitle.zh.trim(),
-        en: newPageTitle.en.trim() || newPageTitle.zh.trim(),
-      },
-      isFixed: false,
-      type: 'dynamic-block',
-      blocks: duplicateSourcePage 
-        ? duplicateSourcePage.blocks.map(b => ({ ...JSON.parse(JSON.stringify(b)), id: `block_${nanoid(8)}` })) 
-        : [],
-      seo: duplicateSourcePage 
-        ? JSON.parse(JSON.stringify(duplicateSourcePage.seo || {})) 
-        : {
-            title: {
-              zh: newPageTitle.zh.trim(),
-              en: newPageTitle.en.trim() || newPageTitle.zh.trim(),
-            },
-            description: { zh: '', en: '' },
-          }
-    };
-
-    await addPage(newPage);
-
-    // 重置表单
-    setNewPageTitle({ zh: '', en: '' });
-    setNewPagePath('');
-    setDuplicateSourcePage(null);
-    setIsCreateDialogOpen(false);
-
-    toast({
-      title: duplicateSourcePage ? '页面复制成功' : '页面创建成功',
-      description: `已创建页面「${newPageTitle.zh}」`,
-    });
-
-    // 跳转到编辑页面
-    navigate(`/pages/${pageId}/edit`);
-  }, [newPageTitle, newPagePath, content.pages, duplicateSourcePage, addPage, navigate, toast]);
-
-  // 更新页面设置
-  const handleUpdatePageSettings = useCallback(async () => {
-    if (!editPage) return;
-    if (!newPageTitle.zh.trim() || !newPagePath.trim()) {
-      toast({
-        title: '请填写完整信息',
-        description: '页面标题（中文）和 URL 路径不能为空',
-        variant: 'destructive',
-      });
-      return;
-    }
-
-    const path = `/${newPagePath.replace(/^\//, '')}`;
-
-    // 检查 path 是否被其他页面占用
-    const pathExists = content.pages.some((p) => p.id !== editPage.id && p.path === path);
-    if (pathExists) {
-      toast({
-        title: 'URL 路径已存在',
-        description: '请使用其他 URL 路径',
-        variant: 'destructive',
-      });
-      return;
-    }
-
-    const updatedPage = {
-      ...editPage,
-      path,
-      title: {
-        zh: newPageTitle.zh.trim(),
-        en: newPageTitle.en.trim() || newPageTitle.zh.trim(),
-      },
-    };
-
-    await updatePage(editPage.id, updatedPage);
-    
-    setEditPage(null);
-    setIsCreateDialogOpen(false);
-    setNewPageTitle({ zh: '', en: '' });
-    setNewPagePath('');
-
-    toast({
-      title: '设置更新成功',
-      description: `页面「${newPageTitle.zh}」设置已保存`,
-    });
-  }, [editPage, newPageTitle, newPagePath, content.pages, updatePage, toast]);
-
-  // 打开编辑设置弹窗
-  const handleOpenEditDialog = useCallback((page: CustomPage) => {
-    setEditPage(page);
-    setNewPageTitle(page.title);
-    setNewPagePath(page.path.replace(/^\//, ''));
-    setIsCreateDialogOpen(true);
-  }, []);
-
-  // 删除页面
-  const handleDeletePage = useCallback(async () => {
-    if (!deletePageId) return;
-
-    const page = content.pages.find(p => p.id === deletePageId);
-    if (page?.isFixed) {
-      toast({
-        title: '无法删除',
-        description: '系统固定页面不能被删除',
-        variant: 'destructive',
-      });
-      setDeletePageId(null);
-      return;
-    }
-
-    await deletePage(deletePageId);
-    setDeletePageId(null);
-
-    toast({
-      title: '删除成功',
-      description: '页面已删除',
-    });
-  }, [deletePageId, content.pages, deletePage, toast]);
-
-  // 进入编辑页面
-  const handleEditPage = useCallback((pageId: string) => {
-    navigate(`/pages/${pageId}/edit`);
-  }, [navigate]);
-
-  // 打开复制页面弹窗
-  const handleOpenDuplicateDialog = useCallback((page: CustomPage) => {
-    setDuplicateSourcePage(page);
-    setNewPageTitle({ zh: `${page.title.zh} (副本)`, en: `${page.title.en} (Copy)` });
-    setNewPagePath(`${page.path.replace(/^\//, '')}-copy`);
-    setIsCreateDialogOpen(true);
-  }, []);
-
-  // 过滤页面列表
-  const filteredPages = useMemo(() => {
-    return content.pages.filter((page) => {
-      const query = searchQuery.toLowerCase();
-      return (
-        page.title.zh.toLowerCase().includes(query) ||
-        page.title.en.toLowerCase().includes(query) ||
-        page.path.toLowerCase().includes(query)
-      );
-    });
-  }, [content.pages, searchQuery]);
-
-  // 按照 type 页面类型分类
-  const fixedBlockPages = useMemo(() => {
-    return filteredPages.filter(p => p.type === 'fixed-block' || (p.isFixed && p.type !== 'fixed-layout'));
-  }, [filteredPages]);
-
-  const dynamicBlockPages = useMemo(() => {
-    return filteredPages.filter(p => p.type === 'dynamic-block' || (!p.isFixed && p.type !== 'fixed-layout' && p.type !== 'fixed-block'));
-  }, [filteredPages]);
-
-  const fixedLayoutPages = useMemo(() => {
-    return filteredPages.filter(p => p.type === 'fixed-layout');
-  }, [filteredPages]);
+  const {
+    deletePageId,
+    duplicateSourcePage,
+    dynamicBlockPages,
+    editPage,
+    fixedBlockPages,
+    fixedLayoutPages,
+    isCreateDialogOpen,
+    newPagePath,
+    newPageTitle,
+    searchQuery,
+    closeCreateDialog,
+    handleCreateDialogOpenChange,
+    handleCreatePage,
+    handleDeletePage,
+    handleEditPage,
+    handleOpenDuplicateDialog,
+    handleOpenEditDialog,
+    handleUpdatePageSettings,
+    openCreateDialog,
+    setDeletePageId,
+    setNewPagePath,
+    setNewPageTitle,
+    setSearchQuery,
+  } = useDynamicPagesManager({
+    notify: toast,
+    onNavigateToEdit: (pageId) => navigate(`/pages/${pageId}/edit`),
+  });
 
   return (
     <div className="space-y-6">
@@ -257,12 +88,7 @@ export function DynamicPagesManager() {
             管理网站页面，添加或编辑页面内容和组件
           </p>
         </div>
-        <Button onClick={() => {
-          setDuplicateSourcePage(null);
-          setNewPageTitle({ zh: '', en: '' });
-          setNewPagePath('');
-          setIsCreateDialogOpen(true);
-        }}>
+        <Button onClick={openCreateDialog}>
           <Plus className="w-4 h-4 mr-2" />
           创建新页面
         </Button>
@@ -366,10 +192,7 @@ export function DynamicPagesManager() {
       </div>
 
       {/* 创建/复制页面弹窗 */}
-      <Dialog open={isCreateDialogOpen} onOpenChange={(open) => {
-        if (!open) setDuplicateSourcePage(null);
-        setIsCreateDialogOpen(open);
-      }}>
+      <Dialog open={isCreateDialogOpen} onOpenChange={handleCreateDialogOpenChange}>
         <DialogContent>
           <DialogHeader>
             <DialogTitle>
@@ -399,7 +222,7 @@ export function DynamicPagesManager() {
                 <Input
                   id="path"
                   value={newPagePath}
-                  onChange={(e) => setNewPagePath(e.target.value.replace(/[^a-z0-9-]/gi, '-').toLowerCase())}
+                  onChange={(e) => setNewPagePath(e.target.value)}
                   placeholder="about-us"
                 />
               </div>
@@ -409,11 +232,7 @@ export function DynamicPagesManager() {
             </div>
           </div>
           <DialogFooter>
-            <Button variant="outline" onClick={() => {
-              setDuplicateSourcePage(null);
-              setEditPage(null);
-              setIsCreateDialogOpen(false);
-            }}>
+            <Button variant="outline" onClick={closeCreateDialog}>
               取消
             </Button>
             <Button onClick={editPage ? handleUpdatePageSettings : handleCreatePage}>

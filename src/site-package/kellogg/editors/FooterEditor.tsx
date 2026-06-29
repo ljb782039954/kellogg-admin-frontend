@@ -1,16 +1,15 @@
 // Footer 组件管理编辑器
 
-import { useState, useMemo } from 'react';
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Plus, Trash2, Save, GripVertical, AlertTriangle, Mail, Phone, MapPin, Facebook, Instagram, Twitter, Youtube } from 'lucide-react';
-import { useContent } from '@/core/context/ContentContext';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import BilingualInput from '../components/BilingualInput';
 import LinkSelector from '../components/LinkSelector';
-import { checkPageExists } from '@/core/lib/linkUtils';
-import type { Translation, FooterLinkGroup, FooterLink, FooterContent } from '@/core/types';
+import { useFooterEditor } from '@/core/items/site';
+import type { FooterLink, FooterContent } from '@/core/types';
 import siteSettings from '../metadata/siteSettings.json';
 
 // Footer 预览组件
@@ -114,111 +113,24 @@ function FooterPreview({ footer, language }: { footer: FooterContent; language: 
 }
 
 export default function FooterEditor() {
-  const { content, updateFooter } = useContent();
-  const [localFooter, setLocalFooter] = useState<FooterContent>(() => {
-    const footer = content.footer;
-    // 转换旧格式数据，确保每个链接都有 linkType
-    const needsConversion = footer.linkGroups.some((group) =>
-      group.links.some((link) => !('linkType' in link))
-    );
-
-    if (needsConversion) {
-      return {
-        ...footer,
-        linkGroups: footer.linkGroups.map((group) => ({
-          ...group,
-          links: group.links.map((link) => ({
-            ...link,
-            linkType: (link as any).linkType || (link.href?.startsWith('http') ? 'external' : 'internal'),
-          })),
-        })),
-      };
-    }
-    return footer;
-  });
-
-  const [saved, setSaved] = useState(false);
   const [previewLang, setPreviewLang] = useState<'zh' | 'en'>('zh');
-
-  // 计算是否有已删除的页面链接 (派生状态)
-  const hasDeletedPages = useMemo(() => {
-    return localFooter.linkGroups.some((group) =>
-      group.links.some(
-        (link) => !checkPageExists(link.href, link.linkType, content.pages)
-      )
-    );
-  }, [localFooter.linkGroups, content.pages]);
-
-  const handleSave = () => {
-    updateFooter(localFooter);
-    setSaved(true);
-    setTimeout(() => setSaved(false), 2000);
-  };
-
-  const updateLinkGroup = <K extends keyof FooterLinkGroup>(
-    index: number,
-    field: K,
-    value: FooterLinkGroup[K]
-  ) => {
-    const newGroups = [...localFooter.linkGroups];
-    newGroups[index] = { ...newGroups[index], [field]: value };
-    setLocalFooter({ ...localFooter, linkGroups: newGroups });
-  };
-
-  const addLinkToGroup = (groupIndex: number) => {
-    const newGroups = [...localFooter.linkGroups];
-    const newLink: FooterLink = {
-      id: Date.now().toString(), // TODO: 生成更可靠的 ID
-      name: { zh: '新链接', en: 'New Link' },
-      linkType: 'internal',
-      href: '',
-    };
-    newGroups[groupIndex].links.push(newLink);
-    setLocalFooter({ ...localFooter, linkGroups: newGroups });
-  };
-
-  const updateLinkName = (groupIndex: number, linkIndex: number, value: Translation) => {
-    const newGroups = [...localFooter.linkGroups];
-    newGroups[groupIndex].links[linkIndex] = {
-      ...newGroups[groupIndex].links[linkIndex],
-      name: value,
-    };
-    setLocalFooter({ ...localFooter, linkGroups: newGroups });
-  };
-
-  const updateLinkData = (groupIndex: number, linkIndex: number, value: FooterLink) => {
-    const newGroups = [...localFooter.linkGroups];
-    newGroups[groupIndex].links[linkIndex] = {
-      ...newGroups[groupIndex].links[linkIndex],
-      ...value,
-    };
-    setLocalFooter({ ...localFooter, linkGroups: newGroups });
-  };
-
-  const removeLinkFromGroup = (groupIndex: number, linkIndex: number) => {
-    const newGroups = [...localFooter.linkGroups];
-    newGroups[groupIndex].links = newGroups[groupIndex].links.filter((_, i) => i !== linkIndex);
-    setLocalFooter({ ...localFooter, linkGroups: newGroups });
-  };
-
-  const addLinkGroup = () => {
-    const newGroup: FooterLinkGroup = {
-      id: Date.now().toString(), // TODO: 生成更可靠的 ID
-      title: { zh: '新分组', en: 'New Group' },
-      links: [],
-    };
-    setLocalFooter({
-      ...localFooter,
-      linkGroups: [...localFooter.linkGroups, newGroup],
-    });
-  };
-
-  const removeLinkGroup = (index: number) => {
-    setLocalFooter({
-      ...localFooter,
-      linkGroups: localFooter.linkGroups.filter((_, i) => i !== index),
-    });
-  };
+  const {
+    hasDeletedPages,
+    isSaving,
+    localFooter,
+    saved,
+    addLinkGroup,
+    addLinkToGroup,
+    handleSave,
+    isLinkInvalid,
+    removeLinkFromGroup,
+    removeLinkGroup,
+    updateLinkData,
+    updateLinkGroup,
+    updateLinkName,
+    updateNewsletterButton,
+    updateNewsletterPlaceholder,
+  } = useFooterEditor();
 
   return (
     <div className="space-y-6">
@@ -228,7 +140,7 @@ export default function FooterEditor() {
           <h1 className="text-2xl font-bold text-gray-800">Footer 页脚管理</h1>
           <p className="text-gray-500 mt-1">编辑页脚链接分组和订阅设置</p>
         </div>
-        <Button onClick={handleSave}>
+        <Button onClick={handleSave} disabled={isSaving}>
           <Save className="w-4 h-4 mr-2" />
           保存更改
         </Button>
@@ -292,14 +204,14 @@ export default function FooterEditor() {
           <BilingualInput
             label="输入框占位文字"
             value={localFooter.newsletterPlaceholder}
-            onChange={(value) => setLocalFooter({ ...localFooter, newsletterPlaceholder: value })}
+            onChange={updateNewsletterPlaceholder}
             placeholder={{ zh: '输入邮箱订阅', en: 'Enter email to subscribe' }}
           />
 
           <BilingualInput
             label="订阅按钮文字"
             value={localFooter.newsletterButton}
-            onChange={(value) => setLocalFooter({ ...localFooter, newsletterButton: value })}
+            onChange={updateNewsletterButton}
             placeholder={{ zh: '订阅', en: 'Subscribe' }}
           />
         </CardContent>
@@ -316,9 +228,7 @@ export default function FooterEditor() {
         </div>
 
         {localFooter.linkGroups.map((group, groupIndex) => {
-          const groupHasDeletedLinks = group.links.some(
-            (link) => link.pageDeleted || !checkPageExists(link.href, link.linkType, content.pages)
-          );
+          const groupHasDeletedLinks = group.links.some(isLinkInvalid);
 
           return (
             <Card
@@ -381,7 +291,7 @@ export default function FooterEditor() {
                       {group.links.map((link, linkIndex) => (
                         <div
                           key={link.id || linkIndex}
-                          className={`p-4 rounded-lg border ${ (link.pageDeleted || !checkPageExists(link.href, link.linkType, content.pages))
+                          className={`p-4 rounded-lg border ${ isLinkInvalid(link)
                             ? 'border-red-300 bg-red-50'
                             : 'border-gray-200 bg-gray-50'
                             }`}

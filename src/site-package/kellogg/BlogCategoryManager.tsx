@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   FolderOpen,
@@ -14,140 +14,35 @@ import {
   ArrowDown,
   Globe,
 } from 'lucide-react';
-import { api } from '@/core/lib/api';
 import { toast } from 'sonner';
-import type { BlogCategory } from '@/core/types';
+import { useBlogCategoryManager } from '@/core/items/blog';
 
 const INPUT_CLASS = 'w-full px-3 py-2 text-sm border border-gray-200 rounded-xl bg-white focus:ring-2 focus:ring-gray-900 focus:border-transparent transition-all placeholder-gray-300';
 
-// ---- Slug auto-generator ----
-function toSlug(name: string): string {
-  return name
-    .toLowerCase()
-    .replace(/[^a-z0-9\s-]/g, '')
-    .trim()
-    .replace(/\s+/g, '-')
-    .substring(0, 80);
-}
-
-// ---- Inline row editor ----
-interface EditingRow {
-  id: number | null; // null = new row
-  name_zh: string;
-  name_en: string;
-  slug: string;
-}
-
 export default function BlogCategoryManager() {
-  const [categories, setCategories] = useState<BlogCategory[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [editingRow, setEditingRow] = useState<EditingRow | null>(null);
-  const [isSaving, setIsSaving] = useState(false);
-  const [deletingId, setDeletingId] = useState<number | null>(null);
-
-  const load = useCallback(async () => {
-    setIsLoading(true);
-    try {
-      const data = await api.getBlogCategories();
-      setCategories(data);
-    } catch {
-      toast.error('无法加载分类列表');
-    } finally {
-      setIsLoading(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    load();
-  }, [load]);
-
-  // ---- Start editing existing ----
-  const startEdit = (cat: BlogCategory) => {
-    setEditingRow({ id: cat.id, name_zh: cat.name_zh, name_en: cat.name_en, slug: cat.slug });
-  };
-
-  // ---- Start creating new ----
-  const startNew = () => {
-    setEditingRow({ id: null, name_zh: '', name_en: '', slug: '' });
-  };
-
-  // ---- Cancel editing ----
-  const cancelEdit = () => setEditingRow(null);
-
-  // ---- Save (create or update) ----
-  const handleSave = async () => {
-    if (!editingRow) return;
-    if (!editingRow.name_zh.trim() || !editingRow.name_en.trim()) {
-      toast.error('中文名称和英文名称均为必填项');
-      return;
-    }
-
-    setIsSaving(true);
-    try {
-      if (editingRow.id === null) {
-        // Create
-        await api.createBlogCategory({
-          name_zh: editingRow.name_zh.trim(),
-          name_en: editingRow.name_en.trim(),
-          slug: editingRow.slug.trim() || undefined,
-        });
-        toast.success('分类创建成功');
-      } else {
-        // Update
-        await api.updateBlogCategory(editingRow.id, {
-          name_zh: editingRow.name_zh.trim(),
-          name_en: editingRow.name_en.trim(),
-          slug: editingRow.slug.trim() || undefined,
-        });
-        toast.success('分类更新成功');
-      }
-      setEditingRow(null);
-      await load();
-    } catch (err: any) {
-      const msg = err?.message || (editingRow.id ? '更新失败' : '创建失败');
-      toast.error(msg);
-    } finally {
-      setIsSaving(false);
-    }
-  };
-
-  // ---- Delete ----
-  const handleDelete = async (cat: BlogCategory) => {
-    if ((cat.article_count ?? 0) > 0) {
-      toast.error(`无法删除：该分类下还有 ${cat.article_count} 篇文章，请先移除文章再删除分类。`);
-      return;
-    }
-    if (!confirm(`确定要删除分类「${cat.name_zh} / ${cat.name_en}」吗？`)) return;
-
-    setDeletingId(cat.id);
-    try {
-      await api.deleteBlogCategory(cat.id);
-      toast.success('分类已删除');
-      await load();
-    } catch (err: any) {
-      toast.error(err?.message || '删除失败');
-    } finally {
-      setDeletingId(null);
-    }
-  };
-
-  // ---- Reorder ----
-  const handleReorder = async (cat: BlogCategory, dir: 'up' | 'down') => {
-    const idx = categories.findIndex(c => c.id === cat.id);
-    const swapIdx = dir === 'up' ? idx - 1 : idx + 1;
-    if (swapIdx < 0 || swapIdx >= categories.length) return;
-
-    const swapCat = categories[swapIdx];
-    try {
-      await Promise.all([
-        api.updateBlogCategory(cat.id, { sort_order: swapCat.sort_order }),
-        api.updateBlogCategory(swapCat.id, { sort_order: cat.sort_order }),
-      ]);
-      await load();
-    } catch {
-      toast.error('排序更新失败');
-    }
-  };
+  const notify = useMemo(() => ({
+    success: (message: string) => toast.success(message),
+    error: (message: string) => toast.error(message),
+  }), []);
+  const {
+    categories,
+    deletingId,
+    editingRow,
+    isLoading,
+    isSaving,
+    cancelEdit,
+    handleDelete,
+    handleReorder,
+    handleSave,
+    startEdit,
+    startNew,
+    updateEditingEnglishName,
+    updateEditingRow,
+    updateEditingSlug,
+  } = useBlogCategoryManager({
+    confirmDelete: message => window.confirm(message),
+    notify,
+  });
 
   return (
     <div className="space-y-6">
@@ -218,7 +113,7 @@ export default function BlogCategoryManager() {
                       <input
                         type="text"
                         value={editingRow.name_zh}
-                        onChange={e => setEditingRow(r => r ? { ...r, name_zh: e.target.value } : r)}
+                        onChange={e => updateEditingRow({ name_zh: e.target.value })}
                         placeholder="中文名称（如：行业资讯）"
                         className={INPUT_CLASS}
                         autoFocus
@@ -228,14 +123,7 @@ export default function BlogCategoryManager() {
                       <input
                         type="text"
                         value={editingRow.name_en}
-                        onChange={e => {
-                          const val = e.target.value;
-                          setEditingRow(r => r ? {
-                            ...r,
-                            name_en: val,
-                            slug: r.slug || toSlug(val),
-                          } : r);
-                        }}
+                        onChange={e => updateEditingEnglishName(e.target.value)}
                         placeholder="English Name (e.g. Industry News)"
                         className={INPUT_CLASS}
                       />
@@ -244,7 +132,7 @@ export default function BlogCategoryManager() {
                       <input
                         type="text"
                         value={editingRow.slug}
-                        onChange={e => setEditingRow(r => r ? { ...r, slug: e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, '') } : r)}
+                        onChange={e => updateEditingSlug(e.target.value)}
                         placeholder="auto-slug"
                         className={`${INPUT_CLASS} font-mono text-xs`}
                       />
@@ -322,7 +210,7 @@ export default function BlogCategoryManager() {
                           <input
                             type="text"
                             value={editingRow!.name_zh}
-                            onChange={e => setEditingRow(r => r ? { ...r, name_zh: e.target.value } : r)}
+                            onChange={e => updateEditingRow({ name_zh: e.target.value })}
                             className={INPUT_CLASS}
                             autoFocus
                           />
@@ -337,10 +225,7 @@ export default function BlogCategoryManager() {
                           <input
                             type="text"
                             value={editingRow!.name_en}
-                            onChange={e => {
-                              const val = e.target.value;
-                              setEditingRow(r => r ? { ...r, name_en: val } : r);
-                            }}
+                            onChange={e => updateEditingRow({ name_en: e.target.value })}
                             className={INPUT_CLASS}
                           />
                         ) : (
@@ -357,7 +242,7 @@ export default function BlogCategoryManager() {
                           <input
                             type="text"
                             value={editingRow!.slug}
-                            onChange={e => setEditingRow(r => r ? { ...r, slug: e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, '') } : r)}
+                            onChange={e => updateEditingSlug(e.target.value)}
                             className={`${INPUT_CLASS} font-mono text-xs`}
                           />
                         ) : (

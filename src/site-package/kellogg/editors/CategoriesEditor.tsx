@@ -1,105 +1,24 @@
-import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Plus, Trash2, Save, Layers, GripVertical, Loader2 } from 'lucide-react';
-import { useContent } from '@/core/context/ContentContext';
+import { useCategoriesEditor } from '@/core/items/product';
 import BilingualInput from '../components/BilingualInput';
 import ImageInput from '../components/ImageInput';
-import type { Category } from '@/core/types';
 
 export default function CategoriesEditor() {
   const {
     categories,
-    createCategory,
-    updateCategory: apiUpdateCategory,
-    deleteCategory: apiDeleteCategory,
-    isLoading: contextLoading,
-  } = useContent();
-
-  const [localCategories, setLocalCategories] = useState<Category[]>([]);
-  const [saved, setSaved] = useState(false);
-  const [isSaving, setIsSaving] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-
-  // 从 context 同步数据到本地状态
-  useEffect(() => {
-    setLocalCategories(categories);
-  }, [categories]);
-
-  const handleSave = async () => {
-    setIsSaving(true);
-    setError(null);
-
-    try {
-      const originalCategories = categories;
-
-      // 找出需要创建的分类（本地有但远程没有的）
-      for (const localCat of localCategories) {
-        const exists = originalCategories.find(c => c.id === localCat.id);
-        if (!exists) {
-          // 新分类
-          await createCategory({
-            id: localCat.id,
-            name_zh: localCat.name.zh,
-            name_en: localCat.name.en,
-            image: localCat.image,
-          });
-        } else {
-          // 修改判断增加 image 比较
-          const hasChanges =
-            localCat.name.zh !== exists.name.zh ||
-            localCat.name.en !== exists.name.en ||
-            localCat.image !== exists.image;
-
-          if (hasChanges) {
-            await apiUpdateCategory(localCat.id, {
-              name_zh: localCat.name.zh,
-              name_en: localCat.name.en,
-              image: localCat.image,
-            });
-          }
-        }
-      }
-
-      // 找出需要删除的分类（远程有但本地没有的）
-      for (const originalCat of originalCategories) {
-        const stillExists = localCategories.find(c => c.id === originalCat.id);
-        if (!stillExists) {
-          await apiDeleteCategory(originalCat.id);
-        }
-      }
-
-      setSaved(true);
-      setTimeout(() => setSaved(false), 2000);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : '保存失败');
-    } finally {
-      setIsSaving(false);
-    }
-  };
-
-  const addCategory = () => {
-    const newId = `cat_${Date.now()}`;
-    setLocalCategories([
-      ...localCategories,
-      { id: newId, name: { zh: '新分类', en: 'New Category' }, image: '' },
-    ]);
-  };
-
-  const updateLocalCategory = (index: number, val: { zh: string; en: string }) => {
-    const next = [...localCategories];
-    next[index] = { ...next[index], name: val };
-    setLocalCategories(next);
-  };
-
-  const updateLocalCategoryImage = (index: number, val: string) => {
-    const next = [...localCategories];
-    next[index] = { ...next[index], image: val };
-    setLocalCategories(next);
-  };
-
-  const removeCategory = (index: number) => {
-    setLocalCategories(localCategories.filter((_, i) => i !== index));
-  };
+    contextLoading,
+    error,
+    isSaving,
+    localCategories,
+    saved,
+    addCategory,
+    handleSave,
+    removeCategory,
+    setError,
+    updateLocalCategory,
+    updateLocalCategoryImage,
+  } = useCategoriesEditor();
 
   // 防抖改进：仅在初始化且都为空时显示全局加载，避免用户点击保存重载数据时剥离焦点
   if (contextLoading && categories.length === 0 && localCategories.length === 0) {

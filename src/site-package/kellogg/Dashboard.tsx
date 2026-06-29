@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react';
-import { useNavigate, NavLink, Outlet, useLocation } from 'react-router-dom';
+import {  useState } from 'react';
+import {  NavLink, Outlet, useLocation } from 'react-router-dom';
 import {
   LayoutDashboard,
   Globe,
@@ -103,7 +103,7 @@ const menuItems: MenuItem[] = [
 ];
 
 export default function Dashboard() {
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const { language, setLanguage } = useLanguage();
   const location = useLocation();
   const { buildStatus, triggerBuild } = useContent();
@@ -135,13 +135,13 @@ export default function Dashboard() {
     }));
   };
 
-  useEffect(() => {
+  // useEffect(() => {
     // TODO: 登录验证，已注释
     // const isLoggedIn = sessionStorage.getItem('admin_logged_in');
     // if (!isLoggedIn) {
     //   navigate('/login');
     // }
-  }, [navigate]);
+  // }, [navigate]);
 
   // const handleLogout = () => {
   //   sessionStorage.removeItem('admin_logged_in');

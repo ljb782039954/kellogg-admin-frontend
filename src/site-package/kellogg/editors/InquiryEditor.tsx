@@ -1,65 +1,27 @@
-import { useState, useEffect } from 'react';
 import { Save, Loader2, FileText, Info } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { api } from '@/core/lib/api';
 import { useContent } from '@/core/context/ContentContext';
+import { DEFAULT_INQUIRY_CONFIG, useInquiryEditor } from '@/core/items/inquiry';
 import BilingualInput from '../components/BilingualInput';
 import BilingualInputAera from '../components/BilingualInputAera';
 import { toast } from 'sonner';
 
-interface InquiryConfig {
-  title: { zh: string; en: string };
-  description: { zh: string; en: string };
-}
-
-const defaultConfig: InquiryConfig = {
-  title: { zh: '联系我们要样品', en: 'Contact Us For Samples' },
-  description: { 
-    zh: '如果您有任何关于产品的咨询，请填写下方表格，我们的团队会尽快与您联系。', 
-    en: 'If you have any inquiries about our products, please fill out the form below and our team will get back to you as soon as possible.' 
-  }
-};
-
 export default function InquiryEditor() {
   const { findPage, updatePage } = useContent();
-  const [config, setConfig] = useState<InquiryConfig>(defaultConfig);
-  const [isSaving, setIsSaving] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    fetchConfig();
-  }, []);
-
-  const fetchConfig = async () => {
-    setIsLoading(true);
-    try {
-      const page = findPage('system-inquiry');
-      if (page && page.content) {
-        setConfig(page.content);
-      } else {
-        const pageData = await api.getPageById('system-inquiry');
-        if (pageData && pageData.content) {
-          setConfig(pageData.content);
-        }
-      }
-    } catch (err) {
-      console.error('Failed to load inquiry config from page:', err);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handleSave = async () => {
-    setIsSaving(true);
-    try {
-      await updatePage('system-inquiry', { content: config });
-      toast.success('询盘页面配置已保存');
-    } catch (err) {
-      toast.error('保存失败');
-    } finally {
-      setIsSaving(false);
-    }
-  };
+  const {
+    config,
+    isLoading,
+    isSaving,
+    handleSave,
+    setConfig,
+  } = useInquiryEditor({
+    findPage,
+    notify: {
+      success: message => toast.success(message),
+      error: message => toast.error(message),
+    },
+    updatePage,
+  });
 
   if (isLoading) {
     return (
@@ -110,8 +72,8 @@ export default function InquiryEditor() {
             value={config.description}
             onChange={(val) => setConfig({ ...config, description: val })}
             placeholder={{ 
-              zh: '如果您有任何关于产品的咨询，请填写下方表格，我们的团队会尽快与您联系。', 
-              en: 'If you have any inquiries about our products, please fill out the form below and our team will get back to you as soon as possible.' 
+              zh: DEFAULT_INQUIRY_CONFIG.description.zh,
+              en: DEFAULT_INQUIRY_CONFIG.description.en,
             }}
           />
         </div>

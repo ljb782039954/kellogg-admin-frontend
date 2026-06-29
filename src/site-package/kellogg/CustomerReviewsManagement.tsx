@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Star,
@@ -14,9 +14,8 @@ import {
   ChevronLeft,
   ChevronRight,
 } from 'lucide-react';
-import { api } from '@/core/lib/api';
 import { toast } from 'sonner';
-import type { CustomerReview } from '@/core/types';
+import { getYoutubeThumbnailUrl, useCustomerReviewsManagement } from '@/core/items/review';
 import ReviewFormDialog from './ReviewFormDialog';
 
 // ---- Star renderer (read-only) ----
@@ -49,73 +48,34 @@ const STATUS_LABELS = {
 };
 
 export default function CustomerReviewsManagement() {
-  const [reviews, setReviews] = useState<CustomerReview[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [statusFilter, setStatusFilter] = useState<'all' | 'published' | 'draft'>('all');
-  const [page, setPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
-  const [total, setTotal] = useState(0);
-  const PAGE_SIZE = 15;
-
-  const [dialogOpen, setDialogOpen] = useState(false);
-  const [editingReview, setEditingReview] = useState<CustomerReview | null>(null);
-
-  const fetchReviews = useCallback(async () => {
-    setIsLoading(true);
-    try {
-      const params: any = { page, pageSize: PAGE_SIZE };
-      if (statusFilter !== 'all') params.status = statusFilter;
-      if (searchTerm) params.search = searchTerm;
-      const resp = await api.getAdminReviews(params);
-      setReviews(resp.data || []);
-      setTotalPages(resp.pagination?.totalPages || 1);
-      setTotal(resp.pagination?.total || 0);
-    } catch {
-      toast.error('无法加载评价列表');
-    } finally {
-      setIsLoading(false);
-    }
-  }, [page, statusFilter, searchTerm]);
-
-  useEffect(() => {
-    const timer = setTimeout(fetchReviews, searchTerm ? 400 : 0);
-    return () => clearTimeout(timer);
-  }, [fetchReviews, searchTerm]);
-
-  const handleDelete = async (review: CustomerReview) => {
-    if (!confirm(`确定要永久删除「${review.client_name}」的评价吗？`)) return;
-    try {
-      await api.deleteReview(review.id);
-      toast.success('评价已删除');
-      fetchReviews();
-    } catch {
-      toast.error('删除失败');
-    }
-  };
-
-  const handleToggleStatus = async (review: CustomerReview) => {
-    const next = review.status === 'published' ? 'draft' : 'published';
-    try {
-      await api.updateReview(review.id, { status: next });
-      toast.success(next === 'published' ? '已发布' : '已下架为草稿');
-      setReviews(prev =>
-        prev.map(r => r.id === review.id ? { ...r, status: next } : r)
-      );
-    } catch {
-      toast.error('状态切换失败');
-    }
-  };
-
-  const openCreate = () => {
-    setEditingReview(null);
-    setDialogOpen(true);
-  };
-
-  const openEdit = (review: CustomerReview) => {
-    setEditingReview(review);
-    setDialogOpen(true);
-  };
+  const notify = useMemo(() => ({
+    success: (message: string) => toast.success(message),
+    error: (message: string) => toast.error(message),
+  }), []);
+  const {
+    dialogOpen,
+    editingReview,
+    isLoading,
+    page,
+    reviews,
+    searchTerm,
+    statusFilter,
+    total,
+    totalPages,
+    closeDialog,
+    fetchReviews,
+    handleDelete,
+    handleToggleStatus,
+    openCreate,
+    openEdit,
+    setPage,
+    updateSearchTerm,
+    updateStatusFilter,
+  } = useCustomerReviewsManagement({
+    confirmDelete: message => window.confirm(message),
+    notify,
+    pageSize: 15,
+  });
 
   return (
     <div className="space-y-6">
@@ -150,7 +110,7 @@ export default function CustomerReviewsManagement() {
             type="text"
             placeholder="搜索客户名称、国家..."
             value={searchTerm}
-            onChange={e => { setSearchTerm(e.target.value); setPage(1); }}
+            onChange={e => updateSearchTerm(e.target.value)}
             className="w-full pl-10 pr-4 py-2 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-gray-900 focus:border-transparent transition-all"
           />
         </div>
@@ -158,7 +118,7 @@ export default function CustomerReviewsManagement() {
           {(['all', 'published', 'draft'] as const).map(s => (
             <button
               key={s}
-              onClick={() => { setStatusFilter(s); setPage(1); }}
+              onClick={() => updateStatusFilter(s)}
               className={`px-3 py-1.5 text-xs font-bold rounded-md transition-all ${
                 statusFilter === s
                   ? 'bg-white text-gray-900 shadow-sm'
@@ -216,19 +176,10 @@ export default function CustomerReviewsManagement() {
                             <>
                               {/* YouTube thumbnail */}
                               {(() => {
-                                const patterns = [
-                                  /[?&]v=([a-zA-Z0-9_-]{11})/,
-                                  /youtu\.be\/([a-zA-Z0-9_-]{11})/,
-                                  /youtube\.com\/embed\/([a-zA-Z0-9_-]{11})/,
-                                ];
-                                let id: string | null = null;
-                                for (const p of patterns) {
-                                  const m = review.media_url.match(p);
-                                  if (m) { id = m[1]; break; }
-                                }
-                                return id ? (
+                                const thumbnail = getYoutubeThumbnailUrl(review.media_url, 'default');
+                                return thumbnail ? (
                                   <img
-                                    src={`https://img.youtube.com/vi/${id}/default.jpg`}
+                                    src={thumbnail}
                                     alt={review.client_name}
                                     className="w-full h-full object-cover"
                                   />
@@ -370,7 +321,7 @@ export default function CustomerReviewsManagement() {
       {dialogOpen && (
         <ReviewFormDialog
           review={editingReview}
-          onClose={() => setDialogOpen(false)}
+          onClose={closeDialog}
           onSaved={fetchReviews}
         />
       )}

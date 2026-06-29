@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
@@ -19,9 +19,8 @@ import {
   FileText,
   Globe,
 } from 'lucide-react';
-import { api } from '@/core/lib/api';
 import { toast } from 'sonner';
-import type { Blog } from '@/core/types';
+import { useBlogManagement } from '@/core/items/blog';
 import AdminImage from './components/AdminImage';
 
 const STATUS_LABELS = {
@@ -41,68 +40,30 @@ const CATEGORY_OPTIONS = [
 
 export default function BlogManagement() {
   const navigate = useNavigate();
-  const [blogs, setBlogs] = useState<Blog[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [categoryFilter, setCategoryFilter] = useState('All');
-  const [statusFilter, setStatusFilter] = useState<'all' | 'draft' | 'published' | 'archived'>('all');
-  const [page, setPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
-  const [total, setTotal] = useState(0);
-  const PAGE_SIZE = 10;
-
-  const fetchBlogs = useCallback(async () => {
-    setIsLoading(true);
-    try {
-      const params: any = { page, pageSize: PAGE_SIZE };
-      if (statusFilter !== 'all') params.status = statusFilter;
-      if (categoryFilter !== 'All') params.category = categoryFilter;
-      const resp = await api.getBlogs(params);
-      setBlogs(resp.data || []);
-      setTotalPages(resp.pagination?.totalPages || 1);
-      setTotal(resp.pagination?.total || 0);
-    } catch {
-      toast.error('无法加载博客列表');
-    } finally {
-      setIsLoading(false);
-    }
-  }, [page, statusFilter, categoryFilter]);
-
-  useEffect(() => {
-    fetchBlogs();
-  }, [fetchBlogs]);
-
-  const handleDelete = async (blog: Blog) => {
-    if (!confirm(`确定要永久删除「${blog.title_zh}」吗？此操作不可撤销。`)) return;
-    try {
-      await api.deleteBlog(blog.id);
-      toast.success('文章已删除');
-      fetchBlogs();
-    } catch {
-      toast.error('删除失败，请重试');
-    }
-  };
-
-  const handleToggleStatus = async (blog: Blog) => {
-    const nextStatus = blog.status === 'published' ? 'draft' : 'published';
-    try {
-      await api.updateBlog(blog.id, { status: nextStatus });
-      toast.success(nextStatus === 'published' ? '已发布' : '已下架为草稿');
-      setBlogs(prev => prev.map(b => b.id === blog.id ? { ...b, status: nextStatus } : b));
-    } catch {
-      toast.error('状态切换失败');
-    }
-  };
-
-  // Client-side search filter (over current page)
-  const filtered = blogs.filter(b => {
-    if (!searchTerm) return true;
-    const q = searchTerm.toLowerCase();
-    return (
-      b.title_zh.toLowerCase().includes(q) ||
-      b.title_en.toLowerCase().includes(q) ||
-      (b.category || '').toLowerCase().includes(q)
-    );
+  const notify = useMemo(() => ({
+    success: (message: string) => toast.success(message),
+    error: (message: string) => toast.error(message),
+  }), []);
+  const {
+    categoryFilter,
+    filteredBlogs,
+    isLoading,
+    page,
+    searchTerm,
+    statusFilter,
+    total,
+    totalPages,
+    handleDelete,
+    handleToggleStatus,
+    selectCategoryFilter,
+    selectStatusFilter,
+    setPage,
+    setSearchTerm,
+  } = useBlogManagement({
+    categoryAllValue: 'All',
+    confirmDelete: message => window.confirm(message),
+    notify,
+    pageSize: 10,
   });
 
   return (
@@ -133,7 +94,7 @@ export default function BlogManagement() {
         {CATEGORY_OPTIONS.map(cat => (
           <button
             key={cat}
-            onClick={() => { setCategoryFilter(cat); setPage(1); }}
+            onClick={() => selectCategoryFilter(cat)}
             className={`px-4 py-1.5 text-sm font-medium rounded-full whitespace-nowrap transition-all ${
               categoryFilter === cat
                 ? 'bg-gray-900 text-white'
@@ -161,7 +122,7 @@ export default function BlogManagement() {
           {(['all', 'draft', 'published', 'archived'] as const).map(s => (
             <button
               key={s}
-              onClick={() => { setStatusFilter(s); setPage(1); }}
+              onClick={() => selectStatusFilter(s)}
               className={`px-3 py-1.5 text-xs font-bold rounded-md transition-all ${
                 statusFilter === s
                   ? 'bg-white text-gray-900 shadow-sm'
@@ -181,7 +142,7 @@ export default function BlogManagement() {
             <Loader2 className="w-8 h-8 animate-spin" />
             <span className="text-sm">正在加载文章...</span>
           </div>
-        ) : filtered.length === 0 ? (
+        ) : filteredBlogs.length === 0 ? (
           <div className="flex flex-col items-center justify-center p-16 text-gray-300 gap-4">
             <FileText className="w-14 h-14 stroke-[1.2]" />
             <div className="text-center">
@@ -205,7 +166,7 @@ export default function BlogManagement() {
               </thead>
               <tbody className="divide-y divide-gray-50">
                 <AnimatePresence initial={false}>
-                  {filtered.map(blog => (
+                  {filteredBlogs.map(blog => (
                     <motion.tr
                       key={blog.id}
                       initial={{ opacity: 0 }}

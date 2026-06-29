@@ -1,8 +1,7 @@
-import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Plus, Trash2, Save, Layers, Star, Loader2 } from 'lucide-react';
-import { useContent } from '@/core/context/ContentContext';
 import { useLanguage } from '@/core/context/LanguageContext';
+import { useProductsEditor } from '@/core/items/product';
 
 // Subcomponents
 import ProductSummary from './product/ProductSummary';
@@ -12,254 +11,31 @@ import ProductVariantsSection from './product/ProductVariantsSection';
 import ProductCustomFields from './product/ProductCustomFields';
 import BulkPriceSection from './product/BulkPriceSection';
 
-import type { Product } from '@/core/types';
-
 export default function ProductsEditor() {
+  const { language } = useLanguage();
   const {
     allProducts,
     categories,
-    createProduct,
-    updateProduct: apiUpdateProduct,
-    deleteProduct: apiDeleteProduct,
-    isLoading: contextLoading,
-  } = useContent();
-  const { language } = useLanguage();
-
-  const [localProducts, setLocalProducts] = useState<Product[]>([]);
-  const [saved, setSaved] = useState(false);
-  const [expandedId, setExpandedId] = useState<number | null>(null);
-  const [selectedIds, setSelectedIds] = useState<Set<number>>(new Set());
-  const [isSaving, setIsSaving] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-
-  // Sync data from context to local state
-  useEffect(() => {
-    setLocalProducts(
-      allProducts.map(p => {
-        const images = p.images && p.images.length > 0 ? p.images : [p.image];
-        return {
-          ...p,
-          images,
-          image: images[0] || ''
-        };
-      })
-    );
-  }, [allProducts]);
-
-  const toggleSelect = (id: number) => {
-    const next = new Set(selectedIds);
-    if (next.has(id)) next.delete(id);
-    else next.add(id);
-    setSelectedIds(next);
-  };
-
-  const toggleSelectAll = () => {
-    if (selectedIds.size === localProducts.length) {
-      setSelectedIds(new Set());
-    } else {
-      setSelectedIds(new Set(localProducts.map((p) => p.id)));
-    }
-  };
-
-  const handleBatchDelete = async () => {
-    if (selectedIds.size === 0) return;
-
-    const count = selectedIds.size;
-    const confirmMsg = language === 'zh'
-      ? `确定要删除这 ${count} 个产品吗？此操作不可撤销。`
-      : `Are you sure you want to delete these ${count} products? This action cannot be undone.`;
-
-    if (window.confirm(confirmMsg)) {
-      setIsSaving(true);
-      setError(null);
-      try {
-        for (const id of selectedIds) {
-          await apiDeleteProduct(id);
-        }
-        setSelectedIds(new Set());
-        setSaved(true);
-        setTimeout(() => setSaved(false), 2000);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : '删除失败');
-      } finally {
-        setIsSaving(false);
-      }
-    }
-  };
-
-  const handleSave = async () => {
-    setIsSaving(true);
-    setError(null);
-
-    try {
-      for (const localProduct of localProducts) {
-        const remoteProduct = allProducts.find(p => p.id === localProduct.id);
-
-        if (!remoteProduct) {
-          await createProduct({
-            name_zh: localProduct.name.zh,
-            name_en: localProduct.name.en,
-            price: localProduct.price,
-            original_price: localProduct.originalPrice,
-            bulk_prices: localProduct.bulkPrices,
-            category_id: localProduct.category,
-            rating: localProduct.rating,
-            sales: localProduct.sales,
-            tag_zh: localProduct.tag?.zh,
-            tag_en: localProduct.tag?.en,
-            description_zh: localProduct.description?.zh,
-            description_en: localProduct.description?.en,
-            release_date: localProduct.releaseDate,
-            is_featured: localProduct.isFeatured,
-            image: localProduct.image,
-            images: localProduct.images,
-            fabric_zh: localProduct.fabric?.zh,
-            fabric_en: localProduct.fabric?.en,
-            notes_zh: localProduct.notes?.zh,
-            notes_en: localProduct.notes?.en,
-            is_active: localProduct.isActive,
-            sizes: localProduct.sizes,
-            colors: localProduct.colors?.map(c => ({
-              name_zh: c.name.zh,
-              name_en: c.name.en,
-              image: c.image
-            })),
-            custom_fields: localProduct.customFields?.map(cf => ({
-              name_zh: cf.name.zh,
-              name_en: cf.name.en,
-              value_zh: cf.value.zh,
-              value_en: cf.value.en
-            })),
-          });
-        } else {
-          const hasChanges =
-            JSON.stringify(localProduct.name) !== JSON.stringify(remoteProduct.name) ||
-            localProduct.price !== remoteProduct.price ||
-            localProduct.originalPrice !== remoteProduct.originalPrice ||
-            JSON.stringify(localProduct.bulkPrices) !== JSON.stringify(remoteProduct.bulkPrices) ||
-            localProduct.category !== remoteProduct.category ||
-            localProduct.rating !== remoteProduct.rating ||
-            localProduct.sales !== remoteProduct.sales ||
-            JSON.stringify(localProduct.tag) !== JSON.stringify(remoteProduct.tag) ||
-            localProduct.releaseDate !== remoteProduct.releaseDate ||
-            localProduct.isFeatured !== remoteProduct.isFeatured ||
-            localProduct.image !== remoteProduct.image ||
-            JSON.stringify(localProduct.images) !== JSON.stringify(remoteProduct.images) ||
-            JSON.stringify(localProduct.fabric) !== JSON.stringify(remoteProduct.fabric) ||
-            JSON.stringify(localProduct.notes) !== JSON.stringify(remoteProduct.notes) ||
-            localProduct.isActive !== remoteProduct.isActive ||
-            JSON.stringify(localProduct.sizes) !== JSON.stringify(remoteProduct.sizes) ||
-            JSON.stringify(localProduct.colors) !== JSON.stringify(remoteProduct.colors) ||
-            JSON.stringify(localProduct.customFields) !== JSON.stringify(remoteProduct.customFields);
-
-          if (hasChanges) {
-            await apiUpdateProduct(localProduct.id, {
-              name_zh: localProduct.name.zh,
-              name_en: localProduct.name.en,
-              price: localProduct.price,
-              original_price: localProduct.originalPrice,
-              bulk_prices: localProduct.bulkPrices,
-              category_id: localProduct.category,
-              rating: localProduct.rating,
-              sales: localProduct.sales,
-              tag_zh: localProduct.tag?.zh,
-              tag_en: localProduct.tag?.en,
-              description_zh: localProduct.description?.zh,
-              description_en: localProduct.description?.en,
-              release_date: localProduct.releaseDate,
-              is_featured: localProduct.isFeatured,
-              image: localProduct.image,
-              images: localProduct.images,
-              fabric_zh: localProduct.fabric?.zh,
-              fabric_en: localProduct.fabric?.en,
-              notes_zh: localProduct.notes?.zh,
-              notes_en: localProduct.notes?.en,
-              is_active: localProduct.isActive,
-              sizes: localProduct.sizes,
-              colors: localProduct.colors?.map(c => ({
-                name_zh: c.name.zh,
-                name_en: c.name.en,
-                image: c.image
-              })),
-              custom_fields: localProduct.customFields?.map(cf => ({
-                name_zh: cf.name.zh,
-                name_en: cf.name.en,
-                value_zh: cf.value.zh,
-                value_en: cf.value.en
-              })),
-            });
-          }
-        }
-      }
-
-      setSaved(true);
-      setTimeout(() => setSaved(false), 2000);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : '保存失败');
-    } finally {
-      setIsSaving(false);
-    }
-  };
-
-  const addProduct = () => {
-    const newId = Math.max(...localProducts.map((p) => p.id), 0) + 1;
-    const newProduct: Product = {
-      id: newId,
-      name: { zh: '新产品', en: 'New Product' },
-      price: 0,
-      bulkPrices: [],
-      image: '',
-      images: [],
-      rating: 5,
-      sales: 0,
-      category: categories.length > 0 ? categories[0].id : '',
-      releaseDate: new Date().toISOString().split('T')[0],
-      tag: { zh: '', en: '' },
-      isFeatured: false,
-      isActive: true,
-      customFields: [],
-    };
-    setLocalProducts([newProduct, ...localProducts]);
-    setExpandedId(newId);
-  };
-
-  const updateLocalProduct = <K extends keyof Product>(id: number, field: K, value: Product[K]) => {
-    setLocalProducts(prev =>
-      prev.map((p): Product => {
-        if (p.id === id) {
-          const updated = { ...p, [field]: value };
-          if (field === 'images' && Array.isArray(value)) {
-            updated.image = value.length > 0 ? value[0] as string : '';
-          }
-          return updated as Product;
-        }
-        return p;
-      })
-    );
-  };
-
-  const removeProduct = async (id: number) => {
-    if (confirm(language === 'zh' ? '确定要删除这个产品吗？' : 'Are you sure you want to delete this product?')) {
-      const existsOnServer = allProducts.some(p => p.id === id);
-
-      if (existsOnServer) {
-        setIsSaving(true);
-        try {
-          await apiDeleteProduct(id);
-        } catch (err) {
-          setError(err instanceof Error ? err.message : '删除失败');
-          setIsSaving(false);
-          return;
-        }
-        setIsSaving(false);
-      }
-
-      setLocalProducts(localProducts.filter((p) => p.id !== id));
-      const nextSelected = new Set(selectedIds);
-      nextSelected.delete(id);
-      setSelectedIds(nextSelected);
-    }
-  };
+    contextLoading,
+    error,
+    expandedId,
+    isSaving,
+    localProducts,
+    saved,
+    selectedIds,
+    addProduct,
+    handleBatchDelete,
+    handleSave,
+    removeProduct,
+    setError,
+    setExpandedId,
+    toggleSelect,
+    toggleSelectAll,
+    updateLocalProduct,
+  } = useProductsEditor({
+    confirmDelete: message => window.confirm(message),
+    language,
+  });
 
   if (contextLoading && allProducts.length === 0 && localProducts.length === 0) {
     return (

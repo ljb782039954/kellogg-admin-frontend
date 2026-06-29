@@ -1,5 +1,5 @@
 // 页面布局编辑器主组件
-import { useState, useCallback, useMemo, useEffect } from 'react';
+import { useCallback } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import {
   DndContext,
@@ -11,13 +11,10 @@ import {
   type DragEndEvent,
 } from '@dnd-kit/core';
 import {
-  arrayMove,
   sortableKeyboardCoordinates,
 } from '@dnd-kit/sortable';
-import { nanoid } from 'nanoid';
 import { Save, Eye, RotateCcw, Plus, ArrowLeft, Settings, FileText } from 'lucide-react';
-import { useContent } from '@/core/context/ContentContext';
-import { type CustomPage, type PageBlock } from '../types/blocks';
+import { usePageLayoutEditor } from '@/core/items/page-builder';
 import { BlockList } from './BlockList';
 import { BlockPropsEditor } from './BlockPropsEditor';
 import { SEOEditor } from './SEOEditor';
@@ -39,34 +36,34 @@ import {
 export function PageLayoutEditor() {
   const navigate = useNavigate();
   const { pageId } = useParams<{ pageId: string }>();
-  const { findPage, updatePage } = useContent();
   const { toast } = useToast();
-
-  const page = useMemo(() => findPage(pageId || ''), [findPage, pageId]);
-
-  const [localPage, setLocalPage] = useState<CustomPage | null>(null);
-  const [selectedBlockId, setSelectedBlockId] = useState<string | null>(null);
-  const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
-  const [isResetDialogOpen, setIsResetDialogOpen] = useState(false);
-  const [hasChanges, setHasChanges] = useState(false);
-
-  // 当 page 加载后，且本地没有数据时，同步到本地状态
-  useEffect(() => {
-    if (page) {
-      if (page.type === 'fixed-layout') {
-        toast({
-          title: '该页面无需积木编辑',
-          description: '该页面属于系统固定布局，已自动返回列表。',
-          variant: 'destructive',
-        });
-        navigate('/pages');
-        return;
-      }
-      if (!localPage) {
-        setLocalPage(JSON.parse(JSON.stringify(page))); // 深拷贝
-      }
-    }
-  }, [page, localPage, navigate, toast]);
+  const {
+    hasChanges,
+    isAddDialogOpen,
+    isResetDialogOpen,
+    localPage,
+    selectedBlock,
+    selectedBlockId,
+    handleAddBlock,
+    handleBack,
+    handleMoveBlockDown,
+    handleMoveBlockUp,
+    handlePreview,
+    handleRemoveBlock,
+    handleReorderBlocks,
+    handleReset,
+    handleSave,
+    handleToggleBlock,
+    handleUpdateBlockProps,
+    setIsAddDialogOpen,
+    setIsResetDialogOpen,
+    setSelectedBlockId,
+    updateLocalPage,
+  } = usePageLayoutEditor({
+    notify: toast,
+    onNavigateToPages: () => navigate('/pages'),
+    pageId,
+  });
 
   // 拖拽传感器配置
   const sensors = useSensors(
@@ -80,141 +77,10 @@ export function PageLayoutEditor() {
     })
   );
 
-  // 保存更改
-  const handleSave = useCallback(async () => {
-    if (!localPage || !pageId) return;
-
-    // 鲁棒性检查：确保保存时包含 SEO 数据，即便原始数据缺失也会补全空对象
-    const finalPageData = {
-      ...localPage,
-      seo: localPage.seo || { title: { zh: '', en: '' }, description: { zh: '', en: '' } }
-    };
-
-    await updatePage(pageId, finalPageData);
-    setHasChanges(false);
-
-    toast({
-      title: '保存成功',
-      description: '页面更改已保存到服务器',
-    });
-  }, [localPage, pageId, updatePage, toast]);
-
-  // 更新本地页面状态
-  const updateLocalPage = useCallback((updates: Partial<CustomPage>) => {
-    setLocalPage(prev => prev ? { ...prev, ...updates } : null);
-    setHasChanges(true);
-  }, []);
-
-  // 拖拽结束处理
   const handleDragEnd = useCallback((event: DragEndEvent) => {
     const { active, over } = event;
-    if (!over || active.id === over.id || !localPage) return;
-
-    const oldIndex = localPage.blocks.findIndex((b) => b.id === active.id);
-    const newIndex = localPage.blocks.findIndex((b) => b.id === over.id);
-
-    updateLocalPage({
-      blocks: arrayMove(localPage.blocks, oldIndex, newIndex),
-    });
-  }, [localPage, updateLocalPage]);
-
-  // 添加区块
-  const handleAddBlock = useCallback((block: PageBlock) => {
-    if (!localPage) return;
-    updateLocalPage({
-      blocks: [...localPage.blocks, block],
-    });
-    setSelectedBlockId(block.id);
-  }, [localPage, updateLocalPage]);
-
-  // 删除区块
-  const handleRemoveBlock = useCallback((blockId: string) => {
-    if (!localPage) return;
-    updateLocalPage({
-      blocks: localPage.blocks.filter((b) => b.id !== blockId),
-    });
-    if (selectedBlockId === blockId) {
-      setSelectedBlockId(null);
-    }
-  }, [localPage, selectedBlockId, updateLocalPage]);
-
-  // 切换区块可见性
-  const handleToggleBlock = useCallback((blockId: string) => {
-    if (!localPage) return;
-    updateLocalPage({
-      blocks: localPage.blocks.map((b) =>
-        b.id === blockId ? { ...b, isVisible: !b.isVisible } : b
-      ),
-    });
-  }, [localPage, updateLocalPage]);
-
-  // 上移区块
-  const handleMoveBlockUp = useCallback((blockId: string) => {
-    if (!localPage) return;
-    const index = localPage.blocks.findIndex((b) => b.id === blockId);
-    if (index <= 0) return;
-    updateLocalPage({
-      blocks: arrayMove(localPage.blocks, index, index - 1),
-    });
-  }, [localPage, updateLocalPage]);
-
-  // 下移区块
-  const handleMoveBlockDown = useCallback((blockId: string) => {
-    if (!localPage) return;
-    const index = localPage.blocks.findIndex((b) => b.id === blockId);
-    if (index < 0 || index >= localPage.blocks.length - 1) return;
-    updateLocalPage({
-      blocks: arrayMove(localPage.blocks, index, index + 1),
-    });
-  }, [localPage, updateLocalPage]);
-
-  // 更新区块属性
-  const handleUpdateBlockProps = useCallback((blockId: string, content: any) => {
-    if (!localPage) return;
-    updateLocalPage({
-      blocks: localPage.blocks.map((b) =>
-        b.id === blockId ? { ...b, content } : b
-      ),
-    });
-  }, [localPage, updateLocalPage]);
-
-  // 重置为默认
-  const handleReset = useCallback(() => {
-    if (!localPage) return;
-
-    let defaultBlocks: PageBlock[] = [];
-
-    // 为默认 blocks 生成新的 ID
-    defaultBlocks = defaultBlocks.map((block) => ({
-      ...block,
-      id: `block_${nanoid(8)}`,
-    }));
-
-    updateLocalPage({ blocks: defaultBlocks });
-    setSelectedBlockId(null);
-    setIsResetDialogOpen(false);
-
-    toast({
-      title: '已重置',
-      description: '页面布局已恢复为默认积木块设置',
-    });
-  }, [localPage, updateLocalPage, toast]);
-
-  // 预览
-  const handlePreview = useCallback(() => {
-    const previewUrl = localPage?.path || '/';
-    // 假设 webApp 在 5173 开端口
-    window.open(`http://localhost:5173${previewUrl}?preview=true`, '_blank');
-  }, [localPage]);
-
-  // 返回列表
-  const handleBack = useCallback(() => {
-    if (hasChanges) {
-      const confirmed = window.confirm('有未保存的更改，确定要离开吗？');
-      if (!confirmed) return;
-    }
-    navigate('/pages');
-  }, [hasChanges, navigate]);
+    handleReorderBlocks(String(active.id), over ? String(over.id) : null);
+  }, [handleReorderBlocks]);
 
   if (!localPage) {
     return (
@@ -223,8 +89,6 @@ export function PageLayoutEditor() {
       </div>
     );
   }
-
-  const selectedBlock = localPage.blocks.find((b) => b.id === selectedBlockId);
 
   return (
     <div className="h-full flex flex-col">
