@@ -33,44 +33,7 @@ src/site-package/new-site
    src/site-package/new-site
    ```
 
-2. 站点基础信息
-
-   修改新站点包里的元信息，例如：
-
-   ```text
-   metadata/siteSettings.json
-   metadata/documentMeta.ts
-   assets/logo/
-   ```
-
-   这些内容决定后台显示的站点名称、浏览器标题、favicon 和品牌资源。
-
-3. 后台页面和编辑器
-
-   根据新站点需要调整：
-
-   ```text
-   Management/
-   Dashboard.tsx
-   views/
-   components/
-   ```
-
-   如果新站点的数据结构和 Kellogg 类似，大部分管理页面可以复用，只替换文案、样式和少量字段。
-
-4. 前台预览组件和页面积木块
-
-   根据新站点前台视觉调整：
-
-   ```text
-   components-web/
-   metadata/componentRegistry.ts
-   metadata/blocksContent.ts
-   ```
-
-   这些内容决定页面搭建器里有哪些积木块，以及这些积木块如何预览。
-
-5. 切换当前站点入口
+2. 切换当前站点入口
 
    将项目中的 `@site` 指向新的站点包。
 
@@ -81,63 +44,29 @@ src/site-package/new-site
    tsconfig.app.json
    ```
 
-   例如从：
-
-   ```text
-   src/site-package/kellogg
-   ```
-
-   改为：
-
-   ```text
-   src/site-package/new-site
-   ```
-
 完成以上内容后，后台入口仍然可以保持不变，因为应用通过 `@site` 读取“当前站点包”。
 
-## 哪些内容通常不需要改
+## 环境变量（生产环境）
 
-如果只是替换站点，通常不需要改这些通用能力：
-
-```text
-src/core
-src/components/ui
-src/main.tsx
-src/App.tsx
-index.html
-```
-
-其中：
-
-- `src/core` 是通用业务逻辑。
-- `src/components/ui` 是基础 UI 组件。
-- `src/App.tsx` 只负责装配当前站点包。
-- `src/main.tsx` 负责启动应用并读取当前站点的文档信息。
-- `index.html` 保持通用，不直接写某个站点的 logo 或标题。
-
-## 本地运行
-
-安装依赖后运行：
+切换站点指向的环境变量尤为关键：
 
 ```bash
-npm run dev
+
+VITE_API_BASE_URL=https://
+VITE_API_ASSETS=https://
+VITE_ADMIN_TOKEN=
+
 ```
 
-默认开发端口是：
+## 环境变量（本地开发环境）
 
-```text
-http://localhost:3000
+```bash
+
+VITE_ADMIN_TOKEN_LOCAL=dev-admin-token
+# 本地测试
+VITE_API_BASE_URL_LOCAL=http://localhost:8787
+
+VITE_IS_LOCAL_DEV=false # 本地开发环境是否启用
+
 ```
 
-如果要连接本地 Worker API，通常需要在本地环境变量中配置：
-
-```text
-VITE_API_BASE_URL=http://localhost:8787
-VITE_ADMIN_TOKEN=dev-admin-token
-```
-
-更详细的开发结构说明请看：
-
-```text
-docs/README.md
-```

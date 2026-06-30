@@ -7,6 +7,9 @@ import {
   AlertCircle,
   RefreshCw,
 } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Card, CardTitle } from '@/components/ui/card';
+import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
 import { useContent } from '@/core/context/ContentContext';
 
 export default function Overview() {
@@ -21,77 +24,86 @@ export default function Overview() {
           <p className="text-gray-500 mt-1">管理您的网站内容和设置</p>
         </div>
         <div className="flex items-center gap-2">
-          <button
+          <Button
             onClick={refreshData}
             disabled={isLoading}
-            className="flex items-center gap-2 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors disabled:opacity-50"
+            variant="secondary"
             title="刷新数据"
           >
             <RefreshCw className={`w-4 h-4 ${isLoading ? 'animate-spin' : ''}`} />
             刷新
-          </button>
-          <a
-            href="/"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center gap-2 px-4 py-2 bg-gray-800 text-white rounded-lg hover:bg-gray-700 transition-colors"
-          >
-            <ExternalLink className="w-4 h-4" />
-            查看网站
-          </a>
+          </Button>
+          <Button asChild>
+            <a href="/" target="_blank" rel="noopener noreferrer">
+              <ExternalLink className="w-4 h-4" />
+              查看网站
+            </a>
+          </Button>
         </div>
       </div>
 
       {/* 提示当前连接的是否是线上环境 */}
-      <div className="bg-blue-50 border border-blue-100 rounded-xl p-6">
-        <h3 className="font-semibold text-blue-900 mb-2">当前连接环境:</h3>
-        <p className="text-sm text-blue-700">
+      <Alert className='gap-3'>
+        <AlertTitle className='text-gray-500'>当前连接环境:</AlertTitle>
+        <AlertDescription className='text-blue-500'>
           {import.meta.env.VITE_IS_LOCAL_DEV === "true" ? '本地开发环境' : '线上正式生产环境'}
-        </p>
-      </div>
+        </AlertDescription>
+      </Alert>
 
       {/* 错误提示 */}
       {error && (
-        <div className="bg-red-50 border border-red-200 rounded-xl p-4 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <AlertCircle className="w-5 h-5 text-red-500" />
-            <div>
-              <p className="font-medium text-red-800">加载数据失败</p>
-              <p className="text-sm text-red-600">{error}</p>
-            </div>
-          </div>
-          <div className="flex items-center gap-2">
-            <button
-              onClick={refreshData}
-              className="px-3 py-1.5 text-sm bg-red-100 text-red-700 rounded hover:bg-red-200 transition-colors"
-            >
-              重试
-            </button>
-            <button
-              onClick={clearError}
-              className="px-3 py-1.5 text-sm text-red-500 hover:text-red-700"
-            >
-              关闭
-            </button>
-          </div>
-        </div>
+        <Alert variant="destructive">
+          <AlertCircle className="w-5 h-5" />
+          <AlertTitle>加载数据失败</AlertTitle>
+          <AlertDescription className="flex items-center justify-between gap-4">
+            <span>{error}</span>
+            <span className="flex items-center gap-2 shrink-0">
+              <Button variant="outline" size="sm" onClick={refreshData}>重试</Button>
+              <Button variant="ghost" size="sm" onClick={clearError}>关闭</Button>
+            </span>
+          </AlertDescription>
+        </Alert>
       )}
 
       {/* 加载状态 */}
       {isLoading && (
-        <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 flex items-center gap-3">
-          <Loader2 className="w-5 h-5 text-blue-500 animate-spin" />
-          <p className="text-blue-700">正在从服务器加载数据...</p>
-        </div>
+        <Alert>
+          <Loader2 className="w-5 h-5 animate-spin" />
+          <AlertDescription>正在从服务器加载数据...</AlertDescription>
+        </Alert>
       )}
 
       {/* 显示统计数据：有多少产品、博文、询盘 */}
-
+      {!isLoading && !error && (
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <Card>
+            <CardTitle className="flex items-center gap-3 p-6 pb-0">
+              <ShoppingBag className="w-5 h-5 text-blue-500" />
+              产品
+            </CardTitle>
+            <p className="text-3xl font-bold text-gray-900 px-6 pb-6 pt-2">{allProducts?.length ?? 0}</p>
+          </Card>
+          <Card>
+            <CardTitle className="flex items-center gap-3 p-6 pb-0">
+              <FileText className="w-5 h-5 text-green-500" />
+              博文
+            </CardTitle>
+            <p className="text-3xl font-bold text-gray-900 px-6 pb-6 pt-2">{allBlogs?.length ?? 0}</p>
+          </Card>
+          <Card>
+            <CardTitle className="flex items-center gap-3 p-6 pb-0">
+              <Layers className="w-5 h-5 text-purple-500" />
+              询盘
+            </CardTitle>
+            <p className="text-3xl font-bold text-gray-900 px-6 pb-6 pt-2">{allReviews?.length ?? 0}</p>
+          </Card>
+        </div>
+      )}
 
       {/* Quick Tips */}
-      <div className="bg-blue-50 border border-blue-100 rounded-xl p-6">
-        <h3 className="font-semibold text-blue-900 mb-2">使用提示</h3>
-        <ul className="space-y-2 text-sm text-blue-700">
+      <Card>
+        <CardTitle className="p-6 pb-0 text-blue-900">使用提示</CardTitle>
+        <ul className="space-y-2 text-sm p-6 pt-3 text-blue-700">
           <li>• 所有更改会自动保存到服务器</li>
           <li>• 文本内容需要同时输入中英文，以支持语言切换</li>
           <li>• 在「页面管理」中可以编辑各个页面的布局和组件</li>
@@ -99,22 +111,22 @@ export default function Overview() {
           <li>• 点击右上角的语言按钮可以预览不同语言的显示效果</li>
           <li>• 如果数据加载失败，请检查 API 服务是否正常运行</li>
         </ul>
-      </div>
+      </Card>
 
       {/* API 状态提示 */}
-      <div className="bg-gray-50 border border-gray-200 rounded-xl p-4">
+      <Card className="p-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <div className={`w-2 h-2 rounded-full ${error ? 'bg-red-500' : isLoading ? 'bg-yellow-500' : 'bg-green-500'}`} />
-            <span className="text-sm text-gray-600">
+            <span className="text-sm text-muted-foreground">
               API 状态：{error ? '连接失败' : isLoading ? '加载中' : '已连接'}
             </span>
           </div>
-          <span className="text-xs text-gray-400 font-mono">
+          <span className="text-xs text-muted-foreground font-mono">
             {import.meta.env.VITE_API_BASE_URL || 'http://localhost:8787'}
           </span>
         </div>
-      </div>
+      </Card>
     </div>
   );
 }

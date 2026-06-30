@@ -128,6 +128,7 @@ Markdown 编辑行为位于 `src/core/markdown`。站点包负责保留具体编
 
 ```text
 VITE_API_BASE_URL   后端 API 地址，本地开发通常指向 worker-api 本地服务
+VITE_API_ASSETS   数据库资产，本地开发通常指向
 VITE_ADMIN_TOKEN    管理端请求使用的 token
 ```
 
