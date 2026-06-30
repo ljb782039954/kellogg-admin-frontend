@@ -19,7 +19,8 @@
     /* Path alias */
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "@site/*": ["./src/site-package/kellogg/*"]
     },
 
     /* Linting */

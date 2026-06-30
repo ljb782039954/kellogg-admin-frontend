@@ -3,7 +3,7 @@ import { Input } from '@/components/ui/input';
 import { Switch } from '@/components/ui/switch';
 import BilingualInput from '../../components/BilingualInput';
 import ImageInput from '../../components/ImageInput';
-import type { VideoSectionProps } from '@/components/blocks/VideoSection';
+import type { VideoSectionProps } from '@site/components-web/blocks/VideoSection';
 
 export interface VideoSectionPropsEditorProps {
   props: VideoSectionProps;

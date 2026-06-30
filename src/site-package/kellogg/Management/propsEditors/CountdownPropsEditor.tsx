@@ -3,7 +3,7 @@
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import BilingualInput from '../../components/BilingualInput';
-import type { CountdownProps } from '@/components/blocks/Countdown';
+import type { CountdownProps } from '@site/components-web/blocks/Countdown';
 
 export interface CountdownPropsEditorProps {
   props: CountdownProps;

@@ -10,7 +10,7 @@ import {
 } from '@/components/ui/select';
 import BilingualInput from '../../components/BilingualInput';
 import ImageInput from '../../components/ImageInput';
-import type { ImageFullProps } from '@/components/blocks/ImageFull';
+import type { ImageFullProps } from '@site/components-web/blocks/ImageFull';
 
 export interface ImageFullPropsEditorProps {
   props: ImageFullProps;

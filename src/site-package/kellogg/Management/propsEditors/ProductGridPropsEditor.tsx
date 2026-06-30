@@ -7,7 +7,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import type { ProductGridProps } from '@/components/blocks/ProductGrid';
+import type { ProductGridProps } from '@site/components-web/blocks/ProductGrid';
 
 export interface ProductGridPropsEditorProps {
   props: ProductGridProps;

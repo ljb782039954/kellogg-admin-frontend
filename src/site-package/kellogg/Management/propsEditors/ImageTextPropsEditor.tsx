@@ -11,7 +11,7 @@ import {
 import BilingualInput from '../../components/BilingualInput';
 import BilingualRichInput from '../../components/RichInput/BilingualRichInput';
 import ImageInput from '../../components/ImageInput';
-import type { ImageTextProps } from '@/components/blocks/ImageText';
+import type { ImageTextProps } from '@site/components-web/blocks/ImageText';
 
 export interface ImageTextPropsEditorProps {
   props: ImageTextProps;

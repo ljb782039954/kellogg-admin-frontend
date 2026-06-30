@@ -2,7 +2,7 @@
 import { Label } from '@/components/ui/label';
 import BilingualInput from '../../components/BilingualInput';
 import ImageInput from '../../components/ImageInput';
-import type { ImageBannerTagProps } from '@/components/blocks/ImageBannerTag';
+import type { ImageBannerTagProps } from '@site/components-web/blocks/ImageBannerTag';
 
 export interface ImageBannerTagPropsEditorProps {
   props: ImageBannerTagProps;

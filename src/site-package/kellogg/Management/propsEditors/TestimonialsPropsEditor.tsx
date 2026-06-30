@@ -8,7 +8,7 @@ import { Label } from '@/components/ui/label';
 import BilingualInput from '../../components/BilingualInput';
 import BilingualInputAera from '../../components/BilingualInputAera';
 import ImageInput from '../../components/ImageInput';
-import type { Testimonial, TestimonialProps } from '@/components/blocks/Testimonials';
+import type { Testimonial, TestimonialProps } from '@site/components-web/blocks/Testimonials';
 
 export interface TestimonialsPropsEditorProps {
   props: TestimonialProps;

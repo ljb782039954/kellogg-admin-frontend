@@ -11,7 +11,7 @@ import {
 } from '@/components/ui/select';
 import BilingualInput from '../../components/BilingualInput';
 import ImageInput from '../../components/ImageInput';
-import type { ImageBannerProps } from '@/components/blocks/ImageBanner';
+import type { ImageBannerProps } from '@site/components-web/blocks/ImageBanner';
 
 export interface ImageBannerPropsEditorProps {
   props: ImageBannerProps;

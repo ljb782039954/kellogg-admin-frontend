@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import BilingualInput from '../../components/BilingualInput';
-import type { FAQItem, FAQProps } from '@/components/blocks/Faq';
+import type { FAQItem, FAQProps } from '@site/components-web/blocks/Faq';
 
 export interface FAQPropsEditorPropsEditorProps {
   props: FAQProps;

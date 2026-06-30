@@ -9,7 +9,7 @@ import {
 } from '@/components/ui/select';
 import BilingualInput from '../../components/BilingualInput';
 import BilingualRichInput from '../../components/RichInput/BilingualRichInput';
-import type { TextSectionProps } from '@/components/blocks/TextSection';
+import type { TextSectionProps } from '@site/components-web/blocks/TextSection';
 
 export interface TextSectionPropsEditorProps {
   props: TextSectionProps;

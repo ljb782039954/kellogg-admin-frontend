@@ -12,7 +12,7 @@ import { Button } from '@/components/ui/button';
 import { Plus, Trash2 } from 'lucide-react';
 import BilingualInput from '../../components/BilingualInput';
 import ImageInput from '../../components/ImageInput';
-import type { GalleryProps } from '@/components/blocks/Gallery';
+import type { GalleryProps } from '@site/components-web/blocks/Gallery';
 
 export interface GalleryPropsEditorProps {
   props: GalleryProps;

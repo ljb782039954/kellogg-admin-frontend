@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import BilingualInput from '../../components/BilingualInput';
-import type { Statistic, StatisticProps } from '@/components/blocks/Statistics';
+import type { Statistic, StatisticProps } from '@site/components-web/blocks/Statistics';
 
 export interface StatisticsPropsEditorProps {
   props: StatisticProps;

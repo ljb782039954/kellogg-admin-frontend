@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import BilingualInput from '../../components/BilingualInput';
 import BilingualRichInput from '../../components/RichInput/BilingualRichInput';
-import type { BrandValue, BrandValuesProps } from '@/components/blocks/BrandValues';
+import type { BrandValue, BrandValuesProps } from '@site/components-web/blocks/BrandValues';
 // import { iconOptions } from '@/types';
 
 export interface BrandValuesPropsEditorProps {
