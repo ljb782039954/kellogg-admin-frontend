@@ -1,32 +1,32 @@
 // 积木块属性编辑面板
-import { type PageBlock } from '../types/blocks';
-import { componentRegistry } from '../metadata/componentRegistry';
+import { type PageBlock } from '../../types/blocks';
+import { componentRegistry } from '../../metadata/componentRegistry';
 import * as LucideIcons from 'lucide-react';
 
 // 组件基础编辑器
-import { TextSectionPropsEditor } from './propsEditors/TextSectionPropsEditor';
-import { ImageBannerPropsEditor } from './propsEditors/ImageBannerPropsEditor';
-import { ImageFullPropsEditor } from './propsEditors/ImageFullPropsEditor';
-import { ImageBannerTagPropsEditor } from './propsEditors/ImageBannerTagPropsEditor';
-import { ProductGridPropsEditor } from './propsEditors/ProductGridPropsEditor';
-import { LayoutPropsEditor } from './propsEditors/LayoutPropsEditor';
+import { TextSectionPropsEditor } from '../propsEditors/TextSectionPropsEditor';
+import { ImageBannerPropsEditor } from '../propsEditors/ImageBannerPropsEditor';
+import { ImageFullPropsEditor } from '../propsEditors/ImageFullPropsEditor';
+import { ImageBannerTagPropsEditor } from '../propsEditors/ImageBannerTagPropsEditor';
+import { ProductGridPropsEditor } from '../propsEditors/ProductGridPropsEditor';
+import { LayoutPropsEditor } from '../propsEditors/LayoutPropsEditor';
 
 // 实体/全页面数据编辑器
-import { CarouselPropsEditor } from './propsEditors/CarouselPropsEditor';
-import { BrandValuesPropsEditor } from './propsEditors/BrandValuesPropsEditor';
-import { StatisticsPropsEditor } from './propsEditors/StatisticsPropsEditor';
-import { TestimonialsPropsEditor } from './propsEditors/TestimonialsPropsEditor';
-import { CategoriesPropsEditor } from './propsEditors/CategoriesPropsEditor';
-import { NewArrivalsPropsEditor } from './propsEditors/NewArrivalsPropsEditor';
-import { FeaturedProductsPropsEditor } from './propsEditors/FeaturedProductsPropsEditor';
-import { ImageTextPropsEditor } from './propsEditors/ImageTextPropsEditor';
-import { CountdownPropsEditor } from './propsEditors/CountdownPropsEditor';
-import { PartnerLogosPropsEditor } from './propsEditors/PartnerLogosPropsEditor';
-import { GalleryPropsEditor } from './propsEditors/GalleryPropsEditor';
-import { FeatureListPropsEditor } from './propsEditors/FeatureListPropsEditor';
-import { CtaBannerPropsEditor } from './propsEditors/CtaBannerPropsEditor';
-import { VideoSectionPropsEditor } from './propsEditors/VideoSectionPropsEditor';
-import { FAQPropsEditor } from './propsEditors/FAQPropsEditor';
+import { CarouselPropsEditor } from '../propsEditors/CarouselPropsEditor';
+import { BrandValuesPropsEditor } from '../propsEditors/BrandValuesPropsEditor';
+import { StatisticsPropsEditor } from '../propsEditors/StatisticsPropsEditor';
+import { TestimonialsPropsEditor } from '../propsEditors/TestimonialsPropsEditor';
+import { CategoriesPropsEditor } from '../propsEditors/CategoriesPropsEditor';
+import { NewArrivalsPropsEditor } from '../propsEditors/NewArrivalsPropsEditor';
+import { FeaturedProductsPropsEditor } from '../propsEditors/FeaturedProductsPropsEditor';
+import { ImageTextPropsEditor } from '../propsEditors/ImageTextPropsEditor';
+import { CountdownPropsEditor } from '../propsEditors/CountdownPropsEditor';
+import { PartnerLogosPropsEditor } from '../propsEditors/PartnerLogosPropsEditor';
+import { GalleryPropsEditor } from '../propsEditors/GalleryPropsEditor';
+import { FeatureListPropsEditor } from '../propsEditors/FeatureListPropsEditor';
+import { CtaBannerPropsEditor } from '../propsEditors/CtaBannerPropsEditor';
+import { VideoSectionPropsEditor } from '../propsEditors/VideoSectionPropsEditor';
+import { FAQPropsEditor } from '../propsEditors/FAQPropsEditor';
 
 interface BlockPropsEditorProps {
   block: PageBlock;

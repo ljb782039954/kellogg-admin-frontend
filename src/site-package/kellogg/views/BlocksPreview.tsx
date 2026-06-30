@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { componentRegistry, componentsByCategory, categoryNames } from '@/site-package/kellogg/metadata/componentRegistry';
-import type { BlockType } from './types/blocks';
+import type { BlockType } from '../types/blocks';
 import * as LucideIcons from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -10,7 +10,7 @@ import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { useLanguage } from '@/core/context/LanguageContext';
 
-import * as previewData from './metadata/blocksContent';
+import * as previewData from '../metadata/blocksContent';
 import {
   Carousel,
   Categories,

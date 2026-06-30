@@ -14,7 +14,7 @@ import { Badge } from '@/components/ui/badge';
 import { type R2Image } from '@/core/types';
 import { type UsageInfo } from '@/core/hooks/useImageUsage';
 import { format } from 'date-fns';
-import AdminImage from '../components/AdminImage';
+import AdminImage from '../../components/AdminImage';
 
 interface MediaDetailsProps {
   image: R2Image | undefined;

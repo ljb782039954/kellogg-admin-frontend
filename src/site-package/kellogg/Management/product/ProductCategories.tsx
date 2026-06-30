@@ -1,10 +1,10 @@
 import { motion } from 'framer-motion';
 import { Plus, Trash2, Save, Layers, GripVertical, Loader2 } from 'lucide-react';
 import { useCategoriesEditor } from '@/core/items/product';
-import BilingualInput from '../components/BilingualInput';
-import ImageInput from '../components/ImageInput';
+import BilingualInput from '../../components/BilingualInput';
+import ImageInput from '../../components/ImageInput';
 
-export default function CategoriesEditor() {
+export default function ProductCategoriesEditor() {
   const {
     categories,
     contextLoading,

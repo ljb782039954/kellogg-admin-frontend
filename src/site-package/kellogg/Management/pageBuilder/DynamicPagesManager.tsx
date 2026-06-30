@@ -13,7 +13,7 @@ import {
   Layers
 } from 'lucide-react';
 import { useDynamicPagesManager } from '@/core/items/page-builder';
-import { type CustomPage } from '../types/blocks';
+import { type CustomPage } from '../../types/blocks';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
@@ -44,7 +44,7 @@ import {
 } from '@/components/ui/alert-dialog';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/core/hooks/use-toast';
-import BilingualInput from '../components/BilingualInput';
+import BilingualInput from '../../components/BilingualInput';
 
 export function DynamicPagesManager() {
   const navigate = useNavigate();

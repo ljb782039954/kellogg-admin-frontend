@@ -1,6 +1,6 @@
 // import React from 'react';
 import { Label } from '@/components/ui/label';
-import BilingualInput from '../components/BilingualInput';
+import BilingualInput from '../../components/BilingualInput';
 import { Settings, Globe } from 'lucide-react';
 import { type Translation } from '@/core/types';
 

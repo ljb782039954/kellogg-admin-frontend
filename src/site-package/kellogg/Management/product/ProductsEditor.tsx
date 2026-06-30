@@ -4,12 +4,12 @@ import { useLanguage } from '@/core/context/LanguageContext';
 import { useProductsEditor } from '@/core/items/product';
 
 // Subcomponents
-import ProductSummary from './product/ProductSummary';
-import ProductMediaSection from './product/ProductMediaSection';
-import ProductInfoSection from './product/ProductInfoSection';
-import ProductVariantsSection from './product/ProductVariantsSection';
-import ProductCustomFields from './product/ProductCustomFields';
-import BulkPriceSection from './product/BulkPriceSection';
+import ProductSummary from './ProductSummary';
+import ProductMediaSection from './ProductMediaSection';
+import ProductInfoSection from './ProductInfoSection';
+import ProductVariantsSection from './ProductVariantsSection';
+import ProductCustomFields from './ProductCustomFields';
+import BulkPriceSection from './BulkPriceSection';
 
 export default function ProductsEditor() {
   const { language } = useLanguage();

@@ -1,6 +1,6 @@
 // 可拖拽的积木块列表组件
 import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
-import { type PageBlock } from '../types/blocks';
+import { type PageBlock } from '../../types/blocks';
 import { BlockItem } from './BlockItem';
 
 interface BlockListProps {

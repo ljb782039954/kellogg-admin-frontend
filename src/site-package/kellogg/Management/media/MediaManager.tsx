@@ -3,9 +3,9 @@ import { toast } from 'sonner';
 import { useMediaManager } from '@/core/items/media';
 
 // 子组件
-import { MediaHeader } from './media/MediaHeader';
-import { MediaGrid } from './media/MediaGrid';
-import { MediaDetails } from './media/MediaDetails';
+import { MediaHeader } from './MediaHeader';
+import { MediaGrid } from './MediaGrid';
+import { MediaDetails } from './MediaDetails';
 
 export default function MediaManager() {
   const fileInputRef = useRef<HTMLInputElement>(null);

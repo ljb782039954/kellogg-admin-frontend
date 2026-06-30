@@ -2,8 +2,8 @@ import { Save, Loader2, FileText, Info } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useContent } from '@/core/context/ContentContext';
 import { DEFAULT_INQUIRY_CONFIG, useInquiryEditor } from '@/core/items/inquiry';
-import BilingualInput from '../components/BilingualInput';
-import BilingualInputAera from '../components/BilingualInputAera';
+import BilingualInput from '../../components/BilingualInput';
+import BilingualInputAera from '../../components/BilingualInputAera';
 import { toast } from 'sonner';
 
 export default function InquiryEditor() {

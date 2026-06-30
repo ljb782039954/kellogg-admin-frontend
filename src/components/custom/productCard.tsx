@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import type { Product } from '@/types';
+import type { Product } from '@/core/types';
 
 interface Props {
     product: Product;

@@ -1,6 +1,6 @@
 // 组件缩略图预览组件
 import React from 'react';
-import { type BlockType } from '../types/blocks';
+import { type BlockType } from '../../types/blocks';
 
 interface BlockThumbnailProps {
   type: BlockType;

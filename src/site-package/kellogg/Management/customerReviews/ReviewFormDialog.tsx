@@ -3,7 +3,7 @@ import { X, Youtube, Image as ImageIcon, Star, AlertCircle, Loader2 } from 'luci
 import { toast } from 'sonner';
 import { useReviewForm } from '@/core/items/review';
 import type { CustomerReview } from '@/core/types';
-import ImageInput from './components/ImageInput';
+import ImageInput from '../../components/ImageInput';
 
 const LABEL = 'block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1.5';
 const INPUT = 'w-full px-3 py-2 text-sm border border-gray-200 rounded-xl bg-white focus:ring-2 focus:ring-gray-900 focus:border-transparent transition-all placeholder-gray-300';

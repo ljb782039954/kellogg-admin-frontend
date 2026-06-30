@@ -11,13 +11,13 @@ import {
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
-import { type BlockType, type PageBlock, type ComponentCategory } from '../types/blocks';
+import { type BlockType, type PageBlock, type ComponentCategory } from '../../types/blocks';
 import {
   componentRegistry,
   componentsByCategory,
   categoryNames,
   canAddBlock,
-} from '../metadata/componentRegistry';
+} from '../../metadata/componentRegistry';
 import BlockThumbnail from './BlockThumbnail';
 
 interface AddBlockDialogProps {
