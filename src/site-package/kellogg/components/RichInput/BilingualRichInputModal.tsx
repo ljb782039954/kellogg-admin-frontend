@@ -1,8 +1,8 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { X, Save, Languages } from 'lucide-react';
 import type { Translation } from '@/core/types';
 import RichInput from './RichInput';
-import { getPreviewHtml } from './utils';
+import { getPreviewHtml } from '@/core/rich-text';
 
 interface BilingualRichInputModalProps {
   isOpen: boolean;
@@ -20,15 +20,8 @@ export default function BilingualRichInputModal({
   placeholder = {},
 }: BilingualRichInputModalProps) {
   const [activeTab, setActiveTab] = useState<'zh' | 'en' | 'compare'>('zh');
-  const [localZh, setLocalZh] = useState('');
-  const [localEn, setLocalEn] = useState('');
-
-  useEffect(() => {
-    if (isOpen) {
-      setLocalZh(value.zh || '');
-      setLocalEn(value.en || '');
-    }
-  }, [isOpen, value]);
+  const [localZh, setLocalZh] = useState(value.zh || '');
+  const [localEn, setLocalEn] = useState(value.en || '');
 
   if (!isOpen) return null;
 

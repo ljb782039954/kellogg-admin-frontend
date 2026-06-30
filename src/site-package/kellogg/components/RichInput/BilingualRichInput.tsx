@@ -47,13 +47,15 @@ export default function BilingualRichInput({
         />
       </div>
 
-      <BilingualRichInputModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        value={value}
-        onChange={onChange}
-        placeholder={placeholder}
-      />
+      {isModalOpen && (
+        <BilingualRichInputModal
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          value={value}
+          onChange={onChange}
+          placeholder={placeholder}
+        />
+      )}
     </div>
   );
 }

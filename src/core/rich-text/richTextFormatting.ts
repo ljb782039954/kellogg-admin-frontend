@@ -1,15 +1,31 @@
 import { marked } from 'marked';
 
+export type RichTextFormatAction =
+  | 'bold'
+  | 'italic'
+  | 'underline'
+  | 'strike'
+  | 'code'
+  | 'list'
+  | 'link';
+
+interface RichTextSelection {
+  selectionStart: number;
+  selectionEnd: number;
+}
+
 /**
- * 格式化 Markdown 文本并返回更新后的文本值与新的光标定位范围
+ * 格式化 Markdown 文本并返回更新后的文本值与新的光标定位范围。
+ *
+ * 这里接收的是选择区间而不是完整 textarea，让核心逻辑不依赖 React 或站点 UI。
  */
-export function handleFormatHelper(
-  textarea: HTMLTextAreaElement,
+export function formatRichTextSelection(
+  selection: RichTextSelection,
   text: string,
-  action: string
+  action: RichTextFormatAction | string
 ): { newValue: string; newStart: number; newEnd: number } {
-  const start = textarea.selectionStart;
-  const end = textarea.selectionEnd;
+  const start = selection.selectionStart;
+  const end = selection.selectionEnd;
   const selectedText = text.substring(start, end);
 
   let prefix = '';
@@ -61,12 +77,23 @@ export function handleFormatHelper(
 }
 
 /**
- * 转换 Markdown 文本为 HTML (带防崩溃保护)
+ * 兼容 textarea 调用方的薄适配器。
+ */
+export function handleFormatHelper(
+  textarea: HTMLTextAreaElement,
+  text: string,
+  action: RichTextFormatAction | string
+): { newValue: string; newStart: number; newEnd: number } {
+  return formatRichTextSelection(textarea, text, action);
+}
+
+/**
+ * 转换 Markdown 文本为 HTML (带防崩溃保护)。
  */
 export function getPreviewHtml(text: string): { __html: string } {
   try {
     return { __html: marked.parse(text || '') as string };
-  } catch (e) {
+  } catch {
     return { __html: text || '' };
   }
 }

@@ -1,142 +1,27 @@
 // Header 组件管理主入口
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Save, AlertTriangle, Globe, Share2, Menu, Loader2 } from 'lucide-react';
-import { useContent } from '@/core/context/ContentContext';
+import { Save, AlertTriangle,Loader2 } from 'lucide-react';
+import { useHeaderEditor } from '@/core/items/site';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { checkPageExists } from '@/core/lib/linkUtils';
-import type { HeaderContent } from '@/core/types';
-import siteSettings from '../../metadata/siteSettings.json';
-import { getPreviewUrl } from '@/core/lib/utils';
 import NavEditor from './NavEditor';
+import HeaderPreview from './headerPreview';
 
-// Header 预览组件
-function HeaderPreview({ header, language }: { header: HeaderContent; language: 'zh' | 'en' }) {
-  return (
-    <Card className="overflow-hidden">
-      <CardHeader className="pb-2">
-        <CardTitle className="text-base flex items-center gap-2">
-          预览效果
-          <Badge variant="outline" className="ml-2">{language === 'zh' ? '中文' : 'English'}</Badge>
-        </CardTitle>
-        <CardDescription>在浏览器中的实际显示效果（简易预览，完整下拉效果请在前台查看）</CardDescription>
-      </CardHeader>
-      <CardContent className="p-0">
-        <div className="bg-white border-b border-gray-200 px-6 py-4">
-          <div className="flex items-center justify-between">
-            {/* Logo */}
-            <div className="flex items-center gap-2">
-              {siteSettings.brand.logo && (
-                <img
-                  src={getPreviewUrl(siteSettings.brand.logo)}
-                  alt="Logo"
-                  className="w-8 h-8 object-contain rounded"
-                  onError={(e) => {
-                    (e.target as HTMLImageElement).style.display = 'none';
-                  }}
-                />
-              )}
-              <span className="text-xl font-bold text-gray-800">
-                {siteSettings.brand.name[language]}
-              </span>
-            </div>
-
-            {/* 导航菜单 */}
-            <nav className="hidden md:flex items-center gap-6">
-              {header.navItems.slice(0, 5).map((item, index) => (
-                <div key={index} className="group relative">
-                  <span
-                    className={`text-sm font-medium transition-colors ${item.pageDeleted
-                      ? 'text-red-500 line-through'
-                      : 'text-gray-600 hover:text-gray-900'
-                      }`}
-                  >
-                    {item.name[language]}
-                    {item.children && item.children.length > 0 && (
-                      <span className="ml-1 text-xs">▼</span>
-                    )}
-                  </span>
-                </div>
-              ))}
-            </nav>
-
-            {/* 右侧操作 */}
-            <div className="flex items-center gap-3">
-              <button className="p-2 rounded-full text-gray-600 hover:text-gray-900 border border-gray-200">
-                <Share2 className="w-4 h-4" />
-              </button>
-              <button className="flex items-center gap-1 px-3 py-1.5 rounded-full text-sm font-medium text-gray-600 hover:text-gray-900 border border-gray-200">
-                <Globe className="w-4 h-4" />
-                {language === 'zh' ? '中文' : 'EN'}
-              </button>
-              <button className="md:hidden p-2 text-gray-600">
-                <Menu className="w-5 h-5" />
-              </button>
-            </div>
-          </div>
-        </div>
-      </CardContent>
-    </Card>
-  );
-}
 
 export default function HeaderEditor() {
-  const { content, updateHeader, isLoading: contextLoading } = useContent();
-  const [localHeader, setLocalHeader] = useState<HeaderContent>(content.header);
-  const [saved, setSaved] = useState(false);
-  const [isSaving, setIsSaving] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [hasDeletedPages, setHasDeletedPages] = useState(false);
   const [previewLang, setPreviewLang] = useState<'zh' | 'en'>('zh');
-
-  // 从 context 同步数据
-  useEffect(() => {
-    setLocalHeader(content.header);
-  }, [content.header]);
-
-  // 检查是否有已删除的页面链接
-  useEffect(() => {
-    const hasDeleted = localHeader.navItems.some(
-      (item) => !checkPageExists(item.href, item.linkType, content.pages) || 
-      (item.children && item.children.some(sub => !checkPageExists(sub.href, sub.linkType, content.pages)))
-    );
-    setHasDeletedPages(hasDeleted);
-  }, [localHeader.navItems, content.pages]);
-
-  // 将旧格式转换为新格式
-  useEffect(() => {
-    const needsConversion = localHeader.navItems.some((item) => !('linkType' in item));
-    if (needsConversion) {
-      const convertedItems = localHeader.navItems.map((item) => ({
-        ...item,
-        linkType: (item.href?.startsWith('http') ? 'external' : 'internal') as 'internal' | 'external',
-      }));
-      setLocalHeader({ ...localHeader, navItems: convertedItems });
-    }
-  }, []);
-
-  const handleSave = async () => {
-    setIsSaving(true);
-    setError(null);
-
-    try {
-      // 确保存入数据库的数据最多只有 5 个一级菜单
-      const headerToSave = {
-        ...localHeader,
-        navItems: localHeader.navItems.slice(0, 5),
-      };
-      await updateHeader(headerToSave);
-      setSaved(true);
-      setTimeout(() => setSaved(false), 2000);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : '保存失败');
-    } finally {
-      setIsSaving(false);
-    }
-  };
+  const {
+    contextLoading,
+    error,
+    hasDeletedPages,
+    isSaving,
+    localHeader,
+    saved,
+    handleSave,
+    setError,
+    updateNavItems,
+  } = useHeaderEditor();
 
   if (contextLoading) {
     return (
@@ -224,7 +109,7 @@ export default function HeaderEditor() {
       {/* 导航菜单列表编辑器 */}
       <NavEditor 
         navItems={localHeader.navItems} 
-        onChange={(items) => setLocalHeader({ ...localHeader, navItems: items })} 
+        onChange={updateNavItems} 
       />
     </div>
   );

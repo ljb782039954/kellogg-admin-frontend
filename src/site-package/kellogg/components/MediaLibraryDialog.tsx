@@ -1,4 +1,3 @@
-import { useState, useEffect, useMemo } from 'react';
 import { 
   Search, 
   Image as ImageIcon, 
@@ -20,8 +19,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { useContent } from '@/core/context/ContentContext';
-import { type R2Image } from '@/core/types';
+import { formatMediaFileSize, useMediaLibraryDialog } from '@/core/items/media';
 import { cn } from '@/lib/utils';
 import { format } from 'date-fns';
 import AdminImage from './AdminImage';
@@ -33,55 +31,17 @@ interface MediaLibraryDialogProps {
 }
 
 export function MediaLibraryDialog({ open, onClose, onSelect }: MediaLibraryDialogProps) {
-  const { getImagesList } = useContent();
-  const [images, setImages] = useState<R2Image[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [selectedKey, setSelectedKey] = useState<string | null>(null);
-
-  const loadImages = async () => {
-    setIsLoading(true);
-    try {
-      const data = await getImagesList();
-      setImages(data);
-    } catch (err) {
-      console.error('Failed to load media library:', err);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    if (open) {
-      loadImages();
-    }
-  }, [open]);
-
-  const filteredImages = useMemo(() => {
-    if (!searchQuery) return images;
-    return images.filter(img => 
-      img.name.toLowerCase().includes(searchQuery.toLowerCase())
-    );
-  }, [images, searchQuery]);
-
-  const selectedImage = useMemo(() => {
-    return images.find(img => img.key === selectedKey);
-  }, [images, selectedKey]);
-
-  const handleConfirm = () => {
-    if (selectedImage) {
-      onSelect(selectedImage.url);
-      onClose();
-    }
-  };
-
-  const formatSize = (bytes: number) => {
-    if (bytes === 0) return '0 Bytes';
-    const k = 1024;
-    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
-  };
+  const {
+    filteredImages,
+    images,
+    isLoading,
+    searchQuery,
+    selectedImage,
+    selectedKey,
+    handleConfirm,
+    setSearchQuery,
+    setSelectedKey,
+  } = useMediaLibraryDialog({ open, onClose, onSelect });
 
   return (
     <Dialog open={open} onOpenChange={(isOpen) => !isOpen && onClose()}>
@@ -203,7 +163,7 @@ export function MediaLibraryDialog({ open, onClose, onSelect }: MediaLibraryDial
                       <RefreshCw className="w-3 h-3" />
                       文件大小
                     </div>
-                    <p className="text-sm font-medium">{formatSize(selectedImage.size)}</p>
+                    <p className="text-sm font-medium">{formatMediaFileSize(selectedImage.size)}</p>
                   </div>
 
                   <div className="space-y-1">

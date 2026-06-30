@@ -1,8 +1,6 @@
-import { useRef, useState } from 'react';
 import { Upload, X, RefreshCw, Loader2 } from 'lucide-react';
-import { useContent } from '@/core/context/ContentContext';
 import { getPreviewUrl } from '@/core/lib/utils';
-import { resizeImage, calculateImageHash, calculateHashSimilarity } from '@/core/lib/image';
+import { useImageInputUpload } from '@/core/items/media';
 import AdminImage from './AdminImage';
 import {
   Dialog,
@@ -34,123 +32,17 @@ export default function ImageInput({
   acceptType = 'image/*',
   maxWidth,
 }: ImageInputProps) {
-  const fileInputRef = useRef<HTMLInputElement>(null);
-  const [isUploading, setIsUploading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const { uploadImage, getImagesList } = useContent();
-  const [dupMatches, setDupMatches] = useState<Array<{ image: any; similarity: number }>>([]);
-  const [pendingUpload, setPendingUpload] = useState<{
-    file: File;
-    dimensions?: { width: number; height: number };
-    hash: string;
-  } | null>(null);
-
-  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    setIsUploading(true);
-    setError(null);
-
-    try {
-      let fileToUpload = file;
-      let dimensions: { width: number; height: number } | undefined;
-
-      // Try to get original dimensions
-      if (file.type.startsWith('image/')) {
-        dimensions = await new Promise((resolve) => {
-          const img = new Image();
-          img.onload = () => resolve({ width: img.width, height: img.height });
-          img.onerror = () => resolve(undefined);
-          img.src = URL.createObjectURL(file);
-        });
-      }
-      
-      // If it's an image and maxWidth is provided, resize it first
-      if (maxWidth && file.type.startsWith('image/')) {
-        try {
-          fileToUpload = await resizeImage(file, maxWidth);
-        } catch (resizeErr) {
-          console.warn('Image resize failed, uploading original:', resizeErr);
-        }
-      }
-
-      // Calculate image aHash
-      const imageHash = await calculateImageHash(fileToUpload);
-
-      if (imageHash) {
-        // Fetch all current images from database
-        const dbImages = await getImagesList();
-        
-        // Find duplicate matches with similarity >= 0.95
-        const matches = dbImages
-          .map(img => ({
-            image: img,
-            similarity: img.hash ? calculateHashSimilarity(imageHash, img.hash) : 0
-          }))
-          .filter(item => item.similarity >= 0.95)
-          .sort((a, b) => b.similarity - a.similarity);
-
-        if (matches.length > 0) {
-          // Store matching candidates and upload details
-          setDupMatches(matches);
-          setPendingUpload({
-            file: fileToUpload,
-            dimensions,
-            hash: imageHash
-          });
-          setIsUploading(false);
-          return;
-        }
-      }
-
-      // No duplicates found, upload directly
-      const result = await uploadImage(fileToUpload, dimensions, imageHash || undefined);
-      onChange(result.url);
-    } catch (err) {
-      console.error('Upload failed:', err);
-      setError('图片上传失败，请重试');
-    } finally {
-      setIsUploading(false);
-    }
-  };
-
-  const handleReuse = (url: string) => {
-    onChange(url);
-    resetUploadState();
-  };
-
-  const handleForceUpload = async () => {
-    if (!pendingUpload) return;
-    
-    setIsUploading(true);
-    try {
-      const result = await uploadImage(
-        pendingUpload.file, 
-        pendingUpload.dimensions, 
-        pendingUpload.hash
-      );
-      onChange(result.url);
-    } catch (err) {
-      console.error('Upload failed:', err);
-      setError('上传失败');
-    } finally {
-      setIsUploading(false);
-      resetUploadState();
-    }
-  };
-
-  const resetUploadState = () => {
-    setDupMatches([]);
-    setPendingUpload(null);
-    if (fileInputRef.current) fileInputRef.current.value = '';
-  };
-
-  const clearImage = () => {
-    onChange('');
-    setError(null);
-    if (fileInputRef.current) fileInputRef.current.value = '';
-  };
+  const {
+    dupMatches,
+    error,
+    fileInputRef,
+    isUploading,
+    clearImage,
+    handleFileChange,
+    handleForceUpload,
+    handleReuse,
+    resetUploadState,
+  } = useImageInputUpload({ maxWidth, onChange });
 
   const aspectRatioClass = {
     square: 'aspect-square max-w-[140px]',

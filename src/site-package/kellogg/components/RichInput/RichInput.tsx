@@ -4,7 +4,7 @@ import {
   List, Link,  Maximize2, Eye, Edit2 ,
   // Sparkles,
 } from 'lucide-react';
-import { handleFormatHelper, getPreviewHtml } from './utils';
+import { handleFormatHelper, getPreviewHtml } from '@/core/rich-text';
 
 interface RichInputProps {
   value: string;

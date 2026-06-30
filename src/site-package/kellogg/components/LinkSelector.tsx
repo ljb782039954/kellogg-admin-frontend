@@ -1,5 +1,4 @@
 // 链接选择组件 - 支持内部页面链接和外部链接
-import { useEffect, useMemo } from 'react';
 import { AlertTriangle, ExternalLink, FileText } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -11,16 +10,8 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
-import type { LinkType, NavLink, Translation, } from '@/core/types';
-import { useContent } from '@/core/context/ContentContext';
-
-// 页面选项
-interface PageOption {
-  pageId: string;
-  path: string;
-  title: Translation;
-  isFixed: boolean;
-}
+import { useLinkSelector } from '@/core/items/site';
+import type { LinkType, NavLink } from '@/core/types';
 
 interface LinkSelectorProps {
   value: NavLink;
@@ -28,61 +19,14 @@ interface LinkSelectorProps {
 }
 
 export default function LinkSelector({ value, onChange }: LinkSelectorProps) {
-  const { content } = useContent();
-  // 加载页面列表 (派生状态)
-  const pages = useMemo<PageOption[]>(() => {
-    return content.pages.map(p => ({
-      pageId: p.id,
-      path: p.path,
-      title: p.title,
-      isFixed: p.isFixed,
-    }));
-  }, [content.pages]);
-
-  // 检查当前链接的页面是否已被删除 (派生状态)
-  const isPageDeleted = useMemo(() => {
-    if (value.linkType === 'internal' && value.href) {
-      const exists = pages.some(p => p.pageId === value.href || p.path === value.href);
-      return !exists;
-    }
-    return false;
-  }, [value.href, value.linkType, pages]);
-
-  // 这里的 useEffect 仅用于通知父组件数据模型状态变化，不再同步调用本地 setState
-  useEffect(() => {
-    if (isPageDeleted && !value.pageDeleted) {
-      onChange({ ...value, pageDeleted: true });
-    }
-  }, [isPageDeleted, value.pageDeleted]);
-
-  // 更新链接类型
-  const handleTypeChange = (type: LinkType) => {
-    onChange({
-      ...value,
-      linkType: type,
-      href: '',
-      pageDeleted: false,
-    });
-  };
-
-  // 更新内部链接
-  const handlePageChange = (pageId: string) => {
-    const page = pages.find((p) => p.pageId === pageId);
-    onChange({
-      ...value,
-      href: page?.path || pageId,
-      pageDeleted: false,
-    });
-  };
-
-  // 更新外部链接
-  const handleUrlChange = (url: string) => {
-    onChange({
-      ...value,
-      href: url,
-      pageDeleted: false,
-    });
-  };
+  const {
+    isPageDeleted,
+    pages,
+    selectedPageValue,
+    handlePageChange,
+    handleTypeChange,
+    handleUrlChange,
+  } = useLinkSelector({ value, onChange });
 
   return (
     <div className="space-y-3">
@@ -115,7 +59,7 @@ export default function LinkSelector({ value, onChange }: LinkSelectorProps) {
         <div className="space-y-2">
           <Label className="text-sm">选择内部页面 (Destination)</Label>
           <Select
-            value={pages.find((p) => p.path === value.href)?.pageId || value.href || ''}
+            value={selectedPageValue}
             onValueChange={handlePageChange}
           >
             <SelectTrigger className={isPageDeleted ? 'border-red-500' : ''}>
