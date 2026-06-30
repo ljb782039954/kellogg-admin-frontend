@@ -1,69 +1,134 @@
-# adminApp — 后台管理端
+# adminApp 开发速览
 
-React 19 + Vite 7 + Tailwind v3 + shadcn/ui。
 
----
+## 项目特点
 
-## src/ 目录导航
+- React + Vite 单页后台应用。
+- 支持中英文内容管理。
+- 支持商品、分类、博客、询盘、客户评价、媒体资源、导航、页脚、公司信息和动态页面。
+- 支持图片上传、媒体库管理和相似图片检查。
+- 支持页面搭建器，通过 block 组合动态页面。
+- 通用业务逻辑逐步沉淀到 `src/core`，站点 UI、样式、素材和 block 实现留在站点包。
 
-```
-admin/
-├── pageBuilder/       积木页面编辑器（核心功能）
-│   ├── PageLayoutEditor.tsx  左右两栏编辑器
-│   ├── DynamicPagesManager.tsx  页面列表管理（三类页面）
-│   ├── BlockList + BlockItem + AddBlockDialog  积木块 CRUD
-│   ├── BlockPropsEditor  属性面板分发器
-│   ├── BlockThumbnail + PageSettingsEditor + SEOEditor
-│   └── propsEditors/    每种组件对应的属性编辑面板（21个）
-├── editors/           各数据板块
-│   ├── product/       产品仓库（展开式编辑：信息/媒体/变体/字段/价格）
-│   ├── headerEditor/  导航管理（一级最多5个+二级子菜单）
-│   ├── CompanyInfoEditor + FooterEditor + CategoriesEditor
-│   └── InquiryEditor + ProductsEditor
-├── components/        通用编辑组件
-│   ├── BilingualInput 中英文双输入框
-│   ├── ImageInput     纯上传图片（支持视觉查重）
-│   └── LinkSelector + MediaLibraryDialog
-├── media/             图片管理（上传/查重/搜索/删除）
-├── Dashboard.tsx      主布局（侧边栏 + 发布按钮 + Outlet）
-├── Overview.tsx       概览仪表盘
-├── BlocksPreview.tsx  21种组件预览
-├── Blog* / InquiryManagement / CustomerReviews* / MediaManager
-components/
-├── blocks/            21种积木块预览渲染组件
-├── custom/            业务组件（ProductCard, Pagination等）
-└── ui/                shadcn/ui 组件库
-config/
-├── componentRegistry.ts   21种组件注册表（名称/分类/单例/默认属性）
-└── blocksContentPreview/  示例数据
-context/
-├── ContentContext.tsx  全局数据状态中心
-└── LanguageContext.tsx 中英文切换
-types/                 与 webApp-astro 和 worker-api 共享类型
-lib/api.ts             API 封装（自动附带 Admin Token）
-App.tsx                路由配置
+## 核心分层
+
+```text
+src/
+├── core/             通用业务逻辑、上下文、类型、API、工具函数
+├── components/ui/    通用基础 UI primitive
+├── site-package/     站点资源包
+├── App.tsx           后台路由装配入口
+└── main.tsx          React 启动入口
 ```
 
----
+路径别名：
 
-## 架构要点
+```text
+@      -> src
+@site  -> 当前启用的站点包
+```
 
-### 全局数据流（ContentContext）
-启动时 `refreshData()` 并发加载：商品/分类/博客/评价（D1）+ 站点配置/导航/页脚/页面索引/构建状态（KV）。所有编辑器通过 `useContent()` 读写数据，CRUD 后自动调用 `refreshData()` 或直接更新本地状态。
+`App.tsx` 和 `main.tsx` 应通过 `@site` 接入当前站点资源，不应直接写死具体站点目录。
 
-### 页面分片存储策略
-页面数据分为两层存于 KV：`page:{id}` 存完整数据（含 blocks），`pages_index` 存轻量索引（仅 id/path/title/isFixed）。保存时同时更新两者，读取时优先查 `page:{id}` 详情。
+## 通用业务逻辑
 
-### 图片查重上传
-`ImageInput` 组件在上传图片前先计算 aHash 感知哈希值，与已有图片对比。当相似度 >= 95% 时弹窗提示用户选择"使用已有图片"或"继续上传"，避免冗余存储。
+`src/core` 是项目的通用层，主要包含：
 
-### 积木块编辑器
-基于 `@dnd-kit` 实现拖拽排序。`BlockPropsEditor` 根据 `BlockType` 动态渲染对应的属性编辑面板。`AddBlockDialog` 中检查 `singleton` 标记，确保单例组件只能添加一个。`componentRegistry` 以 `hasGlobalData` 区分数据是来自全局（D1 实体）还是局部（block.content）。
+```text
+core/
+├── app/              应用级工具，例如标题、favicon 元信息应用
+├── config/           登录、账号设置、管理员配置
+├── context/          全局数据上下文、语言上下文
+├── hooks/            通用 hooks
+├── items/            各业务模块的通用逻辑 hooks
+├── lib/              API、图片处理、链接处理、工具函数
+├── markdown/         Markdown 编辑行为
+├── rich-text/        富文本格式化工具
+└── types/            通用业务类型
+```
 
-### 构建发布流程
-侧边栏"发布"按钮 → `ContentContext.triggerBuild()` → POST `/api/system/trigger-build` → worker-api 调用 CF Pages Deploy Hook 异步重建前台。
+核心思路是：业务状态、数据转换、保存流程、校验逻辑尽量放在 `core`；界面结构、视觉样式、站点文案和素材留在站点包。
+
+## 主要业务模块
+
+### 全局数据状态
+
+`ContentContext` 是后台数据中心，负责加载和刷新商品、分类、博客、评价、媒体资源、公司信息、导航、页脚、动态页面、构建状态等数据。
+
+页面组件通常不直接重复实现请求流程，而是调用 `core/items/**` 中的 hook，再通过 `ContentContext` 读取或刷新全局状态。
+
+### 商品与分类
+
+通用逻辑位于 `src/core/items/product`。
+
+包含商品基础信息、媒体、变体、自定义字段、批量价格和分类管理相关逻辑。
+
+### 博客
+
+通用逻辑位于 `src/core/items/blog`。
+
+Markdown 编辑行为位于 `src/core/markdown`。站点包负责保留具体编辑器界面和样式。
+
+### 询盘
+
+通用逻辑位于 `src/core/items/inquiry`。
+
+包含询盘列表、筛选、状态处理、导出和询盘页面配置相关逻辑。
+
+### 媒体
+
+通用逻辑位于 `src/core/items/media`。
+
+包含媒体库状态、图片上传、图片压缩、hash 计算和相似图片检测。
+
+### 导航、页脚、公司信息
+
+通用逻辑位于 `src/core/items/site`。
+
+包含链接编辑、页面链接校验、导航项处理、页脚链接组处理、公司信息保存等逻辑。
+
+### 客户评价
+
+通用逻辑位于 `src/core/items/review`。
+
+包含评价表单、评价列表、状态更新、YouTube 缩略图处理等逻辑。
+
+### 页面搭建器
+
+通用逻辑位于 `src/core/items/page-builder`。
+
+页面搭建器负责动态页面列表、页面设置、SEO、block 增删改、拖拽排序和保存流程。具体 block 的视觉实现和属性编辑面板属于站点包。
+
+## 边界规则
+
+### 推荐
+
+- 通用业务逻辑放入 `src/core`。
+- 站点页面调用 `core/items/**` 暴露的 hook。
+- 站点 UI、样式、品牌素材、前台 block 和默认内容放在站点包。
+- 应用入口通过 `@site` 接入当前站点。
+
+### 避免
+
+- 在通用逻辑中导入站点图片、站点文案、站点 UI 组件。
+- 在 `App.tsx`、`main.tsx` 中写死具体站点目录。
+- 为了“看起来通用”把站点专属 UI 搬进 `core`。
+- 为当前小项目引入复杂插件系统或过度抽象。
+
+## 开发约定
+
+- 重构优先小步进行，避免一次性大规模移动文件。
+- 不运行生产构建作为常规验证。
+- 不运行全量测试；只运行与当前改动相关的检查。
+- 业务逻辑优先通过 hook 拆出，UI 样式保留在站点包中。
 
 ## 环境变量
 
-`.env`: 生产环境所需要的环境变量
-`.env.local`: 本地开发环境所需的环境变量，由`PUBLIC_IS_LOCAL_DEV`值来决定项目是否访问本地开发环境。
+常用环境变量：
+
+```text
+VITE_API_BASE_URL   后端 API 地址，本地开发通常指向 worker-api 本地服务
+VITE_ADMIN_TOKEN    管理端请求使用的 token
+```
+
+`.env` 通常用于正式或共享配置，`.env.local` 通常用于本地开发配置。

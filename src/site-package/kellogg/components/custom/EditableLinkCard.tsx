@@ -29,7 +29,7 @@ export default function EditableLinkCard<TLink extends NavLink>({
   return (
     <div
       className={className || `p-4 rounded-lg border ${
-        isInvalid ? 'border-red-300 bg-red-50' : 'border-gray-200 bg-gray-50'
+        isInvalid ? 'border-red-300 bg-red-50' : 'border-gray-300 bg-gray-50'
       }`}
     >
       <div className="flex items-start gap-3">

@@ -32,7 +32,7 @@ import {
   Gallery,
   FeatureList,
   CtaBanner
-} from '@/components/blocks';
+} from '@site/components-web/blocks';
 
 // 组件预览渲染器
 function BlocksPreview({ type }: { type: BlockType }) {

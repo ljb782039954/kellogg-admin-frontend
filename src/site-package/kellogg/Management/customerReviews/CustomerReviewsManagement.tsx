@@ -16,7 +16,7 @@ import {
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { getYoutubeThumbnailUrl, useCustomerReviewsManagement } from '@/core/items/review';
-import ReviewFormDialog from '../inquiry/ReviewFormDialog';
+import ReviewFormDialog from './ReviewFormDialog';
 import StarDisplay from './starDisplay';
 
 const STATUS_LABELS = {

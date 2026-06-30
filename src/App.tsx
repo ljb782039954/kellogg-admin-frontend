@@ -4,28 +4,28 @@ import { LanguageProvider } from '@/core/context/LanguageContext';
 import { ContentProvider } from '@/core/context/ContentContext';
 
 // Admin 组件
-// import Login from './site-package/kellogg/Login';
-import Dashboard from './site-package/kellogg/Dashboard';
-import Overview from './site-package/kellogg/views/Overview';
-// import AccountSettings from './site-package/kellogg/AccountSettings';
+// import Login from '@site/Login';
+import Dashboard from '@site/Dashboard';
+import Overview from '@site/views/Overview';
+// import AccountSettings from '@site/AccountSettings';
 
 // 页面管理
-import { DynamicPagesManager, PageLayoutEditor } from './site-package/kellogg/pageBuilder';
-import ComponentsPreview from './site-package/kellogg/views/BlocksPreview';
+import { DynamicPagesManager, PageLayoutEditor } from '@site/Management/pageBuilder';
+import ComponentsPreview from '@site/views/BlocksPreview';
 
 // 编辑器
-import CompanyInfoEditor from './site-package/kellogg/editors/companyInfo/CompanyInfoEditor';
-import HeaderEditor from './site-package/kellogg/editors/headerEditor';
-import ProductsEditor from './site-package/kellogg/editors/product/ProductsEditor';
-import CategoriesEditor from './site-package/kellogg/editors/product/ProductCategories';
-import FooterEditor from './site-package/kellogg/editors/footerEditor/FooterEditor';
-import InquiryEditor from './site-package/kellogg/editors/inquiry/InquiryEditor';
-import InquiryManagement from './site-package/kellogg/editors/inquiry/InquiryManagement';
-import MediaManager from './site-package/kellogg/editors/media/MediaManager';
-import BlogManagement from './site-package/kellogg/editors/blog/BlogManagement';
-import BlogEditor from './site-package/kellogg/editors/blog/BlogEditor';
-import BlogCategoryManager from './site-package/kellogg/editors/blog/BlogCategoryManager';
-import CustomerReviewsManagement from './site-package/kellogg/editors/customerReviews/CustomerReviewsManagement';
+import CompanyInfoEditor from '@site/Management/companyInfo/CompanyInfoEditor';
+import HeaderEditor from '@site/Management/header';
+import ProductsEditor from '@site/Management/product/ProductsEditor';
+import CategoriesEditor from '@site/Management/product/ProductCategories';
+import FooterEditor from '@site/Management/footer/FooterEditor';
+import InquiryEditor from '@site/Management/inquiry/InquiryEditor';
+import InquiryManagement from '@site/Management/inquiry/InquiryManagement';
+import MediaManager from '@site/Management/media/MediaManager';
+import BlogManagement from '@site/Management/blog/BlogManagement';
+import BlogEditor from '@site/Management/blog/BlogEditor';
+import BlogCategoryManager from '@site/Management/blog/BlogCategoryManager';
+import CustomerReviewsManagement from '@site/Management/customerReviews/CustomerReviewsManagement';
 
 function App() {
   return (
@@ -73,5 +73,3 @@ function App() {
 }
 
 export default App;
-
-// 修改

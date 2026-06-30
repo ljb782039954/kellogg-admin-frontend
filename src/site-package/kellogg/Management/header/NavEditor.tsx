@@ -153,7 +153,6 @@ export default function NavEditor({ navItems, onChange }: NavEditorProps) {
                       {item.children?.map((subItem, subIndex) => (
                         <EditableLinkCard<NavLink>
                           key={subItem.id || subIndex}
-                          className="bg-white p-3 rounded border border-green-300 shadow-sm"
                           link={subItem}
                           namePlaceholder={{ zh: '子菜单名', en: 'Sub Menu' }}
                           onLinkChange={(val) => updateSubItemLink(index, subIndex, val)}
