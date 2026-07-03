@@ -2,9 +2,9 @@
 import { Globe, Share2, Menu,} from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import type { HeaderContent } from '@/core/types';
+import type { HeaderContent } from '@/core-adminApp/types';
 import siteSettings from '../../metadata/siteSettings.json';
-import { getPreviewUrl } from '@/core/lib/utils';
+import { getPreviewUrl } from '@/core-adminApp/lib/utils';
 
 // Header 预览组件
 export default function HeaderPreview({ header, language }: { header: HeaderContent; language: 'zh' | 'en' }) {

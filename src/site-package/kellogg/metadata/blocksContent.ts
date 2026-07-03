@@ -18,7 +18,7 @@ import type {
 // ============================================
 // 导出产品相关数据
 // ============================================
-export * from '@/core/metadata/productsContent';
+export * from '@/core-adminApp/metadata/productsContent';
 
 // ============================================
 // 各组件预览数据映射

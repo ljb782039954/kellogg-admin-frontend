@@ -20,7 +20,7 @@ import {
   Globe,
 } from 'lucide-react';
 import { toast } from 'sonner';
-import { useBlogManagement } from '@/core/items/blog';
+import { useBlogManagement } from '@/core-adminApp/items/blog';
 import AdminImage from '../../components/AdminImage';
 
 const STATUS_LABELS = {

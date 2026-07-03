@@ -1,6 +1,6 @@
 import { Plus, Trash2, ClipboardList, Palette } from 'lucide-react';
 import ImageInput from '../../components/ImageInput';
-import type { Product } from '@/core/types';
+import type { Product } from '@/core-adminApp/types';
 
 interface ProductVariantsSectionProps {
   product: Product;

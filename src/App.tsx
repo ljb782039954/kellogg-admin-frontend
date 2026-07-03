@@ -1,7 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { Toaster } from 'sonner';
-import { LanguageProvider } from '@/core/context/LanguageContext';
-import { ContentProvider } from '@/core/context/ContentContext';
+import { LanguageProvider } from '@/core-adminApp/context/LanguageContext';
+import { ContentProvider } from '@/core-adminApp/context/ContentContext';
 
 // Admin 组件
 // import Login from '@site/Login';

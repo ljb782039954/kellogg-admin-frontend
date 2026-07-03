@@ -1,6 +1,6 @@
 import { Image as ImageIcon } from 'lucide-react';
 import { toast } from 'sonner';
-import { DEFAULT_MARKDOWN_TOOLBAR, useMarkdownEditor } from '@/core/markdown';
+import { DEFAULT_MARKDOWN_TOOLBAR, useMarkdownEditor } from '@/core-adminApp/markdown';
 
 interface MarkdownEditorProps {
   value: string;

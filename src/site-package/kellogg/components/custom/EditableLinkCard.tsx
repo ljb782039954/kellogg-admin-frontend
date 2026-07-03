@@ -1,7 +1,7 @@
 import { AlertTriangle, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import type { NavLink, Translation } from '@/core/types';
+import type { NavLink, Translation } from '@/core-adminApp/types';
 import BilingualInput from '../BilingualInput';
 import LinkSelector from '../LinkSelector';
 

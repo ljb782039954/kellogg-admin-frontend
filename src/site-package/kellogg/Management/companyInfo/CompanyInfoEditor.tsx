@@ -9,7 +9,7 @@ import { Separator } from '@/components/ui/separator';
 import BilingualInput from '../../components/BilingualInput';
 import BilingualInputAera from '../../components/BilingualInputAera';
 import ImageInput from '../../components/ImageInput';
-import { useCompanyInfoEditor } from '@/core/items/site';
+import { useCompanyInfoEditor } from '@/core-adminApp/items/site';
 
 export default function CompanyInfoEditor() {
   const {

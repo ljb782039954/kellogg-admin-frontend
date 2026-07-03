@@ -19,7 +19,7 @@ import {
   User
 } from 'lucide-react';
 import { toast } from 'sonner';
-import { useInquiryManagement } from '@/core/items/inquiry';
+import { useInquiryManagement } from '@/core-adminApp/items/inquiry';
 
 export default function InquiryManagement() {
   const notify = useMemo(() => ({

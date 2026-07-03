@@ -1,4 +1,4 @@
-import type { DocumentMetadata } from '@/core/app/documentMetadata';
+import type { DocumentMetadata } from '@/core-adminApp/app/documentMetadata';
 import siteSettings from './siteSettings.json';
 import faviconHref from '/kellogg/logo.jpg';
 

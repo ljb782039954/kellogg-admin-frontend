@@ -5,7 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import BilingualInput from '../../components/BilingualInput';
 import EditableLinkCard from '../../components/custom/EditableLinkCard';
-import type { NavLink, Translation } from '@/core/types';
+import type { NavLink, Translation } from '@/core-adminApp/types';
 import { nanoid } from 'nanoid';
 
 interface NavEditorProps {

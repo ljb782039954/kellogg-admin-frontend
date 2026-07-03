@@ -8,8 +8,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import BilingualInput from '../../components/BilingualInput';
 import EditableLinkCard from '../../components/custom/EditableLinkCard';
-import { useFooterEditor } from '@/core/items/site';
-import type { FooterLink } from '@/core/types';
+import { useFooterEditor } from '@/core-adminApp/items/site';
+import type { FooterLink } from '@/core-adminApp/types';
 import FooterPreview from './footerPreview';
 
 

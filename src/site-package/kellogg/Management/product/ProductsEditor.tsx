@@ -1,7 +1,7 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { Plus, Trash2, Save, Layers, Star, Loader2 } from 'lucide-react';
-import { useLanguage } from '@/core/context/LanguageContext';
-import { useProductsEditor } from '@/core/items/product';
+import { useLanguage } from '@/core-adminApp/context/LanguageContext';
+import { useProductsEditor } from '@/core-adminApp/items/product';
 
 // Subcomponents
 import ProductSummary from './ProductSummary';

@@ -12,7 +12,7 @@ import {
   Settings,
   Layers
 } from 'lucide-react';
-import { useDynamicPagesManager } from '@/core/items/page-builder';
+import { useDynamicPagesManager } from '@/core-adminApp/items/page-builder';
 import { type CustomPage } from '../../types/blocks';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -43,7 +43,7 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
 import { Label } from '@/components/ui/label';
-import { useToast } from '@/core/hooks/use-toast';
+import { useToast } from '@/core-adminApp/hooks/use-toast';
 import BilingualInput from '../../components/BilingualInput';
 
 export function DynamicPagesManager() {

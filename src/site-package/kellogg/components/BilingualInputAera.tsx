@@ -1,4 +1,4 @@
-import type { Translation } from '@/core/types';
+import type { Translation } from '@/core-adminApp/types';
 
 interface BilingualInputAeraProps {
     label?: string;

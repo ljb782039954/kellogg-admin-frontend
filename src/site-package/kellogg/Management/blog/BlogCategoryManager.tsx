@@ -15,7 +15,7 @@ import {
   Globe,
 } from 'lucide-react';
 import { toast } from 'sonner';
-import { useBlogCategoryManager } from '@/core/items/blog';
+import { useBlogCategoryManager } from '@/core-adminApp/items/blog';
 
 const INPUT_CLASS = 'w-full px-3 py-2 text-sm border border-gray-200 rounded-xl bg-white focus:ring-2 focus:ring-gray-900 focus:border-transparent transition-all placeholder-gray-300';
 

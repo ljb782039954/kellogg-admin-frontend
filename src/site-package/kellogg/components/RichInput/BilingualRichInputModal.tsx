@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { X, Save, Languages } from 'lucide-react';
-import type { Translation } from '@/core/types';
+import type { Translation } from '@/core-adminApp/types';
 import RichInput from './RichInput';
-import { getPreviewHtml } from '@/core/rich-text';
+import { getPreviewHtml } from '@/core-adminApp/rich-text';
 
 interface BilingualRichInputModalProps {
   isOpen: boolean;

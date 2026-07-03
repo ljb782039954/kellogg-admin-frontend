@@ -8,7 +8,7 @@ import { Switch } from '@/components/ui/switch';
 import BilingualInput from '../../components/BilingualInput';
 import ImageInput from '../../components/ImageInput';
 import LinkSelector from '../../components/LinkSelector';
-import { ensureNavLink } from '@/core/lib/linkUtils';
+import { ensureNavLink } from '@/core-adminApp/lib/linkUtils';
 import type { CarouselValues,CarouselProps } from '@site/components-web/blocks/Carousel';
 
 export interface CarouselPropsEditorProps {

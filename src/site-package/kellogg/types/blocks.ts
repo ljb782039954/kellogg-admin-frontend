@@ -1,5 +1,5 @@
 
-import type { Translation } from "@/core/types/common";
+import type { Translation } from "@/core-adminApp/types/common";
 
 // ============================================
 // 积木块系统 (Block-based System)

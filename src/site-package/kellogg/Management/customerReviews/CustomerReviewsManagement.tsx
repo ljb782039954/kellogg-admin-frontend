@@ -15,7 +15,7 @@ import {
   ChevronRight,
 } from 'lucide-react';
 import { toast } from 'sonner';
-import { getYoutubeThumbnailUrl, useCustomerReviewsManagement } from '@/core/items/review';
+import { getYoutubeThumbnailUrl, useCustomerReviewsManagement } from '@/core-adminApp/items/review';
 import ReviewFormDialog from './ReviewFormDialog';
 import StarDisplay from './starDisplay';
 

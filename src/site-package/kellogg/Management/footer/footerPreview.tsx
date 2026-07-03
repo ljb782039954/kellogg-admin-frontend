@@ -4,7 +4,7 @@ import { Mail, Phone, MapPin, Facebook, Instagram, Twitter, Youtube } from 'luci
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 
-import type { FooterContent } from '@/core/types';
+import type { FooterContent } from '@/core-adminApp/types';
 import siteSettings from '../../metadata/siteSettings.json';
 
 // Footer 预览组件

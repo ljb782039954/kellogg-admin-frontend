@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion';
 import { ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import type { Product } from '@/core/types';
+import type { Product } from '@/core-adminApp/types';
 
 interface ProductCardNewProps {
     t: (obj: { zh: string; en: string }) => string;

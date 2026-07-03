@@ -10,7 +10,7 @@ import {
 import BilingualInput from '../../components/BilingualInput';
 import ImageInput from '../../components/ImageInput';
 import LinkSelector from '../../components/LinkSelector';
-import { ensureNavLink } from '@/core/lib/linkUtils';
+import { ensureNavLink } from '@/core-adminApp/lib/linkUtils';
 import type { CtaBannerProps } from '@site/components-web/blocks/CtaBanner';
 
 export interface CtaBannerPropsEditorProps {

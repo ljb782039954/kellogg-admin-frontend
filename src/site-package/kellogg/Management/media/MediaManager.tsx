@@ -1,6 +1,6 @@
 import { useMemo, useRef } from 'react';
 import { toast } from 'sonner';
-import { useMediaManager } from '@/core/items/media';
+import { useMediaManager } from '@/core-adminApp/items/media';
 
 // 子组件
 import { MediaHeader } from './MediaHeader';

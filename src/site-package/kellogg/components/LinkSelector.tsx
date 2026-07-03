@@ -10,8 +10,8 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
-import { useLinkSelector } from '@/core/items/site';
-import type { LinkType, NavLink } from '@/core/types';
+import { useLinkSelector } from '@/core-adminApp/items/site';
+import type { LinkType, NavLink } from '@/core-adminApp/types';
 
 interface LinkSelectorProps {
   value: NavLink;

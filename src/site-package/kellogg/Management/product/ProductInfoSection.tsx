@@ -1,6 +1,6 @@
 import { Star, TrendingUp, Layers, Calendar } from 'lucide-react';
 import BilingualInput from '../../components/BilingualInput';
-import type { Product, Category } from '@/core/types';
+import type { Product, Category } from '@/core-adminApp/types';
 
 interface ProductInfoSectionProps {
   product: Product;

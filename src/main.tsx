@@ -2,7 +2,7 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'
 import App from './App.tsx'
-import { applyDocumentMetadata } from '@/core/app/documentMetadata'
+import { applyDocumentMetadata } from '@/core-adminApp/app/documentMetadata'
 import documentMetadata from '@site/metadata/documentMeta'
 
 applyDocumentMetadata(documentMetadata)

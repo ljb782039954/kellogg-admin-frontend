@@ -8,7 +8,7 @@ import type { LucideIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { useLanguage } from '@/core/context/LanguageContext';
+import { useLanguage } from '@/core-adminApp/context/LanguageContext';
 
 import * as previewData from '../metadata/blocksContent';
 import {

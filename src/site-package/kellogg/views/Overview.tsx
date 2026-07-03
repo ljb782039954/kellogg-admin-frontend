@@ -10,7 +10,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { Card, CardTitle } from '@/components/ui/card';
 import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
-import { useContent } from '@/core/context/ContentContext';
+import { useContent } from '@/core-adminApp/context/ContentContext';
 
 export default function Overview() {
   const { allProducts, allBlogs , allReviews ,isLoading, error, refreshData, clearError } = useContent();

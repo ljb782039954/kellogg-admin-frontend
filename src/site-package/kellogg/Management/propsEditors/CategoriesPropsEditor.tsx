@@ -1,5 +1,5 @@
 // 分类导航组件属性编辑器（轻量版）
-import { useContent } from '@/core/context/ContentContext';
+import { useContent } from '@/core-adminApp/context/ContentContext';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { Info } from 'lucide-react';

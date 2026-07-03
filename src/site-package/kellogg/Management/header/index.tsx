@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Save, AlertTriangle,Loader2 } from 'lucide-react';
-import { useHeaderEditor } from '@/core/items/site';
+import { useHeaderEditor } from '@/core-adminApp/items/site';
 import { Button } from '@/components/ui/button';
 import NavEditor from './NavEditor';
 import HeaderPreview from './headerPreview';

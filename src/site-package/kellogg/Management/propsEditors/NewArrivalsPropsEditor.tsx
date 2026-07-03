@@ -1,5 +1,5 @@
 // 新品组件属性编辑器（轻量版）
-import { useContent } from '@/core/context/ContentContext';
+import { useContent } from '@/core-adminApp/context/ContentContext';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 // import {
@@ -12,7 +12,7 @@ import { Label } from '@/components/ui/label';
 import { Info } from 'lucide-react';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import BilingualInput from '../../components/BilingualInput';
-import { getPreviewUrl } from '@/core/lib/utils';
+import { getPreviewUrl } from '@/core-adminApp/lib/utils';
 import type { NewArrivalsProps } from '@site/components-web/blocks/NewArrivals';
 
 export interface NewArrivalsPropsEditorProps {

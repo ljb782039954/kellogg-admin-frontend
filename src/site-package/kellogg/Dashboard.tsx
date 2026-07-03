@@ -18,8 +18,8 @@ import {
   BookOpen,
   Star,
 } from 'lucide-react';
-import { useLanguage } from '@/core/context/LanguageContext';
-import { useContent } from '@/core/context/ContentContext';
+import { useLanguage } from '@/core-adminApp/context/LanguageContext';
+import { useContent } from '@/core-adminApp/context/ContentContext';
 import siteSettings from './metadata/siteSettings.json';
 
 interface MenuItem {

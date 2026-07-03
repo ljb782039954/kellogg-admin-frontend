@@ -19,7 +19,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { formatMediaFileSize, useMediaLibraryDialog } from '@/core/items/media';
+import { formatMediaFileSize, useMediaLibraryDialog } from '@/core-adminApp/items/media';
 import { cn } from '@/lib/utils';
 import { format } from 'date-fns';
 import AdminImage from './AdminImage';

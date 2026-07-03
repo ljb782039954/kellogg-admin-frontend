@@ -1,0 +1,14 @@
+import type { Translation } from '@/core-adminApp/types';
+
+export interface InquiryConfig {
+  title: Translation;
+  description: Translation;
+}
+
+export const DEFAULT_INQUIRY_CONFIG: InquiryConfig = {
+  title: { zh: '联系我们要样品', en: 'Contact Us For Samples' },
+  description: {
+    zh: '如果您有任何关于产品的咨询，请填写下方表格，我们的团队会尽快与您联系。',
+    en: 'If you have any inquiries about our products, please fill out the form below and our team will get back to you as soon as possible.',
+  },
+};

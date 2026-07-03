@@ -1,6 +1,6 @@
 import { Upload, X, RefreshCw, Loader2 } from 'lucide-react';
-import { getPreviewUrl } from '@/core/lib/utils';
-import { useImageInputUpload } from '@/core/items/media';
+import { getPreviewUrl } from '@/core-adminApp/lib/utils';
+import { useImageInputUpload } from '@/core-adminApp/items/media';
 import AdminImage from './AdminImage';
 import {
   Dialog,

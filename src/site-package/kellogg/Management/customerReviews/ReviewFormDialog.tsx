@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import { X, Youtube, Image as ImageIcon, Star, AlertCircle, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
-import { useReviewForm } from '@/core/items/review';
-import type { CustomerReview } from '@/core/types';
+import { useReviewForm } from '@/core-adminApp/items/review';
+import type { CustomerReview } from '@/core-adminApp/types';
 import ImageInput from '../../components/ImageInput';
 
 const LABEL = 'block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1.5';

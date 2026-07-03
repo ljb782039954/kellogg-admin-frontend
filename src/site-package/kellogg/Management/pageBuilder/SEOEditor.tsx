@@ -2,7 +2,7 @@
 import { Label } from '@/components/ui/label';
 import BilingualInput from '../../components/BilingualInput';
 import { Settings, Globe } from 'lucide-react';
-import { type Translation } from '@/core/types';
+import { type Translation } from '@/core-adminApp/types';
 
 interface SEOEditorProps {
   seo: {

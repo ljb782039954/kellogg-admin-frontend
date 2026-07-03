@@ -14,14 +14,14 @@ import {
   sortableKeyboardCoordinates,
 } from '@dnd-kit/sortable';
 import { Save, Eye, RotateCcw, Plus, ArrowLeft, Settings, FileText } from 'lucide-react';
-import { usePageLayoutEditor } from '@/core/items/page-builder';
+import { usePageLayoutEditor } from '@/core-adminApp/items/page-builder';
 import { BlockList } from './BlockList';
 import { BlockPropsEditor } from './BlockPropsEditor';
 import { SEOEditor } from './SEOEditor';
 import { PageSettingsEditor } from './PageSettingsEditor';
 import { AddBlockDialog } from './AddBlockDialog';
 import { Button } from '@/components/ui/button';
-import { useToast } from '@/core/hooks/use-toast';
+import { useToast } from '@/core-adminApp/hooks/use-toast';
 import {
   AlertDialog,
   AlertDialogAction,

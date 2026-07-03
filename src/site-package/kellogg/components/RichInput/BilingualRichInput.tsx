@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import type { Translation } from '@/core/types';
+import type { Translation } from '@/core-adminApp/types';
 import RichInput from './RichInput';
 import BilingualRichInputModal from './BilingualRichInputModal';
 
