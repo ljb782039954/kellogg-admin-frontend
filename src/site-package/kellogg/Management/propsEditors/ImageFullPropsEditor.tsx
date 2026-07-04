@@ -10,11 +10,11 @@ import {
 } from '@/components/ui/select';
 import BilingualInput from '../../components/BilingualInput';
 import ImageInput from '../../components/ImageInput';
-import type { ImageFullProps } from '@site/components-web/blocks/ImageFull';
+import type { ImageFullContent } from '@site/ui-display/block-adapters';
 
 export interface ImageFullPropsEditorProps {
-  props: ImageFullProps;
-  onUpdate: (props: ImageFullProps) => void;
+  props: ImageFullContent;
+  onUpdate: (props: ImageFullContent) => void;
 }
 
 

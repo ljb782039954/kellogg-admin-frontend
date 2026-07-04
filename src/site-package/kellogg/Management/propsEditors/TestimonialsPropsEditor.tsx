@@ -8,18 +8,18 @@ import { Label } from '@/components/ui/label';
 import BilingualInput from '../../components/BilingualInput';
 import BilingualInputAera from '../../components/BilingualInputAera';
 import ImageInput from '../../components/ImageInput';
-import type { Testimonial, TestimonialProps } from '@site/components-web/blocks/Testimonials';
+import type { TestimonialContent, TestimonialsContent } from '@site/ui-display/block-adapters';
 
 export interface TestimonialsPropsEditorProps {
-  props: TestimonialProps;
-  onUpdate: (props: TestimonialProps) => void;
+  props: TestimonialsContent;
+  onUpdate: (props: TestimonialsContent) => void;
 }
 
 
 export function TestimonialsPropsEditor({ props, onUpdate }: TestimonialsPropsEditorProps) {
-  const [localData, setLocalData] = useState<Testimonial[]>(props.items || []);
+  const [localData, setLocalData] = useState<TestimonialContent[]>(props.items || []);
 
-  const saveItems = (items: Testimonial[]) => {
+  const saveItems = (items: TestimonialContent[]) => {
     setLocalData(items);
     onUpdate({ ...props, items });
   };
@@ -38,7 +38,7 @@ export function TestimonialsPropsEditor({ props, onUpdate }: TestimonialsPropsEd
     ]);
   };
 
-  const updateItem = <K extends keyof Testimonial>(id: number, field: K, value: Testimonial[K]) => {
+  const updateItem = <K extends keyof TestimonialContent>(id: number, field: K, value: TestimonialContent[K]) => {
     saveItems(
       localData.map((item) =>
         item.id === id ? { ...item, [field]: value } : item

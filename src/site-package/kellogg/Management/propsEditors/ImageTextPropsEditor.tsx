@@ -11,11 +11,11 @@ import {
 import BilingualInput from '../../components/BilingualInput';
 import BilingualRichInput from '../../components/RichInput/BilingualRichInput';
 import ImageInput from '../../components/ImageInput';
-import type { ImageTextProps } from '@site/components-web/blocks/ImageText';
+import type { ImageTextContent } from '@site/ui-display/block-adapters';
 
 export interface ImageTextPropsEditorProps {
-  props: ImageTextProps;
-  onUpdate: (props: ImageTextProps) => void;
+  props: ImageTextContent;
+  onUpdate: (props: ImageTextContent) => void;
 }
 
 export function ImageTextPropsEditor({ props, onUpdate }: ImageTextPropsEditorProps) {

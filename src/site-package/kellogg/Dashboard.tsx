@@ -50,11 +50,11 @@ const menuItems: MenuItem[] = [
     name: 'Footer 组件管理',
     icon: PanelBottom,
   },
-  {
-    path: '/components',
-    name: '预定义组件',
-    icon: Layers,
-  },
+  // {
+  //   path: '/components',
+  //   name: '预定义组件',
+  //   icon: Layers,
+  // },
   {
     path: '/pages',
     name: '页面管理',

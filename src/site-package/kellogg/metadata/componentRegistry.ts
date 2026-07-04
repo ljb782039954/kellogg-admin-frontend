@@ -5,6 +5,7 @@ import {
   type ComponentCategory,
 } from '../types';
 
+
 // 组件注册表
 export const componentRegistry: Record<BlockType, ComponentMeta> = {
   carousel: {
@@ -266,6 +267,19 @@ export const componentRegistry: Record<BlockType, ComponentMeta> = {
     },
   },
   ctaBanner: {
+    type: 'ctaBanner',
+    name: { zh: 'CTA行动号召横幅', en: 'CTA Banner' },
+    description: { zh: '醒目的号召横幅', en: 'Eye-catching call-to-action banner' },
+    icon: 'MousePointerClick',
+    category: 'marketing',
+    hasGlobalData: false,
+    singleton: false,
+    defaultProps: {
+      title: { zh: '立即行动', en: 'Take Action Now' },
+      primaryButton: { text: { zh: '开始', en: 'Get Started' }, link: '' },
+    },
+  },
+  inquiry: {
     type: 'ctaBanner',
     name: { zh: 'CTA行动号召横幅', en: 'CTA Banner' },
     description: { zh: '醒目的号召横幅', en: 'Eye-catching call-to-action banner' },

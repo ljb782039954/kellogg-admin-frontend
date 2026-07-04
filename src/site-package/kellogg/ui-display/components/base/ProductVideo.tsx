@@ -1,6 +1,7 @@
 ﻿export interface ProductVideoSource {
   kind: "embed" | "video";
   url: string;
+  poster?: string;
   vertical?: boolean;
   title?: string;
 }
@@ -30,7 +31,7 @@ export default function ProductVideo({ source }: ProductVideoProps) {
 
   return (
     <div className="relative aspect-video rounded-3xl overflow-hidden bg-black shadow-2xl">
-      <video src={source.url} controls preload="metadata" className="w-full h-full object-contain" />
+      <video src={source.url} poster={source.poster} controls preload="metadata" className="w-full h-full object-contain" />
     </div>
   );
 }

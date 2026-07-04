@@ -6,17 +6,18 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import BilingualInput from '../../components/BilingualInput';
-import type { FAQItem, FAQProps } from '@site/components-web/blocks/Faq';
+import type { FAQItemContent, FAQContent } from '@site/ui-display/block-adapters';
+import type { Translation } from '@/cms/types';
 
 export interface FAQPropsEditorPropsEditorProps {
-  props: FAQProps;
-  onUpdate: (props: FAQProps) => void;
+  props: FAQContent;
+  onUpdate: (props: FAQContent) => void;
 }
 
 export function FAQPropsEditor({ props, onUpdate }: FAQPropsEditorPropsEditorProps) {
-  const [localItems, setLocalItems] = useState<FAQItem[]>(props.items || []);
+  const [localItems, setLocalItems] = useState<FAQItemContent[]>(props.items || []);
 
-  const saveItems = (items: FAQItem[]) => {
+  const saveItems = (items: FAQItemContent[]) => {
     setLocalItems(items);
     onUpdate({ ...props, items });
   };
@@ -33,7 +34,7 @@ export function FAQPropsEditor({ props, onUpdate }: FAQPropsEditorPropsEditorPro
     ]);
   };
 
-  const updateItem = (id: number, field: 'question' | 'answer', value: { zh: string; en: string }) => {
+  const updateItem = (id: number, field: 'question' | 'answer', value: Translation) => {
     saveItems(
       localItems.map((item) =>
         item.id === id ? { ...item, [field]: value } : item

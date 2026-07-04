@@ -3,11 +3,11 @@ import { Input } from '@/components/ui/input';
 import { Switch } from '@/components/ui/switch';
 import BilingualInput from '../../components/BilingualInput';
 import ImageInput from '../../components/ImageInput';
-import type { VideoSectionProps } from '@site/components-web/blocks/VideoSection';
+import type { VideoSectionContent } from '@site/ui-display/block-adapters';
 
 export interface VideoSectionPropsEditorProps {
-  props: VideoSectionProps;
-  onUpdate: (props: VideoSectionProps) => void;
+  props: VideoSectionContent;
+  onUpdate: (props: VideoSectionContent) => void;
 }
 
 

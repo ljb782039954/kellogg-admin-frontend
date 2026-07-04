@@ -11,7 +11,7 @@ import Overview from '@site/views/Overview';
 
 // 页面管理
 import { DynamicPagesManager, PageLayoutEditor } from '@site/Management/pageBuilder';
-import ComponentsPreview from '@site/views/BlocksPreview';
+// import ComponentsPreview from '@site/views/BlocksPreview';
 
 // 编辑器
 import CompanyInfoEditor from '@site/Management/companyInfo/CompanyInfoEditor';
@@ -41,7 +41,7 @@ function App() {
               {/* 页面管理 */}
               <Route path="pages" element={<DynamicPagesManager />} />
               <Route path="pages/:pageId/edit" element={<PageLayoutEditor />} />
-              <Route path="components" element={<ComponentsPreview />} />
+              {/* <Route path="components" element={<ComponentsPreview />} /> */}
 
               {/* 兼容旧路由 */}
               <Route path="page-layout" element={<Navigate to="/pages" replace />} />

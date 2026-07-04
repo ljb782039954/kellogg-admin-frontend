@@ -107,6 +107,8 @@ Markdown 编辑行为位于 `src/core-adminApp/markdown`。站点包负责保留
 
 页面搭建器负责动态页面列表、页面设置、SEO、block 增删改、拖拽排序和保存流程。具体 block 的视觉实现和属性编辑面板属于站点包。
 
+页面搭建器的展示预览策略见 [page-builder-preview.md](./page-builder-preview.md)。
+
 ## 边界规则
 
 ### 推荐

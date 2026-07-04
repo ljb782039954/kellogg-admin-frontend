@@ -18,13 +18,18 @@ import {
   categoryNames,
   canAddBlock,
 } from '../../metadata/componentRegistry';
-import BlockThumbnail from './BlockThumbnail';
+import { blockShowcaseRegistry } from '@site/ui-display/data/blocks';
+import BlockLivePreview from './BlockLivePreview';
 
 interface AddBlockDialogProps {
   open: boolean;
   onClose: () => void;
   onAdd: (block: PageBlock) => void;
   existingBlocks: { type: BlockType }[];
+}
+
+function getDialogPreviewContent(type: BlockType, fallbackContent: unknown) {
+  return blockShowcaseRegistry.find((block) => block.type === type)?.defaultProps ?? fallbackContent;
 }
 
 export function AddBlockDialog({
@@ -51,13 +56,13 @@ export function AddBlockDialog({
 
   return (
     <Dialog open={open} onOpenChange={(isOpen) => !isOpen && onClose()}>
-      <DialogContent className="max-w-3xl">
-        <DialogHeader>
+      <DialogContent className="flex h-[92vh] w-[min(1280px,96vw)] max-w-none flex-col gap-0 overflow-hidden">
+        <DialogHeader className="shrink-0 pb-4">
           <DialogTitle>添加积木块组件</DialogTitle>
         </DialogHeader>
 
         {/* 分类标签 */}
-        <div className="flex gap-2 border-b pb-3">
+        <div className="flex shrink-0 gap-2 overflow-x-auto border-b pb-3">
           {categories.map((cat) => (
             <Button
               key={cat}
@@ -70,60 +75,68 @@ export function AddBlockDialog({
           ))}
         </div>
 
-        {/* 积木块组件网格 */}
-        <div className="grid grid-cols-3 gap-4 py-4 max-h-[480px] overflow-y-auto">
-          {componentsByCategory[selectedCategory].map((type) => {
-            const meta = componentRegistry[type];
-            const canAdd = canAddBlock(type, existingBlocks);
+        {/* 积木块组件列表 */}
+        <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain py-4 pr-2">
+          <div className="grid grid-cols-1 gap-5">
+            {componentsByCategory[selectedCategory].map((type) => {
+              const meta = componentRegistry[type];
+              const canAdd = canAddBlock(type, existingBlocks);
+              const previewContent = getDialogPreviewContent(type, meta.defaultProps);
 
-            return (
-              <button
-                key={type}
-                disabled={!canAdd}
-                onClick={() => handleAddBlock(type)}
-                className={cn(
-                  'group flex flex-col rounded-xl border-2 text-left transition-all overflow-hidden',
-                  canAdd
-                    ? 'hover:border-primary hover:shadow-md cursor-pointer border-gray-200'
-                    : 'opacity-50 cursor-not-allowed bg-gray-50 border-gray-200'
-                )}
-              >
-                {/* 缩略图预览 */}
-                <div className="relative">
-                  <BlockThumbnail type={type} className="w-full h-24" />
-                  {!canAdd && meta.singleton && (
-                    <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
-                      <div className="bg-white rounded-full p-1.5">
-                        <Lock className="w-4 h-4 text-gray-600" />
-                      </div>
-                    </div>
+              return (
+                <button
+                  key={type}
+                  disabled={!canAdd}
+                  onClick={() => handleAddBlock(type)}
+                  className={cn(
+                    'group flex flex-col rounded-xl border-2 text-left transition-all overflow-hidden',
+                    canAdd
+                      ? 'hover:border-primary hover:shadow-md cursor-pointer border-gray-200'
+                      : 'opacity-50 cursor-not-allowed bg-gray-50 border-gray-200'
                   )}
-                </div>
-
-                {/* 组件信息 */}
-                <div className="p-3 border-t bg-white">
-                  <div className="flex items-center gap-2 mb-1">
-                    <span className="font-medium text-sm group-hover:text-primary transition-colors">
-                      {meta.name.zh}
-                    </span>
-                    {meta.singleton && (
-                      <Badge variant="outline" className="text-xs px-1.5 py-0">
-                        唯一
-                      </Badge>
+                >
+                  {/* 真实组件预览 */}
+                  <div className="relative">
+                    <BlockLivePreview
+                      type={type}
+                      content={previewContent}
+                      variant="card"
+                      className="rounded-none border-0"
+                    />
+                    {!canAdd && meta.singleton && (
+                      <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
+                        <div className="bg-white rounded-full p-1.5">
+                          <Lock className="w-4 h-4 text-gray-600" />
+                        </div>
+                      </div>
                     )}
                   </div>
-                  <p className="text-xs text-gray-500 line-clamp-2">
-                    {meta.description.zh}
-                  </p>
-                  {!canAdd && meta.singleton && (
-                    <p className="text-xs text-orange-500 mt-1 font-medium">
-                      已添加至页面，不可重复添加
+
+                  {/* 组件信息 */}
+                  <div className="p-3  bg-white">
+                    <div className="flex items-center gap-2 mb-1">
+                      <span className="font-medium text-base group-hover:font-bold transition-colors">
+                        {meta.name.zh}
+                      </span>
+                      {meta.singleton && (
+                        <Badge variant="outline" className="text-xs px-1.5 py-0 ">
+                          唯一
+                        </Badge>
+                      )}
+                    </div>
+                    <p className="text-xs text-gray-500 line-clamp-2">
+                      {meta.description.zh}
                     </p>
-                  )}
-                </div>
-              </button>
-            );
-          })}
+                    {!canAdd && meta.singleton && (
+                      <p className="text-xs text-orange-500 mt-1 font-medium">
+                        已添加至页面，不可重复添加
+                      </p>
+                    )}
+                  </div>
+                </button>
+              );
+            })}
+          </div>
         </div>
       </DialogContent>
     </Dialog>

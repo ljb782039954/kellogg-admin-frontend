@@ -1,4 +1,4 @@
-import type { CustomPage } from "@/cms/types";
+import type { CmsCustomPage } from "@/cms/types";
 
 export interface SitemapUrl {
   loc: string;
@@ -29,7 +29,7 @@ export function joinSiteUrl(siteUrl: string, path: string): string {
   return `${normalizeSiteUrl(siteUrl)}${normalizedPath}`;
 }
 
-export function getCmsPageSitemapPath(page: CustomPage): string | null {
+export function getCmsPageSitemapPath(page: CmsCustomPage): string | null {
   if (!page.path) return null;
   return page.path.startsWith("/") ? page.path : `/${page.path}`;
 }

@@ -5,11 +5,11 @@ import { Switch } from '@/components/ui/switch';
 import { Info } from 'lucide-react';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import AdminImage from '../../components/AdminImage';
-import type { CategoriesProps } from '@site/components-web/blocks/Categories';
+import type { CategoriesContent } from '@site/ui-display/block-adapters';
 
 export interface CategoriesPropsEditorProps {
-  props: CategoriesProps;
-  onUpdate: (props: CategoriesProps) => void;
+  props: CategoriesContent;
+  onUpdate: (props: CategoriesContent) => void;
 }
 
 
@@ -48,7 +48,7 @@ export function CategoriesPropsEditor({ props, onUpdate }: CategoriesPropsEditor
           </div>
         ) : (
           <div className="grid grid-cols-2 gap-2">
-            {categories.map((cat: any) => (
+            {categories.map((cat) => (
               <div
                 key={cat.id}
                 className="flex items-center gap-2 p-2 bg-gray-50 rounded-lg text-sm"

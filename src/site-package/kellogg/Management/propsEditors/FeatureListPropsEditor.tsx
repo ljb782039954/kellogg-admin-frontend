@@ -1,5 +1,6 @@
 // 特性列表组件属性编辑器
 
+import type { ComponentType } from 'react';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import {
@@ -14,7 +15,7 @@ import * as LucideIcons from 'lucide-react';
 import BilingualInput from '../../components/BilingualInput';
 import BilingualRichInput from '../../components/RichInput/BilingualRichInput';
 // import { commonFeatureIcons } from '@/types/editor';
-import type { FeatureListProps } from '@site/components-web/blocks/FeatureList';
+import type { FeatureListContent } from '@site/ui-display/block-adapters';
 
 const commonFeatureIcons = [
   'Truck', 'RotateCcw', 'Shield', 'Headphones', 'CreditCard', 'Gift',
@@ -22,10 +23,12 @@ const commonFeatureIcons = [
   'ThumbsUp', 'Lock', 'Globe', 'Users', 'Package', 'Sparkles',
 ];
 
+const lucideIconMap = LucideIcons as unknown as Record<string, ComponentType<{ className?: string }>>;
+
 
 export interface FeatureListPropsEditorProps {
-  props: FeatureListProps;
-  onUpdate: (props: FeatureListProps) => void;
+  props: FeatureListContent;
+  onUpdate: (props: FeatureListContent) => void;
 }
 
 export function FeatureListPropsEditor({ props, onUpdate }: FeatureListPropsEditorProps) {
@@ -124,7 +127,7 @@ export function FeatureListPropsEditor({ props, onUpdate }: FeatureListPropsEdit
         ) : (
           <div className="space-y-4">
             {items.map((feature, index) => {
-              const SelectedIcon = (LucideIcons as any)[feature.icon] || LucideIcons.Star;
+              const SelectedIcon = lucideIconMap[feature.icon] || LucideIcons.Star;
               return (
                 <div key={index} className="p-4 bg-gray-50 rounded-lg space-y-3">
                   <div className="flex items-center justify-between">
@@ -153,7 +156,7 @@ export function FeatureListPropsEditor({ props, onUpdate }: FeatureListPropsEdit
                       </SelectTrigger>
                       <SelectContent>
                         {commonFeatureIcons.map((iconName) => {
-                          const Icon = (LucideIcons as any)[iconName];
+                          const Icon = lucideIconMap[iconName] || LucideIcons.Star;
                           return (
                             <SelectItem key={iconName} value={iconName}>
                               <div className="flex items-center gap-2">

@@ -5,18 +5,18 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import BilingualInput from '../../components/BilingualInput';
-import type { Statistic, StatisticProps } from '@site/components-web/blocks/Statistics';
+import type { StatisticContent, StatisticsContent } from '@site/ui-display/block-adapters';
 
 export interface StatisticsPropsEditorProps {
-  props: StatisticProps;
-  onUpdate: (props: StatisticProps) => void;
+  props: StatisticsContent;
+  onUpdate: (props: StatisticsContent) => void;
 }
 
 
 export function StatisticsPropsEditor({ props, onUpdate }: StatisticsPropsEditorProps) {
-  const [localData, setLocalData] = useState<Statistic[]>(props.items || []);
+  const [localData, setLocalData] = useState<StatisticContent[]>(props.items || []);
 
-  const saveStats = (items: Statistic[]) => {
+  const saveStats = (items: StatisticContent[]) => {
     setLocalData(items);
     onUpdate({ ...props, items });
   };
@@ -32,7 +32,11 @@ export function StatisticsPropsEditor({ props, onUpdate }: StatisticsPropsEditor
     ]);
   };
 
-  const updateItem = (index: number, field: keyof Statistic, value: any) => {
+  const updateItem = (
+    index: number,
+    field: keyof StatisticContent,
+    value: StatisticContent[keyof StatisticContent],
+  ) => {
     const newItems = [...localData];
     newItems[index] = { ...newItems[index], [field]: value };
     saveStats(newItems);

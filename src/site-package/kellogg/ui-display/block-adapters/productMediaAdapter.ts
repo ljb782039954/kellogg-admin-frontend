@@ -9,7 +9,7 @@ const KELLOGG_VIDEO_PROVIDERS = [
   "direct",
 ] satisfies readonly SafeVideoProvider[];
 
-export function toProductVideoSource(url?: string): ProductVideoSource | null {
+export function toProductVideoSource(url?: string, poster?: string): ProductVideoSource | null {
   if (!url) return null;
 
   const source = getSafeVideoSource(url, {
@@ -21,6 +21,7 @@ export function toProductVideoSource(url?: string): ProductVideoSource | null {
     ? {
         kind: source.kind,
         url: source.url,
+        poster,
         vertical: source.kind === "embed" ? source.vertical : undefined,
         title: "Product Video",
       }

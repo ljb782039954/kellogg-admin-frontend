@@ -11,11 +11,11 @@ import {
 } from '@/components/ui/select';
 import BilingualInput from '../../components/BilingualInput';
 import ImageInput from '../../components/ImageInput';
-import type { ImageBannerProps } from '@site/components-web/blocks/ImageBanner';
+import type { ImageBannerContent } from '@site/ui-display/block-adapters';
 
 export interface ImageBannerPropsEditorProps {
-  props: ImageBannerProps;
-  onUpdate: (props: ImageBannerProps) => void;
+  props: ImageBannerContent;
+  onUpdate: (props: ImageBannerContent) => void;
 }
 
 

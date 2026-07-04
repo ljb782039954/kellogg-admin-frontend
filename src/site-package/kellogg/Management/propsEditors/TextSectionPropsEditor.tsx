@@ -9,11 +9,11 @@ import {
 } from '@/components/ui/select';
 import BilingualInput from '../../components/BilingualInput';
 import BilingualRichInput from '../../components/RichInput/BilingualRichInput';
-import type { TextSectionProps } from '@site/components-web/blocks/TextSection';
+import type { TextSectionContent } from '@site/ui-display/block-adapters';
 
 export interface TextSectionPropsEditorProps {
-  props: TextSectionProps;
-  onUpdate: (props: TextSectionProps) => void;
+  props: TextSectionContent;
+  onUpdate: (props: TextSectionContent) => void;
 }
 
 export function TextSectionPropsEditor({ props, onUpdate }: TextSectionPropsEditorProps) {

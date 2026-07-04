@@ -28,6 +28,9 @@ export function toVideoSectionViewProps(
   return {
     titleText: content.title ? translate(content.title) : "",
     subtitleText: content.subtitle ? translate(content.subtitle) : "",
-    videoSource: toProductVideoSource(content.videoUrl || content.values?.videoUrl),
+    videoSource: toProductVideoSource(
+      content.videoUrl || content.values?.videoUrl,
+      content.values?.posterImage,
+    ),
   };
 }

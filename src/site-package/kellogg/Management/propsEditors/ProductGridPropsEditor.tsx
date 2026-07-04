@@ -7,11 +7,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import type { ProductGridProps } from '@site/components-web/blocks/ProductGrid';
+import type { ProductGridContent } from '@site/ui-display/block-adapters';
 
 export interface ProductGridPropsEditorProps {
-  props: ProductGridProps;
-  onUpdate: (props: ProductGridProps) => void;
+  props: ProductGridContent;
+  onUpdate: (props: ProductGridContent) => void;
 }
 
 export function ProductGridPropsEditor({ props, onUpdate }: ProductGridPropsEditorProps) {

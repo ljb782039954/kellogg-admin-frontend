@@ -7,13 +7,13 @@ import { cn } from '@/lib/utils';
 import { type PageBlock } from '../../types';
 import { componentRegistry } from '../../metadata/componentRegistry';
 import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
-import BlockThumbnail from './BlockThumbnail';
 
 interface BlockItemProps {
   block: PageBlock;
@@ -130,28 +130,30 @@ export function BlockItem({
         </button>
       </div>
 
-      {/* 中间：缩略图 */}
-      <button
-        onClick={onSelect}
-        className="w-20 h-16 flex-shrink-0 hover:opacity-80 transition-opacity"
-      >
-        <BlockThumbnail type={block.type} className="w-full h-full" />
-      </button>
-
-      {/* 右侧：名称和操作 */}
-      <div className="flex-1 flex items-center px-3 min-w-0">
+      {/* 右侧：名称和操作。真实组件样式在编辑器顶部展示，列表只做结构管理。 */}
+      <div className="flex-1 flex items-center px-3 py-3 min-w-0">
         <button
           onClick={onSelect}
           className="flex-1 text-left min-w-0"
         >
-          <span className={cn(
-            'font-medium text-sm block truncate transition-colors',
-            isSelected ? 'text-primary' : 'hover:text-primary'
-          )}>
-            {meta.name.zh}
-          </span>
+          <div className="flex items-center gap-2 mb-1">
+            <span className={cn(
+              'font-medium text-sm block truncate transition-colors',
+              isSelected ? 'text-primary' : 'hover:text-primary'
+            )}>
+              {meta.name.zh}
+            </span>
+            {!block.isVisible && (
+              <Badge variant="outline" className="text-[10px] px-1.5 py-0 text-gray-400">
+                已隐藏
+              </Badge>
+            )}
+          </div>
           <span className="text-xs text-gray-400 block truncate">
             {meta.description.zh}
+          </span>
+          <span className="text-[10px] text-gray-300 block truncate mt-0.5">
+            {block.type}
           </span>
         </button>
 

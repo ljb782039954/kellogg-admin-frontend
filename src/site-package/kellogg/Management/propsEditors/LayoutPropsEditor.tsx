@@ -1,5 +1,5 @@
 // 布局属性编辑器（用于全局数据组件的局部配置）
-import { type PageBlock } from '../../types/blocks';
+import { type PageBlock } from '../../types';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Switch } from '@/components/ui/switch';
@@ -21,7 +21,7 @@ import { useState } from 'react';
 
 interface Props {
   block: PageBlock;
-  onUpdate: (content: any) => void;
+  onUpdate: (content: unknown) => void;
 }
 
 export function LayoutPropsEditor({ block, onUpdate }: Props) {

@@ -13,6 +13,7 @@ export interface TestimonialContent {
 export interface TestimonialsContent {
   title?: Translation;
   subtitle?: Translation;
+  maxItems?: number;
   items?: TestimonialContent[];
 }
 import type { TestimonialsProps } from "../components/blocks";
@@ -27,7 +28,9 @@ export function toTestimonialsViewProps(
   return {
     titleText: content.title ? translate(content.title) : "",
     subtitleText: content.subtitle ? translate(content.subtitle) : "",
-    items: (content.items ?? []).map((item) => ({
+    items: (content.items ?? [])
+      .slice(0, content.maxItems)
+      .map((item) => ({
       id: item.id,
       nameText: translate(item.name),
       roleText: item.role ? translate(item.role) : "",

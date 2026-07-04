@@ -13,11 +13,11 @@ import { Info } from 'lucide-react';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import BilingualInput from '../../components/BilingualInput';
 import { getPreviewUrl } from '@/core-adminApp/lib/utils';
-import type { FeaturedProductsProps } from '@site/components-web/blocks/FeaturedProducts';
+import type { FeaturedProductsContent } from '@site/ui-display/block-adapters';
 
 export interface FeaturedProductsPropsEditorProps {
-  props: FeaturedProductsProps;
-  onUpdate: (props: FeaturedProductsProps) => void;
+  props: FeaturedProductsContent;
+  onUpdate: (props: FeaturedProductsContent) => void;
 }
 
 
@@ -101,7 +101,7 @@ export function FeaturedProductsPropsEditor({ props, onUpdate }: FeaturedProduct
           </div>
         ) : (
           <div className="grid grid-cols-4 gap-2">
-            {displayProducts.slice(0, 8).map((product: any) => (
+            {displayProducts.slice(0, 8).map((product) => (
               <div
                 key={product.id}
                 className="aspect-square bg-gray-100 rounded-lg overflow-hidden border"

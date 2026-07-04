@@ -13,11 +13,11 @@ import { Info } from 'lucide-react';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import BilingualInput from '../../components/BilingualInput';
 import { getPreviewUrl } from '@/core-adminApp/lib/utils';
-import type { NewArrivalsProps } from '@site/components-web/blocks/NewArrivals';
+import type { NewArrivalsContent } from '@site/ui-display/block-adapters';
 
 export interface NewArrivalsPropsEditorProps {
-  props: NewArrivalsProps;
-  onUpdate: (props: NewArrivalsProps) => void;
+  props: NewArrivalsContent;
+  onUpdate: (props: NewArrivalsContent) => void;
 }
 
 
@@ -92,7 +92,7 @@ export function NewArrivalsPropsEditor({ props, onUpdate }: NewArrivalsPropsEdit
           </div>
         ) : (
           <div className="grid grid-cols-4 gap-2">
-            {newProducts.slice(0, 8).map((product: any) => (
+            {newProducts.slice(0, 8).map((product) => (
               <div
                 key={product.id}
                 className="aspect-square bg-gray-100 rounded-lg overflow-hidden border"

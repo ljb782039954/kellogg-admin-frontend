@@ -5,12 +5,12 @@ import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import BilingualInput from '../../components/BilingualInput';
 import BilingualRichInput from '../../components/RichInput/BilingualRichInput';
-import type { BrandValue, BrandValuesProps } from '@site/components-web/blocks/BrandValues';
+import type { BrandValueContent, BrandValuesContent } from '@site/ui-display/block-adapters';
 // import { iconOptions } from '@/types';
 
 export interface BrandValuesPropsEditorProps {
-  props: BrandValuesProps;
-  onUpdate: (props: BrandValuesProps) => void;
+  props: BrandValuesContent;
+  onUpdate: (props: BrandValuesContent) => void;
 }
 
 const iconOptions = [
@@ -26,9 +26,9 @@ const iconOptions = [
 
 
 export function BrandValuesPropsEditor({ props, onUpdate }: BrandValuesPropsEditorProps) {
-  const [localItems, setLocalItems] = useState<BrandValue[]>(props.items || []);
+  const [localItems, setLocalItems] = useState<BrandValueContent[]>(props.items || []);
 
-  const saveItems = (items: BrandValue[]) => {
+  const saveItems = (items: BrandValueContent[]) => {
     setLocalItems(items);
     onUpdate({ ...props, items });
   };
@@ -45,7 +45,11 @@ export function BrandValuesPropsEditor({ props, onUpdate }: BrandValuesPropsEdit
     ]);
   };
 
-  const updateItems = (index: number, field: keyof BrandValue, value: any) => {
+  const updateItems = (
+    index: number,
+    field: keyof BrandValueContent,
+    value: BrandValueContent[keyof BrandValueContent],
+  ) => {
     const newItems = [...localItems];
     newItems[index] = { ...newItems[index], [field]: value };
     saveItems(newItems);
