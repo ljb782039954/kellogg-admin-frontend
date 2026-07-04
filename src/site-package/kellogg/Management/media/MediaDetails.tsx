@@ -11,7 +11,7 @@ import {
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { type R2Image } from '@/core-adminApp/types';
+import { type R2Image } from '@/cms/types';
 import { type UsageInfo } from '@/core-adminApp/hooks/useImageUsage';
 import { format } from 'date-fns';
 import AdminImage from '../../components/AdminImage';

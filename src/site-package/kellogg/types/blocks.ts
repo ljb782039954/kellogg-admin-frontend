@@ -1,5 +1,6 @@
 
-import type { Translation } from "@/core-adminApp/types/common";
+import type { Translation } from "@/cms/types/common";
+
 
 // ============================================
 // 积木块系统 (Block-based System)
@@ -27,21 +28,6 @@ export type BlockType =
   | 'gallery'
   | 'featureList'
 ;
-
-// 组件分类
-export type ComponentCategory = 'product' | 'marketing' | 'content' | 'media';
-
-// 组件元数据
-export interface ComponentMeta {
-  type: BlockType;
-  name: Translation;
-  description: Translation;
-  icon: string;  // lucide 图标名称
-  category: ComponentCategory;
-  hasGlobalData: boolean;  // 是否使用全局数据（如商品列表、评价列表等）
-  singleton?: boolean;     // 是否只能添加一个
-  defaultProps: any;
-}
 
 export interface PageBlock {
   id: string;          // 唯一ID，用于拖拽排序

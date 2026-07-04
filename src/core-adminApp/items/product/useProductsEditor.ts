@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useContent } from '@/core-adminApp/context/ContentContext';
-import type { Product } from '@/core-adminApp/types';
+import type { Product } from '@/cms/types';
 import {
   createDraftProduct,
   hasProductChanges,

@@ -1,6 +1,6 @@
 import { useCallback, useMemo, useState } from 'react';
 import { useContent } from '@/core-adminApp/context/ContentContext';
-import type { Translation } from '@/core-adminApp/types';
+import type { Translation } from '@/cms/types';
 import type { CustomPage } from '@/site-package/kellogg/types/blocks';
 import {
   createDynamicPage,

@@ -1,4 +1,4 @@
-import type { Blog, BlogInput } from '@/core-adminApp/types';
+import type { Blog, BlogInput } from '@/cms/types';
 
 export function mapBlogToInput(blog: Blog): BlogInput {
   return {

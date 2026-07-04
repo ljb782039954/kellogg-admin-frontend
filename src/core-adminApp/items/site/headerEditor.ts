@@ -1,5 +1,5 @@
 import { checkPageExists } from '@/core-adminApp/lib/linkUtils';
-import type { HeaderContent, NavLink } from '@/core-adminApp/types';
+import type { HeaderContent, NavLink } from '@/cms/types';
 import type { CustomPage } from '@/site-package/kellogg/types/blocks';
 
 export const MAX_HEADER_MAIN_NAV = 5;

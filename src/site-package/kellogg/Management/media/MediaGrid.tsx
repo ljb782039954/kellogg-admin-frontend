@@ -2,7 +2,7 @@ import { Image as ImageIcon, Loader2 } from 'lucide-react';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
-import { type R2Image } from '@/core-adminApp/types';
+import { type R2Image } from '@/cms/types';
 import { type UsageInfo } from '@/core-adminApp/hooks/useImageUsage';
 import AdminImage from '../../components/AdminImage';
 

@@ -1,7 +1,7 @@
 import { type ChangeEvent, useRef, useState } from 'react';
 import { useContent } from '@/core-adminApp/context/ContentContext';
 import { calculateHashSimilarity, calculateImageHash, resizeImage } from '@/core-adminApp/lib/image';
-import type { R2Image } from '@/core-adminApp/types';
+import type { R2Image } from '@/cms/types';
 import { getImageDimensions } from './mediaUpload';
 
 export interface DuplicateImageMatch {

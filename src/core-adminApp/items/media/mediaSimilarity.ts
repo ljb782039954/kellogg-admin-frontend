@@ -1,4 +1,4 @@
-import type { R2Image } from '@/core-adminApp/types';
+import type { R2Image } from '@/cms/types';
 import { calculateHashSimilarity } from '@/core-adminApp/lib/image';
 
 export type MediaSimilarityMatchType =

@@ -1,4 +1,4 @@
-import type { Blog } from '@/core-adminApp/types';
+import type { Blog } from '@/cms/types';
 
 export type BlogStatusFilter = 'all' | 'draft' | 'published' | 'archived';
 

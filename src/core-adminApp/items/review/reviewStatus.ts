@@ -1,4 +1,4 @@
-import type { CustomerReview } from '@/core-adminApp/types';
+import type { CustomerReview } from '@/cms/types';
 
 export type ReviewStatusFilter = 'all' | CustomerReview['status'];
 

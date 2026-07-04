@@ -1,5 +1,5 @@
 import { nanoid } from 'nanoid';
-import type { Translation } from '@/core-adminApp/types';
+import type { Translation } from '@/cms/types';
 import type { CustomPage, PageBlock } from '@/site-package/kellogg/types/blocks';
 
 export const PAGE_SETTINGS_BLOCK_ID = '__settings__';

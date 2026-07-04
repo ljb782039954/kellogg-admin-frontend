@@ -1,6 +1,6 @@
 // import React from 'react';
 import { Plus, Trash2, Package } from 'lucide-react';
-import type { BulkPrice } from '@/core-adminApp/types/products';
+import type { BulkPrice } from '@/cms/types/products';
 
 interface BulkPriceSectionProps {
   bulkPrices: BulkPrice[];

@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useContent } from '@/core-adminApp/context/ContentContext';
-import type { HeaderContent, NavLink } from '@/core-adminApp/types';
+import type { HeaderContent, NavLink } from '@/cms/types';
 import {
   hasInvalidHeaderLinks,
   normalizeHeaderContent,

@@ -1,4 +1,4 @@
-import type { R2Image } from '@/core-adminApp/types';
+import type { R2Image } from '@/cms/types';
 
 export function filterMediaLibraryImages(images: R2Image[], searchQuery: string): R2Image[] {
   const query = searchQuery.trim().toLowerCase();

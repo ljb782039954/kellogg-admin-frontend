@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { api } from '@/core-adminApp/lib/api';
-import type { CustomerReview } from '@/core-adminApp/types';
+import type { CustomerReview } from '@/cms/types';
 import {
   getNextReviewStatus,
   type ReviewStatusFilter,

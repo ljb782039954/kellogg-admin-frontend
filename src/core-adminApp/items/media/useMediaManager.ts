@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useContent } from '@/core-adminApp/context/ContentContext';
 import { useImageUsage } from '@/core-adminApp/hooks/useImageUsage';
-import type { R2Image } from '@/core-adminApp/types';
+import type { R2Image } from '@/cms/types';
 import { findSimilarMediaImages } from './mediaSimilarity';
 import { getImageDimensions } from './mediaUpload';
 

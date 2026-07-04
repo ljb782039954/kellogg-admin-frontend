@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useContent } from '@/core-adminApp/context/ContentContext';
 import { checkPageExists } from '@/core-adminApp/lib/linkUtils';
-import type { FooterContent, FooterLink, FooterLinkGroup, Translation } from '@/core-adminApp/types';
+import type { FooterContent, FooterLink, FooterLinkGroup, Translation } from '@/cms/types';
 import { createFooterLink, createFooterLinkGroup, normalizeFooterContent } from './footerEditor';
 
 export function useFooterEditor() {

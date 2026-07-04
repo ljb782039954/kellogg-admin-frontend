@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { X, Save, Languages } from 'lucide-react';
-import type { Translation } from '@/core-adminApp/types';
+import type { Translation } from '@/cms/types';
 import RichInput from './RichInput';
 import { getPreviewHtml } from '@/core-adminApp/rich-text';
 

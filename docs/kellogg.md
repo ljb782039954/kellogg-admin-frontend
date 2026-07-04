@@ -20,7 +20,7 @@ src/site-package/kellogg
 site-package/kellogg/
 ├── assets/               当前站点资源，如 logo
 ├── components/           后台使用的输入组件、选择器、弹窗等
-├── components-web/       前台展示组件和页面 block 预览组件
+├── ui-display/            前台展示组件和页面 block 预览组件
 │   ├── blocks/           页面搭建器可用的 block 组件
 │   └── custom/           前台风格业务组件
 ├── Management/           后台管理页面
@@ -53,17 +53,17 @@ Kellogg 包中应保留当前站点专属内容：
 - logo、favicon、站点标题等品牌资源。
 - 组件注册表和默认内容。
 
-通用业务逻辑不应继续堆在 Kellogg 包中，应优先迁移到 `src/core`。
+通用业务逻辑不应继续堆在 Kellogg 包中，应优先迁移到 `src/core-adminApp`。
 
-## 与 core 的关系
+## 与 core-adminApp 的关系
 
-Kellogg UI 组件可以依赖 `src/core`：
+Kellogg UI 组件可以依赖 `src/core-adminApp`：
 
 ```text
 Kellogg UI -> core hook / core util / core type
 ```
 
-但 `core` 不应依赖 Kellogg 的 UI、图片、样式或品牌文案。
+但 `core-adminApp` 不应依赖 Kellogg 的 UI、图片、样式或品牌文案。
 
 当前仍有少量页面 block 类型位于 Kellogg 包中，这是历史结构留下的过渡状态。因为 block 协议和当前站点 block 实现关系较近，暂时不强行抽象。
 
@@ -121,7 +121,7 @@ src/site-package/new-site
 3. 前台预览组件和页面 block
 
    ```text
-   components-web/
+   ui-display/
    metadata/componentRegistry.ts
    metadata/blocksContent.ts
    ```
@@ -142,7 +142,8 @@ src/site-package/new-site
 如果只是替换站点，通常不需要改：
 
 ```text
-src/core
+src/cms
+src/core-adminApp
 src/components/ui
 src/main.tsx
 src/App.tsx

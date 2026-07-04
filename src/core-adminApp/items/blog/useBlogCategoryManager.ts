@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { api } from '@/core-adminApp/lib/api';
-import type { BlogCategory } from '@/core-adminApp/types';
+import type { BlogCategory } from '@/cms/types';
 import { generateBlogCategorySlug, sanitizeBlogCategorySlug } from './blogCategorySlug';
 
 export interface BlogCategoryEditingRow {

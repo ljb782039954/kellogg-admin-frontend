@@ -1,4 +1,4 @@
-import type { BlogInput } from '@/core-adminApp/types';
+import type { BlogInput } from '@/cms/types';
 
 export function createBlogSavePayload(
   form: BlogInput,

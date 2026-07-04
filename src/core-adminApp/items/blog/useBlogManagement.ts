@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { api } from '@/core-adminApp/lib/api';
-import type { Blog } from '@/core-adminApp/types';
+import type { Blog } from '@/cms/types';
 import {
   filterBlogsBySearch,
   getNextBlogPublishStatus,

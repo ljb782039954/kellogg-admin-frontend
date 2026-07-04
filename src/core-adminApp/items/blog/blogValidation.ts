@@ -1,4 +1,4 @@
-import type { BlogInput } from '@/core-adminApp/types';
+import type { BlogInput } from '@/cms/types';
 
 export function validateBlogBeforeSave(form: BlogInput): string | null {
   if (!form.slug || !form.title_zh || !form.title_en) {

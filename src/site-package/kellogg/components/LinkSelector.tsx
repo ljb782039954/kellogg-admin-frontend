@@ -11,7 +11,7 @@ import {
 } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
 import { useLinkSelector } from '@/core-adminApp/items/site';
-import type { LinkType, NavLink } from '@/core-adminApp/types';
+import type { LinkType, NavLink } from '@/cms/types';
 
 interface LinkSelectorProps {
   value: NavLink;

@@ -1,4 +1,4 @@
-import type { FooterContent, FooterLink, FooterLinkGroup } from '@/core-adminApp/types';
+import type { FooterContent, FooterLink, FooterLinkGroup } from '@/cms/types';
 
 export function normalizeFooterContent(footer: FooterContent): FooterContent {
   return {

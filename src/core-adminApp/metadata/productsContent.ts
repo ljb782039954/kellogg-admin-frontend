@@ -2,7 +2,7 @@ import type {
   Category,
   Product,
   SortOption
-} from '@/core-adminApp/types';
+} from '@/cms/types';
 
 import type {
   CategoriesProps,

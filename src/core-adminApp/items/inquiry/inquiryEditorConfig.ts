@@ -1,4 +1,4 @@
-import type { Translation } from '@/core-adminApp/types';
+import type { Translation } from '@/cms/types';
 
 export interface InquiryConfig {
   title: Translation;

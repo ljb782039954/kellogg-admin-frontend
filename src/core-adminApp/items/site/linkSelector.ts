@@ -1,4 +1,4 @@
-import type { LinkType, NavLink, Translation } from '@/core-adminApp/types';
+import type { LinkType, NavLink, Translation } from '@/cms/types';
 import type { CustomPage } from '@/site-package/kellogg/types/blocks';
 
 export interface LinkPageOption {

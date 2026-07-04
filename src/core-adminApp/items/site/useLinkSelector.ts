@@ -1,6 +1,6 @@
 import { useEffect, useMemo } from 'react';
 import { useContent } from '@/core-adminApp/context/ContentContext';
-import type { LinkType, NavLink } from '@/core-adminApp/types';
+import type { LinkType, NavLink } from '@/cms/types';
 import {
   getSelectedPageValue,
   isInternalLinkDeleted,

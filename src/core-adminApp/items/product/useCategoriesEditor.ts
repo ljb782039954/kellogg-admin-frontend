@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useContent } from '@/core-adminApp/context/ContentContext';
-import type { Category, Translation } from '@/core-adminApp/types';
+import type { Category, Translation } from '@/cms/types';
 import {
   createDraftCategory,
   hasCategoryChanges,

@@ -1,0 +1,25 @@
+{
+  "brand": {
+    "logo": "/kellogg/logo.jpg",
+    "name": {
+      "zh": "KELLOGG",
+      "en": "KELLOGG"
+    },
+    "company": {
+      "zh": "东莞市凯乐格服饰有限公司",
+      "en": "Dongguan Kallogg Garment Co., Ltd."
+    },
+    "description": {
+      "zh": "探索时尚，发现自我。我们致力于为您提供最优质的服装和购物体验。",
+      "en": "Explore fashion, discover yourself. We are committed to providing you with the finest clothing and shopping experience."
+    }
+  },
+  "contact": {
+    "phone": "+86 15112883162",
+    "email": "[EMAIL_ADDRESS]",
+    "address": {
+      "zh": "东莞市虎门镇博涌路34号1303室",
+      "en": "1303, No. 34, Boyong Road, Humen Town, Dongguan City"
+    }
+  }
+}

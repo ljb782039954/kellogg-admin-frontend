@@ -1,4 +1,4 @@
-import type { Category, CategoryInput, Product, ProductInput } from '@/core-adminApp/types';
+import type { Category, CategoryInput, Product, ProductInput } from '@/cms/types';
 
 export function normalizeProductImages(product: Product): Product {
   const images = product.images && product.images.length > 0 ? product.images : [product.image];

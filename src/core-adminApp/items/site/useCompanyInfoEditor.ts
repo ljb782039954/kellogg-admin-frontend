@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useContent } from '@/core-adminApp/context/ContentContext';
-import type { CompanyInfo } from '@/core-adminApp/types';
+import type { CompanyInfo } from '@/cms/types';
 
 export function useCompanyInfoEditor() {
   const { content, updateSiteSettings } = useContent();

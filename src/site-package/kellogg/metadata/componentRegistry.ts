@@ -3,7 +3,7 @@ import {
   type BlockType,
   type ComponentMeta,
   type ComponentCategory,
-} from '../types/blocks';
+} from '../types';
 
 // 组件注册表
 export const componentRegistry: Record<BlockType, ComponentMeta> = {

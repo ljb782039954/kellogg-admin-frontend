@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import { api } from '@/core-adminApp/lib/api';
-import type { CustomerReview, ReviewInput } from '@/core-adminApp/types';
+import type { CustomerReview, ReviewInput } from '@/cms/types';
 import { createReviewInput, validateReviewInput } from './reviewForm';
 import { extractYoutubeId, getYoutubeThumbnailUrl } from './reviewYoutube';
 

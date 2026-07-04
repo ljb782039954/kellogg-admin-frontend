@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import type { Product } from '@/core-adminApp/types';
+import type { Product } from '@/cms/types';
 
 interface Props {
     product: Product;

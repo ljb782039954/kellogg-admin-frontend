@@ -5,7 +5,7 @@ import { createBlogSavePayload } from './blogPayload';
 import { generateBlogSlug } from './blogSlug';
 import { validateBlogBeforeSave } from './blogValidation';
 import { api } from '@/core-adminApp/lib/api';
-import type { BlogInput } from '@/core-adminApp/types';
+import type { BlogInput } from '@/cms/types';
 
 type BlogEditorLanguage = 'zh' | 'en';
 type BlogSaveStatus = 'draft' | 'published';

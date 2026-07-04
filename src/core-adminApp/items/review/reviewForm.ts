@@ -1,4 +1,4 @@
-import type { CustomerReview, ReviewInput } from '@/core-adminApp/types';
+import type { CustomerReview, ReviewInput } from '@/cms/types';
 import { extractYoutubeId } from './reviewYoutube';
 
 export function createReviewInput(review?: CustomerReview | null): ReviewInput {
