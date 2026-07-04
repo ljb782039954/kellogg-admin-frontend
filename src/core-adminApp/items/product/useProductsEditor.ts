@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useContent } from '@/core-adminApp/context/ContentContext';
 import type { Product } from '@/cms/types';
 import {
@@ -34,6 +34,7 @@ export function useProductsEditor({
   } = useContent();
 
   const [localProducts, setLocalProducts] = useState<Product[]>([]);
+  const [baselineProducts, setBaselineProducts] = useState<Product[]>([]);
   const [saved, setSaved] = useState(false);
   const [expandedId, setExpandedId] = useState<number | null>(null);
   const [selectedIds, setSelectedIds] = useState<Set<number>>(new Set());
@@ -41,8 +42,21 @@ export function useProductsEditor({
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    setLocalProducts(allProducts.map(normalizeProductImages));
+    const normalizedProducts = allProducts.map(normalizeProductImages);
+    setLocalProducts(normalizedProducts);
+    setBaselineProducts(normalizedProducts);
   }, [allProducts]);
+
+  const dirtyProductIds = useMemo(() => {
+    return new Set(
+      localProducts
+        .filter(localProduct => {
+          const baselineProduct = baselineProducts.find(product => product.id === localProduct.id);
+          return !baselineProduct || hasProductChanges(localProduct, baselineProduct);
+        })
+        .map(product => product.id)
+    );
+  }, [baselineProducts, localProducts]);
 
   const showSaved = () => {
     setSaved(true);
@@ -97,16 +111,30 @@ export function useProductsEditor({
     setError(null);
 
     try {
-      for (const localProduct of localProducts) {
-        const remoteProduct = allProducts.find(product => product.id === localProduct.id);
+      const savedProducts: Product[] = [];
+      let nextExpandedId = expandedId;
 
-        if (!remoteProduct) {
-          await createProduct(mapProductToInput(localProduct));
-        } else if (hasProductChanges(localProduct, remoteProduct)) {
+      for (const localProduct of localProducts) {
+        const baselineProduct = baselineProducts.find(product => product.id === localProduct.id);
+
+        if (!baselineProduct) {
+          const createdProduct = normalizeProductImages(await createProduct(mapProductToInput(localProduct)));
+          savedProducts.push(createdProduct);
+
+          if (nextExpandedId === localProduct.id) {
+            nextExpandedId = createdProduct.id;
+          }
+        } else if (hasProductChanges(localProduct, baselineProduct)) {
           await apiUpdateProduct(localProduct.id, mapProductToInput(localProduct));
+          savedProducts.push(normalizeProductImages(localProduct));
+        } else {
+          savedProducts.push(normalizeProductImages(localProduct));
         }
       }
 
+      setLocalProducts(savedProducts);
+      setBaselineProducts(savedProducts);
+      setExpandedId(nextExpandedId);
       showSaved();
     } catch (err) {
       setError(getErrorMessage(err, '保存失败'));
@@ -160,12 +188,15 @@ export function useProductsEditor({
     allProducts,
     categories,
     contextLoading,
+    dirtyProductIds,
     error,
+    hasUnsavedChanges: dirtyProductIds.size > 0,
     expandedId,
     isSaving,
     localProducts,
     saved,
     selectedIds,
+    unsavedProductCount: dirtyProductIds.size,
     addProduct,
     handleBatchDelete,
     handleSave,

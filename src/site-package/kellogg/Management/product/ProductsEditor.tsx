@@ -1,7 +1,14 @@
 import { motion, AnimatePresence } from 'framer-motion';
-import { Plus, Trash2, Save, Layers, Star, Loader2 } from 'lucide-react';
+import { AlertCircle, Plus, Trash2, Save, Layers, Star, Loader2 } from 'lucide-react';
 import { useLanguage } from '@/core-adminApp/context/LanguageContext';
 import { useProductsEditor } from '@/core-adminApp/items/product';
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+} from '@/components/ui/sheet';
 
 // Subcomponents
 import ProductSummary from './ProductSummary';
@@ -17,12 +24,15 @@ export default function ProductsEditor() {
     allProducts,
     categories,
     contextLoading,
+    dirtyProductIds,
     error,
+    hasUnsavedChanges,
     expandedId,
     isSaving,
     localProducts,
     saved,
     selectedIds,
+    unsavedProductCount,
     addProduct,
     handleBatchDelete,
     handleSave,
@@ -36,6 +46,7 @@ export default function ProductsEditor() {
     confirmDelete: message => window.confirm(message),
     language,
   });
+  const editingProduct = localProducts.find(product => product.id === expandedId) || null;
 
   if (contextLoading && allProducts.length === 0 && localProducts.length === 0) {
     return (
@@ -111,6 +122,22 @@ export default function ProductsEditor() {
         </motion.div>
       )}
 
+      {hasUnsavedChanges && (
+        <motion.div
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="flex items-center gap-3 rounded-xl border border-orange-100 bg-orange-50 px-4 py-3 text-sm text-orange-700"
+        >
+          <AlertCircle className="h-4 w-4 shrink-0" />
+          <div>
+            <span className="font-bold">新内容未保存</span>
+            <span className="ml-2 text-orange-600">
+              当前有 {unsavedProductCount} 个产品包含未保存改动，请点击“保存全部改动”。
+            </span>
+          </div>
+        </motion.div>
+      )}
+
       {/* Stats & Filter Bar */}
       <div className="flex items-center justify-between bg-white p-4 rounded-xl border border-gray-100 shadow-sm overflow-hidden">
         <div className="flex items-center gap-6">
@@ -149,7 +176,10 @@ export default function ProductsEditor() {
       {/* Products List */}
       <div className="space-y-4 pb-20">
         <AnimatePresence>
-          {localProducts.map((product) => (
+          {localProducts.map((product) => {
+            const isProductDirty = dirtyProductIds.has(product.id);
+
+            return (
             <motion.div
               key={product.id}
               layout
@@ -158,6 +188,8 @@ export default function ProductsEditor() {
               exit={{ opacity: 0, scale: 0.95 }}
               className={`bg-white rounded-2xl border transition-all relative overflow-hidden ${expandedId === product.id
                 ? 'border-gray-900 shadow-xl z-10'
+                : isProductDirty
+                  ? 'border-orange-200 bg-orange-50/30 shadow-sm'
                 : selectedIds.has(product.id)
                   ? 'border-amber-200 bg-amber-50/20 shadow-sm'
                   : 'border-gray-100 shadow-sm'
@@ -168,7 +200,8 @@ export default function ProductsEditor() {
                 categories={categories}
                 isExpanded={expandedId === product.id}
                 isSelected={selectedIds.has(product.id)}
-                onToggleExpand={() => setExpandedId(expandedId === product.id ? null : product.id)}
+                hasUnsavedChanges={isProductDirty}
+                onToggleExpand={() => setExpandedId(product.id)}
                 onToggleSelect={(e) => {
                   e.stopPropagation();
                   toggleSelect(product.id);
@@ -179,53 +212,64 @@ export default function ProductsEditor() {
                   removeProduct(product.id);
                 }}
               />
-
-              {/* Detailed Content */}
-              <AnimatePresence>
-                {expandedId === product.id && (
-                  <motion.div
-                    initial={{ height: 0, opacity: 0 }}
-                    animate={{ height: 'auto', opacity: 1 }}
-                    exit={{ height: 0, opacity: 0 }}
-                    className="overflow-hidden"
-                  >
-                    <div className="px-6 pb-8 pt-2 border-t border-gray-50 space-y-6">
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                        <ProductMediaSection
-                          product={product}
-                          onUpdateField={(field, value) => updateLocalProduct(product.id, field, value)}
-                        />
-                        <ProductInfoSection
-                          product={product}
-                          categories={categories}
-                          language={language}
-                          onUpdateField={(field, value) => updateLocalProduct(product.id, field, value)}
-                        />
-                      </div>
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                        <ProductVariantsSection
-                          product={product}
-                          onUpdateField={(field, value) => updateLocalProduct(product.id, field, value)}
-                        />
-                        <ProductCustomFields
-                          product={product}
-                          onUpdateField={(field, value) => updateLocalProduct(product.id, field, value)}
-                        />
-                        <div className="pt-6 border-t border-gray-50">
-                          <BulkPriceSection
-                            bulkPrices={product.bulkPrices || []}
-                            onChange={(prices) => updateLocalProduct(product.id, 'bulkPrices', prices)}
-                          />
-                        </div>
-                      </div>
-                    </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
             </motion.div>
-          ))}
+            );
+          })}
         </AnimatePresence>
       </div>
+
+      <Sheet open={Boolean(editingProduct)} onOpenChange={(open) => !open && setExpandedId(null)}>
+        <SheetContent
+          side="right"
+          className="w-[min(980px,96vw)] sm:max-w-none gap-0 p-0"
+        >
+          {editingProduct && (
+            <>
+              <SheetHeader className="shrink-0 border-b px-6 py-5 pr-12">
+                <SheetTitle className="text-xl">
+                  {editingProduct.name.zh || '未命名产品'}
+                </SheetTitle>
+                <SheetDescription>
+                  ID: {editingProduct.id} · 点击右上角关闭编辑弹窗
+                </SheetDescription>
+              </SheetHeader>
+
+              <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-6 py-6">
+                <div className="space-y-8 pb-10">
+                  <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
+                    <ProductMediaSection
+                      product={editingProduct}
+                      onUpdateField={(field, value) => updateLocalProduct(editingProduct.id, field, value)}
+                    />
+                    <ProductInfoSection
+                      product={editingProduct}
+                      categories={categories}
+                      language={language}
+                      onUpdateField={(field, value) => updateLocalProduct(editingProduct.id, field, value)}
+                    />
+                  </div>
+                  <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
+                    <ProductVariantsSection
+                      product={editingProduct}
+                      onUpdateField={(field, value) => updateLocalProduct(editingProduct.id, field, value)}
+                    />
+                    <ProductCustomFields
+                      product={editingProduct}
+                      onUpdateField={(field, value) => updateLocalProduct(editingProduct.id, field, value)}
+                    />
+                    <div className="pt-6 border-t border-gray-50">
+                      <BulkPriceSection
+                        bulkPrices={editingProduct.bulkPrices || []}
+                        onChange={(prices) => updateLocalProduct(editingProduct.id, 'bulkPrices', prices)}
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </>
+          )}
+        </SheetContent>
+      </Sheet>
 
       {/* Float Save Button */}
       <div className="fixed bottom-8 right-8 z-50">

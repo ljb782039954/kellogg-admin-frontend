@@ -1,4 +1,4 @@
-import { ChevronDown, ChevronUp, Trash2 } from 'lucide-react';
+import { AlertCircle, ChevronDown, ChevronUp, Trash2 } from 'lucide-react';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import AdminImage from '../../components/AdminImage';
@@ -9,6 +9,7 @@ interface ProductSummaryProps {
   categories: Category[];
   isExpanded: boolean;
   isSelected: boolean;
+  hasUnsavedChanges: boolean;
   onToggleExpand: () => void;
   onToggleSelect: (e: React.MouseEvent) => void;
   onUpdateField: <K extends keyof Product>(field: K, value: Product[K]) => void;
@@ -20,6 +21,7 @@ export default function ProductSummary({
   categories,
   isExpanded,
   isSelected,
+  hasUnsavedChanges,
   onToggleExpand,
   onToggleSelect,
   onUpdateField,
@@ -51,9 +53,17 @@ export default function ProductSummary({
           />
         </div>
         <div>
-          <h3 className="font-bold text-gray-800 group-hover:text-gray-900 transition-colors">
-            {product.name.zh || '未命名产品'}
-          </h3>
+          <div className="flex flex-wrap items-center gap-2">
+            <h3 className="font-bold text-gray-800 group-hover:text-gray-900 transition-colors">
+              {product.name.zh || '未命名产品'}
+            </h3>
+            {hasUnsavedChanges && (
+              <span className="inline-flex items-center gap-1 rounded-full bg-orange-50 px-2 py-0.5 text-[11px] font-bold text-orange-600 ring-1 ring-orange-100">
+                <AlertCircle className="h-3 w-3" />
+                新内容未保存
+              </span>
+            )}
+          </div>
           <div className="flex items-center gap-3 mt-1">
             <span className="text-xs bg-gray-100 text-gray-500 px-2 py-0.5 rounded uppercase font-mono">ID: {product.id}</span>
             <span className="text-xs font-medium text-amber-600 bg-amber-50 px-2 py-0.5 rounded">
