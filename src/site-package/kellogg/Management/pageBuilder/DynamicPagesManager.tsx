@@ -13,7 +13,7 @@ import {
   Layers
 } from 'lucide-react';
 import { useDynamicPagesManager } from '@/core-adminApp/items/page-builder';
-import { type CustomPage } from '../../types/blocks';
+import { type CustomPage } from '../../types';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';

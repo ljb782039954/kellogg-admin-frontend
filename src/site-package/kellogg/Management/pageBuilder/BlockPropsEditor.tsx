@@ -1,5 +1,5 @@
 // 积木块属性编辑面板
-import { type PageBlock } from '../../types/blocks';
+import { type PageBlock } from '../../types';
 import { componentRegistry } from '../../metadata/componentRegistry';
 import * as LucideIcons from 'lucide-react';
 

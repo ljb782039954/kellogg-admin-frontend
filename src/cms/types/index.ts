@@ -1,11 +1,12 @@
 export * from "./blog";
 export * from "./blocks";
+export * from "./pages";
 export * from "./common";
 export * from "./products";
 export * from "./baseEditor";
 
 import type { CompanyInfo, HeaderContent, FooterContent } from "./baseEditor";
-import type { CustomPage } from "./blocks";
+import type { CustomPage } from "./pages";
 
 // ============================================
 // 核心聚合与 API 响应类型
