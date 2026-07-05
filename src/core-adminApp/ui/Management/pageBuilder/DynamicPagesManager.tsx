@@ -44,7 +44,7 @@ import {
 } from '@/components/ui/alert-dialog';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/core-adminApp/hooks/use-toast';
-import BilingualInput from '../../components/BilingualInput';
+import BilingualInput from '../../Input/BilingualInput';
 
 export function DynamicPagesManager() {
   const navigate = useNavigate();

@@ -1,12 +1,11 @@
-import type { NavLink, Translation } from '../types';
-import type { CustomPage } from '@/site-package/kellogg/types/blocks';
+import type { NavLink, Translation, CmsCustomPage } from '@/cms/types';
 /**
  * 校验链接指向的页面是否存在
  */
 export function checkPageExists(
   href: string | undefined,
   linkType: 'internal' | 'external',
-  pages: CustomPage[] = []
+  pages: CmsCustomPage[] = []
 ): boolean {
   if (linkType === 'external' || !href) return true;
   // 检查 href 是否匹配任何页面的 ID 或 Path

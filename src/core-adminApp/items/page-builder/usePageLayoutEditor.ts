@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { nanoid } from 'nanoid';
 import { useContent } from '@/core-adminApp/context/ContentContext';
-import type { CustomPage, PageBlock } from '@/site-package/kellogg/types/blocks';
+import type { CmsCustomPage, CmsPageBlock } from '@/cms/types';
 import {
   createDefaultBlocks,
   ensurePageSeo,
@@ -39,7 +39,7 @@ export function usePageLayoutEditor({
   const { findPage, updatePage } = useContent();
   const page = useMemo(() => findPage(pageId || ''), [findPage, pageId]);
 
-  const [localPage, setLocalPage] = useState<CustomPage | null>(null);
+  const [localPage, setLocalPage] = useState<CmsCustomPage | null>(null);
   const [selectedBlockId, setSelectedBlockId] = useState<string | null>(null);
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [isResetDialogOpen, setIsResetDialogOpen] = useState(false);
@@ -63,7 +63,7 @@ export function usePageLayoutEditor({
     }
   }, [localPage, notify, onNavigateToPages, page]);
 
-  const updateLocalPage = useCallback((updates: Partial<CustomPage>) => {
+  const updateLocalPage = useCallback((updates: Partial<CmsCustomPage>) => {
     setLocalPage((previous) => previous ? { ...previous, ...updates } : null);
     setHasChanges(true);
   }, []);
@@ -88,7 +88,7 @@ export function usePageLayoutEditor({
     });
   }, [localPage, updateLocalPage]);
 
-  const handleAddBlock = useCallback((block: PageBlock) => {
+  const handleAddBlock = useCallback((block: CmsPageBlock) => {
     if (!localPage) return;
 
     updateLocalPage({

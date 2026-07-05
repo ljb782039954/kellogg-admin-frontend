@@ -16,7 +16,7 @@ import {
 import { Save, Eye, RotateCcw, Plus, ArrowLeft, Settings, FileText } from 'lucide-react';
 import { usePageLayoutEditor } from '@/core-adminApp/items/page-builder';
 import { BlockList } from './BlockList';
-import { BlockPropsEditor } from './BlockPropsEditor';
+import { BlockPropsEditor } from '../../../../site-package/kellogg/Management/pageBuilder/BlockPropsEditor';
 import { SEOEditor } from './SEOEditor';
 import { PageSettingsEditor } from './PageSettingsEditor';
 import { AddBlockDialog } from './AddBlockDialog';

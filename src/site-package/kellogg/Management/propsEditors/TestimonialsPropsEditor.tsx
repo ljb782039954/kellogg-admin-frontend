@@ -5,9 +5,9 @@ import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import BilingualInput from '../../components/BilingualInput';
-import BilingualInputAera from '../../components/BilingualInputAera';
-import ImageInput from '../../components/ImageInput';
+import BilingualInput from '@/core-adminApp/ui/Input/BilingualInput';
+import BilingualInputAera from '@/core-adminApp/ui/Input/BilingualInputAera';
+import ImageInput from '@/core-adminApp/ui/Input/ImageInput';
 import type { TestimonialContent, TestimonialsContent } from '@site/ui-display/block-adapters';
 
 export interface TestimonialsPropsEditorProps {

@@ -1,6 +1,6 @@
 import { checkPageExists } from '@/core-adminApp/lib/linkUtils';
 import type { HeaderContent, NavLink } from '@/cms/types';
-import type { CustomPage } from '@/site-package/kellogg/types/blocks';
+import type { CmsCustomPage } from '@/cms/types';
 
 export const MAX_HEADER_MAIN_NAV = 5;
 
@@ -21,7 +21,7 @@ export function normalizeHeaderContent(header: HeaderContent): HeaderContent {
   };
 }
 
-export function hasInvalidHeaderLinks(header: HeaderContent, pages: CustomPage[]): boolean {
+export function hasInvalidHeaderLinks(header: HeaderContent, pages: CmsCustomPage[]): boolean {
   return header.navItems.some((item) => (
     !checkPageExists(item.href, item.linkType, pages) ||
     item.children?.some((child) => !checkPageExists(child.href, child.linkType, pages))

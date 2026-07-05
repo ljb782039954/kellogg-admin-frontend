@@ -84,6 +84,7 @@ export function createDraftProduct(products: Product[], categories: Category[]):
     bulkPrices: [],
     image: '',
     images: [],
+    videos: [],
     rating: 5,
     sales: 0,
     category: categories.length > 0 ? categories[0].id : '',
@@ -92,6 +93,7 @@ export function createDraftProduct(products: Product[], categories: Category[]):
     isFeatured: false,
     isActive: true,
     customFields: [],
+
   };
 }
 

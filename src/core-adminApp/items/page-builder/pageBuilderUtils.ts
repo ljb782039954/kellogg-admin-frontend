@@ -1,6 +1,6 @@
 import { nanoid } from 'nanoid';
 import type { Translation } from '@/cms/types';
-import type { CustomPage, PageBlock } from '@/site-package/kellogg/types/blocks';
+import type { CmsCustomPage, CmsPageBlock } from '@/cms/types';
 
 export const PAGE_SETTINGS_BLOCK_ID = '__settings__';
 export const SEO_SETTINGS_BLOCK_ID = '__seo__';
@@ -35,7 +35,7 @@ export function createPageTitle(title: Translation): Translation {
 }
 
 export function validatePageForm(
-  pages: CustomPage[],
+  pages: CmsCustomPage[],
   title: Translation,
   pathInput: string,
   excludePageId?: string
@@ -64,8 +64,8 @@ export function validatePageForm(
 export function createDynamicPage(
   title: Translation,
   pathInput: string,
-  duplicateSourcePage?: CustomPage | null
-): CustomPage {
+  duplicateSourcePage?: CmsCustomPage | null
+): CmsCustomPage {
   const pageTitle = createPageTitle(title);
 
   return {
@@ -89,7 +89,7 @@ export function createDynamicPage(
   };
 }
 
-export function filterPages(pages: CustomPage[], searchQuery: string): CustomPage[] {
+export function filterPages(pages: CmsCustomPage[], searchQuery: string): CmsCustomPage[] {
   const query = searchQuery.toLowerCase();
   return pages.filter((page) => (
     page.title.zh.toLowerCase().includes(query) ||
@@ -98,7 +98,7 @@ export function filterPages(pages: CustomPage[], searchQuery: string): CustomPag
   ));
 }
 
-export function groupPagesByBuilderType(pages: CustomPage[]) {
+export function groupPagesByBuilderType(pages: CmsCustomPage[]) {
   return {
     fixedBlockPages: pages.filter((page) => (
       page.type === 'fixed-block' || (page.isFixed && page.type !== 'fixed-layout')
@@ -110,14 +110,14 @@ export function groupPagesByBuilderType(pages: CustomPage[]) {
   };
 }
 
-export function createDuplicateForm(page: CustomPage) {
+export function createDuplicateForm(page: CmsCustomPage) {
   return {
     title: { zh: `${page.title.zh} (副本)`, en: `${page.title.en} (Copy)` },
     path: `${page.path.replace(/^\//, '')}-copy`,
   };
 }
 
-export function ensurePageSeo(page: CustomPage): CustomPage {
+export function ensurePageSeo(page: CmsCustomPage): CmsCustomPage {
   return {
     ...page,
     seo: page.seo || EMPTY_SEO,
@@ -125,10 +125,10 @@ export function ensurePageSeo(page: CustomPage): CustomPage {
 }
 
 export function reorderBlocksById(
-  blocks: PageBlock[],
+  blocks: CmsPageBlock[],
   activeId: string,
   overId?: string | null
-): PageBlock[] {
+): CmsPageBlock[] {
   if (!overId || activeId === overId) return blocks;
 
   const oldIndex = blocks.findIndex((block) => block.id === activeId);
@@ -141,7 +141,7 @@ export function reorderBlocksById(
   return nextBlocks;
 }
 
-export function moveBlockByOffset(blocks: PageBlock[], blockId: string, offset: -1 | 1): PageBlock[] {
+export function moveBlockByOffset(blocks: CmsPageBlock[], blockId: string, offset: -1 | 1): CmsPageBlock[] {
   const index = blocks.findIndex((block) => block.id === blockId);
   const targetIndex = index + offset;
   if (index < 0 || targetIndex < 0 || targetIndex >= blocks.length) return blocks;
@@ -152,18 +152,18 @@ export function moveBlockByOffset(blocks: PageBlock[], blockId: string, offset: 
   return nextBlocks;
 }
 
-export function updateBlockContent(blocks: PageBlock[], blockId: string, content: unknown): PageBlock[] {
+export function updateBlockContent(blocks: CmsPageBlock[], blockId: string, content: unknown): CmsPageBlock[] {
   return blocks.map((block) => (
     block.id === blockId ? { ...block, content } : block
   ));
 }
 
-export function toggleBlockVisibility(blocks: PageBlock[], blockId: string): PageBlock[] {
+export function toggleBlockVisibility(blocks: CmsPageBlock[], blockId: string): CmsPageBlock[] {
   return blocks.map((block) => (
     block.id === blockId ? { ...block, isVisible: !block.isVisible } : block
   ));
 }
 
-export function createDefaultBlocks(): PageBlock[] {
+export function createDefaultBlocks(): CmsPageBlock[] {
   return [];
 }

@@ -5,9 +5,9 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
-import BilingualInput from '../../components/BilingualInput';
-import ImageInput from '../../components/ImageInput';
-import LinkSelector from '../../components/LinkSelector';
+import BilingualInput from '@/core-adminApp/ui/Input/BilingualInput';
+import ImageInput from '@/core-adminApp/ui/Input/ImageInput';
+import LinkSelector from '@/core-adminApp/ui/Input/LinkSelector';
 import { ensureNavLink } from '@/core-adminApp/lib/linkUtils';
 import type { CarouselItemContent, CarouselContent } from '@site/ui-display/block-adapters';
 

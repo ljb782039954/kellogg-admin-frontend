@@ -3,8 +3,8 @@ import { Plus, Trash2, GripVertical, AlertTriangle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import BilingualInput from '../../components/BilingualInput';
-import EditableLinkCard from '../../components/custom/EditableLinkCard';
+import BilingualInput from '../../Input/BilingualInput';
+import EditableLinkCard from '../../Input/custom/EditableLinkCard';
 import type { NavLink, Translation } from '@/cms/types';
 import { nanoid } from 'nanoid';
 

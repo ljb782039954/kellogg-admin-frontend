@@ -1,5 +1,5 @@
 import type { LinkType, NavLink, Translation } from '@/cms/types';
-import type { CustomPage } from '@/site-package/kellogg/types/blocks';
+import type { CmsCustomPage } from '@/cms/types';
 
 export interface LinkPageOption {
   pageId: string;
@@ -8,7 +8,7 @@ export interface LinkPageOption {
   isFixed: boolean;
 }
 
-export function mapPagesToLinkOptions(pages: CustomPage[]): LinkPageOption[] {
+export function mapPagesToLinkOptions(pages: CmsCustomPage[]): LinkPageOption[] {
   return pages.map((page) => ({
     pageId: page.id,
     path: page.path,

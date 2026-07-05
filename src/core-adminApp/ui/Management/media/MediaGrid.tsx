@@ -4,7 +4,7 @@ import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 import { type R2Image } from '@/cms/types';
 import { type UsageInfo } from '@/core-adminApp/hooks/useImageUsage';
-import AdminImage from '../../components/AdminImage';
+import AdminImage from '../../Input/AdminImage';
 
 interface MediaGridProps {
   images: R2Image[];

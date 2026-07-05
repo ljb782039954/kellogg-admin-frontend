@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, type ReactNode } from 'react';
-import type { Language } from '../types';
+import type { Language } from '@/cms/types';
 
 interface LanguageContextType {
   language: Language;

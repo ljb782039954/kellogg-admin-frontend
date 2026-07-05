@@ -3,7 +3,7 @@ import type { ComponentType } from 'react';
 import { type PageBlock } from '@site/types';
 import { componentRegistry } from '@site/metadata/componentRegistry';
 import * as LucideIcons from 'lucide-react';
-import BlockLivePreview from './BlockLivePreview';
+import BlockLivePreview from '@/core-adminApp/ui/Management/pageBuilder/BlockLivePreview';
 import type {
   BrandValuesContent,
   CarouselContent,

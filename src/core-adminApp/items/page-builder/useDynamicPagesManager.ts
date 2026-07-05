@@ -1,7 +1,7 @@
 import { useCallback, useMemo, useState } from 'react';
 import { useContent } from '@/core-adminApp/context/ContentContext';
 import type { Translation } from '@/cms/types';
-import type { CustomPage } from '@/site-package/kellogg/types/blocks';
+import type { CmsCustomPage } from '@/cms/types';
 import {
   createDynamicPage,
   createDuplicateForm,
@@ -30,8 +30,8 @@ export function useDynamicPagesManager({
   const [searchQuery, setSearchQuery] = useState('');
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
   const [deletePageId, setDeletePageId] = useState<string | null>(null);
-  const [duplicateSourcePage, setDuplicateSourcePage] = useState<CustomPage | null>(null);
-  const [editPage, setEditPage] = useState<CustomPage | null>(null);
+  const [duplicateSourcePage, setDuplicateSourcePage] = useState<CmsCustomPage | null>(null);
+  const [editPage, setEditPage] = useState<CmsCustomPage | null>(null);
   const [newPageTitle, setNewPageTitle] = useState<Translation>({ zh: '', en: '' });
   const [newPagePath, setNewPagePathState] = useState('');
 
@@ -93,7 +93,7 @@ export function useDynamicPagesManager({
       return;
     }
 
-    const updatedPage: CustomPage = {
+    const updatedPage: CmsCustomPage = {
       ...editPage,
       path: `/${newPagePath.replace(/^\//, '')}`,
       title: {
@@ -112,7 +112,7 @@ export function useDynamicPagesManager({
     });
   }, [content.pages, editPage, newPagePath, newPageTitle, notify, resetPageForm, updatePage]);
 
-  const handleOpenEditDialog = useCallback((page: CustomPage) => {
+  const handleOpenEditDialog = useCallback((page: CmsCustomPage) => {
     setEditPage(page);
     setNewPageTitle(page.title);
     setNewPagePathState(page.path.replace(/^\//, ''));
@@ -146,7 +146,7 @@ export function useDynamicPagesManager({
     onNavigateToEdit(pageId);
   }, [onNavigateToEdit]);
 
-  const handleOpenDuplicateDialog = useCallback((page: CustomPage) => {
+  const handleOpenDuplicateDialog = useCallback((page: CmsCustomPage) => {
     const duplicateForm = createDuplicateForm(page);
     setDuplicateSourcePage(page);
     setNewPageTitle(duplicateForm.title);

@@ -21,7 +21,7 @@ import {
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { useBlogManagement } from '@/core-adminApp/items/blog';
-import AdminImage from '../../components/AdminImage';
+import AdminImage from '../../Input/AdminImage';
 
 const STATUS_LABELS = {
   draft: { label: '草稿', class: 'bg-gray-100 text-gray-500' },

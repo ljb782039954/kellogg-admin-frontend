@@ -7,8 +7,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import BilingualInput from '../../components/BilingualInput';
-import BilingualRichInput from '../../components/RichInput/BilingualRichInput';
+import BilingualInput from '@/core-adminApp/ui/Input/BilingualInput';
+import BilingualRichInput from '@/core-adminApp/ui/Input/RichInput/BilingualRichInput';
 import type { TextSectionContent } from '@site/ui-display/block-adapters';
 
 export interface TextSectionPropsEditorProps {

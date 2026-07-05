@@ -10,22 +10,22 @@ import Overview from '@site/views/Overview';
 // import AccountSettings from '@site/AccountSettings';
 
 // 页面管理
-import { DynamicPagesManager, PageLayoutEditor } from '@site/Management/pageBuilder';
+import { DynamicPagesManager, PageLayoutEditor } from '@Management/pageBuilder';
 // import ComponentsPreview from '@site/views/BlocksPreview';
 
 // 编辑器
-import CompanyInfoEditor from '@site/Management/companyInfo/CompanyInfoEditor';
-import HeaderEditor from '@site/Management/header';
-import ProductsEditor from '@site/Management/product/ProductsEditor';
-import CategoriesEditor from '@site/Management/product/ProductCategories';
-import FooterEditor from '@site/Management/footer/FooterEditor';
-import InquiryEditor from '@site/Management/inquiry/InquiryEditor';
-import InquiryManagement from '@site/Management/inquiry/InquiryManagement';
-import MediaManager from '@site/Management/media/MediaManager';
-import BlogManagement from '@site/Management/blog/BlogManagement';
-import BlogEditor from '@site/Management/blog/BlogEditor';
-import BlogCategoryManager from '@site/Management/blog/BlogCategoryManager';
-import CustomerReviewsManagement from '@site/Management/customerReviews/CustomerReviewsManagement';
+import CompanyInfoEditor from '@Management/companyInfo/CompanyInfoEditor';
+import HeaderEditor from '@Management/header';
+import ProductsEditor from '@Management/product/ProductsEditor';
+import CategoriesEditor from '@Management/product/ProductCategories';
+import FooterEditor from '@Management/footer/FooterEditor';
+import InquiryEditor from '@Management/inquiry/InquiryEditor';
+import InquiryManagement from '@Management/inquiry/InquiryManagement';
+import MediaManager from '@Management/media/MediaManager';
+import BlogManagement from '@Management/blog/BlogManagement';
+import BlogEditor from '@Management/blog/BlogEditor';
+import BlogCategoryManager from '@Management/blog/BlogCategoryManager';
+import CustomerReviewsManagement from '@Management/customerReviews/CustomerReviewsManagement';
 
 function App() {
   return (

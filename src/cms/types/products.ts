@@ -44,3 +44,42 @@ export interface Product {
   colors?: { name: Translation; image?: string }[];
   customFields?: { name: Translation; value: Translation }[];
 }
+
+// 用于 api 接口
+
+export interface ProductInput {
+  name_zh: string;
+  name_en: string;
+  price: number;
+  original_price?: number;
+  bulk_prices?: BulkPrice[];
+  category_id?: string;
+  rating?: number;
+  sales?: number;
+  tag_zh?: string;
+  tag_en?: string;
+  description_zh?: string;
+  description_en?: string;
+  release_date?: string;
+  is_featured?: boolean;
+  image?: string;
+  images?: string[];
+  fabric_zh?: string;
+  fabric_en?: string;
+  notes_zh?: string;
+  notes_en?: string;
+  sizes?: { name: string; image?: string }[];
+  colors?: { name_zh: string; name_en: string; image?: string }[];
+  videos?: string[];
+  custom_fields?: { name_zh: string; name_en: string; value_zh: string; value_en: string }[];
+  sort_order?: number;
+  is_active?: boolean;
+}
+
+export interface CategoryInput {
+  id: string;
+  name_zh: string;
+  name_en: string;
+  image?: string;
+  sort_order?: number;
+}

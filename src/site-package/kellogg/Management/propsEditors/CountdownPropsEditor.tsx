@@ -2,7 +2,7 @@
 
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
-import BilingualInput from '../../components/BilingualInput';
+import BilingualInput from '@/core-adminApp/ui/Input/BilingualInput';
 import type { CountdownContent } from '@site/ui-display/block-adapters';
 
 export interface CountdownPropsEditorProps {

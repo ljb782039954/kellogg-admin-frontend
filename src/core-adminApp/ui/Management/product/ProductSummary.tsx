@@ -1,7 +1,7 @@
 import { AlertCircle, ChevronDown, ChevronUp, Trash2 } from 'lucide-react';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
-import AdminImage from '../../components/AdminImage';
+import AdminImage from '../../Input/AdminImage';
 import type { Product, Category } from '@/cms/types';
 
 interface ProductSummaryProps {

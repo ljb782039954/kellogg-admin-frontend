@@ -10,7 +10,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import BilingualInput from '../../components/BilingualInput';
+import BilingualInput from '@/core-adminApp/ui/Input/BilingualInput';
 import {
   Collapsible,
   CollapsibleContent,

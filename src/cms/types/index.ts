@@ -6,19 +6,19 @@ export * from "./products";
 export * from "./baseEditor";
 export * from "./review";
 
-// import type { CompanyInfo, HeaderContent, FooterContent } from "./baseEditor";
-// import type { CustomPage } from "./pages";
+import type { CompanyInfo, HeaderContent, FooterContent } from "./baseEditor";
+import type { CmsCustomPage } from "./pages";
 
 // ============================================
 // 核心聚合与 API 响应类型
 // ============================================
 
-// export interface SiteContent {
-//   companyInfo: CompanyInfo;
-//   header: HeaderContent;
-//   footer: FooterContent;
-//   pages: CustomPage[];
-// }
+export interface SiteContent {
+  companyInfo: CompanyInfo;
+  header: HeaderContent;
+  footer: FooterContent;
+  pages: CmsCustomPage[];
+}
 
 
 // ============================================

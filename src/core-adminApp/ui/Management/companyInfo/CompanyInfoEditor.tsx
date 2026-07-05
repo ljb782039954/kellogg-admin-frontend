@@ -6,9 +6,9 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
-import BilingualInput from '../../components/BilingualInput';
-import BilingualInputAera from '../../components/BilingualInputAera';
-import ImageInput from '../../components/ImageInput';
+import BilingualInput from '../../Input/BilingualInput';
+import BilingualInputAera from '../../Input/BilingualInputAera';
+import ImageInput from '../../Input/ImageInput';
 import { useCompanyInfoEditor } from '@/core-adminApp/items/site';
 
 export default function CompanyInfoEditor() {

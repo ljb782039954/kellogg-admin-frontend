@@ -12,8 +12,8 @@ import {
 } from '@/components/ui/select';
 import { Plus, Trash2 } from 'lucide-react';
 import * as LucideIcons from 'lucide-react';
-import BilingualInput from '../../components/BilingualInput';
-import BilingualRichInput from '../../components/RichInput/BilingualRichInput';
+import BilingualInput from '@/core-adminApp/ui/Input/BilingualInput';
+import BilingualRichInput from '@/core-adminApp/ui/Input/RichInput/BilingualRichInput';
 // import { commonFeatureIcons } from '@/types/editor';
 import type { FeatureListContent } from '@site/ui-display/block-adapters';
 

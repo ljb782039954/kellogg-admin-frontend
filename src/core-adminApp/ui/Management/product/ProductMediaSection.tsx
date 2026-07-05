@@ -1,5 +1,5 @@
 import { Plus, Tag, Trash2 } from 'lucide-react';
-import ImageInput from '../../components/ImageInput';
+import ImageInput from '../../Input/ImageInput';
 import type { Product } from '@/cms/types';
 
 interface ProductMediaSectionProps {

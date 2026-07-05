@@ -1,7 +1,7 @@
 // 图片横幅属性编辑器
 import { Label } from '@/components/ui/label';
-import BilingualInput from '../../components/BilingualInput';
-import ImageInput from '../../components/ImageInput';
+import BilingualInput from '@/core-adminApp/ui/Input/BilingualInput';
+import ImageInput from '@/core-adminApp/ui/Input/ImageInput';
 import type { ImageBannerTagContent } from '@site/ui-display/block-adapters';
 
 export interface ImageBannerTagPropsEditorProps {

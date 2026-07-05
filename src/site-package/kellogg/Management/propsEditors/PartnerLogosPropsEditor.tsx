@@ -12,8 +12,8 @@ import { Button } from '@/components/ui/button';
 // } from '@/components/ui/select';
 import { nanoid } from 'nanoid';
 import { Plus, Trash2 } from 'lucide-react';
-import BilingualInput from '../../components/BilingualInput';
-import ImageInput from '../../components/ImageInput';
+import BilingualInput from '@/core-adminApp/ui/Input/BilingualInput';
+import ImageInput from '@/core-adminApp/ui/Input/ImageInput';
 import type { PartnerLogosContent } from '@site/ui-display/block-adapters';
 export interface PartnerLogosPropsEditorProps {
   props: PartnerLogosContent;

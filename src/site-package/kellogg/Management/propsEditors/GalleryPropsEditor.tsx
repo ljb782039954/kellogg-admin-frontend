@@ -10,8 +10,8 @@ import { Button } from '@/components/ui/button';
 //   SelectValue,
 // } from '@/components/ui/select';
 import { Plus, Trash2 } from 'lucide-react';
-import BilingualInput from '../../components/BilingualInput';
-import ImageInput from '../../components/ImageInput';
+import BilingualInput from '@/core-adminApp/ui/Input/BilingualInput';
+import ImageInput from '@/core-adminApp/ui/Input/ImageInput';
 import type { GalleryContent } from '@site/ui-display/block-adapters';
 
 export interface GalleryPropsEditorProps {

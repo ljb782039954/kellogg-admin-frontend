@@ -10,6 +10,8 @@ export default defineConfig({
     alias: {
       "@": path.resolve(__dirname, "./src"),
       "@site": path.resolve(__dirname, "./src/site-package/kellogg"),
+      "@Management": path.resolve(__dirname, "./src/core-adminApp/ui/Management"),
+      
     },
   },
   server: {

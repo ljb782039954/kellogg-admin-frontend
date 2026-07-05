@@ -12,8 +12,9 @@ import type {
   Blog,
   BlogInput,
   BlogCategory,
-} from '../types';
-import type { CustomPage } from '@/site-package/kellogg/types/blocks';
+  CmsCustomPage,
+  // ReviewInput
+} from '@/cms/types';
 
 const API_BASE = import.meta.env.VITE_IS_LOCAL_DEV === "true" ? import.meta.env.VITE_API_BASE_URL_LOCAL : import.meta.env.VITE_API_BASE_URL;
 
@@ -179,7 +180,7 @@ export const api = {
       method: 'DELETE',
     }),
 
-  getPageById: (id: string) => request<CustomPage>(`/api/config/pages/${id}`),
+  getPageById: (id: string) => request<CmsCustomPage>(`/api/config/pages/${id}`),
 
   // ============================================
   // 图片与静态资源上传
@@ -318,13 +319,13 @@ export const api = {
     );
   },
 
-  createReview: (data: import('../types').ReviewInput) =>
+  createReview: (data: import('@/cms/types').ReviewInput) =>
     request<{ id: number; message: string }>('/api/admin/reviews', {
       method: 'POST',
       body: JSON.stringify(data),
     }),
 
-  updateReview: (id: number, data: Partial<import('../types').ReviewInput>) =>
+  updateReview: (id: number, data: Partial<import('@/cms/types').ReviewInput>) =>
     request<{ message: string }>(`/api/admin/reviews/${id}`, {
       method: 'PUT',
       body: JSON.stringify(data),

@@ -1,8 +1,8 @@
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Switch } from '@/components/ui/switch';
-import BilingualInput from '../../components/BilingualInput';
-import ImageInput from '../../components/ImageInput';
+import BilingualInput from '@/core-adminApp/ui/Input/BilingualInput';
+import ImageInput from '@/core-adminApp/ui/Input/ImageInput';
 import type { VideoSectionContent } from '@site/ui-display/block-adapters';
 
 export interface VideoSectionPropsEditorProps {

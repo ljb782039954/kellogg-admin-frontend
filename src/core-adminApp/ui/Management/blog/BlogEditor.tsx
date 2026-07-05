@@ -17,8 +17,8 @@ import {
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { useBlogEditor } from '@/core-adminApp/items/blog';
-import ImageInput from '../../components/ImageInput';
-import { MarkdownEditor, TagInput } from '../../components/markdownEditor';
+import ImageInput from '../../Input/ImageInput';
+import { MarkdownEditor, TagInput } from '../../Input/markdownEditor';
 
 const FIELD_LABEL = 'block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1.5';
 const INPUT_CLASS = 'w-full px-3 py-2 text-sm border border-gray-200 rounded-xl bg-white focus:ring-2 focus:ring-gray-900 focus:border-transparent transition-all placeholder-gray-300';

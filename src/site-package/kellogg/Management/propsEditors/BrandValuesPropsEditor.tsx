@@ -3,8 +3,8 @@ import { Plus, Trash2, GripVertical } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
-import BilingualInput from '../../components/BilingualInput';
-import BilingualRichInput from '../../components/RichInput/BilingualRichInput';
+import BilingualInput from '@/core-adminApp/ui/Input/BilingualInput';
+import BilingualRichInput from '@/core-adminApp/ui/Input/RichInput/BilingualRichInput';
 import type { BrandValueContent, BrandValuesContent } from '@site/ui-display/block-adapters';
 // import { iconOptions } from '@/types';
 

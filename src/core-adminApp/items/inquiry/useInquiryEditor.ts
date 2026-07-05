@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { api } from '@/core-adminApp/lib/api';
-import type { CustomPage } from '@/site-package/kellogg/types/blocks';
+import type { CmsCustomPage } from '@/cms/types';
 import {
   DEFAULT_INQUIRY_CONFIG,
   type InquiryConfig,
@@ -17,11 +17,11 @@ interface InquiryEditorMessages {
 }
 
 export interface UseInquiryEditorOptions {
-  findPage: (id: string) => CustomPage | undefined;
+  findPage: (id: string) => CmsCustomPage | undefined;
   messages?: Partial<InquiryEditorMessages>;
   notify?: InquiryEditorNotifier;
   pageId?: string;
-  updatePage: (pageId: string, pageData: Partial<CustomPage>) => Promise<void>;
+  updatePage: (pageId: string, pageData: Partial<CmsCustomPage>) => Promise<void>;
 }
 
 const DEFAULT_MESSAGES: InquiryEditorMessages = {
@@ -76,7 +76,7 @@ export function useInquiryEditor({
     setIsSaving(true);
 
     try {
-      await updatePage(pageId, { content: config } as Partial<CustomPage>);
+      await updatePage(pageId, { content: config } as Partial<CmsCustomPage>);
       notify?.success?.(messages.saveSuccess);
     } catch {
       notify?.error?.(messages.saveFailure);

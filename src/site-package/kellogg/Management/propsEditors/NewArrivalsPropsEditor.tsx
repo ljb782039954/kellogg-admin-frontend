@@ -11,7 +11,7 @@ import { Label } from '@/components/ui/label';
 // } from '@/components/ui/select';
 import { Info } from 'lucide-react';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import BilingualInput from '../../components/BilingualInput';
+import BilingualInput from '@/core-adminApp/ui/Input/BilingualInput';
 import { getPreviewUrl } from '@/core-adminApp/lib/utils';
 import type { NewArrivalsContent } from '@site/ui-display/block-adapters';
 

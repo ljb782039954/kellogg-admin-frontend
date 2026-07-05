@@ -20,7 +20,9 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"],
-      "@site/*": ["./src/site-package/kellogg/*"]
+      "@site/*": ["./src/site-package/kellogg/*"],
+      "@Management/*": ["./src/core-adminApp/ui/Management/*"],
+
     },
 
     /* Linting */

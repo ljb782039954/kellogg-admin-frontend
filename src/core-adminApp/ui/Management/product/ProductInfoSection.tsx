@@ -1,5 +1,5 @@
 import { Star, TrendingUp, Layers, Calendar } from 'lucide-react';
-import BilingualInput from '../../components/BilingualInput';
+import BilingualInput from '../../Input/BilingualInput';
 import type { Product, Category } from '@/cms/types';
 
 interface ProductInfoSectionProps {

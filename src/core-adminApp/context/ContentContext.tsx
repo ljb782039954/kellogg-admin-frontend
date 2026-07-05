@@ -11,8 +11,9 @@ import type {
   R2Image,
   Blog,
   CustomerReview,
-} from '../types';
-import type { CustomPage } from '@/site-package/kellogg/types/blocks';
+  CmsCustomPage
+} from '@/cms/types';
+// import type {  } from '@/site-package/kellogg/types/blocks';
 import { api } from '../lib/api';
 import { toast } from 'sonner';
 
@@ -55,7 +56,7 @@ interface ContentContextType {
 
   // 数据获取
   refreshData: () => Promise<void>;
-  findPage: (id: string) => CustomPage | undefined;
+  findPage: (id: string) => CmsCustomPage | undefined;
   clearError: () => void;
 
   // 商品 CRUD (D1)
@@ -69,8 +70,8 @@ interface ContentContextType {
   deleteCategory: (id: string) => Promise<void>;
 
   // 页面管理 (KV)
-  updatePage: (pageId: string, pageData: Partial<CustomPage>) => Promise<void>;
-  addPage: (page: CustomPage) => Promise<void>;
+  updatePage: (pageId: string, pageData: Partial<CmsCustomPage>) => Promise<void>;
+  addPage: (page: CmsCustomPage) => Promise<void>;
   deletePage: (pageId: string) => Promise<void>;
 
   // 全局配置管理 (KV)
@@ -148,7 +149,7 @@ export function ContentProvider({ children }: { children: ReactNode }) {
         footer,
         buildStatusData
       ] = await Promise.all([
-        fetchConfig<CustomPage[]>('pages', blankContent.pages),
+        fetchConfig<CmsCustomPage[]>('pages', blankContent.pages),
         fetchConfig<CompanyInfo>('site_settings', blankContent.companyInfo),
         fetchConfig<HeaderContent>('header_config', blankContent.header),
         fetchConfig<FooterContent>('footer_config', blankContent.footer),
@@ -160,9 +161,9 @@ export function ContentProvider({ children }: { children: ReactNode }) {
         pagesIndex.map(async (p) => {
           try {
             const detail = await api.getPageById(p.id);
-            return { ...p, ...detail } as CustomPage;
+            return { ...p, ...detail } as CmsCustomPage;
           } catch (e) {
-            return { ...p, blocks: [] } as CustomPage;
+            return { ...p, blocks: [] } as CmsCustomPage;
           }
         })
       );
@@ -233,9 +234,9 @@ export function ContentProvider({ children }: { children: ReactNode }) {
   // ============================================
   // 页面管理 (真正的积木持久化)
   // ============================================
-  const updatePage = useCallback(async (pageId: string, pageData: Partial<CustomPage>) => {
+  const updatePage = useCallback(async (pageId: string, pageData: Partial<CmsCustomPage>) => {
     const existingFullPage = content.pages.find(p => p.id === pageId);
-    const fullPageToSave = { ...(existingFullPage || {}), ...pageData } as CustomPage;
+    const fullPageToSave = { ...(existingFullPage || {}), ...pageData } as CmsCustomPage;
 
     // 1. 写入独立详情 KV (不管什么页面类型都写入以确保 getPageById 可被正常调用)
     await api.setConfig(`page:${pageId}`, fullPageToSave);
@@ -246,7 +247,7 @@ export function ContentProvider({ children }: { children: ReactNode }) {
     );
     const sanitizedIndex = updatedPages.map(p => {
       const { blocks, seo, ...rest } = p;
-      return rest as CustomPage;
+      return rest as CmsCustomPage;
     });
     await api.setConfig('pages_index', sanitizedIndex);
 
@@ -255,7 +256,7 @@ export function ContentProvider({ children }: { children: ReactNode }) {
     toast.success('页面信息已更新');
   }, [content.pages]);
 
-  const addPage = useCallback(async (page: CustomPage) => {
+  const addPage = useCallback(async (page: CmsCustomPage) => {
     // 1. 写入独立详情 KV
     await api.setConfig(`page:${page.id}`, page);
 
@@ -263,7 +264,7 @@ export function ContentProvider({ children }: { children: ReactNode }) {
     const updatedPages = [...content.pages, page];
     const sanitizedIndex = updatedPages.map(p => {
       const { blocks, seo, ...rest } = p;
-      return rest as CustomPage;
+      return rest as CmsCustomPage;
     });
     await api.setConfig('pages_index', sanitizedIndex);
 
@@ -279,7 +280,7 @@ export function ContentProvider({ children }: { children: ReactNode }) {
     const updatedPages = content.pages.filter(p => p.id !== pageId);
     const sanitizedIndex = updatedPages.map(p => {
       const { blocks, seo, ...rest } = p;
-      return rest as CustomPage;
+      return rest as CmsCustomPage;
     });
     await api.setConfig('pages_index', sanitizedIndex);
 

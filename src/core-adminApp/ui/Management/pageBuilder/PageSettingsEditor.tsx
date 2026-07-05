@@ -1,6 +1,6 @@
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
-import BilingualInput from '../../components/BilingualInput';
+import BilingualInput from '../../Input/BilingualInput';
 import { FileText, Info } from 'lucide-react';
 import { type Translation } from '@/cms/types';
 
