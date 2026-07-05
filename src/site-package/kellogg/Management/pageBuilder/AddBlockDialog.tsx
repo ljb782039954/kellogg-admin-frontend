@@ -11,13 +11,13 @@ import {
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
-import { type BlockType, type PageBlock, type ComponentCategory } from '../../types';
+import { type BlockType, type PageBlock, type ComponentCategory } from '@site/types';
 import {
   componentRegistry,
   componentsByCategory,
   categoryNames,
   canAddBlock,
-} from '../../metadata/componentRegistry';
+} from '@site/metadata/componentRegistry';
 import { blockShowcaseRegistry } from '@site/ui-display/data/blocks';
 import BlockLivePreview from './BlockLivePreview';
 

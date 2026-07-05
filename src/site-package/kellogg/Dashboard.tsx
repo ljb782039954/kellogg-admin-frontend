@@ -20,7 +20,7 @@ import {
 } from 'lucide-react';
 import { useLanguage } from '@/core-adminApp/context/LanguageContext';
 import { useContent } from '@/core-adminApp/context/ContentContext';
-import siteSettings from './metadata/siteSettings.json';
+import siteSettings from '@site/metadata/siteSettings.json';
 
 interface MenuItem {
   path?: string;

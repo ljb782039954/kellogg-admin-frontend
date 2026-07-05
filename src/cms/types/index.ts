@@ -4,6 +4,7 @@ export * from "./pages";
 export * from "./common";
 export * from "./products";
 export * from "./baseEditor";
+export * from "./review";
 
 // import type { CompanyInfo, HeaderContent, FooterContent } from "./baseEditor";
 // import type { CustomPage } from "./pages";

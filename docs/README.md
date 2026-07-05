@@ -109,6 +109,8 @@ Markdown 编辑行为位于 `src/core-adminApp/markdown`。站点包负责保留
 
 页面搭建器的展示预览策略见 [page-builder-preview.md](./page-builder-preview.md)。
 
+样式主题的站点包管理策略见 [style-theme-management.md](./style-theme-management.md)。
+
 ## 边界规则
 
 ### 推荐
@@ -122,7 +124,7 @@ Markdown 编辑行为位于 `src/core-adminApp/markdown`。站点包负责保留
 
 - 在通用逻辑中导入站点图片、站点文案、站点 UI 组件。
 - 在 `App.tsx`、`main.tsx` 中写死具体站点目录。
-- 为了“看起来通用”把站点专属 UI 搬进 `core`。
+- 为了“看起来通用”把站点专属 UI 搬进 `core-adminApp`。
 - 为当前小项目引入复杂插件系统或过度抽象。
 
 ## 开发约定

@@ -1,7 +1,7 @@
 import { Suspense, useEffect, useRef, useState } from 'react';
 import { useLanguage } from '@/core-adminApp/context/LanguageContext';
 import { cn } from '@/lib/utils';
-import type { BlockType } from '../../types';
+import type { BlockType } from '@site/types';
 import { kelloggBlockComponentMap } from '@site/ui-display/blockComponentMap';
 import { getKelloggPreviewProps } from '@site/ui-display/previewProps';
 import type { BlockType as DisplayBlockType } from '@site/ui-display/types';
