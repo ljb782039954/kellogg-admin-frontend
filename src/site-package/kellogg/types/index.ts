@@ -1,3 +1,2 @@
-export * from "./blocks"
 export * from "./pages"
-export * from "./componentRegistry"
+export * from "../ui-display/types"

@@ -117,18 +117,18 @@ export function createDuplicateForm(page: CmsCustomPage) {
   };
 }
 
-export function ensurePageSeo(page: CmsCustomPage): CmsCustomPage {
+export function ensurePageSeo<TPage extends CmsCustomPage>(page: TPage): TPage {
   return {
     ...page,
     seo: page.seo || EMPTY_SEO,
   };
 }
 
-export function reorderBlocksById(
-  blocks: CmsPageBlock[],
+export function reorderBlocksById<TBlock extends CmsPageBlock>(
+  blocks: TBlock[],
   activeId: string,
   overId?: string | null
-): CmsPageBlock[] {
+): TBlock[] {
   if (!overId || activeId === overId) return blocks;
 
   const oldIndex = blocks.findIndex((block) => block.id === activeId);
@@ -141,7 +141,11 @@ export function reorderBlocksById(
   return nextBlocks;
 }
 
-export function moveBlockByOffset(blocks: CmsPageBlock[], blockId: string, offset: -1 | 1): CmsPageBlock[] {
+export function moveBlockByOffset<TBlock extends CmsPageBlock>(
+  blocks: TBlock[],
+  blockId: string,
+  offset: -1 | 1
+): TBlock[] {
   const index = blocks.findIndex((block) => block.id === blockId);
   const targetIndex = index + offset;
   if (index < 0 || targetIndex < 0 || targetIndex >= blocks.length) return blocks;
@@ -152,13 +156,20 @@ export function moveBlockByOffset(blocks: CmsPageBlock[], blockId: string, offse
   return nextBlocks;
 }
 
-export function updateBlockContent(blocks: CmsPageBlock[], blockId: string, content: unknown): CmsPageBlock[] {
+export function updateBlockContent<TBlock extends CmsPageBlock>(
+  blocks: TBlock[],
+  blockId: string,
+  content: unknown
+): TBlock[] {
   return blocks.map((block) => (
-    block.id === blockId ? { ...block, content } : block
+    block.id === blockId ? { ...block, content } as TBlock : block
   ));
 }
 
-export function toggleBlockVisibility(blocks: CmsPageBlock[], blockId: string): CmsPageBlock[] {
+export function toggleBlockVisibility<TBlock extends CmsPageBlock>(
+  blocks: TBlock[],
+  blockId: string
+): TBlock[] {
   return blocks.map((block) => (
     block.id === blockId ? { ...block, isVisible: !block.isVisible } : block
   ));

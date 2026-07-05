@@ -10,7 +10,7 @@ import BilingualInput from '../../Input/BilingualInput';
 import EditableLinkCard from '../../Input/custom/EditableLinkCard';
 import { useFooterEditor } from '@/core-adminApp/items/site';
 import type { FooterLink } from '@/cms/types';
-import FooterPreview from './footerPreview';
+import FooterPreview from '@site/ui-display/components/footerPreview';
 
 
 export default function FooterEditor() {

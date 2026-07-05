@@ -1,10 +1,11 @@
 // 可拖拽的积木块列表组件
 import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
-import { type PageBlock } from '@site/types';
+// import { type CmsPageBlock } from '@site/types';
+import { type CmsPageBlock } from '@/cms/types';
 import { BlockItem } from './BlockItem';
 
 interface BlockListProps {
-  blocks: PageBlock[];
+  blocks: CmsPageBlock[];
   selectedId: string | null;
   onSelect: (id: string) => void;
   onToggle: (id: string) => void;

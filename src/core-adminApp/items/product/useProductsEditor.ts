@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useContent } from '@/core-adminApp/context/ContentContext';
-import type { Product } from '@/cms/types';
+import type { Language, Product } from '@/cms/types';
 import {
   createDraftProduct,
   hasProductChanges,
@@ -8,8 +8,6 @@ import {
   normalizeProductImages,
   updateProductField,
 } from './productMapper';
-
-type Language = 'zh' | 'en';
 
 interface UseProductsEditorOptions {
   confirmDelete?: (message: string) => boolean;

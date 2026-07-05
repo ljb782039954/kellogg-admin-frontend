@@ -1,5 +1,5 @@
 import type { Translation } from "@/cms/types/common";
-import type { BlockType } from "../ui-display/types";
+import type { BlockType } from "./blocks";
 
 // 组件分类
 export type ComponentCategory = 'product' | 'marketing' | 'content' | 'media';

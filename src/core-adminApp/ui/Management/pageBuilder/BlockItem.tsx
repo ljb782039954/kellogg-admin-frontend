@@ -4,7 +4,7 @@ import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { GripVertical, Eye, EyeOff, Trash2, ChevronUp, ChevronDown } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { type PageBlock } from '@site/types';
+import { type CmsPageBlock } from '@/cms/types';
 import { componentRegistry } from '@site/metadata/componentRegistry';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -16,7 +16,7 @@ import {
 } from '@/components/ui/tooltip';
 
 interface BlockItemProps {
-  block: PageBlock;
+  block: CmsPageBlock;
   isSelected: boolean;
   isFirst: boolean;
   isLast: boolean;

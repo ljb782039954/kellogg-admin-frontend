@@ -13,7 +13,8 @@ import {
   Layers
 } from 'lucide-react';
 import { useDynamicPagesManager } from '@/core-adminApp/items/page-builder';
-import { type CustomPage } from '@site/types';
+// import { type CmsCustomPage } from '@site/types';
+import { type CmsCustomPage } from '@/cms/types';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
@@ -265,7 +266,7 @@ export function DynamicPagesManager() {
 
 // 页面卡片组件
 interface PageCardProps {
-  page: CustomPage;
+  page: CmsCustomPage;
   onEdit: () => void;
   onEditSettings: () => void;
   onDuplicate: () => void;

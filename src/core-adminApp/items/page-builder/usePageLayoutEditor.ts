@@ -29,7 +29,7 @@ function clonePage<T>(value: T): T {
   return JSON.parse(JSON.stringify(value)) as T;
 }
 
-export function usePageLayoutEditor({
+export function usePageLayoutEditor<TBlock extends CmsPageBlock = CmsPageBlock>({
   confirmLeave = (message) => window.confirm(message),
   notify,
   onNavigateToPages,
@@ -39,7 +39,7 @@ export function usePageLayoutEditor({
   const { findPage, updatePage } = useContent();
   const page = useMemo(() => findPage(pageId || ''), [findPage, pageId]);
 
-  const [localPage, setLocalPage] = useState<CmsCustomPage | null>(null);
+  const [localPage, setLocalPage] = useState<CmsCustomPage<TBlock> | null>(null);
   const [selectedBlockId, setSelectedBlockId] = useState<string | null>(null);
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [isResetDialogOpen, setIsResetDialogOpen] = useState(false);
@@ -59,11 +59,11 @@ export function usePageLayoutEditor({
     }
 
     if (!localPage) {
-      setLocalPage(clonePage(page));
+      setLocalPage(clonePage(page) as CmsCustomPage<TBlock>);
     }
   }, [localPage, notify, onNavigateToPages, page]);
 
-  const updateLocalPage = useCallback((updates: Partial<CmsCustomPage>) => {
+  const updateLocalPage = useCallback((updates: Partial<CmsCustomPage<TBlock>>) => {
     setLocalPage((previous) => previous ? { ...previous, ...updates } : null);
     setHasChanges(true);
   }, []);
@@ -88,7 +88,7 @@ export function usePageLayoutEditor({
     });
   }, [localPage, updateLocalPage]);
 
-  const handleAddBlock = useCallback((block: CmsPageBlock) => {
+  const handleAddBlock = useCallback((block: TBlock) => {
     if (!localPage) return;
 
     updateLocalPage({
@@ -147,7 +147,7 @@ export function usePageLayoutEditor({
     const defaultBlocks = createDefaultBlocks().map((block) => ({
       ...block,
       id: `block_${nanoid(8)}`,
-    }));
+    })) as TBlock[];
 
     updateLocalPage({ blocks: defaultBlocks });
     setSelectedBlockId(null);

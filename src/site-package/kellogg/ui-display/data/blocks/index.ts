@@ -1,4 +1,4 @@
-import type { BlockType, ComponentCategory } from '../../types/blocks';
+import type { BlockType, ComponentCategory } from '../../types';
 
 import brandValues from './brandValues';
 import carousel from './carousel';

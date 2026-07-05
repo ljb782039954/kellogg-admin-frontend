@@ -16,12 +16,13 @@ import {
 import { Save, Eye, RotateCcw, Plus, ArrowLeft, Settings, FileText } from 'lucide-react';
 import { usePageLayoutEditor } from '@/core-adminApp/items/page-builder';
 import { BlockList } from './BlockList';
-import { BlockPropsEditor } from '../../../../site-package/kellogg/Management/pageBuilder/BlockPropsEditor';
+import { BlockPropsEditor } from './BlockPropsEditor';
 import { SEOEditor } from './SEOEditor';
 import { PageSettingsEditor } from './PageSettingsEditor';
 import { AddBlockDialog } from './AddBlockDialog';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/core-adminApp/hooks/use-toast';
+import type { PageBlock } from '@site/types';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -59,7 +60,7 @@ export function PageLayoutEditor() {
     setIsResetDialogOpen,
     setSelectedBlockId,
     updateLocalPage,
-  } = usePageLayoutEditor({
+  } = usePageLayoutEditor<PageBlock>({
     notify: toast,
     onNavigateToPages: () => navigate('/pages'),
     pageId,

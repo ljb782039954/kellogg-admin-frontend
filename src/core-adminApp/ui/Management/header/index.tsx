@@ -6,7 +6,7 @@ import { Save, AlertTriangle,Loader2 } from 'lucide-react';
 import { useHeaderEditor } from '@/core-adminApp/items/site';
 import { Button } from '@/components/ui/button';
 import NavEditor from './NavEditor';
-import HeaderPreview from './headerPreview';
+import HeaderPreview from '@site/ui-display/components/headerPreview';
 
 
 export default function HeaderEditor() {
