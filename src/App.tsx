@@ -19,6 +19,7 @@ import HeaderEditor from '@Management/header';
 import ProductsEditor from '@Management/product/ProductsEditor';
 import CategoriesEditor from '@Management/product/ProductCategories';
 import FooterEditor from '@Management/footer/FooterEditor';
+import HreflangManager from '@Management/hreflang/HreflangManager';
 import InquiryEditor from '@Management/inquiry/InquiryEditor';
 import InquiryManagement from '@Management/inquiry/InquiryManagement';
 import MediaManager from '@Management/media/MediaManager';
@@ -50,6 +51,7 @@ function App() {
               <Route path="company" element={<CompanyInfoEditor />} />
               <Route path="header" element={<HeaderEditor />} />
               <Route path="footer" element={<FooterEditor />} />
+              <Route path="hreflang" element={<HreflangManager />} />
 
               <Route path="products" element={<ProductsEditor />} />
               <Route path="categories" element={<CategoriesEditor />} />

@@ -14,6 +14,12 @@ export interface CmsPageBlock<
 
 export type PageType = 'fixed-block' | 'dynamic-block' | 'fixed-layout';
 
+export interface SeoAlternate {
+    hreflang: string;
+    href: string;
+    enabled?: boolean;
+}
+
 export interface CmsCustomPage<
     TBlock extends CmsPageBlock = CmsPageBlock
 > {
@@ -29,5 +35,6 @@ export interface CmsCustomPage<
         description: Translation;
         keywords?: Translation;
         targetCountry?: string;
+        alternates?: SeoAlternate[];
     };
 }

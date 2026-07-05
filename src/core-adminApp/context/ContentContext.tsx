@@ -16,6 +16,12 @@ import type {
 // import type {  } from '@/site-package/kellogg/types/blocks';
 import { api } from '../lib/api';
 import { toast } from 'sonner';
+import {
+  getEnabledHreflangAlternates,
+  normalizePagePath,
+  shouldPageReceiveHreflang,
+} from '@/core-adminApp/items/hreflang/hreflangUtils';
+import type { SeoAlternate } from '@/cms/types';
 
 // 初始空白状态
 const blankCompany: CompanyInfo = {
@@ -73,6 +79,7 @@ interface ContentContextType {
   updatePage: (pageId: string, pageData: Partial<CmsCustomPage>) => Promise<void>;
   addPage: (page: CmsCustomPage) => Promise<void>;
   deletePage: (pageId: string) => Promise<void>;
+  syncHreflangAlternates: (alternates: SeoAlternate[]) => Promise<void>;
 
   // 全局配置管理 (KV)
   updateSiteSettings: (settings: CompanyInfo) => Promise<void>;
@@ -288,6 +295,54 @@ export function ContentProvider({ children }: { children: ReactNode }) {
     toast.success('已删除页面');
   }, [content.pages]);
 
+  const syncHreflangAlternates = useCallback(async (alternates: SeoAlternate[]) => {
+    const enabledAlternates = getEnabledHreflangAlternates(alternates);
+    const enabledHrefs = new Set(enabledAlternates.map((alternate) => alternate.href));
+
+    const nextPages = content.pages.map((page) => {
+      const shouldReceive = enabledHrefs.has(normalizePagePath(page.path));
+      const currentSeo = page.seo || {
+        title: page.title,
+        description: { zh: '', en: '' },
+      };
+
+      if (shouldReceive) {
+        return {
+          ...page,
+          seo: {
+            ...currentSeo,
+            alternates: enabledAlternates,
+          },
+        };
+      }
+
+      if (!page.seo?.alternates?.length) return page;
+
+      const seoWithoutAlternates = { ...currentSeo };
+      delete seoWithoutAlternates.alternates;
+      return {
+        ...page,
+        seo: seoWithoutAlternates,
+      };
+    });
+
+    const changedPages = nextPages.filter((page, index) => (
+      JSON.stringify(page.seo?.alternates || []) !== JSON.stringify(content.pages[index].seo?.alternates || [])
+    ));
+
+    await Promise.all(
+      changedPages.map((page) => api.setConfig(`page:${page.id}`, page))
+    );
+
+    setContent(prev => ({
+      ...prev,
+      pages: prev.pages.map((page) => nextPages.find((nextPage) => nextPage.id === page.id) || page),
+    }));
+
+    const activeCount = content.pages.filter((page) => shouldPageReceiveHreflang(page, enabledAlternates)).length;
+    toast.success(`hreflang 已同步：${activeCount} 个启用页面，${changedPages.length} 个页面已更新`);
+  }, [content.pages]);
+
   // ============================================
   // 全局配置管理
   // ============================================
@@ -361,6 +416,7 @@ export function ContentProvider({ children }: { children: ReactNode }) {
         updatePage,
         addPage,
         deletePage,
+        syncHreflangAlternates,
         updateSiteSettings,
         updateHeader,
         updateFooter,

@@ -11,7 +11,7 @@ import {
   Building2,
   PanelTop,
   PanelBottom,
-  // Layers,
+  Link2Icon,
   Inbox,
   Image as ImageIcon,
   CloudLightning,
@@ -50,11 +50,11 @@ const menuItems: MenuItem[] = [
     name: 'Footer 组件管理',
     icon: PanelBottom,
   },
-  // {
-  //   path: '/components',
-  //   name: '预定义组件',
-  //   icon: Layers,
-  // },
+  {
+    path: '/hreflang',
+    name: 'hreflang管理',
+    icon: Link2Icon,
+  },
   {
     path: '/pages',
     name: '页面管理',
