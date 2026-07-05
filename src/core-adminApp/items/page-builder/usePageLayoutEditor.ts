@@ -29,6 +29,10 @@ function clonePage<T>(value: T): T {
   return JSON.parse(JSON.stringify(value)) as T;
 }
 
+function isSameValue(left: unknown, right: unknown): boolean {
+  return JSON.stringify(left) === JSON.stringify(right);
+}
+
 export function usePageLayoutEditor<TBlock extends CmsPageBlock = CmsPageBlock>({
   confirmLeave = (message) => window.confirm(message),
   notify,
@@ -82,10 +86,12 @@ export function usePageLayoutEditor<TBlock extends CmsPageBlock = CmsPageBlock>(
 
   const handleReorderBlocks = useCallback((activeId: string, overId?: string | null) => {
     if (!localPage) return;
+    if (!overId || activeId === overId) return;
 
-    updateLocalPage({
-      blocks: reorderBlocksById(localPage.blocks, activeId, overId),
-    });
+    const nextBlocks = reorderBlocksById(localPage.blocks, activeId, overId);
+    if (nextBlocks === localPage.blocks) return;
+
+    updateLocalPage({ blocks: nextBlocks });
   }, [localPage, updateLocalPage]);
 
   const handleAddBlock = useCallback((block: TBlock) => {
@@ -120,21 +126,25 @@ export function usePageLayoutEditor<TBlock extends CmsPageBlock = CmsPageBlock>(
   const handleMoveBlockUp = useCallback((blockId: string) => {
     if (!localPage) return;
 
-    updateLocalPage({
-      blocks: moveBlockByOffset(localPage.blocks, blockId, -1),
-    });
+    const nextBlocks = moveBlockByOffset(localPage.blocks, blockId, -1);
+    if (nextBlocks === localPage.blocks) return;
+
+    updateLocalPage({ blocks: nextBlocks });
   }, [localPage, updateLocalPage]);
 
   const handleMoveBlockDown = useCallback((blockId: string) => {
     if (!localPage) return;
 
-    updateLocalPage({
-      blocks: moveBlockByOffset(localPage.blocks, blockId, 1),
-    });
+    const nextBlocks = moveBlockByOffset(localPage.blocks, blockId, 1);
+    if (nextBlocks === localPage.blocks) return;
+
+    updateLocalPage({ blocks: nextBlocks });
   }, [localPage, updateLocalPage]);
 
   const handleUpdateBlockProps = useCallback((blockId: string, content: unknown) => {
     if (!localPage) return;
+    const currentBlock = localPage.blocks.find((block) => block.id === blockId);
+    if (currentBlock && isSameValue(currentBlock.content, content)) return;
 
     updateLocalPage({
       blocks: updateBlockContent(localPage.blocks, blockId, content),
