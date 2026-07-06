@@ -19,22 +19,14 @@ src/site-package/kellogg
 ```text
 site-package/kellogg/
 ├── assets/               当前站点资源，如 logo
-├── components/           后台使用的输入组件、选择器、弹窗等
 ├── ui-display/            前台展示组件和页面 block 预览组件
 │   ├── blocks/           页面搭建器可用的 block 组件
 │   └── custom/           前台风格业务组件
-├── Management/           后台管理页面
-│   ├── blog/             博客管理
-│   ├── companyInfo/      公司信息管理
-│   ├── customerReviews/  客户评价管理
-│   ├── footer/           页脚管理
-│   ├── header/           导航和头部管理
-│   ├── inquiry/          询盘管理
-│   ├── media/            媒体库管理
+├── Management/           管理编辑子组件
 │   ├── pageBuilder/      动态页面管理和页面布局编辑器
-│   ├── product/          商品和分类管理
 │   └── propsEditors/     block 属性编辑面板
 ├── metadata/             站点元信息、组件注册表、默认内容
+├── styles/               当前站点风格
 ├── types/                当前站点特有类型
 ├── views/                概览页、组件预览页
 └── Dashboard.tsx         当前站点后台主布局

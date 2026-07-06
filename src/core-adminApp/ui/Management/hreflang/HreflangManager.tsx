@@ -83,7 +83,8 @@ export function HreflangManager() {
           <CardTitle className="text-base">功能说明</CardTitle>
         </CardHeader>
         <CardContent className="text-sm text-gray-600 leading-relaxed">
-          hreflang 是给搜索引擎看的页面关系配置。启用的页面会被视为同一组地区替代页面，保存时系统会把完整的 hreflang 列表写入这些页面；从列表中移除或停用的页面，会从页面 JSON 中删除 hreflang 数据。
+          hreflang 是给搜索引擎看的页面关系配置。启用的页面会被视为同一组地区替代页面，<br/>
+          就像默认是 home页， 但是美国区直接导航至 US 页面。
         </CardContent>
       </Card>
 

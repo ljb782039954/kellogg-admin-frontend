@@ -83,6 +83,12 @@ Markdown 编辑行为位于 `src/core-adminApp/markdown`。站点包负责保留
 
 包含询盘列表、筛选、状态处理、导出和询盘页面配置相关逻辑。
 
+### hreflang
+通用逻辑位于 `src/core-adminApp/items/hreflang`。
+
+保存时把“启用的 hreflang 链接组”同步写入所有启用页面的 seo.alternates，同时清除被弃用的hreflang链接组。
+
+
 ### 媒体
 
 通用逻辑位于 `src/core-adminApp/items/media`。

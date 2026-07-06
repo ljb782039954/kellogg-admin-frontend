@@ -1,6 +1,6 @@
 // import React from 'react';
 import { Label } from '@/components/ui/label';
-import BilingualInput from '../../Input/BilingualInput';
+import BilingualInputAera from '../../Input/BilingualInputAera';
 import { Settings, Globe } from 'lucide-react';
 import { type Translation } from '@/cms/types';
 
@@ -50,7 +50,7 @@ export function SEOEditor({ seo, onChange }: SEOEditorProps) {
             <Label className="text-sm font-medium">SEO 页面标题 (Meta Title)</Label>
             <span className="text-[10px] text-gray-400 font-mono">必填</span>
           </div>
-          <BilingualInput
+          <BilingualInputAera
             value={seo.title || { zh: '', en: '' }}
             onChange={handleTitleChange}
             placeholder={{ zh: '输入在搜索引擎中显示的标题', en: 'Enter SEO Title' }}
@@ -63,7 +63,7 @@ export function SEOEditor({ seo, onChange }: SEOEditorProps) {
             <Label className="text-sm font-medium">SEO 页面描述 (Meta Description)</Label>
             <span className="text-[10px] text-gray-400 font-mono">建议填写</span>
           </div>
-          <BilingualInput
+          <BilingualInputAera
             value={seo.description || { zh: '', en: '' }}
             onChange={handleDescriptionChange}
             placeholder={{ zh: '输入页面简要描述，吸引用户点击', en: 'Enter SEO Description' }}
@@ -76,7 +76,7 @@ export function SEOEditor({ seo, onChange }: SEOEditorProps) {
             <div className="flex items-center justify-between">
               <Label className="text-sm font-medium">核心关键词 (Keywords)</Label>
             </div>
-            <BilingualInput
+            <BilingualInputAera
               value={seo.keywords || { zh: '', en: '' }}
               onChange={(keywords) => onChange({ ...seo, keywords })}
               placeholder={{ zh: '如: 重磅卫衣, 街头服饰', en: 'e.g. Heavyweight Hoodie, Streetwear' }}
@@ -107,7 +107,7 @@ export function SEOEditor({ seo, onChange }: SEOEditorProps) {
             {seo.title?.zh || '页面标题预览'}
           </div>
           <div className="text-[#006621] text-sm mt-1 mb-1 truncate">
-            https://kelloggfashion.com/...
+            https://yourwebsite.com/...
           </div>
           <div className="text-[#4d5156] text-sm line-clamp-2 leading-relaxed">
             {seo.description?.zh || '这里将显示您在下方输入的 SEO 页面描述内容，它是用户在谷歌搜索结果中看到的简介。'}
