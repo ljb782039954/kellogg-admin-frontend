@@ -1,0 +1,25 @@
+{
+  "brand": {
+    "logo": "/lilian/logo.jpg",
+    "name": {
+      "zh": "LILIAN",
+      "en": "LILIAN"
+    },
+    "company": {
+      "zh": "东莞市lilian服饰有限公司",
+      "en": "Dongguan Lilian Garment Co., Ltd."
+    },
+    "description": {
+      "zh": "探索时尚，发现自我。我们致力于为您提供最优质的服装和购物体验。",
+      "en": "Explore fashion, discover yourself. We are committed to providing you with the finest clothing and shopping experience."
+    }
+  },
+  "contact": {
+    "phone": "+86 13715863908",
+    "email": "[EMAIL_ADDRESS]",
+    "address": {
+      "zh": "东莞市虎门镇....",
+      "en": "...., Humen Town, Dongguan City"
+    }
+  }
+}

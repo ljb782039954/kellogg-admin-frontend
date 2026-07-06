@@ -11,14 +11,14 @@ import {
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
-import { type BlockType, type PageBlock, type ComponentCategory } from '@site/types';
+import { type BlockType, type PageBlock, type BlockCategory } from '@site/types';
 import {
   componentRegistry,
   componentsByCategory,
   categoryNames,
   canAddBlock,
 } from '@site/metadata/componentRegistry';
-import { blockShowcaseRegistry } from '@site/ui-display/data/blocks';
+import { blockRegistry } from '@site/ui-display/data/blocks';
 import BlockLivePreview from './BlockLivePreview';
 
 interface AddBlockDialogProps {
@@ -29,7 +29,18 @@ interface AddBlockDialogProps {
 }
 
 function getDialogPreviewContent(type: BlockType, fallbackContent: unknown) {
-  return blockShowcaseRegistry.find((block) => block.type === type)?.defaultProps ?? fallbackContent;
+  return blockRegistry.find((block) => block.type === type)?.defaultProps ?? fallbackContent;
+}
+
+function createPageBlock(type: BlockType): PageBlock {
+  const meta = componentRegistry[type];
+
+  return {
+    id: `block_${nanoid(8)}`,
+    type,
+    isVisible: true,
+    content: { ...meta.defaultProps },
+  } as PageBlock;
 }
 
 export function AddBlockDialog({
@@ -38,21 +49,14 @@ export function AddBlockDialog({
   onAdd,
   existingBlocks,
 }: AddBlockDialogProps) {
-  const [selectedCategory, setSelectedCategory] = useState<ComponentCategory>('product');
+  const [selectedCategory, setSelectedCategory] = useState<BlockCategory>('product');
 
   const handleAddBlock = (type: BlockType) => {
-    const meta = componentRegistry[type];
-    const newBlock: PageBlock = {
-      id: `block_${nanoid(8)}`,
-      type,
-      isVisible: true,
-      content: { ...meta.defaultProps },
-    };
-    onAdd(newBlock);
+    onAdd(createPageBlock(type));
     onClose();
   };
 
-  const categories = Object.keys(componentsByCategory) as ComponentCategory[];
+  const categories = Object.keys(componentsByCategory) as BlockCategory[];
 
   return (
     <Dialog open={open} onOpenChange={(isOpen) => !isOpen && onClose()}>

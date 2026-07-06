@@ -117,6 +117,8 @@ Markdown 编辑行为位于 `src/core-adminApp/markdown`。站点包负责保留
 
 样式主题的站点包管理策略见 [style-theme-management.md](./style-theme-management.md)。
 
+Tailwind v4.3 升级后的配置报错说明见 [tailwind-v4-upgrade-fix.md](./tailwind-v4-upgrade-fix.md)。
+
 ## 边界规则
 
 ### 推荐

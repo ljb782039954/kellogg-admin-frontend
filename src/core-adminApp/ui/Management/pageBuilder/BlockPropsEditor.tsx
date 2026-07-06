@@ -25,7 +25,7 @@ export function BlockPropsEditor({ block, onUpdate }: BlockPropsEditorProps) {
   }
 
   const icons = LucideIcons as unknown as Record<string, ComponentType<{ className?: string }>>;
-  const IconComponent = icons[meta.icon] || icons.Box || LucideIcons.Square;
+  const IconComponent = icons.Box || LucideIcons.Square;
 
   return (
     <div className="h-full flex flex-col">
