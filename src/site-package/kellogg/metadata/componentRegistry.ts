@@ -9,6 +9,7 @@ import {
   blockRegistry,
 } from '../ui-display/data/blocks';
 
+
 export const componentRegistry = Object.fromEntries(
   blockRegistry.map((block) => [block.type, block]),
 ) as Record<BlockType, BlockMeta>;
@@ -27,21 +28,6 @@ export const componentsByCategory = blockRegistry.reduce(
   ) as Record<BlockCategory, BlockType[]>,
 );
 
-// 按分类分组的组件列表
-// export const componentsByCategory: Record<BlockCategory, BlockType[]> = {
-//   product: ['categories', 'newArrivals', 'featuredProducts', 'productGrid'],
-//   marketing: ['brandValues', 'statistics', 'testimonials', 'countdown', 'partnerLogos', 'ctaBanner',],
-//   content: ['faq', 'textSection', 'imageText', 'featureList'],
-//   media: ['carousel', 'imageFull', 'imageBanner', "imageBannerTag", 'gallery', 'videoSection'],
-// };
-
-// 分类显示名称
-export const categoryNames: Record<BlockCategory, { zh: string; en: string }> = {
-  product: { zh: '产品展示', en: 'Products' },
-  marketing: { zh: '营销推广', en: 'Marketing' },
-  content: { zh: '内容区块', en: 'Content' },
-  media: { zh: '媒体展示', en: 'Media' },
-};
 
 // 获取组件元数据
 export function getBlockMeta(type: BlockType): BlockMeta {

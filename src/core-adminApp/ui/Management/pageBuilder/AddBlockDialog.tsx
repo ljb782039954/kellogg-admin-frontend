@@ -15,9 +15,9 @@ import { type BlockType, type PageBlock, type BlockCategory } from '@site/types'
 import {
   componentRegistry,
   componentsByCategory,
-  categoryNames,
   canAddBlock,
 } from '@site/metadata/componentRegistry';
+import { categoryNames } from '@site/ui-display/data/blocks';
 import { blockRegistry } from '@site/ui-display/data/blocks';
 import BlockLivePreview from './BlockLivePreview';
 
@@ -123,7 +123,7 @@ export function AddBlockDialog({
                         {meta.name.zh}
                       </span>
                       {meta.singleton && (
-                        <Badge variant="outline" className="text-xs px-1.5 py-0 ">
+                        <Badge variant="default" className="text-xs px-1.5 py-0.1 bg-orange-500 text-white ">
                           唯一
                         </Badge>
                       )}

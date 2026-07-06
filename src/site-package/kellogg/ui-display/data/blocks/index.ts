@@ -30,7 +30,7 @@ export const blockCategories = [
   { id: "media", name: { zh: "多媒体流", en: "Media" }, icon: "Images" },
 ] as const satisfies readonly { id: BlockCategory; name: Translation; icon: string }[];
 
-const categoryNames: Record<BlockCategory, Translation> = {
+export const categoryNames: Record<BlockCategory, Translation> = {
   product: { zh: "商品业务", en: "Products" },
   marketing: { zh: "营销转化", en: "Marketing" },
   content: { zh: "品牌内容", en: "Content" },

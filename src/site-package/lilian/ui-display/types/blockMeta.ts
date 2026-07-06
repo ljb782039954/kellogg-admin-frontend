@@ -1,7 +1,7 @@
 import type { Translation } from "@/cms/types/common";
 import type { BlockContentMap, BlockType } from "./blocks";
 
-export type BlockCategory = "product" | "marketing" | "content" | "media" | "image" | "video" | "text";
+export type BlockCategory = "product" | "marketing" | "content" | "image" | "video" | "text";
 
 export interface BlockMeta<T extends BlockType = BlockType> {
   type: T;
@@ -10,5 +10,6 @@ export interface BlockMeta<T extends BlockType = BlockType> {
   category: BlockCategory;
   categoryName: Translation;
   description: Translation;
+  singleton: boolean,
   defaultProps: Partial<BlockContentMap[T]>;
 }
