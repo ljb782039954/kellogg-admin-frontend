@@ -59,7 +59,7 @@ export function AddBlockDialog({
   const categories = Object.keys(componentsByCategory) as BlockCategory[];
 
   return (
-    <Dialog open={open} onOpenChange={(isOpen) => !isOpen && onClose()}>
+    <Dialog open={open} onOpenChange={(isOpen) => !isOpen && onClose()} >
       <DialogContent className="flex h-[92vh] w-[min(1280px,96vw)] max-w-none flex-col gap-0 overflow-hidden">
         <DialogHeader className="shrink-0 pb-4">
           <DialogTitle>添加积木块组件</DialogTitle>

@@ -10,7 +10,8 @@ export default defineConfig({
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
-      "@site": path.resolve(__dirname, "./src/site-package/kellogg"),
+      // "@site": path.resolve(__dirname, "./src/site-package/kellogg"),
+      "@site": path.resolve(__dirname, "./src/site-package/lilian"),
       "@Management": path.resolve(__dirname, "./src/core-adminApp/ui/Management"),
       
     },

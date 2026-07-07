@@ -1,13 +1,13 @@
 import { lazy, type ComponentType } from "react";
 import type { BlockType } from "./types";
 
-type BlockComponent = ComponentType<Record<string, unknown>>;
+type LilianBlockComponent = ComponentType<Record<string, unknown>>;
 
-function lazyBlock(loader: Parameters<typeof lazy>[0]): BlockComponent {
-  return lazy(loader) as unknown as BlockComponent;
+function lazyBlock(loader: Parameters<typeof lazy>[0]): LilianBlockComponent {
+  return lazy(loader) as unknown as LilianBlockComponent;
 }
 
-export const blockComponentMap: Partial<Record<BlockType, BlockComponent>> = {
+export const lilianBlockComponentMap: Partial<Record<BlockType, LilianBlockComponent>> = {
   productCard: lazyBlock(() => import("./components/blocks/ProductCardBlock")),
   categories: lazyBlock(() => import("./components/blocks/Categories")),
   newArrivals: lazyBlock(() => import("./components/blocks/NewArrivals")),
@@ -42,6 +42,6 @@ export const blockComponentMap: Partial<Record<BlockType, BlockComponent>> = {
   textGrid: lazyBlock(() => import("./components/blocks/TextGrid")),
 };
 
-export function getLilianBlockComponent(type: BlockType): BlockComponent | null {
-  return blockComponentMap[type] || null;
+export function getBlockComponent(type: BlockType): LilianBlockComponent | null {
+  return lilianBlockComponentMap[type] || null;
 }

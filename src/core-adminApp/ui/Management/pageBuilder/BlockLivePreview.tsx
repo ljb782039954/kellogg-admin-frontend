@@ -2,8 +2,8 @@ import { Suspense, useEffect, useRef, useState } from 'react';
 import { useLanguage } from '@/core-adminApp/context/LanguageContext';
 import { cn } from '@/lib/utils';
 import type { BlockType } from '@site/types';
-import { kelloggBlockComponentMap } from '@site/ui-display/blockComponentMap';
-import { getKelloggPreviewProps } from '@site/ui-display/previewProps';
+import { getBlockComponent } from '@site/ui-display/blockComponentMap';
+import { getPreviewProps } from '@site/ui-display/previewProps';
 import type { BlockType as DisplayBlockType } from '@site/ui-display/types';
 
 interface BlockLivePreviewProps {
@@ -38,7 +38,7 @@ export function BlockLivePreview({
 }: BlockLivePreviewProps) {
   const { language } = useLanguage();
   const displayType = type as DisplayBlockType;
-  const Component = kelloggBlockComponentMap[displayType];
+  const Component = getBlockComponent(displayType);
   const previewConfig = previewScales[variant];
   const outerRef = useRef<HTMLDivElement>(null);
   const innerRef = useRef<HTMLDivElement>(null);
@@ -103,7 +103,7 @@ export function BlockLivePreview({
     );
   }
 
-  const previewProps = getKelloggPreviewProps(displayType, content, language);
+  const previewProps = getPreviewProps(displayType, content, language);
 
   return (
     <div

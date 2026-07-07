@@ -39,7 +39,7 @@ function formatPriceText(price?: number) {
   return `${Number.isInteger(price) ? price.toFixed(0) : price.toFixed(1)}元`;
 }
 
-export function getLilianPreviewProps<T extends BlockType>(
+export function getPreviewProps<T extends BlockType>(
   type: T,
   content: Partial<BlockContentMap[T]>,
   lang: Language,

@@ -30,6 +30,6 @@ export const kelloggBlockComponentMap: Partial<Record<BlockType, KelloggBlockCom
   videoSection: lazyBlock(() => import("./components/blocks/VideoSection")),
 };
 
-export function getKelloggBlockComponent(type: BlockType): KelloggBlockComponent | null {
+export function getBlockComponent(type: BlockType): KelloggBlockComponent | null {
   return kelloggBlockComponentMap[type] || null;
 }

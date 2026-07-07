@@ -88,7 +88,7 @@ function toInquiryPreviewProps(content: any, lang: Language): InquirySectionProp
   };
 }
 
-export function getKelloggPreviewProps(
+export function getPreviewProps(
   type: ShowcaseBlockType,
   content: any,
   lang: Language,
