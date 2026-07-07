@@ -90,6 +90,7 @@ interface ContentContextType {
   uploadImage: (file: File, dimensions?: { width: number; height: number }, hash?: string) => Promise<{ url: string; thumbUrl: string; key: string }>;
   getImagesList: () => Promise<R2Image[]>;
   deleteImage: (key: string) => Promise<void>;
+  syncMediaReferences: () => Promise<{ success: boolean; message: string }>;
 
   // 构建管理
   buildStatus: { hasChanges: boolean; lastBuildTime?: string };
@@ -375,6 +376,10 @@ export function ContentProvider({ children }: { children: ReactNode }) {
     return api.getImagesList();
   }, []);
 
+  const syncMediaReferences = useCallback(async () => {
+    return api.syncMediaReferences();
+  }, []);
+
   const triggerBuild = useCallback(async () => {
     try {
       const response = await api.triggerBuild();
@@ -423,6 +428,7 @@ export function ContentProvider({ children }: { children: ReactNode }) {
         uploadImage,
         getImagesList,
         deleteImage,
+        syncMediaReferences,
         buildStatus,
         triggerBuild,
       }}

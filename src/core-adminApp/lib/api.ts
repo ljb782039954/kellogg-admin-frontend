@@ -295,6 +295,14 @@ export const api = {
   // ============================================
   // 系统管理 / 触发构建
   // ============================================
+  syncMediaReferences: () =>
+    request<{ success: boolean; message: string }>(
+      '/api/system/sync-media-references',
+      {
+        method: 'POST',
+      }
+    ),
+
   triggerBuild: () =>
     request<{ success: boolean; buildStatus: { hasChanges: boolean; lastBuildTime: string } }>(
       '/api/system/trigger-build',

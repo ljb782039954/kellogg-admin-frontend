@@ -17,19 +17,33 @@ export default function MediaManager() {
     currentUsages,
     filteredImages,
     images,
+    isBulkDeleting,
     isLoading,
+    isSelectionMode,
+    isSyncingReferences,
     isUploading,
     searchQuery,
     selectedImage,
+    selectedImages,
     selectedKey,
+    selectedKeys,
+    selectedUsedCount,
     similarImages,
+    usageFilter,
     unusedCount,
+    usedCount,
     usageMap,
+    handleBulkDelete,
+    handleClearSelection,
     handleDelete,
     handleFileUpload,
+    handleSyncReferences,
+    handleToggleSelection,
+    handleToggleSelectionMode,
     loadImages,
     setSearchQuery,
     setSelectedKey,
+    setUsageFilter,
   } = useMediaManager({
     confirmDelete: message => window.confirm(message),
     notify,
@@ -52,11 +66,23 @@ export default function MediaManager() {
         searchQuery={searchQuery}
         setSearchQuery={setSearchQuery}
         totalCount={images.length}
+        usedCount={usedCount}
         unusedCount={unusedCount}
+        selectedCount={selectedImages.length}
+        selectedUsedCount={selectedUsedCount}
+        isBulkDeleting={isBulkDeleting}
         isLoading={isLoading}
+        isSelectionMode={isSelectionMode}
+        isSyncingReferences={isSyncingReferences}
         isUploading={isUploading}
+        usageFilter={usageFilter}
+        setUsageFilter={setUsageFilter}
         onUploadClick={() => fileInputRef.current?.click()}
+        onBulkDelete={handleBulkDelete}
+        onClearSelection={handleClearSelection}
         onRefresh={loadImages}
+        onSyncReferences={handleSyncReferences}
+        onToggleSelectionMode={handleToggleSelectionMode}
       />
 
       <input 
@@ -73,9 +99,12 @@ export default function MediaManager() {
             <MediaGrid 
               images={filteredImages}
               isLoading={isLoading}
+              isSelectionMode={isSelectionMode}
               searchQuery={searchQuery}
               selectedKey={selectedKey}
+              selectedKeys={selectedKeys}
               onSelect={setSelectedKey}
+              onToggleSelection={handleToggleSelection}
               usageMap={usageMap}
             />
           </div>

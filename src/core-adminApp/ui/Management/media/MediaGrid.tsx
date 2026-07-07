@@ -1,4 +1,4 @@
-import { Image as ImageIcon, Loader2 } from 'lucide-react';
+import { Check, Image as ImageIcon, Loader2 } from 'lucide-react';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
@@ -10,8 +10,11 @@ interface MediaGridProps {
   images: R2Image[];
   isLoading: boolean;
   searchQuery: string;
+  isSelectionMode: boolean;
   selectedKey: string | null;
+  selectedKeys: Set<string>;
   onSelect: (key: string) => void;
+  onToggleSelection: (key: string) => void;
   usageMap: Record<string, UsageInfo[]>;
 }
 
@@ -19,8 +22,11 @@ export function MediaGrid({
   images,
   isLoading,
   searchQuery,
+  isSelectionMode,
   selectedKey,
+  selectedKeys,
   onSelect,
+  onToggleSelection,
   usageMap
 }: MediaGridProps) {
   if (isLoading && images.length === 0) {
@@ -46,16 +52,19 @@ export function MediaGrid({
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-6 p-6 pr-10 pb-10">
         {images.map((img) => {
           const isUnused = !usageMap[img.key] || usageMap[img.key].length === 0;
+          const isSelectedForBatch = selectedKeys.has(img.key);
           
           return (
             <button
               key={img.key}
-              onClick={() => onSelect(img.key)}
+              onClick={() => isSelectionMode ? onToggleSelection(img.key) : onSelect(img.key)}
               className={cn(
                 "group relative aspect-square rounded-xl border-2 overflow-hidden transition-all bg-gray-50 shadow-sm",
-                selectedKey === img.key 
-                  ? "border-primary ring-4 ring-primary/10" 
-                  : "border-transparent hover:border-primary/30 hover:shadow-md"
+                isSelectionMode && isSelectedForBatch
+                  ? "border-primary ring-4 ring-primary/10"
+                  : selectedKey === img.key && !isSelectionMode
+                    ? "border-primary ring-4 ring-primary/10"
+                    : "border-transparent hover:border-primary/30 hover:shadow-md"
               )}
             >
               <AdminImage
@@ -65,6 +74,17 @@ export function MediaGrid({
                 className="w-full h-full object-cover aspect-square"
                 loading="lazy"
               />
+
+              {isSelectionMode && (
+                <div className={cn(
+                  "absolute top-2 left-2 z-10 h-6 w-6 rounded-md border flex items-center justify-center shadow-sm transition-colors",
+                  isSelectedForBatch
+                    ? "bg-primary border-primary text-white"
+                    : "bg-white/90 border-white text-transparent group-hover:text-gray-400"
+                )}>
+                  <Check className="w-4 h-4" />
+                </div>
+              )}
 
               {isUnused && (
                 <div className="absolute top-2 right-2 z-10">
