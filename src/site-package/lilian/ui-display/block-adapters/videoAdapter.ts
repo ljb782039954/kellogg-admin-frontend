@@ -17,7 +17,7 @@ import type { FullscreenVideoPopupProps } from "../components/blocks/FullscreenV
 import type { VideoCardProps, VideoGridProps } from "../components/blocks/VideoGrid";
 import { createTranslate } from "../utils/i18n";
 
-const EXTERNAL_VIDEO_PROVIDERS: SafeVideoProvider[] = ["youtube", "vimeo", "facebook", "tiktok", "twitter"];
+const EXTERNAL_VIDEO_PROVIDERS: SafeVideoProvider[] = ["youtube", "vimeo", "facebook", "tiktok",];
 
 function toExternalVideoSource(url: string) {
   return getSafeVideoSource(url, {

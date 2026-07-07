@@ -2,9 +2,9 @@ import type { BeforeAfterSliderContent } from "../../types";
 
 const beforeAfterSlider: BeforeAfterSliderContent = {
   eyebrow: { zh: "前后对比", en: "Before / After" },
-  beforeImage: "/lilian/product2.jpg",
+  beforeImage: "/lilian/image/product2.jpg",
   beforeImageAlt: { zh: "对比前", en: "Before" },
-  afterImage: "/lilian/product1.jpg",
+  afterImage: "/lilian/image/product1.jpg",
   afterImageAlt: { zh: "对比后", en: "After" },
 };
 

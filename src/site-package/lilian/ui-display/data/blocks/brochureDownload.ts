@@ -1,7 +1,7 @@
 import type { BrochureDownloadContent } from "../../types";
 
 const brochureDownload: BrochureDownloadContent = {
-  image: "/lilian/hero.jpg",
+  image: "/lilian/image/hero.jpg",
   imageAlt: { zh: "系列手册封面", en: "Collection Lookbook Cover" },
   eyebrow: { zh: "2026 春夏", en: "Spring Summer 2026" },
   title: { zh: "系列 Lookbook", en: "Collection Lookbook" },

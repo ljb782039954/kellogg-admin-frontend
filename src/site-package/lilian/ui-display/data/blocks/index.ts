@@ -50,7 +50,6 @@ export const categoryNames: Record<BlockCategory, Translation> = {
   text: { zh: "文本图文", en: "Text" },
 };
 
-
 function block<T extends BlockType>(
   type: T,
   category: BlockCategory,
