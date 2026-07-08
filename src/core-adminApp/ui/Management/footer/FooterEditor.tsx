@@ -1,6 +1,5 @@
 // Footer 组件管理编辑器
 
-import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Plus, Trash2, Save, GripVertical, AlertTriangle, } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -10,11 +9,9 @@ import BilingualInput from '../../Input/BilingualInput';
 import EditableLinkCard from '../../Input/custom/EditableLinkCard';
 import { useFooterEditor } from '@/core-adminApp/items/site';
 import type { FooterLink } from '@/cms/types';
-import FooterPreview from '@site/ui-display/components/footerPreview';
 
 
 export default function FooterEditor() {
-  const [previewLang, setPreviewLang] = useState<'zh' | 'en'>('zh');
   const {
     hasDeletedPages,
     isSaving,
@@ -56,30 +53,6 @@ export default function FooterEditor() {
           保存成功！
         </motion.div>
       )}
-
-      {/* Footer 预览 */}
-      <div className="space-y-2">
-        <div className="flex items-center justify-between">
-          <span className="text-sm font-medium text-gray-700">组件预览</span>
-          <div className="flex gap-1">
-            <Button
-              variant={previewLang === 'zh' ? 'default' : 'outline'}
-              size="sm"
-              onClick={() => setPreviewLang('zh')}
-            >
-              中文
-            </Button>
-            <Button
-              variant={previewLang === 'en' ? 'default' : 'outline'}
-              size="sm"
-              onClick={() => setPreviewLang('en')}
-            >
-              English
-            </Button>
-          </div>
-        </div>
-        <FooterPreview footer={localFooter} language={previewLang} />
-      </div>
 
       {/* 页面删除警告 */}
       {hasDeletedPages && (

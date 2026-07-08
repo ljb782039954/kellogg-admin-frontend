@@ -1,16 +1,13 @@
 // Header 组件管理主入口
 
-import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Save, AlertTriangle,Loader2 } from 'lucide-react';
 import { useHeaderEditor } from '@/core-adminApp/items/site';
 import { Button } from '@/components/ui/button';
 import NavEditor from './NavEditor';
-import HeaderPreview from '@site/ui-display/components/headerPreview';
 
 
 export default function HeaderEditor() {
-  const [previewLang, setPreviewLang] = useState<'zh' | 'en'>('zh');
   const {
     contextLoading,
     error,
@@ -67,30 +64,6 @@ export default function HeaderEditor() {
           保存成功！
         </motion.div>
       )}
-
-      {/* Header 预览 */}
-      <div className="space-y-2">
-        <div className="flex items-center justify-between">
-          <span className="text-sm font-medium text-gray-700">组件预览</span>
-          <div className="flex gap-1">
-            <Button
-              variant={previewLang === 'zh' ? 'default' : 'outline'}
-              size="sm"
-              onClick={() => setPreviewLang('zh')}
-            >
-              中文
-            </Button>
-            <Button
-              variant={previewLang === 'en' ? 'default' : 'outline'}
-              size="sm"
-              onClick={() => setPreviewLang('en')}
-            >
-              English
-            </Button>
-          </div>
-        </div>
-        <HeaderPreview header={localHeader} language={previewLang} />
-      </div>
 
       {/* 页面删除警告 */}
       {hasDeletedPages && (
