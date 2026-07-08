@@ -1,5 +1,4 @@
 export { default as BeforeAfterSlider } from "./BeforeAfterSlider";
-export { default as BlogSidebar } from "../base/BlogSidebar";
 export { default as BlogGrid } from "./BlogGrid";
 export type { BlogGridProps } from "./BlogGrid";
 export { default as BrandManifesto } from "./BrandManifesto";

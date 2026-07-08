@@ -3,7 +3,7 @@ import type { BlockContentMap, BlockType } from "./types";
 import {
   toBeforeAfterSliderViewProps,
   toBlogGridViewProps,
-  toBlogSidebarViewProps,
+  // toBlogSidebarViewProps,
   toBrandManifestoViewProps,
   toBrochureDownloadViewProps,
   toCategoriesViewProps,
@@ -138,8 +138,8 @@ export function getPreviewProps<T extends BlockType>(
       return toNumberCounterViewProps(content as unknown as BlockContentMap["numberCounter"], lang);
     case "testimonialMasonry":
       return toTestimonialMasonryViewProps(content as unknown as BlockContentMap["testimonialMasonry"], lang);
-    case "blogSidebar":
-      return toBlogSidebarViewProps(content as unknown as BlockContentMap["blogSidebar"], lang);
+    // case "blogSidebar":
+    //   return toBlogSidebarViewProps(content as unknown as BlockContentMap["blogSidebar"], lang);
     case "certificationBadges":
       return toCertificationBadgesViewProps(content as unknown as BlockContentMap["certificationBadges"], lang);
     case "brochureDownload":

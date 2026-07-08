@@ -1,6 +1,5 @@
 export * from "./beforeAfterSliderAdapter";
 export * from "./blogGridAdapter";
-export * from "./blogSidebarAdapter";
 export * from "./brandManifestoAdapter";
 export * from "./brochureDownloadAdapter";
 export * from "./categoriesAdapter";

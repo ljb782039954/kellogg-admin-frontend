@@ -3,7 +3,6 @@ import type { BlockContentMap, BlockType, BlockCategory, BlockMeta } from "../..
 
 import beforeAfterSlider from "./beforeAfterSlider";
 import blogGrid from "./blogGrid";
-import blogSidebar from "../base/blogSidebar";
 import brandManifesto from "./brandManifesto";
 import brochureDownload from "./brochureDownload";
 import categories from "./categories";
@@ -101,7 +100,6 @@ export const blockRegistry: BlockMeta[] = [
   block("numberCounter", "text", "数据数字滚动器", "Number Counter", "Large numbers scrolling from 0 to target value.", numberCounter, false),
   block("testimonialMasonry", "text", "客户评价瀑布流", "Testimonial Masonry", "Masonry layout of review cards with client feedback.", testimonialMasonry, true),
   block("faqAccordion", "text", "FAQ 折叠列表", "FAQ Accordion", "Vertical Q&A list with expandable answers.", faqAccordion, true),
-  block("blogSidebar", "text", "博客侧边栏", "Blog Sidebar", "Sidebar with category tags, trending articles, and subscription box.", blogSidebar, true),
   block("certificationBadges", "text", "认证标志栏", "Certification Badges", "Certification icons arranged horizontally with hover details.", certificationBadges, true),
   block("brochureDownload", "text", "品牌手册下载卡", "Brochure Download", "Cover image, title, and PDF download button for a catalog.", brochureDownload, true),
   block("mainHeading", "text", "主标题", "Main Heading", "Large serif heading for section titles or page headlines.", mainHeading, false),

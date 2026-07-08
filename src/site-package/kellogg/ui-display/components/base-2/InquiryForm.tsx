@@ -28,16 +28,7 @@ export interface InquiryFormText {
   success: string;
   successMsg: string;
   back: string;
-  placeholders: {
-    name: string;
-    email: string;
-    phone: string;
-    country: string;
-    company: string;
-    productType: string;
-    quantity: string;
-    message: string;
-  };
+  placeholders: InquiryFormValues;
 }
 
 export interface InquiryFormProps {
@@ -178,7 +169,7 @@ export default function InquiryForm({
           </label>
           <input
             type="text"
-            placeholder={text.placeholders.productType}
+            placeholder={text.placeholders.product_type}
             value={values.product_type}
             onChange={(event) => updateField('product_type', event.target.value)}
             className="w-full px-5 py-4 bg-gray-50 border-transparent border-2 rounded-2xl focus:bg-white focus:border-gray-900 focus:ring-0 transition-all text-sm outline-none"
