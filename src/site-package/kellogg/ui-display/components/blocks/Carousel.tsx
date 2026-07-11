@@ -2,24 +2,26 @@ import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import OptimizedImage from '@/runtime/components/OptimizedImage';
+import type { Language, NavLink, Translation } from "@/cms/types";
+import { createTranslate } from "../../utils/i18n";
 
-export interface CarouselItemView {
+export interface CarouselItem {
   id: number;
   image: string;
-  titleText: string;
-  subtitleText?: string;
-  ctaText?: string;
-  href?: string;
+  title: Translation;
+  subtitle?: Translation;
+  cta?: Translation;
+  link: NavLink;
+}
+export interface CarouselContent {
+  autoPlay?: boolean;
+  interval?: number;
+  items?: CarouselItem[];
 }
 
 export interface CarouselProps {
-  autoPlay?: boolean;
-  interval?: number;
-  items?: CarouselItemView[];
-  regionLabel?: string;
-  previousLabel?: string;
-  nextLabel?: string;
-  goToSlideLabelPrefix?: string;
+  content: CarouselContent;
+  lang: Language;
 }
 
 const slideVariants = {
@@ -39,39 +41,63 @@ const slideVariants = {
   }),
 };
 
+function decodeHtml(html: string) {
+  return (html || "")
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
+    .replace(/&quot;/g, "\"")
+    .replace(/&#39;/g, "'")
+    .replace(/&amp;/g, "&");
+}
+
 export default function Carousel({ 
-  items = [], 
-  autoPlay = true, 
-  interval = 5000,
-  regionLabel = "Featured content carousel",
-  previousLabel = "Previous slide",
-  nextLabel = "Next slide",
-  goToSlideLabelPrefix = "Go to slide",
+  content: {
+    items = [], 
+    autoPlay = true, 
+    interval = 5000,
+  },
+  lang,
 }: CarouselProps) {
+  const translate = createTranslate(lang);
+  const regionLabel = lang === "zh" ? "精选内容轮播" : "Featured content carousel";
+  const previousLabel = lang === "zh" ? "上一张" : "Previous slide";
+  const nextLabel = lang === "zh" ? "下一张" : "Next slide";
+  const goToSlideLabelPrefix = lang === "zh" ? "转到第" : "Go to slide";
+
+  const viewItems = (items ?? []).map((item) => ({
+    id: item.id,
+    image: item.image,
+    titleText: translate(item.title),
+    subtitleText: item.subtitle ? decodeHtml(translate(item.subtitle)) : "",
+    ctaText: item.cta ? translate(item.cta) : "",
+    href: item.link?.href || "#",
+  }));
+
   const [currentIndex, setCurrentIndex] = useState(0);
   const [direction, setDirection] = useState(0);
 
   const nextSlide = useCallback(() => {
-    if (items.length === 0) return;
+    if (viewItems.length === 0) return;
     setDirection(1);
-    setCurrentIndex((prev) => (prev + 1) % items.length);
-  }, [items.length]);
+    setCurrentIndex((prev) => (prev + 1) % viewItems.length);
+  }, [viewItems.length]);
 
   const prevSlide = useCallback(() => {
-    if (items.length === 0) return;
+    if (viewItems.length === 0) return;
     setDirection(-1);
-    setCurrentIndex((prev) => (prev - 1 + items.length) % items.length);
-  }, [items.length]);
+    setCurrentIndex((prev) => (prev - 1 + viewItems.length) % viewItems.length);
+  }, [viewItems.length]);
 
   useEffect(() => {
-    if (!autoPlay || !items.length) return;
+    if (!autoPlay || !viewItems.length) return;
     const timer = setInterval(nextSlide, interval);
     return () => clearInterval(timer);
-  }, [nextSlide, autoPlay, interval, items.length]);
+  }, [nextSlide, autoPlay, interval, viewItems.length]);
 
-  if (!items || items.length === 0) return null;
+  if (!viewItems || viewItems.length === 0) return null;
 
-  const slide = items[currentIndex];
+  const slide = viewItems[currentIndex];
+
   if (!slide) return null;
 
   return (
@@ -152,7 +178,7 @@ export default function Carousel({
       </button>
 
       <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex gap-3 z-10">
-        {items.map((_, index) => (
+        {viewItems.map((_, index) => (
           <button
             type="button"
             key={index}

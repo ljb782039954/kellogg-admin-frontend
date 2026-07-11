@@ -2,7 +2,7 @@
 import { Label } from '@/components/ui/label';
 import BilingualInput from '@/core-adminApp/ui/Input/BilingualInput';
 import ImageInput from '@/core-adminApp/ui/Input/ImageInput';
-import type { ImageBannerTagContent } from '@site/ui-display/block-adapters';
+import type { ImageBannerTagContent } from '@site/ui-display/components/blocks';
 
 export interface ImageBannerTagPropsEditorProps {
   props: ImageBannerTagContent;

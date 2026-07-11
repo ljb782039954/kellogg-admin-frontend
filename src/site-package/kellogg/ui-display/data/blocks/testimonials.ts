@@ -1,4 +1,4 @@
-import type { TestimonialsContent } from '../../block-adapters/testimonialsAdapter';
+import type { TestimonialsContent } from '../../components/blocks';
 
 export const testimonialsProps: TestimonialsContent = {
   title: {

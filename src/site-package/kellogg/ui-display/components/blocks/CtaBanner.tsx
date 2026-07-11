@@ -1,18 +1,26 @@
 import type { CSSProperties } from "react";
+import type { Language, Translation, NavLink } from "@/cms/types";
+import { createTranslate } from "../../utils/i18n";
 
-interface CtaButton {
-  href: string;
-  label: string;
+// 实际的内容编辑栏
+export interface CtaBannerValues {
+  primaryButton?: NavLink;
+  secondaryButton?: NavLink;
+  backgroundImage?: string;
+  backgroundColor?: string;
+  alignment?: "left" | "center" | "right";
+}
+
+export interface CtaBannerContent {
+  title?: Translation;
+  subtitle?: Translation;
+  values?: CtaBannerValues;
 }
 
 export interface CtaBannerProps {
-  titleText?: string;
-  subtitleText?: string;
-  primaryButton?: CtaButton;
-  secondaryButton?: CtaButton;
-  backgroundImageUrl?: string;
-  backgroundColor?: string;
-  alignment?: "left" | "center" | "right";
+  content: CtaBannerContent;
+  lang: Language;
+  getImageUrl?: (src: string, width: number) => string;
 }
 
 const alignmentClass = {
@@ -22,14 +30,34 @@ const alignmentClass = {
 };
 
 export default function CtaBanner({
-  titleText = "",
-  subtitleText = "",
-  primaryButton,
-  secondaryButton,
-  backgroundImageUrl = "",
-  backgroundColor,
-  alignment = "center",
+  content,
+  getImageUrl,
+  lang,
 }: CtaBannerProps) {
+  const translate = createTranslate(lang);
+  const titleText = content.title ? translate(content.title) : "";
+  const subtitleText = content.subtitle ? translate(content.subtitle) : "";
+
+  const values = content.values ?? {};
+  const alignment = values.alignment || "center";
+  const backgroundColor = values.backgroundColor;
+  const backgroundImageUrl = values.backgroundImage && getImageUrl
+    ? getImageUrl(values.backgroundImage, 1920)
+    : (values.backgroundImage || "");
+
+  const primaryButton = values.primaryButton?.name
+    ? {
+        href: values.primaryButton.href,
+        label: translate(values.primaryButton.name),
+      }
+    : undefined;
+
+  const secondaryButton = values.secondaryButton?.name
+    ? {
+        href: values.secondaryButton.href,
+        label: translate(values.secondaryButton.name),
+      }
+    : undefined;
   const backgroundStyle: CSSProperties | undefined = backgroundColor ? { backgroundColor } : undefined;
 
   return (

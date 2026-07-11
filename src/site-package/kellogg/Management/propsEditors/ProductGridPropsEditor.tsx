@@ -7,7 +7,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import type { ProductGridContent } from '@site/ui-display/block-adapters';
+import type { ProductGridContent } from '@site/ui-display/components/blocks';
 
 export interface ProductGridPropsEditorProps {
   props: ProductGridContent;

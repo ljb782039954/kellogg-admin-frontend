@@ -22,7 +22,6 @@ export const kelloggBlockComponentMap: Partial<Record<BlockType, KelloggBlockCom
   imageBannerTag: lazyBlock(() => import("./components/blocks/ImageBannerTag")),
   imageFull: lazyBlock(() => import("./components/blocks/ImageFull")),
   imageText: lazyBlock(() => import("./components/blocks/ImageText")),
-  countdown: lazyBlock(() => import("./components/blocks/Countdown")),
   partnerLogos: lazyBlock(() => import("./components/blocks/PartnerLogos")),
   gallery: lazyBlock(() => import("./components/blocks/Gallery")),
   featureList: lazyBlock(() => import("./components/blocks/FeatureList")),

@@ -1,4 +1,4 @@
-import type { PartnerLogosContent } from '../../block-adapters/partnerLogosAdapter';
+import type { PartnerLogosContent } from '../../components/blocks';
 
 export const partnerLogosProps: PartnerLogosContent = {
   title: {

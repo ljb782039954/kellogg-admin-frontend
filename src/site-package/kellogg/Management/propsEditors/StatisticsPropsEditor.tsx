@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import BilingualInput from '@/core-adminApp/ui/Input/BilingualInput';
-import type { StatisticContent, StatisticsContent } from '@site/ui-display/block-adapters';
+import type { StatisticContent, StatisticsContent } from '@site/ui-display/components/blocks';
 
 export interface StatisticsPropsEditorProps {
   props: StatisticsContent;

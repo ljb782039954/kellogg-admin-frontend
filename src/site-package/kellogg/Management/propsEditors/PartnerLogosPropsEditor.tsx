@@ -14,7 +14,7 @@ import { nanoid } from 'nanoid';
 import { Plus, Trash2 } from 'lucide-react';
 import BilingualInput from '@/core-adminApp/ui/Input/BilingualInput';
 import ImageInput from '@/core-adminApp/ui/Input/ImageInput';
-import type { PartnerLogosContent } from '@site/ui-display/block-adapters';
+import type { PartnerLogosContent } from '@site/ui-display/components/blocks';
 export interface PartnerLogosPropsEditorProps {
   props: PartnerLogosContent;
   onUpdate: (props: PartnerLogosContent) => void;

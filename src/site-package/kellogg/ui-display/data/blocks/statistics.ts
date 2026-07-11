@@ -1,4 +1,4 @@
-import type { StatisticsContent } from '../../block-adapters/statisticsAdapter';
+import type { StatisticsContent } from '../../components/blocks';
 
 export const statisticsProps: StatisticsContent = {
   title: {

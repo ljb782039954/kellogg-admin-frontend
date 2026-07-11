@@ -1,45 +1,65 @@
 import { useState } from 'react';
 import { ChevronDown } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
+import type { Language, Translation } from "@/cms/types";
+import { createTranslate } from "../../utils/i18n";
 
 export interface FAQItem {
   id: number;
-  questionText: string;
-  answerText: string;
+  question: Translation;
+  answer: Translation;
 }
-
-export interface FAQLabels {
-  showLess: string;
-  viewMore: string;
+export interface FAQContent {
+  title?: Translation;
+  subtitle?: Translation;
+  items?: FAQItem[];
 }
 
 export interface FAQProps {
-  titleText?: string;
-  subtitleText?: string;
-  items?: FAQItem[];
-  labels?: FAQLabels;
-  structuredData?: string;
+  content: FAQContent;
+  lang: Language;
 }
 
-const fallbackLabels: FAQLabels = {
-  showLess: 'Show Less',
-  viewMore: 'View More',
-};
-
 export default function FAQ({
-  titleText = '',
-  subtitleText = '',
-  items = [],
-  labels = fallbackLabels,
-  structuredData,
+  content: {
+    title,
+    subtitle,
+    items = [],
+  },
+  lang,
 }: FAQProps) {
+  const translate = createTranslate(lang);
+  const titleText = title ? translate(title) : "";
+  const subtitleText = subtitle ? translate(subtitle) : "";
+
+  const viewItems = (items ?? []).map((item) => ({
+    id: item.id,
+    questionText: translate(item.question),
+    answerText: translate(item.answer),
+  }));
+
+  const structuredData = JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: viewItems.map((item) => ({
+      "@type": "Question",
+      name: item.questionText,
+      acceptedAnswer: { "@type": "Answer", text: item.answerText },
+    })),
+  }).replace(/</g, "\\u003c");
+
+  const labels = {
+    showLess: lang === "zh" ? "收起部分" : "Show Less",
+    viewMore: lang === "zh" ? "查看更多" : "View More",
+  };
+
   const [openIndex, setOpenIndex] = useState<number | null>(null);
   const [isExpanded, setIsExpanded] = useState(false);
 
-  const hasMore = items.length > 5;
-  const displayedItems = isExpanded ? items : items.slice(0, 5);
+  const hasMore = viewItems.length > 5;
+  const displayedItems = isExpanded ? viewItems : viewItems.slice(0, 5);
 
-  if (!items || items.length === 0) return null;
+  if (!viewItems || viewItems.length === 0) return null;
 
   return (
     <section className="py-8">

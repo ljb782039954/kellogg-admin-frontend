@@ -1,12 +1,18 @@
 import type { CSSProperties } from "react";
 import RichText from "@/runtime/components/RichText";
+import type { Language, Translation } from "@/cms/types";
+import { createTranslate } from "../../utils/i18n";
 
-export interface TextSectionProps {
-  titleText?: string;
-  contentText?: string;
+export interface TextSectionContent {
+  title?: Translation;
+  content?: Translation;
   alignment?: "left" | "center" | "right";
   paddingY?: "small" | "medium" | "large";
   backgroundColor?: string;
+}
+export interface TextSectionProps {
+  content: TextSectionContent;
+  lang: Language;
 }
 
 const alignmentClass = {
@@ -22,12 +28,18 @@ const paddingClass = {
 };
 
 export default function TextSection({
-  titleText = "",
-  contentText = "",
-  alignment = "center",
-  paddingY = "medium",
-  backgroundColor,
+  content: {
+    title,
+    content,
+    alignment = "center",
+    paddingY = "medium",
+    backgroundColor,
+  },
+  lang,
 }: TextSectionProps) {
+  const translate = createTranslate(lang);
+  const titleText = title ? translate(title) : "";
+  const contentText = content ? translate(content) : "";
   const style: CSSProperties | undefined = backgroundColor ? { backgroundColor } : undefined;
 
   return (

@@ -45,6 +45,7 @@ export interface Product {
   customFields?: { name: Translation; value: Translation }[];
 }
 
+
 // 用于 api 接口
 
 export interface ProductInput {

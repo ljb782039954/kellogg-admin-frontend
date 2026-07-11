@@ -1,4 +1,4 @@
-import type { CarouselContent } from '../../block-adapters/carouselAdapter';
+import type { CarouselContent } from '../../components/blocks';
 
 export const carouselProps: CarouselContent = {
   autoPlay: true,

@@ -1,4 +1,4 @@
-import type { CategoriesContent } from '../../block-adapters/categoriesAdapter';
+import type { CategoriesContent } from '../../components/blocks';
 
 export const categoriesProps: CategoriesContent = {
   showAll: true,

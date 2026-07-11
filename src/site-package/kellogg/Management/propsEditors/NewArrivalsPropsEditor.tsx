@@ -13,7 +13,7 @@ import { Info } from 'lucide-react';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import BilingualInput from '@/core-adminApp/ui/Input/BilingualInput';
 import { getPreviewUrl } from '@/core-adminApp/lib/utils';
-import type { NewArrivalsContent } from '@site/ui-display/block-adapters';
+import type { NewArrivalsContent } from '@site/ui-display/components/blocks';
 
 export interface NewArrivalsPropsEditorProps {
   props: NewArrivalsContent;

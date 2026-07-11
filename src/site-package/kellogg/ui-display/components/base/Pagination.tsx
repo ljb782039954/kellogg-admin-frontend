@@ -8,6 +8,22 @@ interface PaginationProps {
   totalText?: string;
 }
 
+function getPageItems(currentPage: number, totalPages: number) {
+  const pages = new Set([1, totalPages]);
+
+  for (let page = currentPage - 1; page <= currentPage + 1; page += 1) {
+    if (page > 1 && page < totalPages) pages.add(page);
+  }
+
+  return [...pages]
+    .sort((a, b) => a - b)
+    .reduce<Array<number | "ellipsis">>((items, page, index, sortedPages) => {
+      if (index > 0 && page - sortedPages[index - 1] > 1) items.push("ellipsis");
+      items.push(page);
+      return items;
+    }, []);
+}
+
 export default function Pagination({ 
   currentPage, 
   totalPages, 
@@ -15,6 +31,8 @@ export default function Pagination({
   totalCount,
   totalText,
 }: PaginationProps) {
+  const pageItems = getPageItems(currentPage, totalPages);
+
   const handlePageChange = (page: number) => {
     if (page < 1 || page > totalPages) return;
     onPageChange(page);
@@ -32,17 +50,19 @@ export default function Pagination({
           <ChevronLeft className="w-5 h-5" />
         </button>
 
-        {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+        {pageItems.map((item, index) => item === "ellipsis" ? (
+          <span key={`ellipsis-${index}`} className="w-6 text-center text-gray-400" aria-hidden="true">...</span>
+        ) : (
           <button
-            key={page}
-            onClick={() => handlePageChange(page)}
+            key={item}
+            onClick={() => handlePageChange(item)}
             className={`w-10 h-10 rounded-lg font-medium transition-colors ${
-              currentPage === page
+              currentPage === item
                 ? 'bg-gray-800 text-white'
                 : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
             }`}
           >
-            {page}
+            {item}
           </button>
         ))}
 

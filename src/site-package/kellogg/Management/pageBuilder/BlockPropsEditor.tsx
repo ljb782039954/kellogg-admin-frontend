@@ -4,7 +4,6 @@ import type {
   BrandValuesContent,
   CarouselContent,
   CategoriesContent,
-  CountdownContent,
   CtaBannerContent,
   FAQContent,
   FeatureListContent,
@@ -21,7 +20,7 @@ import type {
   TestimonialsContent,
   TextSectionContent,
   VideoSectionContent,
-} from '@site/ui-display/block-adapters';
+} from '@site/ui-display/components/blocks';
 
 // 组件基础编辑器
 import { TextSectionPropsEditor } from '../propsEditors/TextSectionPropsEditor';
@@ -40,7 +39,6 @@ import { CategoriesPropsEditor } from '../propsEditors/CategoriesPropsEditor';
 import { NewArrivalsPropsEditor } from '../propsEditors/NewArrivalsPropsEditor';
 import { FeaturedProductsPropsEditor } from '../propsEditors/FeaturedProductsPropsEditor';
 import { ImageTextPropsEditor } from '../propsEditors/ImageTextPropsEditor';
-import { CountdownPropsEditor } from '../propsEditors/CountdownPropsEditor';
 import { PartnerLogosPropsEditor } from '../propsEditors/PartnerLogosPropsEditor';
 import { GalleryPropsEditor } from '../propsEditors/GalleryPropsEditor';
 import { FeatureListPropsEditor } from '../propsEditors/FeatureListPropsEditor';
@@ -96,8 +94,6 @@ export function PropsEditorSwitch({
       return <VideoSectionPropsEditor props={content as VideoSectionContent} onUpdate={onUpdate} />;
     case 'imageText':
       return <ImageTextPropsEditor props={content as ImageTextContent} onUpdate={onUpdate} />;
-    case 'countdown':
-      return <CountdownPropsEditor props={content as CountdownContent} onUpdate={onUpdate} />;
     case 'partnerLogos':
       return <PartnerLogosPropsEditor props={content as PartnerLogosContent} onUpdate={onUpdate} />;
     case 'gallery':

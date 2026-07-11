@@ -1,20 +1,36 @@
 import { motion, useInView } from 'framer-motion';
 import { useEffect, useRef, useState } from "react";
+import type { Language, Translation } from "@/cms/types";
+import { createTranslate } from "../../utils/i18n";
 
-export interface StatisticViewItem {
+export interface StatisticContent {
   id: number;
   value: string;
-  labelText: string;
+  label: Translation;
 }
 
+export interface StatisticsContent {
+  title?: Translation;
+  subtitle?: Translation;
+  items?: StatisticContent[];
+}
 export interface StatisticsProps {
-  titleText?: string;
-  subtitleText?: string;
-  items?: StatisticViewItem[];
+  content: StatisticsContent;
+  lang: Language;
 }
 
-export default function Statistics({ titleText, subtitleText, items = [] }: StatisticsProps) {
-  if (items.length === 0) return null;
+export default function Statistics({ content: {title, subtitle, items = []}, lang }: StatisticsProps) {
+  const translate = createTranslate(lang);
+  const titleText = title ? translate(title) : "";
+  const subtitleText = subtitle ? translate(subtitle) : "";
+
+  const viewItems = (items ?? []).map((item) => ({
+    id: item.id,
+    value: item.value,
+    labelText: translate(item.label),
+  }));
+
+  if (viewItems.length === 0) return null;
 
   return (
     <section className="py-12 bg-gray-900 text-white">
@@ -25,7 +41,7 @@ export default function Statistics({ titleText, subtitleText, items = [] }: Stat
         </div>
         
         <div className="flex flex-row justify-between max-w-6xl mx-auto gap-2 md:gap-4">
-          {items.map((item, index) => (
+          {viewItems.map((item, index) => (
             <motion.div
               key={index}
               initial={{ opacity: 0, y: 30 }}

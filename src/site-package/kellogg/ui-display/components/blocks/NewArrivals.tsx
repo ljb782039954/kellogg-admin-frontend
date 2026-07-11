@@ -1,23 +1,34 @@
-import { ProductCardStatic, type ProductCardStaticProps } from "../base";
+import { ProductCard } from "../base";
+import type { Language, Product, Translation } from "@/cms/types";
+import { createTranslate } from "../../utils/i18n";
 
-export interface NewArrivalCard {
-  id: string;
-  href: string;
-  card: ProductCardStaticProps;
+export interface NewArrivalsContent {
+  title?: Translation;
+  subtitle?: Translation;
+  maxItems?: number;
 }
 
 export interface NewArrivalsProps {
-  titleText?: string;
-  subtitleText?: string;
-  cards?: NewArrivalCard[];
+  content: NewArrivalsContent;
+  products: Product[];
+  lang: Language;
 }
 
 export default function NewArrivals({
-  titleText = "",
-  subtitleText = "",
-  cards = [],
+  content: {
+  title,
+  subtitle,
+  maxItems,
+  },
+  products: initialProducts = [],
+  lang,
 }: NewArrivalsProps) {
-  if (cards.length === 0) return null;
+  const translate = createTranslate(lang);
+  const products = maxItems ? initialProducts.slice(0, maxItems) : initialProducts;
+  const titleText = title ? translate(title) : "";
+  const subtitleText = subtitle ? translate(subtitle) : "";
+
+  if (products.length === 0) return null;
 
   return (
     <section className="py-8">
@@ -29,10 +40,13 @@ export default function NewArrivals({
           </div>
         )}
         <div className="grid grid-cols-[repeat(auto-fit,minmax(160px,1fr))] md:grid-cols-[repeat(auto-fit,minmax(240px,1fr))] gap-2 md:gap-4 px-4 pb-4">
-          {cards.map((card) => (
-            <a key={card.id} href={card.href} className="block">
-              <ProductCardStatic {...card.card} />
-            </a>
+          {products.map((product) => (
+            <ProductCard
+              key={product.id}
+              product={product}
+              lang={lang}
+              variant="arrival"
+            />
           ))}
         </div>
       </div>

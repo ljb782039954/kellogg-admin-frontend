@@ -1,25 +1,37 @@
 import OptimizedImage from "@/runtime/components/OptimizedImage";
 import RichText from "@/runtime/components/RichText";
+import type { Language, Translation } from "@/cms/types";
+import { createTranslate } from "../../utils/i18n";
 
-export interface ImageTextProps {
-  titleText?: string;
-  contentText?: string;
+export interface ImageTextContent {
+  title?: Translation;
+  content?: Translation;
   image?: string;
-  imageAlt?: string;
   imagePosition?: "left" | "right";
-  buttonText?: string;
+  buttonText?: Translation;
   buttonLink?: string;
+}
+export interface ImageTextProps {
+  content:ImageTextContent;
+  lang: Language;
 }
 
 export default function ImageText({
-  titleText = "",
-  contentText = "",
-  image,
-  imageAlt = "Section Image",
-  imagePosition = "left",
-  buttonText = "",
-  buttonLink,
+  content:{
+    title,
+    content,
+    image,
+    imagePosition = "left",
+    buttonText,
+    buttonLink,
+  },
+  lang,
 }: ImageTextProps) {
+  const t = createTranslate(lang);
+  const titleText = title ? t(title) : "";
+  const contentText = content ? t(content) : "";
+  const buttonTextText = buttonText ? t(buttonText) : "";
+  const imageAlt = titleText || "Section Image";
   const isInternal = buttonLink?.startsWith("/");
 
   return (
@@ -34,9 +46,9 @@ export default function ImageText({
           <div className="flex-1 space-y-4">
             {titleText && <h3 className="text-2xl md:text-4xl font-bold">{titleText}</h3>}
             {contentText && <RichText value={contentText} className="text-gray-600 text-md md:text-lg leading-relaxed content-rich-text" />}
-            {buttonText && buttonLink && (
+            {buttonTextText && buttonLink && (
               <a href={buttonLink} target={isInternal ? undefined : "_blank"} rel={isInternal ? undefined : "noopener noreferrer"} className="inline-block px-6 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors">
-                {buttonText}
+                {buttonTextText}
               </a>
             )}
           </div>

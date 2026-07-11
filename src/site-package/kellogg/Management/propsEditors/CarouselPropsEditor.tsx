@@ -9,7 +9,7 @@ import BilingualInput from '@/core-adminApp/ui/Input/BilingualInput';
 import ImageInput from '@/core-adminApp/ui/Input/ImageInput';
 import LinkSelector from '@/core-adminApp/ui/Input/LinkSelector';
 import { ensureNavLink } from '@/core-adminApp/lib/linkUtils';
-import type { CarouselItemContent, CarouselContent } from '@site/ui-display/block-adapters';
+import type { CarouselItem, CarouselContent } from '@site/ui-display/components/blocks';
 
 export interface CarouselPropsEditorProps {
   props: CarouselContent;
@@ -18,9 +18,9 @@ export interface CarouselPropsEditorProps {
 
 
 export function CarouselPropsEditor({ props, onUpdate }: CarouselPropsEditorProps) {
-  const [localData, setLocalData] = useState<CarouselItemContent[]>(props.items || []);
+  const [localData, setLocalData] = useState<CarouselItem[]>(props.items || []);
 
-  const saveItems = (items: CarouselItemContent[]) => {
+  const saveItems = (items: CarouselItem[]) => {
     setLocalData(items);
     onUpdate({ ...props, items });
   };
@@ -39,7 +39,7 @@ export function CarouselPropsEditor({ props, onUpdate }: CarouselPropsEditorProp
     ]);
   };
 
-  const updateItems = <K extends keyof CarouselItemContent>(index: number, field: K, value: CarouselItemContent[K]) => {
+  const updateItems = <K extends keyof CarouselItem>(index: number, field: K, value: CarouselItem[K]) => {
     const newItems = [...localData];
     newItems[index] = { ...newItems[index], [field]: value };
     saveItems(newItems);

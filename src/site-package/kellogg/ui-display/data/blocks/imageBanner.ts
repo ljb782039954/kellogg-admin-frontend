@@ -1,4 +1,4 @@
-import type { ImageBannerContent } from '../../block-adapters/imageBannerAdapter';
+import type { ImageBannerContent } from '../../components/blocks';
 
 export const imageBannerProps: ImageBannerContent = {
   image: "https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=1600&auto=format&fit=crop&q=80",

@@ -1,4 +1,4 @@
-import type { FeaturedProductsContent } from '../../block-adapters/featuredProductsAdapter';
+import type { FeaturedProductsContent } from '../../components/blocks';
 
 export const featuredProductsProps: FeaturedProductsContent = {
   title: {

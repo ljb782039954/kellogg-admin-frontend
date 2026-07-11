@@ -1,4 +1,4 @@
-import type { FeatureListContent } from '../../block-adapters/featureListAdapter';
+import type { FeatureListContent } from '../../components/blocks';
 
 export const featureListProps: FeatureListContent = {
   title: {

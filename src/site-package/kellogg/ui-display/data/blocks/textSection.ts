@@ -1,4 +1,4 @@
-import type { TextSectionContent } from '../../block-adapters/textSectionAdapter';
+import type { TextSectionContent } from '../../components/blocks';
 
 export const textSectionProps: TextSectionContent = {
   title: {

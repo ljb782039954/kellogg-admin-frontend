@@ -1,20 +1,20 @@
 // import { atom } from 'nanostores';
 
-// export interface ExchangeRates {
-//   base: string;
-//   rates: Record<string, number>;
-//   last_updated: string;
-// }
+export interface ExchangeRates {
+  base: string;
+  rates: Record<string, number>;
+  last_updated: string;
+}
 
-// export interface CurrencyConfig {
-//   storageKey?: string;
-//   defaultCurrency?: string;
-// }
+export interface CurrencyConfig {
+  storageKey?: string;
+  defaultCurrency?: string;
+}
 
-// let currencyConfig: Required<CurrencyConfig> = {
-//   storageKey: 'site_currency',
-//   defaultCurrency: 'USD',
-// };
+let currencyConfig: Required<CurrencyConfig> = {
+  storageKey: 'site_currency',
+  defaultCurrency: 'USD',
+};
 
 // export function configureCurrency(config: CurrencyConfig) {
 //   currencyConfig = { ...currencyConfig, ...config };
@@ -24,39 +24,39 @@
 //   }
 // }
 
-// export function getCurrencyConfig(): Required<CurrencyConfig> {
-//   return currencyConfig;
-// }
+export function getCurrencyConfig(): Required<CurrencyConfig> {
+  return currencyConfig;
+}
 
-// export function formatPrice(
-//   basePrice: number | null | undefined,
-//   currency: string = currencyConfig.defaultCurrency,
-//   rates: Record<string, number> | null = null
-// ): string {
-//   if (basePrice === undefined || basePrice === null) return '';
+export function formatPrice(
+  basePrice: number | null | undefined,
+  currency: string = currencyConfig.defaultCurrency,
+  rates: Record<string, number> | null = null
+): string {
+  if (basePrice === undefined || basePrice === null) return '';
 
-//   if (!rates || !rates[currency]) {
-//     const fallbackFormatter = new Intl.NumberFormat('en-US', {
-//       style: 'currency',
-//       currency: 'CNY',
-//       currencyDisplay: 'narrowSymbol',
-//     });
-//     return `${fallbackFormatter.format(basePrice)} CNY`;
-//   }
+  if (!rates || !rates[currency]) {
+    const fallbackFormatter = new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'CNY',
+      currencyDisplay: 'narrowSymbol',
+    });
+    return `${fallbackFormatter.format(basePrice)} CNY`;
+  }
 
-//   const targetRate = rates[currency];
-//   const convertedPrice = basePrice * targetRate;
+  const targetRate = rates[currency];
+  const convertedPrice = basePrice * targetRate;
 
-//   const formatter = new Intl.NumberFormat('en-US', {
-//     style: 'currency',
-//     currency: currency,
-//     currencyDisplay: 'narrowSymbol',
-//   });
+  const formatter = new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: currency,
+    currencyDisplay: 'narrowSymbol',
+  });
 
-//   const formattedOutput = formatter.format(convertedPrice);
+  const formattedOutput = formatter.format(convertedPrice);
 
-//   return `${formattedOutput} ${currency}`;
-// }
+  return `${formattedOutput} ${currency}`;
+}
 
 // export const $currency = atom<string>(currencyConfig.defaultCurrency);
 // export const $rates = atom<Record<string, number> | null>(null);
@@ -74,10 +74,10 @@
 //   }
 // }
 
-// export function updateAllPrices(rates: Record<string, number> | null, currency: string) {
-//   const elements = document.querySelectorAll('[data-base-price]');
-//   elements.forEach((el) => {
-//     const basePrice = parseFloat(el.getAttribute('data-base-price') || '0');
-//     el.textContent = formatPrice(basePrice, currency, rates);
-//   });
-// }
+export function updateAllPrices(rates: Record<string, number> | null, currency: string) {
+  const elements = document.querySelectorAll('[data-base-price]');
+  elements.forEach((el) => {
+    const basePrice = parseFloat(el.getAttribute('data-base-price') || '0');
+    el.textContent = formatPrice(basePrice, currency, rates);
+  });
+}

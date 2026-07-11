@@ -1,7 +1,11 @@
 import { SlidersHorizontal } from "lucide-react";
-import { Pagination, ProductCardStatic, type ProductCardStaticProps } from "../base";
+import { Pagination, ProductCard, type ProductCardProps } from "../base";
+import { type ProductGridSortId } from '@/cms/types'
 
-export type ProductGridSortId = "newest" | "price-asc" | "price-desc" | "sales";
+export interface ProductGridContent {
+  itemsPerPage?: number;
+  // category?: string; 这个不需要
+}
 
 export interface ProductGridOption<TId extends string = string> {
   id: TId;
@@ -9,66 +13,78 @@ export interface ProductGridOption<TId extends string = string> {
   selected: boolean;
 }
 
-export interface ProductGridItem extends ProductCardStaticProps {
+export interface ProductGridItem extends ProductCardProps {
   id: string;
-  href: string;
 }
 
 export interface ProductGridLabels {
   loading: string;
   empty: string;
-  total: string;
+}
+
+export interface ProductGridPagination {
+  currentPage: number;
+  totalPages: number;
+  totalCount?: number;
+  totalText?: string;
+  onPageChange: (page: number) => void;
 }
 
 export interface ProductGridProps {
-  categories: ProductGridOption[];
   sortOptions: ProductGridOption<ProductGridSortId>[];
   products: ProductGridItem[];
-  labels: ProductGridLabels;
-  totalCount: number;
-  totalPages: number;
-  currentPage: number;
-  selectedCategory: string;
   sortBy: ProductGridSortId;
-  isLoading: boolean;
-  onCategoryChange: (categoryId: string) => void;
   onSortChange: (sortId: ProductGridSortId) => void;
-  onPageChange: (page: number) => void;
+
+  categories?: ProductGridOption[];
+  onCategoryChange?: (categoryId: string) => void;
+  pagination?: ProductGridPagination;
+  isLoading?: boolean;
+  labels?: Partial<ProductGridLabels>;
 }
 
 export default function ProductGrid({
   categories,
   sortOptions,
   products,
-  labels,
-  totalCount,
-  totalPages,
-  currentPage,
-  selectedCategory,
   sortBy,
+  pagination,
   isLoading,
+  labels,
   onCategoryChange,
   onSortChange,
-  onPageChange,
 }: ProductGridProps) {
+  const resolvedLabels = {
+    loading: "Loading products...",
+    empty: "No products available",
+    ...labels,
+  };
+  const categoryControls = categories?.length && onCategoryChange
+    ? { items: categories, onChange: onCategoryChange }
+    : null;
+
   return (
     <section className="pt-20 w-full">
       <div className="container mx-auto px-4">
         <div className="w-full border-b border-gray-200">
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 py-4">
-            <div className="flex flex-wrap gap-2">
-              {categories.map((cat) => (
-                <button
-                  key={cat.id}
-                  onClick={() => onCategoryChange(cat.id)}
-                  className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
-                    cat.selected || selectedCategory === cat.id ? "bg-gray-800 text-white" : "bg-gray-100 text-gray-600 hover:bg-gray-200"
-                  }`}
-                >
-                  {cat.label}
-                </button>
-              ))}
-            </div>
+          <div className={`flex flex-col md:flex-row md:items-center gap-4 py-4 ${
+            categoryControls ? "md:justify-between" : "md:justify-end"
+          }`}>
+            {categoryControls && (
+              <div className="flex flex-wrap gap-2">
+                {categoryControls.items.map((cat) => (
+                  <button
+                    key={cat.id}
+                    onClick={() => categoryControls.onChange(cat.id)}
+                    className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
+                      cat.selected ? "bg-gray-800 text-white" : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                    }`}
+                  >
+                    {cat.label}
+                  </button>
+                ))}
+              </div>
+            )}
 
             <div className="flex items-center gap-2">
               <SlidersHorizontal className="w-4 h-4 text-gray-400" />
@@ -93,7 +109,7 @@ export default function ProductGrid({
               <div className="flex flex-col items-center gap-3">
                 <div className="w-10 h-10 border-4 border-gray-200 border-t-gray-800 rounded-full animate-spin" />
                 <p className="text-sm text-gray-500 font-medium tracking-wide">
-                  {labels.loading}
+                  {resolvedLabels.loading}
                 </p>
               </div>
             </div>
@@ -102,26 +118,24 @@ export default function ProductGrid({
           {products.length === 0 ? (
             <div className="text-center py-16">
               <p className="text-gray-500">
-                {labels.empty}
+                {resolvedLabels.empty}
               </p>
             </div>
           ) : (
             <>
               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
                 {products.map((product) => (
-                  <a key={product.id} href={product.href} className="block group h-full">
-                    <ProductCardStatic {...product} />
-                  </a>
+                  <ProductCard key={product.id} {...product} />
                 ))}
               </div>
 
-              {totalPages > 1 && (
+              {pagination && pagination.totalPages > 1 && (
                 <Pagination
-                  currentPage={currentPage}
-                  totalPages={totalPages}
-                  onPageChange={onPageChange}
-                  totalCount={totalCount}
-                  totalText={labels.total}
+                  currentPage={pagination.currentPage}
+                  totalPages={pagination.totalPages}
+                  onPageChange={pagination.onPageChange}
+                  totalCount={pagination.totalCount}
+                  totalText={pagination.totalText}
                 />
               )}
             </>

@@ -11,7 +11,7 @@ import {
 } from '@/components/ui/select';
 import BilingualInput from '@/core-adminApp/ui/Input/BilingualInput';
 import ImageInput from '@/core-adminApp/ui/Input/ImageInput';
-import type { ImageBannerContent } from '@site/ui-display/block-adapters';
+import type { ImageBannerContent } from '@site/ui-display/components/blocks';
 
 export interface ImageBannerPropsEditorProps {
   props: ImageBannerContent;

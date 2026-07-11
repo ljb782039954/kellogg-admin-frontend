@@ -11,7 +11,7 @@ import {
 import BilingualInput from '@/core-adminApp/ui/Input/BilingualInput';
 import BilingualRichInput from '@/core-adminApp/ui/Input/RichInput/BilingualRichInput';
 import ImageInput from '@/core-adminApp/ui/Input/ImageInput';
-import type { ImageTextContent } from '@site/ui-display/block-adapters';
+import type { ImageTextContent } from '@site/ui-display/components/blocks';
 
 export interface ImageTextPropsEditorProps {
   props: ImageTextContent;

@@ -1,40 +1,43 @@
 import { useEffect, useRef, useState } from 'react';
 import { Maximize2, X } from 'lucide-react';
 import OptimizedImage from '@/runtime/components/OptimizedImage';
+import type { Language, Translation } from "@/cms/types";
+import { createTranslate } from "../../utils/i18n";
 
-export interface ImageFullLabels {
-  noImage: string;
-  openFullscreen: string;
-  fullscreenPreview: string;
-  closeFullscreen: string;
-}
-
-export interface ImageFullProps {
+export interface ImageFullContent {
   image?: string;
-  descriptionText?: string;
-  altText?: string;
+  description?: Translation;
+  alt?: Translation;
   width?: 'small' | 'medium' | 'large' | 'full';
   height?: 'small' | 'medium' | 'large' | 'full';
   overlay?: boolean;
-  labels?: ImageFullLabels;
+}
+export interface ImageFullProps {
+  content: ImageFullContent
+  lang: Language;
 }
 
-const fallbackLabels: ImageFullLabels = {
-  noImage: 'No image selected',
-  openFullscreen: 'Open fullscreen image',
-  fullscreenPreview: 'Fullscreen image preview',
-  closeFullscreen: 'Close fullscreen image',
-};
-
 export default function ImageFull({
-  image,
-  altText = '',
-  height = 'medium',
-  width = 'full',
-  overlay = false,
-  descriptionText = '',
-  labels = fallbackLabels,
+  content:{
+    image,
+    alt,
+    height = 'medium',
+    width = 'full',
+    overlay = false,
+    description
+  },
+  lang,
 }: ImageFullProps) {
+  const t = createTranslate(lang);
+  const descriptionText = description ? t(description) : "";
+  const altText = alt ? t(alt) : "";
+
+  const labels = {
+    noImage: lang === "zh" ? "未选择图片" : "No image selected",
+    openFullscreen: lang === "zh" ? "打开全屏图片" : "Open fullscreen image",
+    fullscreenPreview: lang === "zh" ? "全屏图片预览" : "Fullscreen image preview",
+    closeFullscreen: lang === "zh" ? "关闭全屏图片" : "Close fullscreen image",
+  };
   const [isFullscreen, setIsFullscreen] = useState(false);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
 

@@ -2,41 +2,51 @@ import { useEffect, useRef, useState } from 'react';
 import { ChevronLeft, ChevronRight, X, ZoomIn } from 'lucide-react';
 import { motion } from 'framer-motion';
 import OptimizedImage from '@/runtime/components/OptimizedImage';
+import type { Language, Translation } from "@/cms/types";
+import { createTranslate } from "../../utils/i18n";
 
-export interface GalleryValues {
+export interface GalleryItem {
   src: string;
-  captionText?: string;
+  caption?: Translation;
 }
 
-export interface GalleryLabels {
-  viewImage: string;
-  imagePreview: string;
-  closePreview: string;
-  previousImage: string;
-  nextImage: string;
+export interface GalleryContent {
+  title?: Translation;
+  subtitle?: Translation;
+  items?: GalleryItem[];
 }
 
 export interface GalleryProps {
-  titleText?: string;
-  subtitleText?: string;
-  items?: GalleryValues[];
-  labels?: GalleryLabels;
+  content: GalleryContent;
+  lang: Language;
 }
 
-const fallbackLabels: GalleryLabels = {
-  viewImage: 'View image',
-  imagePreview: 'Image preview',
-  closePreview: 'Close image preview',
-  previousImage: 'Previous image',
-  nextImage: 'Next image',
-};
 
 export default function Gallery({
-  titleText = '',
-  subtitleText = '',
-  items = [],
-  labels = fallbackLabels,
+  content:{
+    title,
+    subtitle,
+    items = [],
+  },
+  lang,
 }: GalleryProps) {
+  const translate = createTranslate(lang);
+  const titleText = title ? translate(title) : "";
+  const subtitleText = subtitle ? translate(subtitle) : "";
+
+  const viewItems = (items ?? []).map((item) => ({
+    src: item.src,
+    captionText: item.caption ? translate(item.caption) : "",
+  }));
+
+  const labels = {
+    viewImage: lang === "zh" ? "查看图片" : "View image",
+    imagePreview: lang === "zh" ? "图片预览" : "Image preview",
+    closePreview: lang === "zh" ? "关闭图片预览" : "Close image preview",
+    previousImage: lang === "zh" ? "上一张图片" : "Previous image",
+    nextImage: lang === "zh" ? "下一张图片" : "Next image",
+  };
+
   const [selectedImage, setSelectedImage] = useState<number | null>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
 
@@ -49,8 +59,8 @@ export default function Gallery({
 
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Escape') setSelectedImage(null);
-      if (event.key === 'ArrowLeft') setSelectedImage((current) => current === null ? null : (current - 1 + items.length) % items.length);
-      if (event.key === 'ArrowRight') setSelectedImage((current) => current === null ? null : (current + 1) % items.length);
+      if (event.key === 'ArrowLeft') setSelectedImage((current) => current === null ? null : (current - 1 + viewItems.length) % viewItems.length);
+      if (event.key === 'ArrowRight') setSelectedImage((current) => current === null ? null : (current + 1) % viewItems.length);
     };
     window.addEventListener('keydown', onKeyDown);
     return () => {
@@ -58,9 +68,9 @@ export default function Gallery({
       window.removeEventListener('keydown', onKeyDown);
       previousActive?.focus();
     };
-  }, [items.length, selectedImage]);
+  }, [viewItems.length, selectedImage]);
 
-  if (!items || items.length === 0) return null;
+  if (!viewItems || viewItems.length === 0) return null;
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -96,7 +106,7 @@ export default function Gallery({
           viewport={{ once: true }}
           className="grid grid-cols-[repeat(auto-fit,minmax(150px,1fr))] md:grid-cols-[repeat(auto-fit,minmax(250px,1fr))] gap-4 px-4"
         >
-          {items.map((img, i) => (
+          {viewItems.map((img, i) => (
             <motion.button
               type="button"
               key={i}
@@ -119,7 +129,7 @@ export default function Gallery({
             </motion.button>
           ))}
         </motion.div>
-
+ 
         {selectedImage !== null && (
           <div
             className="fixed inset-0 bg-black/90 z-[9999] flex items-center justify-center"
@@ -142,15 +152,15 @@ export default function Gallery({
               className="absolute left-4 text-white hover:text-gray-300"
               onClick={(event) => {
                 event.stopPropagation();
-                setSelectedImage((prev) => (prev! - 1 + items.length) % items.length);
+                setSelectedImage((prev) => (prev! - 1 + viewItems.length) % viewItems.length);
               }}
               aria-label={labels.previousImage}
             >
               <ChevronLeft className="w-12 h-12" />
             </button>
             <OptimizedImage
-              src={items[selectedImage].src}
-              alt={items[selectedImage].captionText ?? ''}
+              src={viewItems[selectedImage].src}
+              alt={viewItems[selectedImage].captionText ?? ''}
               width={1200}
               className="max-w-4xl max-h-[80vh] object-contain"
               onClick={(event) => event.stopPropagation()}
@@ -160,15 +170,15 @@ export default function Gallery({
               className="absolute right-4 text-white hover:text-gray-300"
               onClick={(event) => {
                 event.stopPropagation();
-                setSelectedImage((prev) => (prev! + 1) % items.length);
+                setSelectedImage((prev) => (prev! + 1) % viewItems.length);
               }}
               aria-label={labels.nextImage}
             >
               <ChevronRight className="w-12 h-12" />
             </button>
             <div className="absolute bottom-8 text-white text-center">
-              <p className="text-lg">{items[selectedImage].captionText}</p>
-              <p className="text-sm opacity-60">{selectedImage + 1} / {items.length}</p>
+              <p className="text-lg">{viewItems[selectedImage].captionText}</p>
+              <p className="text-sm opacity-60">{selectedImage + 1} / {viewItems.length}</p>
             </div>
           </div>
         )}
