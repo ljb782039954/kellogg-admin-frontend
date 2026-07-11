@@ -1,4 +1,4 @@
-import type { ProductGridContent } from "../../types";
+import type { ProductGridContent } from "../../components/blocks";
 
 const productGrid: ProductGridContent = {
   title: {
@@ -10,7 +10,6 @@ const productGrid: ProductGridContent = {
     en: "A complete product listing with category filters and sorting controls.",
   },
   itemsPerPage: 9,
-  category: "all",
 };
 
 export default productGrid;

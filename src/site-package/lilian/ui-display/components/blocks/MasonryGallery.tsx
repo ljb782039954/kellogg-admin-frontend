@@ -1,21 +1,40 @@
 ﻿import OptimizedImage from "@/runtime/components/OptimizedImage";
+import type { Language } from "@/cms/types";
+import type { LilianImageItem } from "../../types/common";
+import { createTranslate } from "../../utils/i18n";
 
-export interface MasonryGalleryImageProps {
-  image: string;
-  imageAlt?: string;
-  caption?: string;
+// WARNING: This type represents the fields edited in the admin management background.
+// Do not modify it lightly; any change requires manual verification.
+// Arbitrary alterations may cause page builder block data errors and prevent normal page assembly.
+export interface MasonryGalleryImageContent extends LilianImageItem {
   heightClass?: string;
 }
 
-export interface MasonryGalleryProps {
-  images: MasonryGalleryImageProps[];
+// WARNING: This type represents the fields edited in the admin management background.
+// Do not modify it lightly; any change requires manual verification.
+// Arbitrary alterations may cause page builder block data errors and prevent normal page assembly.
+export interface MasonryGalleryContent {
+  images: MasonryGalleryImageContent[];
 }
 
-export default function MasonryGallery({ images }: MasonryGalleryProps) {
+export interface MasonryGalleryProps {
+  content: MasonryGalleryContent;
+  lang: Language;
+}
+
+export default function MasonryGallery({ content, lang = "en"}: MasonryGalleryProps) {
+  const t = createTranslate(lang);
+  const resolvedImages = content.images.map((item) => ({
+        image: item.image,
+        imageAlt: t(item.imageAlt),
+        caption: t(item.caption),
+        heightClass: item.heightClass,
+      }));
+
   return (
     <section className="max-w-6xl mx-auto px-6 py-12">
       <div className="columns-2 md:columns-3 gap-3">
-        {images.map((item, index) => (
+        {resolvedImages.map((item, index) => (
           <div
             key={`${item.image}-${index}`}
             className={`${item.heightClass || "h-72"} overflow-hidden rounded-sm mb-3 break-inside-avoid`}
@@ -32,6 +51,5 @@ export default function MasonryGallery({ images }: MasonryGalleryProps) {
     </section>
   );
 }
-
 
 

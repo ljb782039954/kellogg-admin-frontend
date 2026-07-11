@@ -1,11 +1,13 @@
-﻿import type { FormEventHandler } from "react";
-import { Mail, Package, Send } from "lucide-react";
-import RichText from "@/runtime/components/RichText";
+import type { FormEventHandler } from 'react';
+// import { motion } from 'framer-motion';
+import { Send, Loader2, Package } from 'lucide-react';
+// import TurnstileWidget from '@/runtime/components/TurnstileWidget';
+import type { Language } from '@/cms/types';
 
 export interface InquiryFormValues {
   name: string;
   email: string;
-  company: string;
+  country?: string;
   product_type: string;
   quantity: string;
   message: string;
@@ -14,46 +16,74 @@ export interface InquiryFormValues {
 export interface InquiryFormText {
   name: string;
   email: string;
-  company: string;
+  country?: string;
   productType: string;
   quantity: string;
   message: string;
   submit: string;
+  success: string;
+  successMsg: string;
+  back: string;
   placeholders: InquiryFormValues;
 }
 
-export interface InquiryProps {
-  titleText?: string;
-  subtitleText?: string;
+export interface InquiryFormProps {
   values: InquiryFormValues;
   text: InquiryFormText;
+  isSubmitting: boolean;
+  isSuccess: boolean;
+  turnstileResetKey?: number;
+  turnstileLang?: Language;
+  turnstileSiteKey?: string;
+  useTurnstileTestSiteKey?: boolean;
   onValuesChange: (values: InquiryFormValues) => void;
+  onTurnstileTokenChange: (token: string) => void;
   onSubmit: FormEventHandler<HTMLFormElement>;
+  onBack: () => void;
 }
 
-export default function Inquiry({
-  titleText = "",
-  subtitleText = "",
+export default function InquiryForm({
   values,
   text,
+  isSubmitting,
+  isSuccess,
+  turnstileResetKey,
+  turnstileLang = 'en',
+  turnstileSiteKey,
+  useTurnstileTestSiteKey,
   onValuesChange,
+  onTurnstileTokenChange,
   onSubmit,
-}: InquiryProps) {
-  const updateField = <K extends keyof InquiryFormValues>(field: K, value: InquiryFormValues[K]) => {
+  onBack,
+}: InquiryFormProps) {
+  const updateField = <K extends keyof InquiryFormValues>(
+    field: K,
+    value: InquiryFormValues[K]
+  ) => {
     onValuesChange({ ...values, [field]: value });
   };
 
-  return (
-    <section className="px-6 py-12 bg-ink-strong text-on-dark">
-      <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-[0.8fr_1.2fr] gap-10 items-start">
-        <div>
-          <div className="w-12 h-12 border border-on-dark-border flex items-center justify-center mb-6">
-            <Mail className="w-5 h-5" />
-          </div>
-          {titleText && <h2 className="font-luxury-heading text-3xl md:text-5xl font-light leading-tight">{titleText}</h2>}
-          {subtitleText && <RichText value={subtitleText} className="mt-5 text-sm md:text-base leading-7 text-on-dark-soft" />}
+  if (isSuccess) {
+    return (
+      <section className="px-6 py-12 bg-ink-strong text-on-dark">
+        <div className="max-w-3xl mx-auto bg-surface text-ink-strong rounded-md p-8 text-center">
+          <h2 className="font-luxury-heading text-3xl font-light">{text.success || "Success!"}</h2>
+          {text.successMsg && <p className="mt-4 text-sm text-body">{text.successMsg}</p>}
+          {onBack && (
+            <button
+              type="button"
+              onClick={onBack}
+              className="mt-6 rounded bg-ink-strong px-6 py-3 text-sm uppercase text-on-dark"
+            >
+              {text.back || "Back"}
+            </button>
+          )}
         </div>
+      </section>
+    );
+  }
 
+  return (
         <form onSubmit={onSubmit} className="bg-surface text-ink-strong rounded-md p-5 md:p-8">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
             <label className="block">
@@ -78,11 +108,11 @@ export default function Inquiry({
               />
             </label>
             <label className="block">
-              <span className="text-xs uppercase text-subtle">{text.company}</span>
+              <span className="text-xs uppercase text-subtle">{text.country}</span>
               <input
-                value={values.company}
-                placeholder={text.placeholders.company}
-                onChange={(event) => updateField("company", event.target.value)}
+                value={values.country || ''}
+                placeholder={text.placeholders.country}
+                onChange={(event) => updateField("country", event.target.value)}
                 className="mt-2 w-full rounded border border-border px-4 py-3 text-sm outline-none focus:border-ink-strong"
               />
             </label>
@@ -119,15 +149,20 @@ export default function Inquiry({
             </label>
           </div>
 
-          <button type="submit" className="mt-6 w-full bg-ink-strong rounded text-on-dark py-4 text-sm uppercase flex items-center justify-center gap-3">
-            <Send className="w-4 h-4" />
+          {/* <TurnstileWidget
+            lang={turnstileLang}
+            siteKey={turnstileSiteKey}
+            useTestSiteKey={useTurnstileTestSiteKey}
+            onTokenChange={onTurnstileTokenChange}
+            resetKey={turnstileResetKey}
+          /> */}
+
+          <button 
+          disabled={isSubmitting}
+          type="submit" className="mt-6 w-full bg-ink-strong rounded text-on-dark py-4 text-sm uppercase flex items-center justify-center gap-3">
+        {isSubmitting ? <Loader2 className="w-6 h-6 animate-spin" /> : <Send className="w-5 h-5" />}
             {text.submit}
           </button>
         </form>
-      </div>
-    </section>
   );
 }
-
-
-

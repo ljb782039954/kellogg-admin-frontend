@@ -1,4 +1,4 @@
-import type { BlogGridContent } from "../../types";
+import type { BlogGridContent } from "../../components/blocks";
 
 const blogGrid: BlogGridContent = {
   title: {

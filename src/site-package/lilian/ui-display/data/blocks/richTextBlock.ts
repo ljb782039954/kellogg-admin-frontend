@@ -1,4 +1,4 @@
-import type { RichTextBlockContent } from "../../types";
+import type { RichTextBlockContent } from "../../components/blocks";
 
 const richTextBlock: RichTextBlockContent = {
   title: { zh: "关于 Lilian", en: "About Lilian" },

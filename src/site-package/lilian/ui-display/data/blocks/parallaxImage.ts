@@ -1,4 +1,4 @@
-import type { ParallaxImageContent } from "../../types";
+import type { ParallaxImageContent } from "../../components/blocks";
 
 const parallaxImage: ParallaxImageContent = {
   image: "/lilian/image/hero.jpg",

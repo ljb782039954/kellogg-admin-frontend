@@ -13,6 +13,9 @@ export interface CarouselItem {
   cta?: Translation;
   link: NavLink;
 }
+// WARNING: This type represents the fields edited in the admin management background.
+// Do not modify it lightly; any change requires manual verification.
+// Arbitrary alterations may cause page builder block data errors and prevent normal page assembly.
 export interface CarouselContent {
   autoPlay?: boolean;
   interval?: number;

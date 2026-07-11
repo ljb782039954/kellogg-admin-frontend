@@ -1,4 +1,4 @@
-import type { InquiryContent } from "../../types";
+import type { InquiryContent } from "../../components/blocks";
 
 const inquiry: InquiryContent = {
   title: {

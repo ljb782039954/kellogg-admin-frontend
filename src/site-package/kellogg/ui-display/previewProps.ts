@@ -14,8 +14,6 @@ export function getPreviewProps(
   lang: Language,
 ): any {
   switch (type) {
-    case "carousel":
-      return {content, lang};
     case "categories":
       return {content,  categories: mockCategories, lang };
     case "newArrivals":
@@ -52,37 +50,11 @@ export function getPreviewProps(
           empty: lang === "zh" ? "暂无商品" : "No products available",
         },
       };
-    case "brandValues":
-      return { content, lang };
-    case "statistics":
-      return { content, lang };
-    case "testimonials":
-      return { content, lang };
-    case "faq":
-      return { content, lang };
-    case "textSection":
-      return { content, lang };
-    case "imageBanner":
-      return { content, lang };
     case "imageBannerTag":
       return {content,  lang, getImageUrl };
-    case "imageFull":
-      return { content, lang };
-    case "imageText":
-      return { content, lang };
-    case "partnerLogos":
-      return { content, lang };
-    case "gallery":
-      return { content, lang };
-    case "featureList":
-      return { content, lang };
     case "ctaBanner":
       return { content, lang, getImageUrl };
-    case "videoSection":
-      return { content, lang };
-    // case "inquiry":
-    //   return { content, lang };
     default:
-      return {};
+      return { content, lang };
   }
 }

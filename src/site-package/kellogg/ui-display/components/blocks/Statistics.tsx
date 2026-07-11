@@ -3,16 +3,22 @@ import { useEffect, useRef, useState } from "react";
 import type { Language, Translation } from "@/cms/types";
 import { createTranslate } from "../../utils/i18n";
 
-export interface StatisticContent {
+// WARNING: This type represents the fields edited in the admin management background.
+// Do not modify it lightly; any change requires manual verification.
+// Arbitrary alterations may cause page builder block data errors and prevent normal page assembly.
+export interface StatisticItem {
   id: number;
   value: string;
   label: Translation;
 }
 
+// WARNING: This type represents the fields edited in the admin management background.
+// Do not modify it lightly; any change requires manual verification.
+// Arbitrary alterations may cause page builder block data errors and prevent normal page assembly.
 export interface StatisticsContent {
   title?: Translation;
   subtitle?: Translation;
-  items?: StatisticContent[];
+  items?: StatisticItem[];
 }
 export interface StatisticsProps {
   content: StatisticsContent;

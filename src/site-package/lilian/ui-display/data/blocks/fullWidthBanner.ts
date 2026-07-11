@@ -1,4 +1,4 @@
-import type { FullWidthBannerContent } from "../../types";
+import type { FullWidthBannerContent } from "../../components/blocks";
 
 const fullWidthBanner: FullWidthBannerContent = {
   image: "/lilian/image/blog1.jpg",

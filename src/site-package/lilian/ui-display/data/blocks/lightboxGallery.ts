@@ -1,4 +1,4 @@
-import type { LightboxGalleryContent } from "../../types";
+import type { LightboxGalleryContent } from "../../components/blocks";
 
 const lightboxGallery: LightboxGalleryContent = {
   images: [

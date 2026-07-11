@@ -1,18 +1,37 @@
-﻿import RichText from "@/runtime/components/RichText";
-import ProductCard, { type ProductCardProps } from "../base/ProductCard";
+import RichText from "@/runtime/components/RichText";
+import ProductCard from "../base/ProductCard";
+import type {Language, Product, Translation } from "@/cms/types";
+import { createTranslate } from "../../utils/i18n";
 
-export interface FeaturedProductCard extends ProductCardProps {
-  id: string;
+// WARNING: This type represents the fields edited in the admin management background.
+// Do not modify it lightly; any change requires manual verification.
+// Arbitrary alterations may cause page builder block data errors and prevent normal page assembly.
+export interface FeaturedProductsContent {
+  title?: Translation;
+  subtitle?: Translation;
+  maxItems?: number;
 }
 
 export interface FeaturedProductsProps {
-  titleText?: string;
-  subtitleText?: string;
-  cards?: FeaturedProductCard[];
+  content: FeaturedProductsContent;
+  products: Product[];
+  lang: Language;
 }
 
-export default function FeaturedProducts({ titleText = "", subtitleText = "", cards = [] }: FeaturedProductsProps) {
-  if (cards.length === 0) return null;
+export default function FeaturedProducts({
+  content,
+  products = [],
+  lang,
+}: FeaturedProductsProps) {
+  if (!content) return null;
+
+  const t = createTranslate(lang);
+  const displayProducts = products.slice(0, content.maxItems || 4);
+
+  if (displayProducts.length === 0) return null;
+
+  const titleText = t(content.title);
+  const subtitleText = t(content.subtitle);
 
   return (
     <section className="px-6 py-12 bg-surface">
@@ -24,8 +43,12 @@ export default function FeaturedProducts({ titleText = "", subtitleText = "", ca
           </div>
         )}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-5 gap-y-9">
-          {cards.map((card) => (
-            <ProductCard key={card.id} {...card} />
+          {displayProducts.map((product) => (
+            <ProductCard 
+              key={product.id} 
+              product={product} 
+              lang={lang} 
+            />
           ))}
         </div>
       </div>

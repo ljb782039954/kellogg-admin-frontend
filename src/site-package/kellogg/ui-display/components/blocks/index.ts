@@ -29,7 +29,7 @@ export type { PartnerLogosProps, PartnerLogosContent } from "./PartnerLogos";
 export { default as ProductGrid } from "./ProductGrid";
 export type { ProductGridItem, ProductGridLabels, ProductGridOption, ProductGridProps, ProductGridContent} from "./ProductGrid";
 export { default as Statistics } from "./Statistics";
-export type { StatisticsProps , StatisticContent,  StatisticsContent} from "./Statistics";
+export type { StatisticsProps , StatisticItem,  StatisticsContent} from "./Statistics";
 export { default as Testimonials } from "./Testimonials";
 export type { TestimonialsProps, TestimonialItem , TestimonialsContent } from "./Testimonials";
 export { default as TextSection } from "./TextSection";

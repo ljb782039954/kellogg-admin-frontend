@@ -1,4 +1,4 @@
-import type { Categories2Content } from "../../types";
+import type { Categories2Content } from "../../components/blocks";
 
 const categories2: Categories2Content = {
   items: [

@@ -1,7 +1,7 @@
-import type { TestimonialMasonryContent } from "../../types";
+import type { TestimonialMasonryContent } from "../../components/blocks";
 
 const testimonialMasonry: TestimonialMasonryContent = {
-  reviews: [
+  items: [
     {
       name: "Emma R.",
       company: "Boutique Berlin",

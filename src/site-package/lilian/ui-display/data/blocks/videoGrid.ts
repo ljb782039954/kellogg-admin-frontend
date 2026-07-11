@@ -1,4 +1,4 @@
-import type { VideoGridContent } from "../../types";
+import type { VideoGridContent } from "../../components/blocks";
 
 const videoGrid: VideoGridContent = {
   items: [

@@ -1,4 +1,4 @@
-import type { MainHeadingContent } from "../../types";
+import type { MainHeadingContent } from "../../components/blocks";
 
 const mainHeading: MainHeadingContent = {
   title: {

@@ -1,4 +1,4 @@
-import type { VideoPopupContent } from "../../types";
+import type { VideoPopupContent } from "../../components/blocks";
 
 const fullscreenVideoPopup: VideoPopupContent = {
   title: { zh: "系列影片", en: "Collection Film" },

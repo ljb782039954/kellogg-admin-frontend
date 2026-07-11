@@ -1,4 +1,4 @@
-import type { FullscreenImageBackgroundContent } from "../../types";
+import type { FullscreenImageBackgroundContent } from "../../components/blocks";
 
 const FullscreenImageBackground: FullscreenImageBackgroundContent = {
   image: "/lilian/image/hero.jpg",

@@ -1,4 +1,4 @@
-import type { CategoriesContent } from "../../types";
+import type { CategoriesContent } from "../../components/blocks";
 
 const categories: CategoriesContent = {
   title: {

@@ -1,4 +1,4 @@
-import type { BeforeAfterSliderContent } from "../../types";
+import type { BeforeAfterSliderContent } from "../../components/blocks";
 
 const beforeAfterSlider: BeforeAfterSliderContent = {
   eyebrow: { zh: "前后对比", en: "Before / After" },

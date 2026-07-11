@@ -1,23 +1,43 @@
-﻿import { useState } from "react";
+import { useState } from "react";
+import type { Language, Translation } from "@/cms/types";
+import { createTranslate } from "../../utils/i18n";
 
-export interface FaqAccordionProps {
-  title?: string;
-  items: Array<{
-    question: string;
-    answer: string;
-  }>;
+export interface FaqAccordionItem {
+  question: Translation;
+  answer: Translation;
 }
 
-export default function FaqAccordion({ title, items }: FaqAccordionProps) {
+// WARNING: This type represents the fields edited in the admin management background.
+// Do not modify it lightly; any change requires manual verification.
+// Arbitrary alterations may cause page builder block data errors and prevent normal page assembly.
+export interface FaqAccordionContent {
+  title?: Translation;
+  items: FaqAccordionItem[];
+}
+
+export interface FaqAccordionProps {
+  content: FaqAccordionContent;
+  lang: Language;
+}
+
+export default function FaqAccordion({ content, lang = "en" }: FaqAccordionProps) {
+  if (!content) return null;
+
+  const t = createTranslate(lang);
+  const resolvedTitle = t(content.title);
+  const resolvedItems = (content.items || []).map((item) => ({
+    question: t(item.question),
+    answer: t(item.answer),
+  }));
   const [open, setOpen] = useState<number | null>(0);
 
   return (
     <section className="max-w-3xl mx-auto px-6 py-12">
-      {title && (
-        <h3 className="font-luxury-heading text-base md:text-lg lg:text-xl font-medium mb-8 text-center text-body">{title}</h3>
+      {resolvedTitle && (
+        <h3 className="font-luxury-heading text-base md:text-lg lg:text-xl font-medium mb-8 text-center text-body">{resolvedTitle}</h3>
       )}
       <div className="space-y-0">
-        {items.map((faq, i) => (
+        {resolvedItems.map((faq, i) => (
           <div key={i} className="border-b border-border">
             <button
               onClick={() => setOpen(open === i ? null : i)}

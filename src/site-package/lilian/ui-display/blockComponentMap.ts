@@ -8,14 +8,14 @@ function lazyBlock(loader: Parameters<typeof lazy>[0]): LilianBlockComponent {
 }
 
 export const lilianBlockComponentMap: Partial<Record<BlockType, LilianBlockComponent>> = {
-  productCard: lazyBlock(() => import("./components/blocks/ProductCardBlock")),
+  // productCard: lazyBlock(() => import("./components/blocks/ProductCardBlock")),
   categories: lazyBlock(() => import("./components/blocks/Categories")),
   newArrivals: lazyBlock(() => import("./components/blocks/NewArrivals")),
   featuredProducts: lazyBlock(() => import("./components/blocks/FeaturedProducts")),
   productGrid: lazyBlock(() => import("./components/blocks/ProductGrid")),
   featureList: lazyBlock(() => import("./components/blocks/FeatureList")),
-  inquiry: lazyBlock(() => import("./components/blocks/Inquiry")),
-  blogGrid: lazyBlock(() => import("./components/blocks/BlogGrid")),
+  // inquiry: lazyBlock(() => import("./components/blocks/Inquiry")),
+  // blogGrid: lazyBlock(() => import("./components/blocks/BlogGrid")),
 
   imagePairGrid: lazyBlock(() => import("./components/blocks/ImagePairGrid")),
   fullWidthBanner: lazyBlock(() => import("./components/blocks/FullWidthBanner")),

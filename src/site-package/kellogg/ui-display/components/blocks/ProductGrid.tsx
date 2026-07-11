@@ -2,9 +2,11 @@ import { SlidersHorizontal } from "lucide-react";
 import { Pagination, ProductCard, type ProductCardProps } from "../base";
 import { type ProductGridSortId } from '@/cms/types'
 
+// WARNING: This type represents the fields edited in the admin management background.
+// Do not modify it lightly; any change requires manual verification.
+// Arbitrary alterations may cause page builder block data errors and prevent normal page assembly.
 export interface ProductGridContent {
   itemsPerPage?: number;
-  // category?: string; 这个不需要
 }
 
 export interface ProductGridOption<TId extends string = string> {

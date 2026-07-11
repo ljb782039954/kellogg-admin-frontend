@@ -2,6 +2,9 @@ import OptimizedImage from "@/runtime/components/OptimizedImage";
 import type { Language, Category } from "@/cms/types";
 import { createTranslate } from "../../utils/i18n";
 
+// WARNING: This type represents the fields edited in the admin management background.
+// Do not modify it lightly; any change requires manual verification.
+// Arbitrary alterations may cause page builder block data errors and prevent normal page assembly.
 export interface CategoriesContent{
   showAll?: boolean;
   maxItems?: number;

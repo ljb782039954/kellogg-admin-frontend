@@ -1,6 +1,5 @@
 import type {
   BeforeAfterSliderContent,
-  BlogGridContent,
   // BlogSidebarContent,
   BrochureDownloadContent,
   BrandManifestoContent,
@@ -12,34 +11,32 @@ import type {
   FeatureListContent,
   FullWidthBannerContent,
   FullscreenImageBackgroundContent,
-  VideoPopupContent,
+  LilianExternalVideoItem,
   ImageCarouselContent,
   ImagePairGridContent,
   ImageTextSplitContent,
-  InquiryContent,
   LightboxGalleryContent,
   MainHeadingContent,
   MasonryGalleryContent,
   NewArrivalsContent,
   NumberCounterContent,
   ParallaxImageContent,
-  ProductCardContent,
   ProductGridContent,
   RichTextBlockContent,
   TextGridContent,
   TestimonialMasonryContent,
   VideoGridContent,
-} from "../block-adapters";
+} from "../components/blocks";
 
 export interface BlockContentMap {
-  productCard: ProductCardContent;
+  // productCard: ProductCardContent;
   categories: CategoriesContent;
   newArrivals: NewArrivalsContent;
   featuredProducts: FeaturedProductsContent;
   productGrid: ProductGridContent;
   featureList: FeatureListContent;
-  inquiry: InquiryContent;
-  blogGrid: BlogGridContent;
+  // inquiry: InquiryContent;
+  // blogGrid: BlogGridContent;
   imagePairGrid: ImagePairGridContent;
   masonryGallery: MasonryGalleryContent;
   imageCarousel: ImageCarouselContent;
@@ -51,7 +48,7 @@ export interface BlockContentMap {
   lightboxGallery: LightboxGalleryContent;
   fullscreenImageBackground: FullscreenImageBackgroundContent;
   videoGrid: VideoGridContent;
-  fullscreenVideoPopup: VideoPopupContent;
+  fullscreenVideoPopup: LilianExternalVideoItem;
   brandManifesto: BrandManifestoContent;
   numberCounter: NumberCounterContent;
   testimonialMasonry: TestimonialMasonryContent;
