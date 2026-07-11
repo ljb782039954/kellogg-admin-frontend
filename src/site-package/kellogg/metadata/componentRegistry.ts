@@ -16,9 +16,9 @@ export const componentRegistry = Object.fromEntries(
 
 export const componentsByCategory = blockRegistry.reduce(
   (acc, block) => {
-    if (block.type === 'inquiry') {
-      return acc;
-    }
+    // if (block.type === 'inquiry') {
+    //   return acc;
+    // }
 
     acc[block.category].push(block.type);
     return acc;

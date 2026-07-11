@@ -18,7 +18,7 @@ export const componentsByCategory = blockRegistry.reduce(
     if (
       block.type === 'inquiry' || 
       block.type === 'productCard' || 
-      block.type === 'blogSidebar' || 
+      // block.type === 'blogSidebar' || 
       block.type === 'blogGrid' || 
       block.type === 'brochureDownload' 
 

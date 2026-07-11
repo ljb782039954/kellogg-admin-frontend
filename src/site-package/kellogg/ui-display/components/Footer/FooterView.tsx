@@ -25,7 +25,7 @@ const themeStyles = {
 export default function FooterView({
   footer,
   companyInfo,
-  lang,
+  // lang,
   t,
 }: FooterViewProps) {
   const style = themeStyles.light;
