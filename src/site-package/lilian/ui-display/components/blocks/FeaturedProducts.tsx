@@ -1,4 +1,3 @@
-import RichText from "@/runtime/components/RichText";
 import ProductCard from "../base/ProductCard";
 import type {Language, Product, Translation } from "@/cms/types";
 import { createTranslate } from "../../utils/i18n";
@@ -39,7 +38,7 @@ export default function FeaturedProducts({
         {(titleText || subtitleText) && (
           <div className="text-center mb-10">
             {titleText && <h2 className="font-luxury-heading text-3xl md:text-4xl font-light">{titleText}</h2>}
-            {subtitleText && <RichText value={subtitleText} className="mt-3 text-sm md:text-base text-body max-w-2xl mx-auto" />}
+            {subtitleText && <p className="mt-3 text-sm md:text-base text-body max-w-2xl mx-auto">{subtitleText}</p>}
           </div>
         )}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-5 gap-y-9">

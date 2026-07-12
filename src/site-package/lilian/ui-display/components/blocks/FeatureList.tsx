@@ -1,6 +1,6 @@
 import * as LucideIcons from "lucide-react";
-import type { LucideIcon } from "lucide-react";
 import RichText from "@/runtime/components/RichText";
+import type { LucideIcon } from "lucide-react";
 import type { Language, Translation } from "@/cms/types";
 import { createTranslate } from "../../utils/i18n";
 
@@ -47,7 +47,7 @@ export default function FeatureList({
         {(resolvedTitle || resolvedSubtitle) && (
           <div className="max-w-2xl mb-10">
             {resolvedTitle && <h2 className="font-luxury-heading text-3xl md:text-4xl font-light">{resolvedTitle}</h2>}
-            {resolvedSubtitle && <RichText value={resolvedSubtitle} className="mt-3 text-sm md:text-base text-body" />}
+            {resolvedSubtitle && <p className="mt-3 text-sm md:text-base text-body">{resolvedSubtitle} </p>}
           </div>
         )}
 

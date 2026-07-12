@@ -1,8 +1,7 @@
 import OptimizedImage from "@/runtime/components/OptimizedImage";
-import type { Language, Product, Translation } from "@/cms/types";
+import type { Language, Product, } from "@/cms/types";
 import { toProductCardData } from "@/cms/adapters/productCard";
 import { formatPrice } from "@/cms/lib/currency";
-import RichText from "@/runtime/components/RichText";
 
 export interface ProductCardProps {
   title?: string;
@@ -147,7 +146,7 @@ export default function ProductCard({
             </div>
           )}
           {descriptionText && !isCompact && (
-            <RichText value={descriptionText} className="mt-2 text-sm leading-6 text-body line-clamp-2" />
+            <p className="mt-2 text-sm leading-6 text-body line-clamp-2"> {descriptionText}</p>
           )}
         </div>
       </article>

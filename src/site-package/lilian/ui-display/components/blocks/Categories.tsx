@@ -11,24 +11,25 @@ export interface CategoriesContent {
   subtitle?: Translation;
   showAll?: boolean;
   maxItems?: number;
-  categories: Category[];
 }
 
 export interface CategoriesProps {
   content: CategoriesContent;
+  categories: Category[];
   lang: Language;
 }
 
 export default function Categories({ 
   content,
+  categories,
   lang,
 }: CategoriesProps) {
   if (!content) return null;
 
   const t = createTranslate(lang);
   const displayCategories = content.showAll 
-    ? (content.categories || []) 
-    : (content.categories || []).slice(0, content.maxItems);
+    ? (categories || []) 
+    : (categories || []).slice(0, content.maxItems);
 
   if (displayCategories.length === 0) return null;
 

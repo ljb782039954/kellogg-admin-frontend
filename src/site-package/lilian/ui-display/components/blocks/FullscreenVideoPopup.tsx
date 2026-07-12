@@ -2,7 +2,7 @@ import EmbeddedVideo, { type EmbeddedVideoAspect } from "@/runtime/components/Em
 // import VideoEmbed, { getVideoEmbedSource } from "@/runtime/components/VideoEmbed";
 import OptimizedImage from "@/runtime/components/OptimizedImage";
 import { getSafeVideoSource, type SafeVideoProvider, } from "@/cms/lib/video";
-import type { Language, Translation } from "@/cms/types";
+import type { Language,} from "@/cms/types";
 import { Play } from "lucide-react";
 import { useState } from "react";
 import type { LilianExternalVideoItem } from "../../types/common";

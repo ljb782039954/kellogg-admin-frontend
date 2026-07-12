@@ -4,8 +4,8 @@ export type { BeforeAfterSliderProps, BeforeAfterSliderContent } from "./BeforeA
 export { default as BrandManifesto } from "./BrandManifesto";
 export type { BrandManifestoProps, BrandManifestoContent } from "./BrandManifesto";
 
-export { default as BrochureDownload } from "./BrochureDownload";
-export type { BrochureDownloadProps, BrochureDownloadContent } from "./BrochureDownload";
+// export { default as BrochureDownload } from "../blocks-2/BrochureDownload";
+// export type { BrochureDownloadProps, BrochureDownloadContent } from "../blocks-2/BrochureDownload";
 
 export { default as Categories } from "./Categories";
 export type { CategoriesProps, CategoriesContent } from "./Categories";
@@ -43,8 +43,8 @@ export type { ImagePairGridProps, ImagePairGridContent } from "./ImagePairGrid";
 export { default as ImageTextSplit } from "./ImageTextSplit";
 export type { ImageTextSplitProps, ImageTextSplitContent } from "./ImageTextSplit";
 
-export { default as Inquiry } from "../inquiry/InquirySection";
-export type { InquirySectionProps as InquiryProps } from "../inquiry/InquirySection";
+// export { default as Inquiry } from "../inquiry/InquirySection";
+// export type { InquirySectionProps as InquiryProps } from "../inquiry/InquirySection";
 
 export { default as LightboxGallery } from "./LightboxGallery";
 export type { LightboxGalleryProps, LightboxGalleryContent } from "./LightboxGallery";

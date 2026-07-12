@@ -1,4 +1,4 @@
-import type { BrochureDownloadContent } from "../../components/blocks";
+import type { BrochureDownloadContent } from "../../components/blocks-2";
 
 const brochureDownload: BrochureDownloadContent = {
   image: "/lilian/image/hero.jpg",

@@ -2,9 +2,9 @@ import type { Translation } from "@/cms/types/common";
 import type { BlockContentMap, BlockType, BlockCategory, BlockMeta } from "../../types";
 
 import beforeAfterSlider from "./beforeAfterSlider";
-import blogGrid from "./blogGrid";
+// import blogGrid from "./blogGrid";
 import brandManifesto from "./brandManifesto";
-import brochureDownload from "./brochureDownload";
+// import brochureDownload from "./brochureDownload";
 import categories from "./categories";
 import certificationBadges from "./certificationBadges";
 import categories2 from "./categories2";
@@ -17,14 +17,14 @@ import fullscreenVideoPopup from "./fullscreenVideoPopup";
 import imageCarousel from "./imageCarousel";
 import imagePairGrid from "./imagePairGrid";
 import imageTextSplit from "./imageTextSplit";
-import inquiry from "./inquiry";
+// import inquiry from "./inquiry";
 import lightboxGallery from "./lightboxGallery";
 import mainHeading from "./mainHeading";
 import masonryGallery from "./masonryGallery";
 import newArrivals from "./newArrivals";
 import numberCounter from "./numberCounter";
 import parallaxImage from "./parallaxImage";
-import productCard from "./productCard";
+// import productCard from "../base/productCard";
 import productGrid from "./productGrid";
 import richTextBlock from "./richTextBlock";
 import textGrid from "./textGrid";
@@ -73,14 +73,14 @@ function block<T extends BlockType>(
 }
 
 export const blockRegistry: BlockMeta[] = [
-  block("productCard", "product", "产品卡片", "Product Card", "Single reusable product card connected to the shared Product data model.", productCard, true),
+  // block("productCard", "product", "产品卡片", "Product Card", "Single reusable product card connected to the shared Product data model.", productCard, true),
   block("categories", "product", "品类卡片", "Category Cards", "Core collection entrances powered by shared Category data.", categories, true),
   block("newArrivals", "product", "新品网格", "New Arrivals", "Recently released products sorted by launch date.", newArrivals, true),
   block("featuredProducts", "product", "精选商品", "Featured Products", "Curated featured products for home or campaign sections.", featuredProducts, true),
   block("productGrid", "product", "产品卡片网格", "Product Grid", "Full product listing with category filters and sort controls.", productGrid, true),
   block("featureList", "content", "特点列表", "Feature List", "Icon-based list for brand advantages, product highlights, or service promises.", featureList, true),
-  block("inquiry", "marketing", "询盘表单", "Inquiry Form", "Structured procurement inquiry form for collection and bulk requests.", inquiry, true),
-  block("blogGrid", "content", "博客网格", "Blog Grid", "Editorial article grid connected to shared blog summary data.", blogGrid, true),
+  // block("inquiry", "marketing", "询盘表单", "Inquiry Form", "Structured procurement inquiry form for collection and bulk requests.", inquiry, true),
+  // block("blogGrid", "content", "博客网格", "Blog Grid", "Editorial article grid connected to shared blog summary data.", blogGrid, true),
 
   block("imagePairGrid", "image", "双图系列网格", "Image Pair Grid", "Two equal-width images side by side with captions, ideal for two product lines.", imagePairGrid, false),
   block("masonryGallery", "image", "瀑布流图片墙", "Masonry Gallery", "Pinterest-style layout with images of varying heights for a dynamic visual rhythm.", masonryGallery, false),
@@ -101,7 +101,7 @@ export const blockRegistry: BlockMeta[] = [
   block("testimonialMasonry", "text", "客户评价瀑布流", "Testimonial Masonry", "Masonry layout of review cards with client feedback.", testimonialMasonry, true),
   block("faqAccordion", "text", "FAQ 折叠列表", "FAQ Accordion", "Vertical Q&A list with expandable answers.", faqAccordion, true),
   block("certificationBadges", "text", "认证标志栏", "Certification Badges", "Certification icons arranged horizontally with hover details.", certificationBadges, true),
-  block("brochureDownload", "text", "品牌手册下载卡", "Brochure Download", "Cover image, title, and PDF download button for a catalog.", brochureDownload, true),
+  // block("brochureDownload", "text", "品牌手册下载卡", "Brochure Download", "Cover image, title, and PDF download button for a catalog.", brochureDownload, true),
   block("mainHeading", "text", "主标题", "Main Heading", "Large serif heading for section titles or page headlines.", mainHeading, false),
   block("richTextBlock", "text", "富文本内容", "Rich Text Block", "Paragraph text block for product descriptions, brand stories, or editorial content.", richTextBlock, false),
   block("textGrid", "text", "网格文本", "Text Grid", "Two-column grid of small title and paragraph pairs.", textGrid, false),

@@ -1,5 +1,5 @@
 import type { Translation } from "@/cms/types";
-import type { EmbeddedVideoAspect } from "@/runtime/components/EmbeddedVideo";
+// import type { EmbeddedVideoAspect } from "@/runtime/components/EmbeddedVideo";
 
 export interface LilianImageItem {
   image: string;
@@ -8,13 +8,14 @@ export interface LilianImageItem {
 }
 
 export interface LilianExternalVideoItem {
+  url: string;
   title?: Translation;
   description?: Translation;
-  url: string;
   coverImage: string;
   coverImageAlt?: Translation;
-  aspect?: EmbeddedVideoAspect;
+  aspect?: "auto" | "video" | "square" | "portrait";
 }
+
 
 export interface LilianTextItem {
   title: Translation;

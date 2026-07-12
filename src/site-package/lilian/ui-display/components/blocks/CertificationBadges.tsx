@@ -1,5 +1,4 @@
 import { useState } from "react";
-import RichText from "@/runtime/components/RichText";
 import type { Language, Translation } from "@/cms/types";
 import { createTranslate } from "../../utils/i18n";
 
@@ -49,7 +48,7 @@ export default function CertificationBadges({
             {hovered === index && (item.fullName || item.description) && (
               <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 bg-surface shadow-lg border border-border p-3 rounded-sm w-48 z-10">
                 {item.fullName && <p className="text-[9px] font-medium mb-1">{item.fullName}</p>}
-                {item.description && <RichText value={item.description} className="text-[9px] text-body leading-relaxed" />}
+                {item.description && <p className="text-[9px] text-body leading-relaxed">{item.description}</p>}
               </div>
             )}
           </div>

@@ -37,7 +37,7 @@ export const lilianBlockComponentMap: Partial<Record<BlockType, LilianBlockCompo
   faqAccordion: lazyBlock(() => import("./components/blocks/FaqAccordion")),
   // blogSidebar: lazyBlock(() => import("./components/base/BlogSidebar")),
   certificationBadges: lazyBlock(() => import("./components/blocks/CertificationBadges")),
-  brochureDownload: lazyBlock(() => import("./components/blocks/BrochureDownload")),
+  // brochureDownload: lazyBlock(() => import("./components/blocks/BrochureDownload")),
   mainHeading: lazyBlock(() => import("./components/blocks/MainHeading")),
   textGrid: lazyBlock(() => import("./components/blocks/TextGrid")),
 };

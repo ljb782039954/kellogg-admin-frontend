@@ -42,7 +42,9 @@ export function getPreviewProps<T extends BlockType>(
 ) {
   switch (type) {
     case "categories":
-      return { content: { ...content, categories: mockCategories }, lang };
+      return { content: { ...content}, categories: mockCategories , lang };
+    case "categories2":
+      return { content: { ...content}, categories: mockCategories, lang };
     case "newArrivals":
       return {
         content,
@@ -60,8 +62,7 @@ export function getPreviewProps<T extends BlockType>(
         content as Partial<BlockContentMap["productGrid"]>,
         lang,
       );
-    case "categories2":
-      return { content: { ...content, categories: mockCategories }, lang };
+
     default:
       return { content, lang };
   }
