@@ -57,6 +57,11 @@ core-adminApp/
 
 核心思路是：业务状态、数据转换、保存流程、校验逻辑尽量放在 `core-adminApp`；界面结构、视觉样式、站点文案和素材留在站点包。
 
+## 视觉系统
+每个站点都实际上有两套视觉样式系统，
+1. adminApp项目的样式系统: `{sitename}/styles/index.css`，可以实现不同的后台管理视觉样式。
+2. 站点自身前端UI视觉系统: `{sitename}/ui-display/styles/`, 用于blocks积木块预览展示。
+
 ## 主要业务模块
 
 ### 全局数据状态

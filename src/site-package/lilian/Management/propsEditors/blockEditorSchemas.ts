@@ -121,8 +121,7 @@ const videoItemFields = [
   {
     key: 'description',
     label: '视频说明',
-    type: 'richText',
-    rows: 5,
+    type: 'translation',
   },
   {
     key: 'aspect',
