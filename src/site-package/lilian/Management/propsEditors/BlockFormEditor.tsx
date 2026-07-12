@@ -30,7 +30,7 @@ export type EditorFieldType =
 
 export interface EditorOption {
   label: string;
-  value: string;
+  value: string | number;
 }
 
 export interface EditorFieldSchema {
@@ -49,6 +49,8 @@ export interface EditorFieldSchema {
   maxWidth?: number;
   fields?: EditorFieldSchema[];
   defaultItem?: EditableRecord;
+  minItems?: number;
+  maxItems?: number;
 }
 
 export type EditorSchema = EditorFieldSchema[];
@@ -158,23 +160,34 @@ function BlockField({
       );
 
     case 'select':
+      {
+        const selectedValue = field.options?.find(
+          (option) => String(option.value) === String(value),
+        )?.value ?? field.options?.[0]?.value;
+
       return (
         <Select
-          value={toStringValue(value) || field.options?.[0]?.value}
-          onValueChange={onChange}
+          value={selectedValue === undefined ? undefined : String(selectedValue)}
+          onValueChange={(nextValue) => {
+            const option = field.options?.find(
+              (item) => String(item.value) === nextValue,
+            );
+            onChange(option?.value ?? nextValue);
+          }}
         >
           <SelectTrigger>
             <SelectValue placeholder="请选择" />
           </SelectTrigger>
           <SelectContent>
             {(field.options ?? []).map((option) => (
-              <SelectItem key={option.value} value={option.value}>
+              <SelectItem key={option.value} value={String(option.value)}>
                 {option.label}
               </SelectItem>
             ))}
           </SelectContent>
         </Select>
       );
+      }
 
     case 'color':
       return (
@@ -242,12 +255,17 @@ function RepeaterField({
   };
 
   const addItem = () => {
+    if (field.maxItems !== undefined && items.length >= field.maxItems) return;
     onChange([...items, { ...(field.defaultItem ?? {}) }]);
   };
 
   const removeItem = (index: number) => {
+    if (field.minItems !== undefined && items.length <= field.minItems) return;
     onChange(items.filter((_, itemIndex) => itemIndex !== index));
   };
+
+  const canAddItem = field.maxItems === undefined || items.length < field.maxItems;
+  const canRemoveItem = field.minItems === undefined || items.length > field.minItems;
 
   return (
     <div className="space-y-4">
@@ -263,16 +281,18 @@ function RepeaterField({
                 <span className="text-sm font-medium text-gray-700">
                   {field.label} {index + 1}
                 </span>
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="sm"
-                  className="text-red-500 hover:text-red-600"
-                  onClick={() => removeItem(index)}
-                >
-                  <Trash2 className="mr-1 h-4 w-4" />
-                  删除
-                </Button>
+                {canRemoveItem && (
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    className="text-red-500 hover:text-red-600"
+                    onClick={() => removeItem(index)}
+                  >
+                    <Trash2 className="mr-1 h-4 w-4" />
+                    删除
+                  </Button>
+                )}
               </div>
 
               <div className="space-y-4">
@@ -290,15 +310,17 @@ function RepeaterField({
         </div>
       )}
 
-      <Button
-        type="button"
-        variant="outline"
-        size="sm"
-        onClick={addItem}
-      >
-        <Plus className="mr-1 h-4 w-4" />
-        添加{field.label}
-      </Button>
+      {canAddItem && (
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
+          onClick={addItem}
+        >
+          <Plus className="mr-1 h-4 w-4" />
+          添加{field.label}
+        </Button>
+      )}
     </div>
   );
 }

@@ -1,8 +1,9 @@
 import type { BlockType } from '../../ui-display/types';
 import type { EditorSchema } from './BlockFormEditor';
 
-const imageAspectOptions = [
-  { label: '横向', value: 'landscape' },
+const videoAspectOptions = [
+  { label: '自适应', value: 'auto' },
+  { label: '横向', value: 'video' },
   { label: '竖向', value: 'portrait' },
   { label: '方形', value: 'square' },
 ];
@@ -54,10 +55,24 @@ const headingFields: EditorSchema = [
   {
     key: 'subtitle',
     label: '副标题',
-    type: 'richText',
-    rows: 3,
+    type: 'translation',
   },
 ];
+
+const headingFieldsRichText: EditorSchema = [
+  {
+    key: 'title',
+    label: '标题',
+    type: 'translation',
+  },
+  {
+    key: 'subtitle',
+    label: '副标题',
+    type: 'richText',
+    rows: 4,
+  },
+];
+
 
 const imageFields: EditorSchema = [
   {
@@ -102,17 +117,74 @@ const videoItemFields: EditorSchema = [
     key: 'description',
     label: '视频说明',
     type: 'richText',
-    rows: 3,
+    rows: 5,
   },
   {
     key: 'aspect',
     label: '视频比例',
     type: 'select',
-    options: imageAspectOptions,
+    options: videoAspectOptions,
   },
 ];
 
 export const blockEditorSchemas: Partial<Record<BlockType, EditorSchema>> = {
+    brandManifesto: [
+    {
+      key: 'eyebrow',
+      label: '眉标题',
+      type: 'translation',
+    },
+    {
+      key: 'quote',
+      label: '宣言正文',
+      type: 'translation',
+    },
+    {
+      key: 'attribution',
+      label: '署名',
+      type: 'translation',
+    },
+    {
+      key: 'backgroundColor',
+      label: '背景色',
+      type: 'color',
+    },
+  ],
+
+  
+  beforeAfterSlider: [
+    {
+      key: 'eyebrow',
+      label: '眉标题',
+      type: 'translation',
+    },
+    {
+      key: 'beforeImage',
+      label: '对比前图片',
+      type: 'image',
+      aspectRatio: 'banner',
+      maxWidth: 1800,
+    },
+    {
+      key: 'beforeImageAlt',
+      label: '对比前图片描述',
+      type: 'translation',
+    },
+    {
+      key: 'afterImage',
+      label: '对比后图片',
+      type: 'image',
+      aspectRatio: 'banner',
+      maxWidth: 1800,
+    },
+    {
+      key: 'afterImageAlt',
+      label: '对比后图片描述',
+      type: 'translation',
+    },
+  ],
+
+
   categories: [
     ...headingFields,
     {
@@ -123,20 +195,46 @@ export const blockEditorSchemas: Partial<Record<BlockType, EditorSchema>> = {
     {
       key: 'maxItems',
       label: '最多显示数量',
-      type: 'number',
-      min: 1,
-      max: 24,
+      type: 'select',
+      options: [
+        { label: '4', value: 4 },
+        { label: '6', value: 6 },
+        { label: '8', value: 8 },
+        { label: '12', value: 12 },
+      ],
     },
   ],
 
+  categories2: [
+    {
+      key: 'showAll',
+      label: '显示全部分类',
+      type: 'switch',
+    },
+    {
+      key: 'maxItems',
+      label: '最多显示数量',
+      type: 'select',
+      options: [
+        { label: '4', value: 4 },
+        { label: '6', value: 6 },
+        { label: '8', value: 8 },
+        { label: '12', value: 12 },
+      ],
+    },
+  ],
+
+
   newArrivals: [
-    ...headingFields,
+    ...headingFieldsRichText,
     {
       key: 'maxItems',
       label: '显示商品数量',
-      type: 'number',
-      min: 1,
-      max: 24,
+      type: 'select',
+      options: [
+        { label: '4', value: 4 },
+        { label: '8', value: 8 },
+      ],
     },
   ],
 
@@ -145,9 +243,11 @@ export const blockEditorSchemas: Partial<Record<BlockType, EditorSchema>> = {
     {
       key: 'maxItems',
       label: '显示商品数量',
-      type: 'number',
-      min: 1,
-      max: 24,
+      type: 'select',
+      options: [
+        { label: '4', value: 4 },
+        { label: '8', value: 8 },
+      ],
     },
   ],
 
@@ -156,16 +256,14 @@ export const blockEditorSchemas: Partial<Record<BlockType, EditorSchema>> = {
     {
       key: 'itemsPerPage',
       label: '每页商品数量',
-      type: 'number',
-      min: 1,
-      max: 48,
-    },
-    {
-      key: 'category',
-      label: '默认分类',
-      type: 'text',
-      placeholder: 'all 或分类 ID',
-      description: '填写 all 显示全部商品；也可以填写某个分类 ID。',
+      type: 'select',
+      options: [
+        { label: '4', value: 4 },
+        { label: '8', value: 8 },
+        { label: '12', value: 12 },
+        { label: '16', value: 16 },
+        { label: '20', value: 20 },
+      ],
     },
   ],
 
@@ -196,7 +294,7 @@ export const blockEditorSchemas: Partial<Record<BlockType, EditorSchema>> = {
           key: 'description',
           label: '说明',
           type: 'richText',
-          rows: 3,
+          rows: 5,
         },
       ],
     },
@@ -207,6 +305,8 @@ export const blockEditorSchemas: Partial<Record<BlockType, EditorSchema>> = {
       key: 'images',
       label: '图片',
       type: 'repeater',
+      minItems: 2,
+      maxItems: 2,
       defaultItem: {
         image: '',
         imageAlt: { zh: '', en: '' },
@@ -311,20 +411,6 @@ export const blockEditorSchemas: Partial<Record<BlockType, EditorSchema>> = {
     },
   ],
 
-  categories2: [
-    {
-      key: 'items',
-      label: '分类图片',
-      type: 'repeater',
-      defaultItem: {
-        image: '',
-        imageAlt: { zh: '', en: '' },
-        caption: { zh: '', en: '' },
-      },
-      fields: imageItemFields,
-    },
-  ],
-
   parallaxImage: [
     ...imageFields,
     {
@@ -345,37 +431,6 @@ export const blockEditorSchemas: Partial<Record<BlockType, EditorSchema>> = {
     },
   ],
 
-  beforeAfterSlider: [
-    {
-      key: 'eyebrow',
-      label: '眉标题',
-      type: 'translation',
-    },
-    {
-      key: 'beforeImage',
-      label: '对比前图片',
-      type: 'image',
-      aspectRatio: 'banner',
-      maxWidth: 1800,
-    },
-    {
-      key: 'beforeImageAlt',
-      label: '对比前图片描述',
-      type: 'translation',
-    },
-    {
-      key: 'afterImage',
-      label: '对比后图片',
-      type: 'image',
-      aspectRatio: 'banner',
-      maxWidth: 1800,
-    },
-    {
-      key: 'afterImageAlt',
-      label: '对比后图片描述',
-      type: 'translation',
-    },
-  ],
 
   lightboxGallery: [
     {
@@ -454,38 +509,15 @@ export const blockEditorSchemas: Partial<Record<BlockType, EditorSchema>> = {
       key: 'aspect',
       label: '视频比例',
       type: 'select',
-      options: imageAspectOptions,
+      options: videoAspectOptions,
     },
     {
-      key: 'caption',
+      key: 'description',
       label: '说明',
       type: 'translation',
     },
   ],
 
-  brandManifesto: [
-    {
-      key: 'eyebrow',
-      label: '眉标题',
-      type: 'translation',
-    },
-    {
-      key: 'quote',
-      label: '宣言正文',
-      type: 'richText',
-      rows: 4,
-    },
-    {
-      key: 'attribution',
-      label: '署名',
-      type: 'translation',
-    },
-    {
-      key: 'backgroundColor',
-      label: '背景色',
-      type: 'color',
-    },
-  ],
 
   numberCounter: [
     {
@@ -520,12 +552,12 @@ export const blockEditorSchemas: Partial<Record<BlockType, EditorSchema>> = {
 
   testimonialMasonry: [
     {
-      key: 'reviews',
+      key: 'items',
       label: '评价',
       type: 'repeater',
       defaultItem: {
-        name: '',
-        company: '',
+        name: { zh: '', en: '' },
+        company: { zh: '', en: '' },
         avatar: '',
         text: { zh: '', en: '' },
         rating: 5,
@@ -534,12 +566,12 @@ export const blockEditorSchemas: Partial<Record<BlockType, EditorSchema>> = {
         {
           key: 'name',
           label: '客户姓名',
-          type: 'text',
+          type: 'translation',
         },
         {
           key: 'company',
           label: '公司 / 来源',
-          type: 'text',
+          type: 'translation',
         },
         {
           key: 'avatar',
@@ -551,8 +583,7 @@ export const blockEditorSchemas: Partial<Record<BlockType, EditorSchema>> = {
         {
           key: 'text',
           label: '评价内容',
-          type: 'richText',
-          rows: 3,
+          type: 'translation',
         },
         {
           key: 'rating',
@@ -588,8 +619,7 @@ export const blockEditorSchemas: Partial<Record<BlockType, EditorSchema>> = {
         {
           key: 'answer',
           label: '回答',
-          type: 'richText',
-          rows: 4,
+          type: 'translation',
         },
       ],
     },
@@ -624,8 +654,7 @@ export const blockEditorSchemas: Partial<Record<BlockType, EditorSchema>> = {
         {
           key: 'description',
           label: '说明',
-          type: 'richText',
-          rows: 3,
+          type: 'translation',
         },
       ],
     },
@@ -701,7 +730,7 @@ export const blockEditorSchemas: Partial<Record<BlockType, EditorSchema>> = {
           key: 'text',
           label: '正文',
           type: 'richText',
-          rows: 4,
+          rows: 5,
         },
       ],
     },

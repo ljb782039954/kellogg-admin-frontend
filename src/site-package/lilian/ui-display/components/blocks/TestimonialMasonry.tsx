@@ -1,5 +1,4 @@
 ﻿import OptimizedImage from "@/runtime/components/OptimizedImage";
-import RichText from "@/runtime/components/RichText";
 import type { Language, Translation } from "@/cms/types";
 import { createTranslate } from "../../utils/i18n";
 
@@ -71,7 +70,7 @@ export default function TestimonialMasonry({
                 <span key={starIndex} className="text-rating text-xs md:text-sm">★</span>
               ))}
             </div>
-            <RichText value={`"${item.text}"`} className="text-xs md:text-sm text-body leading-relaxed" />
+            <p className="text-xs md:text-sm text-body leading-relaxed" >{`"${item.text}"`} </p>
           </div>
         ))}
       </div>

@@ -53,6 +53,7 @@ export default function BeforeAfterSlider({
             style={{ width: `${100 / position * 100}%` }}
           />
         </div>
+        {/* NOTE: 竖线和圆形没有居中对齐 */}
         <div className="absolute top-0 bottom-0 w-0.5 bg-surface cursor-ew-resize" style={{ left: `${position}%` }}>
           <div className="absolute top-1/2 left-1/2 -t-x-1/2 -t-y-1/2 w-8 h-8 bg-surface rounded-full shadow-md flex items-center justify-center">
             <span className="text-[10px] text-body">|||</span>
