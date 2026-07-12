@@ -15,9 +15,3 @@ export interface LilianExternalVideoItem {
   coverImageAlt?: Translation;
   aspect?: "auto" | "video" | "square" | "portrait";
 }
-
-
-export interface LilianTextItem {
-  title: Translation;
-  content?: Translation;
-}
