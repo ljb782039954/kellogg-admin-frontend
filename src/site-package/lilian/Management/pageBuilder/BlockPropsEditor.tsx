@@ -1,7 +1,7 @@
 import { type PageBlock } from '../../types';
 import { componentsByCategory } from '../../metadata/componentRegistry';
 import type { BlockType } from '../../ui-display/types';
-import { BlockFormEditor } from '../propsEditors/BlockFormEditor';
+import { BlockFormEditor } from '../../../../core-adminApp/ui/Management/blockForm/BlockFormEditor';
 import { blockEditorSchemas } from '../propsEditors/blockEditorSchemas';
 
 const editableBlockTypes = new Set<BlockType>(

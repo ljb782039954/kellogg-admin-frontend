@@ -43,18 +43,80 @@ export interface EditorFieldSchema {
   min?: number;
   max?: number;
   step?: number;
-  options?: EditorOption[];
+  options?: readonly EditorOption[];
   aspectRatio?: 'square' | 'video' | 'banner' | 'auto';
   acceptType?: string;
   maxWidth?: number;
-  fields?: EditorFieldSchema[];
+  fields?: EditorSchema;
   defaultItem?: EditableRecord;
   minItems?: number;
   maxItems?: number;
 }
 
-export type EditorSchema = EditorFieldSchema[];
+export type EditorSchema = readonly EditorFieldSchema[];
 type EditableRecord = Record<string, unknown>;
+
+type StringKey<T> = Extract<keyof T, string>;
+type KeysMatching<T, Value> = {
+  [K in StringKey<T>]-?: NonNullable<T[K]> extends Value ? K : never;
+}[StringKey<T>];
+type ArrayKeys<T> = KeysMatching<T, readonly object[]>;
+type ArrayItem<T> = T extends readonly (infer Item extends object)[] ? Item : never;
+type FieldBase = Omit<EditorFieldSchema, 'key' | 'type' | 'options' | 'fields' | 'defaultItem'>;
+
+type TextField<T> = FieldBase & {
+  key: KeysMatching<T, string>;
+  type: 'text' | 'textarea' | 'image' | 'color';
+};
+
+type TranslationField<T> = FieldBase & {
+  key: KeysMatching<T, Translation>;
+  type: 'translation' | 'richText';
+};
+
+type NumberField<T> = FieldBase & {
+  key: KeysMatching<T, number>;
+  type: 'number';
+};
+
+type SwitchField<T> = FieldBase & {
+  key: KeysMatching<T, boolean>;
+  type: 'switch';
+};
+
+type SelectField<T> = {
+  [K in KeysMatching<T, string | number>]: FieldBase & {
+    key: K;
+    type: 'select';
+    options?: readonly {
+      label: string;
+      value: Extract<NonNullable<T[K]>, string | number>;
+    }[];
+  };
+}[KeysMatching<T, string | number>];
+
+type RepeaterFieldSchema<T> = {
+  [K in ArrayKeys<T>]: FieldBase & {
+    key: K;
+    type: 'repeater';
+    fields?: TypedEditorSchema<ArrayItem<T[K]>>;
+    defaultItem?: Partial<ArrayItem<T[K]>>;
+  };
+}[ArrayKeys<T>];
+
+export type TypedEditorField<T extends object> =
+  | TextField<T>
+  | TranslationField<T>
+  | NumberField<T>
+  | SwitchField<T>
+  | SelectField<T>
+  | RepeaterFieldSchema<T>;
+
+export type TypedEditorSchema<T extends object> = readonly TypedEditorField<T>[];
+
+export function defineEditorSchema<T extends object>() {
+  return <const S extends TypedEditorSchema<T>>(schema: S) => schema;
+}
 
 interface BlockFormEditorProps {
   content: EditableRecord;

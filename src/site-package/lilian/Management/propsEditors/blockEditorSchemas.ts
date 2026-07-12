@@ -1,31 +1,36 @@
-import type { BlockType } from '../../ui-display/types';
-import type { EditorSchema } from './BlockFormEditor';
+import type { BlockContentMap, BlockType } from '../../ui-display/types';
+import { defineEditorSchema, type EditorSchema } from '@/core-adminApp/ui/Management/blockForm/BlockFormEditor';
 
 const videoAspectOptions = [
   { label: '自适应', value: 'auto' },
   { label: '横向', value: 'video' },
   { label: '竖向', value: 'portrait' },
   { label: '方形', value: 'square' },
-];
+] as const;
 
 const heightOptions = [
   { label: '小', value: 'small' },
   { label: '中', value: 'medium' },
   { label: '大', value: 'large' },
-];
+] as const;
+
+const parallaxHeightOptions = [
+  { label: '中', value: 'medium' },
+  { label: '大', value: 'large' },
+] as const;
 
 const alignOptions = [
   { label: '左对齐', value: 'left' },
   { label: '居中', value: 'center' },
-];
+] as const;
 
 const maxWidthOptions = [
   { label: '窄', value: 'narrow' },
   { label: '中', value: 'medium' },
   { label: '宽', value: 'wide' },
-];
+] as const;
 
-const imageItemFields: EditorSchema = [
+const imageItemFields = [
   {
     key: 'image',
     label: '图片',
@@ -44,9 +49,9 @@ const imageItemFields: EditorSchema = [
     label: '图片标题 / 说明',
     type: 'translation',
   },
-];
+] as const;
 
-const headingFields: EditorSchema = [
+const headingFields = [
   {
     key: 'title',
     label: '标题',
@@ -57,9 +62,9 @@ const headingFields: EditorSchema = [
     label: '副标题',
     type: 'translation',
   },
-];
+] as const;
 
-const headingFieldsRichText: EditorSchema = [
+const headingFieldsRichText = [
   {
     key: 'title',
     label: '标题',
@@ -71,10 +76,10 @@ const headingFieldsRichText: EditorSchema = [
     type: 'richText',
     rows: 4,
   },
-];
+] as const;
 
 
-const imageFields: EditorSchema = [
+const imageFields = [
   {
     key: 'image',
     label: '图片',
@@ -87,9 +92,9 @@ const imageFields: EditorSchema = [
     label: '图片描述',
     type: 'translation',
   },
-];
+] as const;
 
-const videoItemFields: EditorSchema = [
+const videoItemFields = [
   {
     key: 'title',
     label: '标题',
@@ -125,10 +130,13 @@ const videoItemFields: EditorSchema = [
     type: 'select',
     options: videoAspectOptions,
   },
-];
+] as const;
+
+const defineBlockSchema = <T extends BlockType>() =>
+  defineEditorSchema<BlockContentMap[T]>();
 
 export const blockEditorSchemas: Partial<Record<BlockType, EditorSchema>> = {
-    brandManifesto: [
+  brandManifesto: defineBlockSchema<'brandManifesto'>()([
     {
       key: 'eyebrow',
       label: '眉标题',
@@ -149,10 +157,10 @@ export const blockEditorSchemas: Partial<Record<BlockType, EditorSchema>> = {
       label: '背景色',
       type: 'color',
     },
-  ],
+  ]),
 
   
-  beforeAfterSlider: [
+  beforeAfterSlider: defineBlockSchema<'beforeAfterSlider'>()([
     {
       key: 'eyebrow',
       label: '眉标题',
@@ -182,10 +190,10 @@ export const blockEditorSchemas: Partial<Record<BlockType, EditorSchema>> = {
       label: '对比后图片描述',
       type: 'translation',
     },
-  ],
+  ]),
 
 
-  categories: [
+  categories: defineBlockSchema<'categories'>()([
     ...headingFields,
     {
       key: 'showAll',
@@ -203,9 +211,9 @@ export const blockEditorSchemas: Partial<Record<BlockType, EditorSchema>> = {
         { label: '12', value: 12 },
       ],
     },
-  ],
+  ]),
 
-  categories2: [
+  categories2: defineBlockSchema<'categories2'>()([
     {
       key: 'showAll',
       label: '显示全部分类',
@@ -222,10 +230,10 @@ export const blockEditorSchemas: Partial<Record<BlockType, EditorSchema>> = {
         { label: '12', value: 12 },
       ],
     },
-  ],
+  ]),
 
 
-  newArrivals: [
+  newArrivals: defineBlockSchema<'newArrivals'>()([
     ...headingFieldsRichText,
     {
       key: 'maxItems',
@@ -236,9 +244,9 @@ export const blockEditorSchemas: Partial<Record<BlockType, EditorSchema>> = {
         { label: '8', value: 8 },
       ],
     },
-  ],
+  ]),
 
-  featuredProducts: [
+  featuredProducts: defineBlockSchema<'featuredProducts'>()([
     ...headingFields,
     {
       key: 'maxItems',
@@ -249,9 +257,9 @@ export const blockEditorSchemas: Partial<Record<BlockType, EditorSchema>> = {
         { label: '8', value: 8 },
       ],
     },
-  ],
+  ]),
 
-  productGrid: [
+  productGrid: defineBlockSchema<'productGrid'>()([
     ...headingFields,
     {
       key: 'itemsPerPage',
@@ -265,9 +273,9 @@ export const blockEditorSchemas: Partial<Record<BlockType, EditorSchema>> = {
         { label: '20', value: 20 },
       ],
     },
-  ],
+  ]),
 
-  featureList: [
+  featureList: defineBlockSchema<'featureList'>()([
     ...headingFields,
     {
       key: 'items',
@@ -298,9 +306,9 @@ export const blockEditorSchemas: Partial<Record<BlockType, EditorSchema>> = {
         },
       ],
     },
-  ],
+  ]),
 
-  imagePairGrid: [
+  imagePairGrid: defineBlockSchema<'imagePairGrid'>()([
     {
       key: 'images',
       label: '图片',
@@ -314,9 +322,9 @@ export const blockEditorSchemas: Partial<Record<BlockType, EditorSchema>> = {
       },
       fields: imageItemFields,
     },
-  ],
+  ]),
 
-  masonryGallery: [
+  masonryGallery: defineBlockSchema<'masonryGallery'>()([
     {
       key: 'images',
       label: '图片',
@@ -343,9 +351,9 @@ export const blockEditorSchemas: Partial<Record<BlockType, EditorSchema>> = {
         },
       ],
     },
-  ],
+  ]),
 
-  imageCarousel: [
+  imageCarousel: defineBlockSchema<'imageCarousel'>()([
     {
       key: 'images',
       label: '轮播图片',
@@ -370,9 +378,9 @@ export const blockEditorSchemas: Partial<Record<BlockType, EditorSchema>> = {
       max: 20000,
       step: 500,
     },
-  ],
+  ]),
 
-  fullWidthBanner: [
+  fullWidthBanner: defineBlockSchema<'fullWidthBanner'>()([
     ...imageFields,
     {
       key: 'height',
@@ -380,9 +388,9 @@ export const blockEditorSchemas: Partial<Record<BlockType, EditorSchema>> = {
       type: 'select',
       options: heightOptions,
     },
-  ],
+  ]),
 
-  imageTextSplit: [
+  imageTextSplit: defineBlockSchema<'imageTextSplit'>()([
     {
       key: 'eyebrow',
       label: '眉标题',
@@ -409,9 +417,9 @@ export const blockEditorSchemas: Partial<Record<BlockType, EditorSchema>> = {
         { label: '右侧', value: 'right' },
       ],
     },
-  ],
+  ]),
 
-  parallaxImage: [
+  parallaxImage: defineBlockSchema<'parallaxImage'>()([
     ...imageFields,
     {
       key: 'eyebrow',
@@ -427,12 +435,12 @@ export const blockEditorSchemas: Partial<Record<BlockType, EditorSchema>> = {
       key: 'height',
       label: '高度',
       type: 'select',
-      options: heightOptions.filter((option) => option.value !== 'small'),
+      options: parallaxHeightOptions,
     },
-  ],
+  ]),
 
 
-  lightboxGallery: [
+  lightboxGallery: defineBlockSchema<'lightboxGallery'>()([
     {
       key: 'images',
       label: '灯箱图片',
@@ -444,9 +452,9 @@ export const blockEditorSchemas: Partial<Record<BlockType, EditorSchema>> = {
       },
       fields: imageItemFields,
     },
-  ],
+  ]),
 
-  fullscreenImageBackground: [
+  fullscreenImageBackground: defineBlockSchema<'fullscreenImageBackground'>()([
     ...imageFields,
     {
       key: 'eyebrow',
@@ -463,9 +471,9 @@ export const blockEditorSchemas: Partial<Record<BlockType, EditorSchema>> = {
       label: '显示遮罩',
       type: 'switch',
     },
-  ],
+  ]),
 
-  videoGrid: [
+  videoGrid: defineBlockSchema<'videoGrid'>()([
     {
       key: 'items',
       label: '视频',
@@ -476,13 +484,13 @@ export const blockEditorSchemas: Partial<Record<BlockType, EditorSchema>> = {
         coverImage: '',
         coverImageAlt: { zh: '', en: '' },
         description: { zh: '', en: '' },
-        aspect: 'landscape',
+        aspect: 'video',
       },
       fields: videoItemFields,
     },
-  ],
+  ]),
 
-  fullscreenVideoPopup: [
+  fullscreenVideoPopup: defineBlockSchema<'fullscreenVideoPopup'>()([
     {
       key: 'title',
       label: '标题',
@@ -516,10 +524,10 @@ export const blockEditorSchemas: Partial<Record<BlockType, EditorSchema>> = {
       label: '说明',
       type: 'translation',
     },
-  ],
+  ]),
 
 
-  numberCounter: [
+  numberCounter: defineBlockSchema<'numberCounter'>()([
     {
       key: 'stats',
       label: '数字',
@@ -548,9 +556,9 @@ export const blockEditorSchemas: Partial<Record<BlockType, EditorSchema>> = {
         },
       ],
     },
-  ],
+  ]),
 
-  testimonialMasonry: [
+  testimonialMasonry: defineBlockSchema<'testimonialMasonry'>()([
     {
       key: 'items',
       label: '评价',
@@ -594,9 +602,9 @@ export const blockEditorSchemas: Partial<Record<BlockType, EditorSchema>> = {
         },
       ],
     },
-  ],
+  ]),
 
-  faqAccordion: [
+  faqAccordion: defineBlockSchema<'faqAccordion'>()([
     {
       key: 'title',
       label: '标题',
@@ -623,9 +631,9 @@ export const blockEditorSchemas: Partial<Record<BlockType, EditorSchema>> = {
         },
       ],
     },
-  ],
+  ]),
 
-  certificationBadges: [
+  certificationBadges: defineBlockSchema<'certificationBadges'>()([
     {
       key: 'eyebrow',
       label: '眉标题',
@@ -658,9 +666,9 @@ export const blockEditorSchemas: Partial<Record<BlockType, EditorSchema>> = {
         },
       ],
     },
-  ],
+  ]),
 
-  mainHeading: [
+  mainHeading: defineBlockSchema<'mainHeading'>()([
     {
       key: 'title',
       label: '标题',
@@ -683,9 +691,9 @@ export const blockEditorSchemas: Partial<Record<BlockType, EditorSchema>> = {
       type: 'select',
       options: alignOptions,
     },
-  ],
+  ]),
 
-  richTextBlock: [
+  richTextBlock: defineBlockSchema<'richTextBlock'>()([
     {
       key: 'title',
       label: '标题',
@@ -709,9 +717,9 @@ export const blockEditorSchemas: Partial<Record<BlockType, EditorSchema>> = {
       type: 'select',
       options: maxWidthOptions,
     },
-  ],
+  ]),
 
-  textGrid: [
+  textGrid: defineBlockSchema<'textGrid'>()([
     {
       key: 'items',
       label: '文本项',
@@ -734,5 +742,5 @@ export const blockEditorSchemas: Partial<Record<BlockType, EditorSchema>> = {
         },
       ],
     },
-  ],
+  ]),
 };
