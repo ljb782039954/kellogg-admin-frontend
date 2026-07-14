@@ -34,5 +34,7 @@ export { default as Testimonials } from "./Testimonials";
 export type { TestimonialsProps, TestimonialItem , TestimonialsContent } from "./Testimonials";
 export { default as TextSection } from "./TextSection";
 export type { TextSectionProps ,TextSectionContent} from "./TextSection";
+export { default as Table } from "./Table";
+export type { TableProps, TableContent, TableColumn, TableRow } from "./Table";
 export { default as VideoSection } from "./VideoSection";
 export type { VideoSectionProps , VideoSectionContent} from "./VideoSection";

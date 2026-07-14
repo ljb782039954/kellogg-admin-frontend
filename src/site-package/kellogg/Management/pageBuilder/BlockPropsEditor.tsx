@@ -17,10 +17,14 @@ import type {
   PartnerLogosContent,
   ProductGridContent,
   StatisticsContent,
+  // TableContent,
   TestimonialsContent,
   TextSectionContent,
   VideoSectionContent,
-} from '@site/ui-display/components/blocks';
+} from '../../ui-display/components/blocks';
+
+// 通用组件编辑器
+import { TablePropsEditor } from '@/core-adminApp/ui/Management/blockForm/TablePropsEditor';
 
 // 组件基础编辑器
 import { TextSectionPropsEditor } from '../propsEditors/TextSectionPropsEditor';
@@ -77,6 +81,8 @@ export function PropsEditorSwitch({
     // 局部内容组件
     case 'textSection':
       return <TextSectionPropsEditor props={content as TextSectionContent} onUpdate={onUpdate} />;
+    case 'table':
+      return <TablePropsEditor props={block.content} onUpdate={onUpdate} />;
     case 'imageBanner':
       return <ImageBannerPropsEditor props={content as ImageBannerContent} onUpdate={onUpdate} />;
     case 'imageFull':

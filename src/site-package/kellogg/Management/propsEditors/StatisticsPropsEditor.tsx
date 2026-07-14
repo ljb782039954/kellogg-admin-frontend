@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import BilingualInput from '@/core-adminApp/ui/Input/BilingualInput';
-import type { StatisticContent, StatisticsContent } from '@site/ui-display/components/blocks';
+import type {  StatisticItem, StatisticsContent } from '../../ui-display/components/blocks';
 
 export interface StatisticsPropsEditorProps {
   props: StatisticsContent;
@@ -14,9 +14,9 @@ export interface StatisticsPropsEditorProps {
 
 
 export function StatisticsPropsEditor({ props, onUpdate }: StatisticsPropsEditorProps) {
-  const [localData, setLocalData] = useState<StatisticContent[]>(props.items || []);
+  const [localData, setLocalData] = useState<StatisticItem[]>(props.items || []);
 
-  const saveStats = (items: StatisticContent[]) => {
+  const saveStats = (items: StatisticItem[]) => {
     setLocalData(items);
     onUpdate({ ...props, items });
   };
@@ -34,8 +34,8 @@ export function StatisticsPropsEditor({ props, onUpdate }: StatisticsPropsEditor
 
   const updateItem = (
     index: number,
-    field: keyof StatisticContent,
-    value: StatisticContent[keyof StatisticContent],
+    field: keyof StatisticItem,
+    value: StatisticItem[keyof StatisticItem],
   ) => {
     const newItems = [...localData];
     newItems[index] = { ...newItems[index], [field]: value };

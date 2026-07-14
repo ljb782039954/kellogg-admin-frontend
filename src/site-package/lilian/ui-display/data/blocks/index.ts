@@ -29,6 +29,7 @@ import productGrid from "./productGrid";
 import richTextBlock from "./richTextBlock";
 import textGrid from "./textGrid";
 import testimonialMasonry from "./testimonialMasonry";
+import table from "./table";
 import videoGrid from "./videoGrid";
 
 export const blockCategories = [
@@ -105,4 +106,5 @@ export const blockRegistry: BlockMeta[] = [
   block("mainHeading", "text", "主标题", "Main Heading", "Large serif heading for section titles or page headlines.", mainHeading, false),
   block("richTextBlock", "text", "富文本内容", "Rich Text Block", "Paragraph text block for product descriptions, brand stories, or editorial content.", richTextBlock, false),
   block("textGrid", "text", "网格文本", "Text Grid", "Two-column grid of small title and paragraph pairs.", textGrid, false),
+  block("table", "text", "自定义表格", "Custom Table", "Editable bilingual table for sizing, specifications, and comparisons.", table, false),
 ];

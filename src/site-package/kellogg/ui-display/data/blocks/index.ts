@@ -20,6 +20,7 @@ import gallery from './gallery';
 import featureList from './featureList';
 import ctaBanner from './ctaBanner';
 import videoSection from './videoSection';
+import table from './table';
 // import inquiry from './inquiry';
 
 export const blockCategories = [
@@ -70,6 +71,7 @@ export const blockRegistry: BlockMeta[] = [
   block('testimonials', 'content', '客户好评见证', 'Testimonials', '卡片滑动或网格展示零售买家的评语和社交头像。', 'Beautiful slider cards showcasing buyers feedback and avatars.', testimonials, true),
   block('faq', 'content', '常见问题折叠面板', 'FAQ Accordion', '优雅的折叠收纳问答，帮助采购商快速获取信息。', 'Clean and modern accordion layout for FAQs.', faq, true),
   block('textSection', 'content', '富文本区块', 'Rich Text Section', '适用于品牌简介、设计理念等大段故事性内容。', 'Paragraph layout designed for brand introduction and stories.', textSection, false),
+  block('table', 'content', '自定义表格', 'Custom Table', '可自定义行列的双语表格，适用于尺码、参数和对比内容。', 'A bilingual table with editable rows and columns for sizing, specifications, and comparisons.', table, false),
   block('imageBanner', 'media', '促销大图横幅', 'Promo Banner', '背景大图配居中卡片式文字，用于活动预热。', 'Full width banner featuring a center text card for campaigns.', imageBanner, false),
   block('imageBannerTag', 'media', '带标签图片横幅', 'Tagged Banner', '左上角或顶部带有精美圆角标签的高质感横幅。', 'High-quality promo banner featuring rounded decorative tags.', imageBannerTag, false),
   block('imageFull', 'media', '通栏纯净大图', 'Full Width Image', '无多余文字打扰，纯粹通栏展示大片或细节海报。', 'Clean, text-free full-width banner showcasing detailed photography.', imageFull, false),

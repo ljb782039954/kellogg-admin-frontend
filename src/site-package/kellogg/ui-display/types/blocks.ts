@@ -16,6 +16,7 @@ import type {
   StatisticsContent,
   TestimonialsContent,
   TextSectionContent,
+  TableContent,
   VideoSectionContent,
   BrandValuesContent, 
 } from "../components/blocks";
@@ -31,6 +32,7 @@ export interface BlockContentMap {
   testimonials: TestimonialsContent;
   faq: FAQContent;
   textSection: TextSectionContent;
+  table: TableContent;
   imageFull: ImageFullContent;
   imageBanner: ImageBannerContent;
   imageBannerTag: ImageBannerTagContent;

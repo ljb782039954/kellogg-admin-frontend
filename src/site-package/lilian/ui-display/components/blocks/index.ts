@@ -83,5 +83,8 @@ export type { TestimonialMasonryProps, TestimonialMasonryContent } from "./Testi
 export { default as TextGrid } from "./TextGrid";
 export type { TextGridProps, TextGridContent } from "./TextGrid";
 
+export { default as Table } from "./Table";
+export type { TableProps, TableContent, TableColumn, TableRow } from "./Table";
+
 export { default as VideoGrid } from "./VideoGrid";
 export type { VideoGridProps, VideoGridContent } from "./VideoGrid";

@@ -25,6 +25,7 @@ import type {
   RichTextBlockContent,
   TextGridContent,
   TestimonialMasonryContent,
+  TableContent,
   VideoGridContent,
 } from "../components/blocks";
 
@@ -59,6 +60,7 @@ export interface BlockContentMap {
   mainHeading: MainHeadingContent;
   richTextBlock: RichTextBlockContent;
   textGrid: TextGridContent;
+  table: TableContent;
 }
 
 export type BlockType = keyof BlockContentMap;

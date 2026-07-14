@@ -40,6 +40,7 @@ export const lilianBlockComponentMap: Partial<Record<BlockType, LilianBlockCompo
   // brochureDownload: lazyBlock(() => import("./components/blocks/BrochureDownload")),
   mainHeading: lazyBlock(() => import("./components/blocks/MainHeading")),
   textGrid: lazyBlock(() => import("./components/blocks/TextGrid")),
+  table: lazyBlock(() => import("./components/blocks/Table")),
 };
 
 export function getBlockComponent(type: BlockType): LilianBlockComponent | null {
