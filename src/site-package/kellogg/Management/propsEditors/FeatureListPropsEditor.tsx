@@ -15,7 +15,7 @@ import * as LucideIcons from 'lucide-react';
 import BilingualInput from '@/core-adminApp/ui/Input/BilingualInput';
 import BilingualRichInput from '@/core-adminApp/ui/Input/RichInput/BilingualRichInput';
 // import { commonFeatureIcons } from '@/types/editor';
-import type { FeatureListContent } from '@site/ui-display/block-adapters';
+import type { FeatureListContent } from '@site/ui-display/components/blocks';
 
 const commonFeatureIcons = [
   'Truck', 'RotateCcw', 'Shield', 'Headphones', 'CreditCard', 'Gift',

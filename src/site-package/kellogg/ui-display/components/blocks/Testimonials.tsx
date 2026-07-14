@@ -1,22 +1,43 @@
 import { Star } from "lucide-react";
 import OptimizedImage from "@/runtime/components/OptimizedImage";
+import type { Language, Translation } from "@/cms/types";
+import { createTranslate } from "../../utils/i18n";
 
-export interface Testimonial {
+export interface TestimonialItem {
   id: number;
-  nameText: string;
-  roleText?: string;
-  contentText: string;
+  name: Translation;
+  role?: Translation;
+  content: Translation;
   avatar?: string;
 }
 
+// WARNING: This type represents the fields edited in the admin management background.
+// Do not modify it lightly; any change requires manual verification.
+// Arbitrary alterations may cause page builder block data errors and prevent normal page assembly.
+export interface TestimonialsContent {
+  title?: Translation;
+  subtitle?: Translation;
+  items?: TestimonialItem[];
+}
 export interface TestimonialsProps {
-  titleText?: string;
-  subtitleText?: string;
-  items?: Testimonial[];
+  content: TestimonialsContent;
+  lang: Language;
 }
 
-export default function Testimonials({ titleText = "", subtitleText = "", items = [] }: TestimonialsProps) {
-  if (items.length === 0) return null;
+export default function Testimonials({ content: {title, subtitle, items = []}, lang }: TestimonialsProps) {
+  const translate = createTranslate(lang);
+  const titleText = title ? translate(title) : "";
+  const subtitleText = subtitle ? translate(subtitle) : "";
+
+  const viewItems = (items ?? []).map((item) => ({
+    id: item.id,
+    nameText: translate(item.name),
+    roleText: item.role ? translate(item.role) : "",
+    contentText: translate(item.content),
+    avatar: item.avatar,
+  }));
+
+  if (viewItems.length === 0) return null;
 
   return (
     <section className="py-12 w-full">
@@ -28,7 +49,7 @@ export default function Testimonials({ titleText = "", subtitleText = "", items 
           </div>
         )}
         <div className="grid grid-cols-[repeat(auto-fit,minmax(300px,1fr))] gap-4">
-          {items.map((item) => (
+          {viewItems.map((item) => (
             <div key={item.id} className="bg-gray-50 rounded-lg p-4 hover:shadow-md transition-shadow">
               <div className="flex items-center gap-3 mb-3">
                 <div className="w-10 h-10 bg-gray-200 rounded-full overflow-hidden">

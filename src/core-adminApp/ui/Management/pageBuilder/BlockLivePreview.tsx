@@ -108,7 +108,8 @@ export function BlockLivePreview({
   return (
     <div
       ref={outerRef}
-      className={cn('overflow-hidden rounded-lg border-2 border-yellow-500 bg-white', className)}
+      // ui-display-theme 是站的前端UI样式配置
+      className={cn('ui-display-theme overflow-hidden rounded-lg border-2 border-yellow-500 bg-white', className)}
       style={{ height: Math.ceil(previewSize.height * previewSize.scale) }}
     >
       <div

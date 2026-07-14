@@ -1,4 +1,4 @@
-import type { NewArrivalsContent } from '../../block-adapters/newArrivalsAdapter';
+import type { NewArrivalsContent } from '../../components/blocks';
 
 export const newArrivalsProps: NewArrivalsContent = {
   title: {

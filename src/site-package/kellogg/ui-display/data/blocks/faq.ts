@@ -1,4 +1,4 @@
-import type { FAQContent } from '../../block-adapters/faqAdapter';
+import type { FAQContent } from '../../components/blocks';
 
 export const faqProps: FAQContent = {
   title: {

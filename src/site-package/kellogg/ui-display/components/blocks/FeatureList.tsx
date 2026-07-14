@@ -1,21 +1,40 @@
 import * as LucideIcons from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import RichText from "@/runtime/components/RichText";
+import type { Language, Translation } from "@/cms/types";
+import { createTranslate } from "../../utils/i18n";
 
 export interface FeatureListItem {
   icon: string;
-  titleText: string;
-  descriptionText: string;
+  title: Translation;
+  description: Translation;
 }
-
-export interface FeatureListProps {
-  titleText?: string;
-  subtitleText?: string;
+// WARNING: This type represents the fields edited in the admin management background.
+// Do not modify it lightly; any change requires manual verification.
+// Arbitrary alterations may cause page builder block data errors and prevent normal page assembly.
+export interface FeatureListContent {
+  title?: Translation;
+  subtitle?: Translation;
   items?: FeatureListItem[];
 }
 
-export default function FeatureList({ titleText = "", subtitleText = "", items = [] }: FeatureListProps) {
-  if (items.length === 0) return null;
+export interface FeatureListProps {
+  content: FeatureListContent;
+  lang: Language;
+}
+
+export default function FeatureList({ content: {title, subtitle, items = []}, lang }: FeatureListProps) {
+  const translate = createTranslate(lang);
+  const titleText = title ? translate(title) : "";
+  const subtitleText = subtitle ? translate(subtitle) : "";
+
+  const viewItems = (items ?? []).map((item) => ({
+    icon: item.icon,
+    titleText: translate(item.title),
+    descriptionText: translate(item.description),
+  }));
+
+  if (viewItems.length === 0) return null;
 
   return (
     <section className="py-12 w-full">
@@ -27,7 +46,7 @@ export default function FeatureList({ titleText = "", subtitleText = "", items =
           </div>
         )}
         <div className="grid grid-cols-[repeat(auto-fit,minmax(180px,1fr))] md:grid-cols-[repeat(auto-fit,minmax(240px,1fr))] gap-4 md:gap-6">
-          {items.map((item, index) => {
+          {viewItems.map((item, index) => {
             const Icon = (LucideIcons as unknown as Record<string, LucideIcon>)[item.icon] || LucideIcons.Star;
             return (
               <div key={`${item.icon}-${index}`} className="bg-gray-50 rounded-xl p-6 hover:bg-primary/5 hover:shadow-md transition-all group">

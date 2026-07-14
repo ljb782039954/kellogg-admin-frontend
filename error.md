@@ -1,3 +1,4 @@
+<<<<<<< HEAD
   ➜  Local:   http://localhost:3000/
   ➜  Network: use --host to expose
   ➜  press h + enter to show help
@@ -42,3 +43,15 @@
 2026-07-07T15:21:51.067Z	npm error Run "npm help ci" for more info
 2026-07-07T15:21:51.067Z	npm error A complete log of this run can be found in: /opt/buildhome/.npm/_logs/2026-07-07T15_21_49_166Z-debug-0.log
 2026-07-07T15:21:51.140Z	Failed: error occurred while installing tools or dependencies
+=======
+src/site-package/kellogg/Management/pageBuilder/BlockPropsEditor.tsx:85:39 - error TS2352: Conversion of type 'Record<string, unknown>' to type 'TableContent' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.
+  Type 'Record<string, unknown>' is missing the following properties from type 'TableContent': columns, rows
+
+85       return <TablePropsEditor props={content as TableContent} onUpdate={onUpdate} />;
+                                         ~~~~~~~~~~~~~~~~~~~~~~~
+
+src/site-package/lilian/Management/pageBuilder/BlockPropsEditor.tsx:27:37 - error TS2352: Conversion of type 'Record<string, unknown>' to type 'TableContent' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.
+  Type 'Record<string, unknown>' is missing the following properties from type 'TableContent': columns, rows
+
+27     return <TablePropsEditor props={content as TableContent} onUpdate={onUpdate} />;
+>>>>>>> refactor-v2

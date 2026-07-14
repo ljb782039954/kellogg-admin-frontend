@@ -15,12 +15,12 @@ import imageBanner from './imageBanner';
 import imageBannerTag from './imageBannerTag';
 import imageFull from './imageFull';
 import imageText from './imageText';
-import countdown from './countdown';
 import partnerLogos from './partnerLogos';
 import gallery from './gallery';
 import featureList from './featureList';
 import ctaBanner from './ctaBanner';
 import videoSection from './videoSection';
+import table from './table';
 // import inquiry from './inquiry';
 
 export const blockCategories = [
@@ -71,15 +71,16 @@ export const blockRegistry: BlockMeta[] = [
   block('testimonials', 'content', '客户好评见证', 'Testimonials', '卡片滑动或网格展示零售买家的评语和社交头像。', 'Beautiful slider cards showcasing buyers feedback and avatars.', testimonials, true),
   block('faq', 'content', '常见问题折叠面板', 'FAQ Accordion', '优雅的折叠收纳问答，帮助采购商快速获取信息。', 'Clean and modern accordion layout for FAQs.', faq, true),
   block('textSection', 'content', '富文本区块', 'Rich Text Section', '适用于品牌简介、设计理念等大段故事性内容。', 'Paragraph layout designed for brand introduction and stories.', textSection, false),
+  block('table', 'content', '自定义表格', 'Custom Table', '可自定义行列的双语表格，适用于尺码、参数和对比内容。', 'A bilingual table with editable rows and columns for sizing, specifications, and comparisons.', table, false),
   block('imageBanner', 'media', '促销大图横幅', 'Promo Banner', '背景大图配居中卡片式文字，用于活动预热。', 'Full width banner featuring a center text card for campaigns.', imageBanner, false),
   block('imageBannerTag', 'media', '带标签图片横幅', 'Tagged Banner', '左上角或顶部带有精美圆角标签的高质感横幅。', 'High-quality promo banner featuring rounded decorative tags.', imageBannerTag, false),
   block('imageFull', 'media', '通栏纯净大图', 'Full Width Image', '无多余文字打扰，纯粹通栏展示大片或细节海报。', 'Clean, text-free full-width banner showcasing detailed photography.', imageFull, false),
   block('imageText', 'content', '图文交错栏', 'Image with Text', '左图右文或左文右图的经典左右对称排版。', 'Classic side-by-side layout with alternating image and text.', imageText, false),
-  block('countdown', 'marketing', '闪购倒计时条', 'Countdown Bar', '紧迫感强的数字倒计时横条，用于催促下单。', 'High-conversion banner with real-time countdown timer.', countdown, false),
+  // block('countdown', 'marketing', '闪购倒计时条', 'Countdown Bar', '紧迫感强的数字倒计时横条，用于催促下单。', 'High-conversion banner with real-time countdown timer.', countdown, false),
   block('partnerLogos', 'content', '合作伙伴徽标', 'Partner Logos', '小规格横排徽标滚动展示，增强品牌信誉。', 'Responsive grid of brand logos to build corporate trust.', partnerLogos, false),
   block('gallery', 'media', '网格画廊图集', 'Grid Gallery', '多栏错落网格的穿搭灵感图库，支持轻量悬停说明。', 'Dynamic grid layout of styling shoots with hover overlay captions.', gallery, false),
   block('featureList', 'content', '特性优势清单', 'Feature List', '带图标或序号的直观产品亮点纵向展示清单。', 'Vertical highlights catalog with structured point items.', featureList, false),
   block('ctaBanner', 'marketing', '行动呼吁条', 'CTA Banner Bar', '宽幅渐变色背景条，带醒目的大文字和 CTA 按钮。', 'Vibrant full-width strip prompting immediate actions.', ctaBanner, false),
   block('videoSection', 'media', '视频展示区', 'Video Showcase', '大片级视频视听模块，带封面图与播放控制。', 'Video player block featuring custom poster covers.', videoSection, false),
-  block('inquiry', 'marketing', '大货询盘表单', 'Inquiry Form', '高转化率的大宗采购定制询盘提交表单。', 'Bulk procurement and OEM specification inquiry submit form.', {} , false),
+  // block('inquiry', 'marketing', '大货询盘表单', 'Inquiry Form', '高转化率的大宗采购定制询盘提交表单。', 'Bulk procurement and OEM specification inquiry submit form.', {} , false),
 ];

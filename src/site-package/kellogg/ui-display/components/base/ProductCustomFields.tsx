@@ -1,18 +1,43 @@
+import type { Language, Product } from "@/cms/types";
+import { createTranslate } from "../../utils/i18n";
+
 export interface ProductCustomFieldItem {
   nameText: string;
   parts: string[];
 }
 
 export interface ProductCustomFieldsProps {
-  fields?: ProductCustomFieldItem[];
+  customFields?: Product["customFields"];
+  lang?: Language;
 }
 
-export default function ProductCustomFields({ fields = [] }: ProductCustomFieldsProps) {
-  if (fields.length === 0) return null;
+export default function ProductCustomFields({ 
+  customFields = [], 
+  lang 
+}: ProductCustomFieldsProps) {
+  let displayFields: ProductCustomFieldItem[] = [];
+
+  if (customFields.length > 0 && lang) {
+    const translate = createTranslate(lang);
+    displayFields = customFields.map((field) => {
+      const valueText = translate(field.value);
+      const parts = valueText
+        .split(/\/\/|\\\\/)
+        .map((part) => part.trim())
+        .filter(Boolean);
+
+      return {
+        nameText: translate(field.name),
+        parts: parts.length > 0 ? parts : [valueText],
+      };
+    });
+  }
+
+  if (displayFields.length === 0) return null;
 
   return (
     <div className="grid grid-cols-[repeat(auto-fit,minmax(280px,1fr))] md:grid-cols-[repeat(auto-fit,minmax(360px,1fr))] lg:grid-cols-[repeat(auto-fit,minmax(500px,1fr))] gap-y-10 gap-x-20 py-16 border-t border-gray-100">
-      {fields.map((field, idx) => (
+      {displayFields.map((field, idx) => (
         <div key={`${field.nameText}-${idx}`} className="flex flex-col gap-3">
           <p className="text-xs text-gray-800 uppercase font-black tracking-widest">
             {idx + 1}. {field.nameText}

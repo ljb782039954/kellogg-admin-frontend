@@ -1,4 +1,4 @@
-import type { CertificationBadgesContent } from "../../types";
+import type { CertificationBadgesContent } from "../../components/blocks";
 
 const certificationBadges: CertificationBadgesContent = {
   eyebrow: { zh: "认证", en: "Certifications" },

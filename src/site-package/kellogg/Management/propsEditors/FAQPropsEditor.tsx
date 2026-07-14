@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import BilingualInput from '@/core-adminApp/ui/Input/BilingualInput';
-import type { FAQItemContent, FAQContent } from '@site/ui-display/block-adapters';
+import type { FAQItem, FAQContent } from '@site/ui-display/components/blocks';
 import type { Translation } from '@/cms/types';
 
 export interface FAQPropsEditorPropsEditorProps {
@@ -15,9 +15,9 @@ export interface FAQPropsEditorPropsEditorProps {
 }
 
 export function FAQPropsEditor({ props, onUpdate }: FAQPropsEditorPropsEditorProps) {
-  const [localItems, setLocalItems] = useState<FAQItemContent[]>(props.items || []);
+  const [localItems, setLocalItems] = useState<FAQItem[]>(props.items || []);
 
-  const saveItems = (items: FAQItemContent[]) => {
+  const saveItems = (items: FAQItem[]) => {
     setLocalItems(items);
     onUpdate({ ...props, items });
   };

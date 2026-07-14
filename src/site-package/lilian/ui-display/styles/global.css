@@ -1,43 +1,4 @@
-@theme {
-  --color-surface: #ffffff;
-  --color-page: #f8f5ef;
-  --color-panel: #fbfaf7;
-  --color-soft: #f2ede4;
-  --color-media: #f4f0e8;
-  --color-preview: #eee8dd;
-  --color-border: #e8e0d4;
-  --color-input: #e8e0d4;
-  --color-ring: #1a1a1a;
-  --color-background: #ffffff;
-  --color-foreground: #1a1a1a;
-  --color-ink: #2c2420;
-  --color-ink-strong: #1a1a1a;
-  --color-ink-glass: rgba(26, 26, 26, 0.85);
-  --color-body: #595959;
-  --color-subtle: #8c7e72;
-  --color-brand: #b8956a;
-  --color-rating: #d4af37;
-  --color-on-dark: #ffffff;
-  --color-on-dark-muted: rgba(255, 255, 255, 0.8);
-  --color-on-dark-soft: rgba(255, 255, 255, 0.65);
-  --color-on-dark-faint: rgba(255, 255, 255, 0.4);
-  --color-on-dark-border: rgba(255, 255, 255, 0.2);
-  --color-on-dark-wash: rgba(255, 255, 255, 0.1);
-  --color-surface-overlay: rgba(255, 255, 255, 0.7);
-  --color-surface-glass: rgba(255, 255, 255, 0.9);
-  --color-overlay-soft: rgba(0, 0, 0, 0.2);
-  --color-overlay-medium: rgba(0, 0, 0, 0.35);
-  --color-overlay-strong: rgba(0, 0, 0, 0.9);
-  --color-inverse-border: rgba(255, 255, 255, 0.1);
-
-  --radius-xl: calc(var(--radius) + 4px);
-  --radius-lg: var(--radius);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-xs: calc(var(--radius) - 6px);
-}
-
-:root {
+.ui-display-theme {
   --radius: 0.625rem;
   --color-surface: #ffffff;
   --color-page: #f8f5ef;
@@ -73,10 +34,10 @@
   --color-inverse-border: rgba(255, 255, 255, 0.1);
 }
 
-.font-luxury-heading {
+.ui-display-theme .font-luxury-heading {
   font-family: 'Georgia', 'Times New Roman', 'STSong', serif;
 }
 
-.font-luxury-body {
+.ui-display-theme .font-luxury-body {
   font-family: 'Inter', 'PingFang SC', sans-serif;
 }

@@ -1,5 +1,7 @@
 import type { CSSProperties } from "react";
 import OptimizedImage from "@/runtime/components/OptimizedImage";
+import type { Language, Translation } from "@/cms/types";
+import { createTranslate } from "../../utils/i18n";
 
 export interface Partner {
   id?: string;
@@ -9,19 +11,33 @@ export interface Partner {
   link?: string;
 }
 
-export interface PartnerLogosProps {
-  titleText?: string;
-  subtitleText?: string;
-  moreText?: string;
+// WARNING: This type represents the fields edited in the admin management background.
+// Do not modify it lightly; any change requires manual verification.
+// Arbitrary alterations may cause page builder block data errors and prevent normal page assembly.
+export interface PartnerLogosContent {
+  title?: Translation;
+  subtitle?: Translation;
   items?: Partner[];
+}
+export interface PartnerLogosProps {
+  content: PartnerLogosContent;
+  lang: Language;
 }
 
 export default function PartnerLogos({
-  titleText = "",
-  subtitleText = "",
-  moreText = "",
-  items = [],
+  content:
+  {title,
+  subtitle,
+  items = [],},
+  lang,
 }: PartnerLogosProps) {
+  const translate = createTranslate(lang);
+  const titleText = title ? translate(title) : "";
+  const subtitleText = subtitle ? translate(subtitle) : "";
+  const moreText = translate({
+    zh: "以及更多优质合作伙伴...",
+    en: "And many more quality partners...",
+  });
   if (items.length === 0) return null;
 
   return (

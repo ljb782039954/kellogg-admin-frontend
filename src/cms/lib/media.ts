@@ -3,7 +3,26 @@ export interface MediaConfig {
   assetHostnames?: readonly string[];
 }
 
-let activeMediaConfig: MediaConfig = {};
+declare global {
+  interface Window {
+    __SITE_MEDIA_CONFIG__?: MediaConfig;
+  }
+}
+
+const defaultMediaConfig: MediaConfig = {
+  assetsBaseUrl: import.meta.env.PUBLIC_API_ASSETS,
+};
+
+let activeMediaConfig: MediaConfig = defaultMediaConfig;
+
+function getEffectiveMediaConfig(): MediaConfig {
+  const browserConfig = typeof window === "undefined" ? {} : window.__SITE_MEDIA_CONFIG__ ?? {};
+  return {
+    ...defaultMediaConfig,
+    ...browserConfig,
+    ...activeMediaConfig,
+  };
+}
 
 function normalizeHost(hostname: string): string {
   return hostname.toLowerCase().replace(/^www\./, "");
@@ -80,13 +99,16 @@ export function createMediaResolver(config: MediaConfig) {
 }
 
 export function configureMedia(config: MediaConfig) {
-  activeMediaConfig = config;
+  activeMediaConfig = {
+    ...defaultMediaConfig,
+    ...config,
+  };
 }
 
 export function resolveMediaUrl(url: string | null | undefined) {
-  return createMediaResolver(activeMediaConfig).resolveMediaUrl(url);
+  return createMediaResolver(getEffectiveMediaConfig()).resolveMediaUrl(url);
 }
 
 export function getOptimizedImageUrl(url: string | null | undefined, width: number) {
-  return createMediaResolver(activeMediaConfig).getOptimizedImageUrl(url, width);
+  return createMediaResolver(getEffectiveMediaConfig()).getOptimizedImageUrl(url, width);
 }

@@ -1,4 +1,4 @@
-import type { ImagePairGridContent } from "../../types";
+import type { ImagePairGridContent } from "../../components/blocks";
 
 const imagePairGrid: ImagePairGridContent = {
   images: [

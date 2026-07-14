@@ -1,4 +1,4 @@
-import type { ImageTextSplitContent } from "../../types";
+import type { ImageTextSplitContent } from "../../components/blocks";
 
 const imageTextSplit: ImageTextSplitContent = {
   eyebrow: { zh: "工艺", en: "Our Craft" },

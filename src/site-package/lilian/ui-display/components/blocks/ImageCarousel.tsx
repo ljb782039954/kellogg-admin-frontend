@@ -1,21 +1,34 @@
 ﻿import { useEffect, useState } from "react";
 import OptimizedImage from "@/runtime/components/OptimizedImage";
-import type { ImageGridItemProps } from "./ImagePairGrid";
+import type { Language } from "@/cms/types";
+import type { LilianImageItem } from "../../types/common";
+import { createTranslate } from "../../utils/i18n";
 
-export interface ImageCarouselProps {
-  images: ImageGridItemProps[];
+// WARNING: This type represents the fields edited in the admin management background.
+// Do not modify it lightly; any change requires manual verification.
+// Arbitrary alterations may cause page builder block data errors and prevent normal page assembly.
+export interface ImageCarouselContent {
+  images: LilianImageItem[];
   autoplay?: boolean;
   interval?: number;
 }
 
-export default function ImageCarousel({ images, autoplay = true, interval = 4000 }: ImageCarouselProps) {
+export interface ImageCarouselProps {
+  content: ImageCarouselContent;
+  lang: Language;
+}
+
+export default function ImageCarousel({ content : {images = [], autoplay = true, interval = 4000}, lang = "en",  }: ImageCarouselProps) {
+  const t = createTranslate(lang);
+  const resolvedAutoplay = autoplay;
+  const resolvedInterval = interval;
   const [current, setCurrent] = useState(0);
 
   useEffect(() => {
-    if (!autoplay || images.length <= 1) return;
-    const timer = setInterval(() => setCurrent((c) => (c + 1) % images.length), interval);
+    if (!resolvedAutoplay || images.length <= 1) return;
+    const timer = setInterval(() => setCurrent((c) => (c + 1) % images.length), resolvedInterval);
     return () => clearInterval(timer);
-  }, [autoplay, interval, images.length]);
+  }, [resolvedAutoplay, resolvedInterval, images.length]);
 
   if (images.length === 0) return null;
 
@@ -29,7 +42,7 @@ export default function ImageCarousel({ images, autoplay = true, interval = 4000
           >
             <OptimizedImage
               src={item.image}
-              alt={item.imageAlt || item.caption || ""}
+              alt={t(item.imageAlt) || t(item.caption) || ""}
               className="w-full h-full object-cover"
               sizes="(max-width: 768px) 100vw, 1200px"
             />
@@ -52,6 +65,5 @@ export default function ImageCarousel({ images, autoplay = true, interval = 4000
     </section>
   );
 }
-
 
 

@@ -1,18 +1,37 @@
 import { Sparkles } from "lucide-react";
+import type { Language, Translation } from "@/cms/types";
+import { createTranslate } from "../../utils/i18n";
 
-export interface ImageBannerTagProps {
-  tagText?: string;
-  titleText?: string;
-  subtitleText?: string;
-  imageUrl?: string;
+// WARNING: This type represents the fields edited in the admin management background.
+// Do not modify it lightly; any change requires manual verification.
+// Arbitrary alterations may cause page builder block data errors and prevent normal page assembly.
+export interface ImageBannerTagContent {
+  image?: string;
+  tag?: Translation;
+  title?: Translation;
+  subtitle?: Translation;
+}
+  export interface ImageBannerTagProps {
+    content: ImageBannerTagContent
+  lang: Language;
+  getImageUrl?: (src: string, width: number) => string;
 }
 
 export default function ImageBannerTag({
-  tagText = "",
-  titleText = "",
-  subtitleText = "",
-  imageUrl = "",
+  content:{
+    image,
+    tag,
+    title,
+    subtitle,
+  },
+  lang,
+  getImageUrl,
 }: ImageBannerTagProps) {
+  const t = createTranslate(lang);
+  const tagText = tag ? t(tag) : "";
+  const titleText = title ? t(title) : "";
+  const subtitleText = subtitle ? t(subtitle) : "";
+  const imageUrl = image && getImageUrl ? getImageUrl(image, 1920) : (image || "");
   const escapedBgImage = imageUrl.replace(/"/g, '\\"');
 
   return (

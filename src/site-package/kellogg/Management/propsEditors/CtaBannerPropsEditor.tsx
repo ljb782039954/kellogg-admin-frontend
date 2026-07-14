@@ -11,7 +11,7 @@ import BilingualInput from '@/core-adminApp/ui/Input/BilingualInput';
 import ImageInput from '@/core-adminApp/ui/Input/ImageInput';
 import LinkSelector from '@/core-adminApp/ui/Input/LinkSelector';
 import { ensureNavLink } from '@/core-adminApp/lib/linkUtils';
-import type { CtaBannerContent } from '@site/ui-display/block-adapters';
+import type { CtaBannerContent } from '@site/ui-display/components/blocks';
 
 export interface CtaBannerPropsEditorProps {
   props: CtaBannerContent;

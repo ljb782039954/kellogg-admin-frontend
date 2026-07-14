@@ -1,4 +1,4 @@
-import type { BrandManifestoContent } from "../../types";
+import type { BrandManifestoContent } from "../../components/blocks";
 
 const brandManifesto: BrandManifestoContent = {
   eyebrow: {

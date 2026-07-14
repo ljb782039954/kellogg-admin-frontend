@@ -3,12 +3,10 @@ import { useState } from 'react';
 import { Plus, Trash2, GripVertical } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import BilingualInput from '@/core-adminApp/ui/Input/BilingualInput';
 import BilingualInputAera from '@/core-adminApp/ui/Input/BilingualInputAera';
 import ImageInput from '@/core-adminApp/ui/Input/ImageInput';
-import type { TestimonialContent, TestimonialsContent } from '@site/ui-display/block-adapters';
+import type { TestimonialItem , TestimonialsContent } from '@site/ui-display/components/blocks';
 
 export interface TestimonialsPropsEditorProps {
   props: TestimonialsContent;
@@ -17,9 +15,9 @@ export interface TestimonialsPropsEditorProps {
 
 
 export function TestimonialsPropsEditor({ props, onUpdate }: TestimonialsPropsEditorProps) {
-  const [localData, setLocalData] = useState<TestimonialContent[]>(props.items || []);
+  const [localData, setLocalData] = useState<TestimonialItem []>(props.items || []);
 
-  const saveItems = (items: TestimonialContent[]) => {
+  const saveItems = (items: TestimonialItem []) => {
     setLocalData(items);
     onUpdate({ ...props, items });
   };
@@ -38,7 +36,7 @@ export function TestimonialsPropsEditor({ props, onUpdate }: TestimonialsPropsEd
     ]);
   };
 
-  const updateItem = <K extends keyof TestimonialContent>(id: number, field: K, value: TestimonialContent[K]) => {
+  const updateItem = <K extends keyof TestimonialItem >(id: number, field: K, value: TestimonialItem [K]) => {
     saveItems(
       localData.map((item) =>
         item.id === id ? { ...item, [field]: value } : item
@@ -65,21 +63,6 @@ export function TestimonialsPropsEditor({ props, onUpdate }: TestimonialsPropsEd
           value={props.subtitle || { zh: '听听我们的客户怎么说', en: 'What our customers say' }}
           onChange={(val) => onUpdate({ ...props, subtitle: val })}
         />
-      </div>
-
-      {/* 显示设置 */}
-      <div className="space-y-4 pb-4 border-b">
-        <h4 className="font-medium text-sm text-gray-700">显示设置 (Settings)</h4>
-        <div className="space-y-2">
-          <Label>显示数量</Label>
-          <Input
-            type="number"
-            min={1}
-            max={20}
-            value={props.maxItems || 6}
-            onChange={(e) => onUpdate({ ...props, maxItems: parseInt(e.target.value) || 6 })}
-          />
-        </div>
       </div>
 
       {/* 评价列表 */}

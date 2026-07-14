@@ -1,4 +1,4 @@
-import type { GalleryContent } from '../../block-adapters/galleryAdapter';
+import type { GalleryContent } from '../../components/blocks';
 
 export const galleryProps: GalleryContent = {
   title: {

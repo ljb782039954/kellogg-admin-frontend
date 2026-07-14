@@ -1,9 +1,19 @@
-﻿import OptimizedImage from "@/runtime/components/OptimizedImage";
+import OptimizedImage from "@/runtime/components/OptimizedImage";
+import type { Language, Translation } from "@/cms/types";
+import { createTranslate } from "../../utils/i18n";
+
+// WARNING: This type represents the fields edited in the admin management background.
+// Do not modify it lightly; any change requires manual verification.
+// Arbitrary alterations may cause page builder block data errors and prevent normal page assembly.
+export interface FullWidthBannerContent {
+  image: string;
+  imageAlt?: Translation;
+  height?: "small" | "medium" | "large";
+}
 
 export interface FullWidthBannerProps {
-  image: string;
-  imageAlt?: string;
-  height?: "small" | "medium" | "large";
+  content: FullWidthBannerContent;
+  lang: Language;
 }
 
 const heightClass = {
@@ -13,18 +23,23 @@ const heightClass = {
 };
 
 export default function FullWidthBanner({
-  image,
-  imageAlt = "Banner",
-  height = "medium",
+  content,
+  lang = "en",
 }: FullWidthBannerProps) {
+  if (!content) return null;
+
+  const t = createTranslate(lang);
+  const resolvedImage = content.image || "";
+  const resolvedImageAlt = t(content.imageAlt, "Banner");
+  const resolvedHeight = content.height || "medium";
+
   return (
     <section className="w-full py-12">
-      <div className={`overflow-hidden ${heightClass[height]}`}>
-        <OptimizedImage src={image} alt={imageAlt} className="w-full h-full object-cover" sizes="100vw" />
+      <div className={`overflow-hidden ${heightClass[resolvedHeight]}`}>
+        <OptimizedImage src={resolvedImage} alt={resolvedImageAlt} className="w-full h-full object-cover" sizes="100vw" />
       </div>
     </section>
   );
 }
-
 
 

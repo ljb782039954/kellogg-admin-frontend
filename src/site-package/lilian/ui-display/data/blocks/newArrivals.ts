@@ -1,4 +1,4 @@
-import type { NewArrivalsContent } from "../../types";
+import type { NewArrivalsContent } from "../../components/blocks";
 
 const newArrivals: NewArrivalsContent = {
   title: {

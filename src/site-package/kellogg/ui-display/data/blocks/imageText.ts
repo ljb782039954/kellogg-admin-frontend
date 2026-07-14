@@ -1,4 +1,4 @@
-import type { ImageTextContent } from '../../block-adapters/imageTextAdapter';
+import type { ImageTextContent } from '../../components/blocks';
 
 export const imageTextProps: ImageTextContent = {
   title: { zh: "高支澳洲羊毛面料工艺", en: "Australian Wool Craftsmanship" },

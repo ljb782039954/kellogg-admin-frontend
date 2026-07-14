@@ -1,8 +1,6 @@
 import type {
-  BrandValuesContent,
   CategoriesContent,
   CarouselContent,
-  CountdownContent,
   CtaBannerContent,
   FAQContent,
   FeatureListContent,
@@ -18,8 +16,10 @@ import type {
   StatisticsContent,
   TestimonialsContent,
   TextSectionContent,
+  TableContent,
   VideoSectionContent,
-} from "../block-adapters";
+  BrandValuesContent, 
+} from "../components/blocks";
 
 export interface BlockContentMap {
   carousel: CarouselContent;
@@ -32,17 +32,17 @@ export interface BlockContentMap {
   testimonials: TestimonialsContent;
   faq: FAQContent;
   textSection: TextSectionContent;
+  table: TableContent;
   imageFull: ImageFullContent;
-  inquiry: Record<string, never>;
   imageBanner: ImageBannerContent;
   imageBannerTag: ImageBannerTagContent;
   videoSection: VideoSectionContent;
   imageText: ImageTextContent;
   ctaBanner: CtaBannerContent;
-  countdown: CountdownContent;
   partnerLogos: PartnerLogosContent;
   gallery: GalleryContent;
   featureList: FeatureListContent;
+  // inquiry: Record<string, never>; 这个组件实际不需要进入管理/编辑中
 }
 
 export type BlockType = keyof BlockContentMap;

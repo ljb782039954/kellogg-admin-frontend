@@ -1,4 +1,4 @@
-import type { MasonryGalleryContent } from "../../types";
+import type { MasonryGalleryContent } from "../../components/blocks";
 
 const masonryGallery: MasonryGalleryContent = {
   images: [

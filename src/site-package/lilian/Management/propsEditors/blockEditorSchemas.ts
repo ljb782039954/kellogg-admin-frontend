@@ -1,30 +1,36 @@
-import type { BlockType } from '../../ui-display/types';
-import type { EditorSchema } from './BlockFormEditor';
+import type { BlockContentMap, BlockType } from '../../ui-display/types';
+import { defineEditorSchema, type EditorSchema } from '@/core-adminApp/ui/Management/blockForm/BlockFormEditor';
 
-const imageAspectOptions = [
-  { label: '横向', value: 'landscape' },
+const videoAspectOptions = [
+  { label: '自适应', value: 'auto' },
+  { label: '横向', value: 'video' },
   { label: '竖向', value: 'portrait' },
   { label: '方形', value: 'square' },
-];
+] as const;
 
 const heightOptions = [
   { label: '小', value: 'small' },
   { label: '中', value: 'medium' },
   { label: '大', value: 'large' },
-];
+] as const;
+
+const parallaxHeightOptions = [
+  { label: '中', value: 'medium' },
+  { label: '大', value: 'large' },
+] as const;
 
 const alignOptions = [
   { label: '左对齐', value: 'left' },
   { label: '居中', value: 'center' },
-];
+] as const;
 
 const maxWidthOptions = [
   { label: '窄', value: 'narrow' },
   { label: '中', value: 'medium' },
   { label: '宽', value: 'wide' },
-];
+] as const;
 
-const imageItemFields: EditorSchema = [
+const imageItemFields = [
   {
     key: 'image',
     label: '图片',
@@ -43,9 +49,22 @@ const imageItemFields: EditorSchema = [
     label: '图片标题 / 说明',
     type: 'translation',
   },
-];
+] as const;
 
-const headingFields: EditorSchema = [
+const headingFields = [
+  {
+    key: 'title',
+    label: '标题',
+    type: 'translation',
+  },
+  {
+    key: 'subtitle',
+    label: '副标题',
+    type: 'translation',
+  },
+] as const;
+
+const headingFieldsRichText = [
   {
     key: 'title',
     label: '标题',
@@ -55,11 +74,12 @@ const headingFields: EditorSchema = [
     key: 'subtitle',
     label: '副标题',
     type: 'richText',
-    rows: 3,
+    rows: 4,
   },
-];
+] as const;
 
-const imageFields: EditorSchema = [
+
+const imageFields = [
   {
     key: 'image',
     label: '图片',
@@ -72,9 +92,9 @@ const imageFields: EditorSchema = [
     label: '图片描述',
     type: 'translation',
   },
-];
+] as const;
 
-const videoItemFields: EditorSchema = [
+const videoItemFields = [
   {
     key: 'title',
     label: '标题',
@@ -101,251 +121,45 @@ const videoItemFields: EditorSchema = [
   {
     key: 'description',
     label: '视频说明',
-    type: 'richText',
-    rows: 3,
+    type: 'translation',
   },
   {
     key: 'aspect',
     label: '视频比例',
     type: 'select',
-    options: imageAspectOptions,
+    options: videoAspectOptions,
   },
-];
+] as const;
+
+const defineBlockSchema = <T extends BlockType>() =>
+  defineEditorSchema<BlockContentMap[T]>();
 
 export const blockEditorSchemas: Partial<Record<BlockType, EditorSchema>> = {
-  categories: [
-    ...headingFields,
-    {
-      key: 'showAll',
-      label: '显示全部分类',
-      type: 'switch',
-    },
-    {
-      key: 'maxItems',
-      label: '最多显示数量',
-      type: 'number',
-      min: 1,
-      max: 24,
-    },
-  ],
-
-  newArrivals: [
-    ...headingFields,
-    {
-      key: 'maxItems',
-      label: '显示商品数量',
-      type: 'number',
-      min: 1,
-      max: 24,
-    },
-  ],
-
-  featuredProducts: [
-    ...headingFields,
-    {
-      key: 'maxItems',
-      label: '显示商品数量',
-      type: 'number',
-      min: 1,
-      max: 24,
-    },
-  ],
-
-  productGrid: [
-    ...headingFields,
-    {
-      key: 'itemsPerPage',
-      label: '每页商品数量',
-      type: 'number',
-      min: 1,
-      max: 48,
-    },
-    {
-      key: 'category',
-      label: '默认分类',
-      type: 'text',
-      placeholder: 'all 或分类 ID',
-      description: '填写 all 显示全部商品；也可以填写某个分类 ID。',
-    },
-  ],
-
-  featureList: [
-    ...headingFields,
-    {
-      key: 'items',
-      label: '特点',
-      type: 'repeater',
-      defaultItem: {
-        icon: 'Sparkles',
-        title: { zh: '', en: '' },
-        description: { zh: '', en: '' },
-      },
-      fields: [
-        {
-          key: 'icon',
-          label: '图标名称',
-          type: 'text',
-          placeholder: 'Lucide icon name，例如 Sparkles',
-        },
-        {
-          key: 'title',
-          label: '标题',
-          type: 'translation',
-        },
-        {
-          key: 'description',
-          label: '说明',
-          type: 'richText',
-          rows: 3,
-        },
-      ],
-    },
-  ],
-
-  imagePairGrid: [
-    {
-      key: 'images',
-      label: '图片',
-      type: 'repeater',
-      defaultItem: {
-        image: '',
-        imageAlt: { zh: '', en: '' },
-        caption: { zh: '', en: '' },
-      },
-      fields: imageItemFields,
-    },
-  ],
-
-  masonryGallery: [
-    {
-      key: 'images',
-      label: '图片',
-      type: 'repeater',
-      defaultItem: {
-        image: '',
-        imageAlt: { zh: '', en: '' },
-        caption: { zh: '', en: '' },
-        heightClass: 'h-80',
-      },
-      fields: [
-        ...imageItemFields,
-        {
-          key: 'heightClass',
-          label: '图片高度类名',
-          type: 'select',
-          options: [
-            { label: '低', value: 'h-60' },
-            { label: '中低', value: 'h-64' },
-            { label: '中', value: 'h-72' },
-            { label: '高', value: 'h-80' },
-            { label: '超高', value: 'h-96' },
-          ],
-        },
-      ],
-    },
-  ],
-
-  imageCarousel: [
-    {
-      key: 'images',
-      label: '轮播图片',
-      type: 'repeater',
-      defaultItem: {
-        image: '',
-        imageAlt: { zh: '', en: '' },
-        caption: { zh: '', en: '' },
-      },
-      fields: imageItemFields,
-    },
-    {
-      key: 'autoplay',
-      label: '自动播放',
-      type: 'switch',
-    },
-    {
-      key: 'interval',
-      label: '切换间隔（毫秒）',
-      type: 'number',
-      min: 1000,
-      max: 20000,
-      step: 500,
-    },
-  ],
-
-  fullWidthBanner: [
-    ...imageFields,
-    {
-      key: 'height',
-      label: '高度',
-      type: 'select',
-      options: heightOptions,
-    },
-  ],
-
-  imageTextSplit: [
+  brandManifesto: defineBlockSchema<'brandManifesto'>()([
     {
       key: 'eyebrow',
       label: '眉标题',
       type: 'translation',
     },
     {
-      key: 'title',
-      label: '标题',
+      key: 'quote',
+      label: '宣言正文',
       type: 'translation',
     },
     {
-      key: 'content',
-      label: '正文',
-      type: 'richText',
-      rows: 5,
-    },
-    ...imageFields,
-    {
-      key: 'imagePosition',
-      label: '图片位置',
-      type: 'select',
-      options: [
-        { label: '左侧', value: 'left' },
-        { label: '右侧', value: 'right' },
-      ],
-    },
-  ],
-
-  categories2: [
-    {
-      key: 'items',
-      label: '分类图片',
-      type: 'repeater',
-      defaultItem: {
-        image: '',
-        imageAlt: { zh: '', en: '' },
-        caption: { zh: '', en: '' },
-      },
-      fields: imageItemFields,
-    },
-  ],
-
-  parallaxImage: [
-    ...imageFields,
-    {
-      key: 'eyebrow',
-      label: '眉标题',
+      key: 'attribution',
+      label: '署名',
       type: 'translation',
     },
     {
-      key: 'title',
-      label: '标题',
-      type: 'translation',
+      key: 'backgroundColor',
+      label: '背景色',
+      type: 'color',
     },
-    {
-      key: 'height',
-      label: '高度',
-      type: 'select',
-      options: heightOptions.filter((option) => option.value !== 'small'),
-    },
-  ],
+  ]),
 
-  beforeAfterSlider: [
+  
+  beforeAfterSlider: defineBlockSchema<'beforeAfterSlider'>()([
     {
       key: 'eyebrow',
       label: '眉标题',
@@ -375,9 +189,257 @@ export const blockEditorSchemas: Partial<Record<BlockType, EditorSchema>> = {
       label: '对比后图片描述',
       type: 'translation',
     },
-  ],
+  ]),
 
-  lightboxGallery: [
+
+  categories: defineBlockSchema<'categories'>()([
+    ...headingFields,
+    {
+      key: 'showAll',
+      label: '显示全部分类',
+      type: 'switch',
+    },
+    {
+      key: 'maxItems',
+      label: '最多显示数量',
+      type: 'select',
+      options: [
+        { label: '4', value: 4 },
+        { label: '6', value: 6 },
+        { label: '8', value: 8 },
+        { label: '12', value: 12 },
+      ],
+    },
+  ]),
+
+  categories2: defineBlockSchema<'categories2'>()([
+    {
+      key: 'showAll',
+      label: '显示全部分类',
+      type: 'switch',
+    },
+    {
+      key: 'maxItems',
+      label: '最多显示数量',
+      type: 'select',
+      options: [
+        { label: '4', value: 4 },
+        { label: '6', value: 6 },
+        { label: '8', value: 8 },
+        { label: '12', value: 12 },
+      ],
+    },
+  ]),
+
+
+  newArrivals: defineBlockSchema<'newArrivals'>()([
+    ...headingFieldsRichText,
+    {
+      key: 'maxItems',
+      label: '显示商品数量',
+      type: 'select',
+      options: [
+        { label: '4', value: 4 },
+        { label: '8', value: 8 },
+      ],
+    },
+  ]),
+
+  featuredProducts: defineBlockSchema<'featuredProducts'>()([
+    ...headingFields,
+    {
+      key: 'maxItems',
+      label: '显示商品数量',
+      type: 'select',
+      options: [
+        { label: '4', value: 4 },
+        { label: '8', value: 8 },
+      ],
+    },
+  ]),
+
+  productGrid: defineBlockSchema<'productGrid'>()([
+    ...headingFields,
+    {
+      key: 'itemsPerPage',
+      label: '每页商品数量',
+      type: 'select',
+      options: [
+        { label: '4', value: 4 },
+        { label: '8', value: 8 },
+        { label: '12', value: 12 },
+        { label: '16', value: 16 },
+        { label: '20', value: 20 },
+      ],
+    },
+  ]),
+
+  featureList: defineBlockSchema<'featureList'>()([
+    ...headingFields,
+    {
+      key: 'items',
+      label: '特点',
+      type: 'repeater',
+      defaultItem: {
+        icon: 'Sparkles',
+        title: { zh: '', en: '' },
+        description: { zh: '', en: '' },
+      },
+      fields: [
+        {
+          key: 'icon',
+          label: '图标名称',
+          type: 'text',
+          placeholder: 'Lucide icon name，例如 Sparkles',
+        },
+        {
+          key: 'title',
+          label: '标题',
+          type: 'translation',
+        },
+        {
+          key: 'description',
+          label: '说明',
+          type: 'richText',
+          rows: 5,
+        },
+      ],
+    },
+  ]),
+
+  imagePairGrid: defineBlockSchema<'imagePairGrid'>()([
+    {
+      key: 'images',
+      label: '图片',
+      type: 'repeater',
+      minItems: 2,
+      maxItems: 2,
+      defaultItem: {
+        image: '',
+        imageAlt: { zh: '', en: '' },
+        caption: { zh: '', en: '' },
+      },
+      fields: imageItemFields,
+    },
+  ]),
+
+  masonryGallery: defineBlockSchema<'masonryGallery'>()([
+    {
+      key: 'images',
+      label: '图片',
+      type: 'repeater',
+      defaultItem: {
+        image: '',
+        imageAlt: { zh: '', en: '' },
+        caption: { zh: '', en: '' },
+        heightClass: 'h-80',
+      },
+      fields: [
+        ...imageItemFields,
+        {
+          key: 'heightClass',
+          label: '图片高度类名',
+          type: 'select',
+          options: [
+            { label: '低', value: 'h-60' },
+            { label: '中低', value: 'h-64' },
+            { label: '中', value: 'h-72' },
+            { label: '高', value: 'h-80' },
+            { label: '超高', value: 'h-96' },
+          ],
+        },
+      ],
+    },
+  ]),
+
+  imageCarousel: defineBlockSchema<'imageCarousel'>()([
+    {
+      key: 'images',
+      label: '轮播图片',
+      type: 'repeater',
+      defaultItem: {
+        image: '',
+        imageAlt: { zh: '', en: '' },
+        caption: { zh: '', en: '' },
+      },
+      fields: imageItemFields,
+    },
+    {
+      key: 'autoplay',
+      label: '自动播放',
+      type: 'switch',
+    },
+    {
+      key: 'interval',
+      label: '切换间隔（毫秒）',
+      type: 'number',
+      min: 1000,
+      max: 20000,
+      step: 500,
+    },
+  ]),
+
+  fullWidthBanner: defineBlockSchema<'fullWidthBanner'>()([
+    ...imageFields,
+    {
+      key: 'height',
+      label: '高度',
+      type: 'select',
+      options: heightOptions,
+    },
+  ]),
+
+  imageTextSplit: defineBlockSchema<'imageTextSplit'>()([
+    {
+      key: 'eyebrow',
+      label: '眉标题',
+      type: 'translation',
+    },
+    {
+      key: 'title',
+      label: '标题',
+      type: 'translation',
+    },
+    {
+      key: 'content',
+      label: '正文',
+      type: 'richText',
+      rows: 5,
+    },
+    ...imageFields,
+    {
+      key: 'imagePosition',
+      label: '图片位置',
+      type: 'select',
+      options: [
+        { label: '左侧', value: 'left' },
+        { label: '右侧', value: 'right' },
+      ],
+    },
+  ]),
+
+  parallaxImage: defineBlockSchema<'parallaxImage'>()([
+    ...imageFields,
+    {
+      key: 'eyebrow',
+      label: '眉标题',
+      type: 'translation',
+    },
+    {
+      key: 'title',
+      label: '标题',
+      type: 'translation',
+    },
+    {
+      key: 'height',
+      label: '高度',
+      type: 'select',
+      options: parallaxHeightOptions,
+    },
+  ]),
+
+
+  lightboxGallery: defineBlockSchema<'lightboxGallery'>()([
     {
       key: 'images',
       label: '灯箱图片',
@@ -389,9 +451,9 @@ export const blockEditorSchemas: Partial<Record<BlockType, EditorSchema>> = {
       },
       fields: imageItemFields,
     },
-  ],
+  ]),
 
-  fullscreenImageBackground: [
+  fullscreenImageBackground: defineBlockSchema<'fullscreenImageBackground'>()([
     ...imageFields,
     {
       key: 'eyebrow',
@@ -408,9 +470,9 @@ export const blockEditorSchemas: Partial<Record<BlockType, EditorSchema>> = {
       label: '显示遮罩',
       type: 'switch',
     },
-  ],
+  ]),
 
-  videoGrid: [
+  videoGrid: defineBlockSchema<'videoGrid'>()([
     {
       key: 'items',
       label: '视频',
@@ -421,13 +483,13 @@ export const blockEditorSchemas: Partial<Record<BlockType, EditorSchema>> = {
         coverImage: '',
         coverImageAlt: { zh: '', en: '' },
         description: { zh: '', en: '' },
-        aspect: 'landscape',
+        aspect: 'video',
       },
       fields: videoItemFields,
     },
-  ],
+  ]),
 
-  fullscreenVideoPopup: [
+  fullscreenVideoPopup: defineBlockSchema<'fullscreenVideoPopup'>()([
     {
       key: 'title',
       label: '标题',
@@ -454,40 +516,17 @@ export const blockEditorSchemas: Partial<Record<BlockType, EditorSchema>> = {
       key: 'aspect',
       label: '视频比例',
       type: 'select',
-      options: imageAspectOptions,
+      options: videoAspectOptions,
     },
     {
-      key: 'caption',
+      key: 'description',
       label: '说明',
       type: 'translation',
     },
-  ],
+  ]),
 
-  brandManifesto: [
-    {
-      key: 'eyebrow',
-      label: '眉标题',
-      type: 'translation',
-    },
-    {
-      key: 'quote',
-      label: '宣言正文',
-      type: 'richText',
-      rows: 4,
-    },
-    {
-      key: 'attribution',
-      label: '署名',
-      type: 'translation',
-    },
-    {
-      key: 'backgroundColor',
-      label: '背景色',
-      type: 'color',
-    },
-  ],
 
-  numberCounter: [
+  numberCounter: defineBlockSchema<'numberCounter'>()([
     {
       key: 'stats',
       label: '数字',
@@ -516,16 +555,16 @@ export const blockEditorSchemas: Partial<Record<BlockType, EditorSchema>> = {
         },
       ],
     },
-  ],
+  ]),
 
-  testimonialMasonry: [
+  testimonialMasonry: defineBlockSchema<'testimonialMasonry'>()([
     {
-      key: 'reviews',
+      key: 'items',
       label: '评价',
       type: 'repeater',
       defaultItem: {
-        name: '',
-        company: '',
+        name: { zh: '', en: '' },
+        company: { zh: '', en: '' },
         avatar: '',
         text: { zh: '', en: '' },
         rating: 5,
@@ -534,12 +573,12 @@ export const blockEditorSchemas: Partial<Record<BlockType, EditorSchema>> = {
         {
           key: 'name',
           label: '客户姓名',
-          type: 'text',
+          type: 'translation',
         },
         {
           key: 'company',
           label: '公司 / 来源',
-          type: 'text',
+          type: 'translation',
         },
         {
           key: 'avatar',
@@ -551,8 +590,7 @@ export const blockEditorSchemas: Partial<Record<BlockType, EditorSchema>> = {
         {
           key: 'text',
           label: '评价内容',
-          type: 'richText',
-          rows: 3,
+          type: 'translation',
         },
         {
           key: 'rating',
@@ -563,9 +601,9 @@ export const blockEditorSchemas: Partial<Record<BlockType, EditorSchema>> = {
         },
       ],
     },
-  ],
+  ]),
 
-  faqAccordion: [
+  faqAccordion: defineBlockSchema<'faqAccordion'>()([
     {
       key: 'title',
       label: '标题',
@@ -588,14 +626,13 @@ export const blockEditorSchemas: Partial<Record<BlockType, EditorSchema>> = {
         {
           key: 'answer',
           label: '回答',
-          type: 'richText',
-          rows: 4,
+          type: 'translation',
         },
       ],
     },
-  ],
+  ]),
 
-  certificationBadges: [
+  certificationBadges: defineBlockSchema<'certificationBadges'>()([
     {
       key: 'eyebrow',
       label: '眉标题',
@@ -624,14 +661,13 @@ export const blockEditorSchemas: Partial<Record<BlockType, EditorSchema>> = {
         {
           key: 'description',
           label: '说明',
-          type: 'richText',
-          rows: 3,
+          type: 'translation',
         },
       ],
     },
-  ],
+  ]),
 
-  mainHeading: [
+  mainHeading: defineBlockSchema<'mainHeading'>()([
     {
       key: 'title',
       label: '标题',
@@ -654,9 +690,9 @@ export const blockEditorSchemas: Partial<Record<BlockType, EditorSchema>> = {
       type: 'select',
       options: alignOptions,
     },
-  ],
+  ]),
 
-  richTextBlock: [
+  richTextBlock: defineBlockSchema<'richTextBlock'>()([
     {
       key: 'title',
       label: '标题',
@@ -680,9 +716,9 @@ export const blockEditorSchemas: Partial<Record<BlockType, EditorSchema>> = {
       type: 'select',
       options: maxWidthOptions,
     },
-  ],
+  ]),
 
-  textGrid: [
+  textGrid: defineBlockSchema<'textGrid'>()([
     {
       key: 'items',
       label: '文本项',
@@ -701,9 +737,9 @@ export const blockEditorSchemas: Partial<Record<BlockType, EditorSchema>> = {
           key: 'text',
           label: '正文',
           type: 'richText',
-          rows: 4,
+          rows: 5,
         },
       ],
     },
-  ],
+  ]),
 };

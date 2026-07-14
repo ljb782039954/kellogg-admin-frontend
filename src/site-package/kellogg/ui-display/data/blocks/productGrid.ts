@@ -1,4 +1,4 @@
-import type { ProductGridContent } from '../../block-adapters/productGridAdapter';
+import type { ProductGridContent } from '../../components/blocks';
 
 export const productGridProps: ProductGridContent = {
   itemsPerPage: 12

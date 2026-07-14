@@ -8,14 +8,14 @@ function lazyBlock(loader: Parameters<typeof lazy>[0]): LilianBlockComponent {
 }
 
 export const lilianBlockComponentMap: Partial<Record<BlockType, LilianBlockComponent>> = {
-  productCard: lazyBlock(() => import("./components/blocks/ProductCardBlock")),
+  // productCard: lazyBlock(() => import("./components/blocks/ProductCardBlock")),
   categories: lazyBlock(() => import("./components/blocks/Categories")),
   newArrivals: lazyBlock(() => import("./components/blocks/NewArrivals")),
   featuredProducts: lazyBlock(() => import("./components/blocks/FeaturedProducts")),
   productGrid: lazyBlock(() => import("./components/blocks/ProductGrid")),
   featureList: lazyBlock(() => import("./components/blocks/FeatureList")),
-  inquiry: lazyBlock(() => import("./components/blocks/Inquiry")),
-  blogGrid: lazyBlock(() => import("./components/blocks/BlogGrid")),
+  // inquiry: lazyBlock(() => import("./components/blocks/Inquiry")),
+  // blogGrid: lazyBlock(() => import("./components/blocks/BlogGrid")),
 
   imagePairGrid: lazyBlock(() => import("./components/blocks/ImagePairGrid")),
   fullWidthBanner: lazyBlock(() => import("./components/blocks/FullWidthBanner")),
@@ -35,11 +35,12 @@ export const lilianBlockComponentMap: Partial<Record<BlockType, LilianBlockCompo
   numberCounter: lazyBlock(() => import("./components/blocks/NumberCounter")),
   testimonialMasonry: lazyBlock(() => import("./components/blocks/TestimonialMasonry")),
   faqAccordion: lazyBlock(() => import("./components/blocks/FaqAccordion")),
-  blogSidebar: lazyBlock(() => import("./components/base/BlogSidebar")),
+  // blogSidebar: lazyBlock(() => import("./components/base/BlogSidebar")),
   certificationBadges: lazyBlock(() => import("./components/blocks/CertificationBadges")),
-  brochureDownload: lazyBlock(() => import("./components/blocks/BrochureDownload")),
+  // brochureDownload: lazyBlock(() => import("./components/blocks/BrochureDownload")),
   mainHeading: lazyBlock(() => import("./components/blocks/MainHeading")),
   textGrid: lazyBlock(() => import("./components/blocks/TextGrid")),
+  table: lazyBlock(() => import("./components/blocks/Table")),
 };
 
 export function getBlockComponent(type: BlockType): LilianBlockComponent | null {

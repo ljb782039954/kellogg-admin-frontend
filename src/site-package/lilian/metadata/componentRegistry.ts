@@ -15,16 +15,6 @@ export const componentRegistry = Object.fromEntries(
 
 export const componentsByCategory = blockRegistry.reduce(
   (acc, block) => {
-    if (
-      block.type === 'inquiry' || 
-      block.type === 'productCard' || 
-      block.type === 'blogSidebar' || 
-      block.type === 'blogGrid' || 
-      block.type === 'brochureDownload' 
-
-    ) {
-      return acc;
-    }
 
     acc[block.category].push(block.type);
     return acc;

@@ -1,4 +1,4 @@
-import type { ImageCarouselContent } from "../../types";
+import type { ImageCarouselContent } from "../../components/blocks";
 
 const imageCarousel: ImageCarouselContent = {
   images: [

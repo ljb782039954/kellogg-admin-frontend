@@ -1,4 +1,4 @@
-import type { VideoGridContent } from "../../types";
+import type { VideoGridContent } from "../../components/blocks";
 
 const videoGrid: VideoGridContent = {
   items: [
@@ -6,13 +6,13 @@ const videoGrid: VideoGridContent = {
       title: { zh: "工作室", en: "The Atelier" },
       url: "https://www.youtube.com/watch?v=ysz5S6PUM-U",
       coverImage: "/lilian/image/product1.jpg",
-      aspect: "landscape",
+      aspect: "auto",
     },
     {
       title: { zh: "真丝织造", en: "Silk Weaving" },
       url: "https://vimeo.com/76979871",
       coverImage: "/lilian/image/product2.jpg",
-      aspect: "landscape",
+      aspect: "auto",
     },
     {
       title: { zh: "短片花絮", en: "Short Film" },
@@ -30,7 +30,7 @@ const videoGrid: VideoGridContent = {
       title: { zh: "幕后", en: "Behind Seams" },
       url: "https://www.facebook.com/facebook/videos/10153231379946729/",
       coverImage: "/lilian/image/hero.jpg",
-      aspect: "landscape",
+      aspect: "video",
     },
     {
       title: { zh: "社交动态", en: "Social Clip" },

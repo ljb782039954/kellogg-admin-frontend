@@ -1,4 +1,4 @@
-import type { VideoSectionContent } from '../../block-adapters/videoSectionAdapter';
+import type { VideoSectionContent } from '../../components/blocks';
 
 export const videoSectionProps: VideoSectionContent = {
   title: {

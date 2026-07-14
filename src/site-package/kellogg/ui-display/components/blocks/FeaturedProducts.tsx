@@ -1,23 +1,36 @@
-import { ProductCardStatic, type ProductCardStaticProps } from "../base";
+import { ProductCard } from "../base";
+import type { Language, Product, Translation } from "@/cms/types";
+import { createTranslate } from "../../utils/i18n";
 
-export interface FeaturedProductCard {
-  id: string;
-  href: string;
-  card: ProductCardStaticProps;
+// WARNING: This type represents the fields edited in the admin management background.
+// Do not modify it lightly; any change requires manual verification.
+// Arbitrary alterations may cause page builder block data errors and prevent normal page assembly.
+export interface FeaturedProductsContent {
+  title?: Translation;
+  subtitle?: Translation;
+  maxItems?: number;
 }
 
-export interface FeaturedProductsProps {
-  titleText?: string;
-  subtitleText?: string;
-  cards?: FeaturedProductCard[];
+export interface FeaturedProductsProps extends FeaturedProductsContent {
+  initialProducts?: Product[];
+  products?: Product[];
+  lang: Language;
 }
 
 export default function FeaturedProducts({
-  titleText = "",
-  subtitleText = "",
-  cards = [],
+  title,
+  subtitle,
+  maxItems = 8,
+  initialProducts = [],
+  products: providedProducts,
+  lang,
 }: FeaturedProductsProps) {
-  if (cards.length === 0) return null;
+  const translate = createTranslate(lang);
+  const products = (providedProducts || initialProducts).slice(0, maxItems);
+  const titleText = title ? translate(title) : "";
+  const subtitleText = subtitle ? translate(subtitle) : "";
+
+  if (products.length === 0) return null;
 
   return (
     <section className="py-8 w-full">
@@ -30,10 +43,12 @@ export default function FeaturedProducts({
         )}
 
         <div className="grid grid-cols-[repeat(auto-fit,minmax(160px,1fr))] md:grid-cols-[repeat(auto-fit,minmax(240px,1fr))] gap-4">
-          {cards.map((card) => (
-            <a key={card.id} href={card.href} className="block group">
-              <ProductCardStatic {...card.card} />
-            </a>
+          {products.map((product) => (
+            <ProductCard
+              key={product.id}
+              product={product}
+              lang={lang}
+            />
           ))}
         </div>
       </div>

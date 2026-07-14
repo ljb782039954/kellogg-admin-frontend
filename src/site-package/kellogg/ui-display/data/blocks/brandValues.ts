@@ -1,4 +1,4 @@
-import type { BrandValuesContent } from '../../block-adapters/brandValuesAdapter';
+import type { BrandValuesContent } from '../../components/blocks/BrandValues';
 
 export const brandValuesProps: BrandValuesContent = {
   title: {

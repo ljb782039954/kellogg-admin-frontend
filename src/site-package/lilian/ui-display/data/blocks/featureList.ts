@@ -1,4 +1,4 @@
-import type { FeatureListContent } from "../../types";
+import type { FeatureListContent } from "../../components/blocks";
 
 const featureList: FeatureListContent = {
   title: {

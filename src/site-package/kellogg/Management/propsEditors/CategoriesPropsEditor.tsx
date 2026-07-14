@@ -5,7 +5,7 @@ import { Switch } from '@/components/ui/switch';
 import { Info } from 'lucide-react';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import AdminImage from '@/core-adminApp/ui/Input/AdminImage';
-import type { CategoriesContent } from '@site/ui-display/block-adapters';
+import type { CategoriesContent } from '@site/ui-display/components/blocks';
 
 export interface CategoriesPropsEditorProps {
   props: CategoriesContent;

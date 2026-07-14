@@ -1,4 +1,4 @@
-import type { NumberCounterContent } from "../../types";
+import type { NumberCounterContent } from "../../components/blocks";
 
 const numberCounter: NumberCounterContent = {
   stats: [

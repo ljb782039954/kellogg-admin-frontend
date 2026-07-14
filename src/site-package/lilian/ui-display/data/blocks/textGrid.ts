@@ -1,4 +1,4 @@
-import type { TextGridContent } from "../../types";
+import type { TextGridContent } from "../../components/blocks";
 
 const textGrid: TextGridContent = {
   items: [

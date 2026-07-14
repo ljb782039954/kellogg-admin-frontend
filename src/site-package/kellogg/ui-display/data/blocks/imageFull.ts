@@ -1,4 +1,4 @@
-import type { ImageFullContent } from '../../block-adapters/imageFullAdapter';
+import type { ImageFullContent } from '../../components/blocks';
 
 export const imageFullProps: ImageFullContent = {
   image: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=1600&auto=format&fit=crop&q=80",

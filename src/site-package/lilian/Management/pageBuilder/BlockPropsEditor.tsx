@@ -1,7 +1,8 @@
 import { type PageBlock } from '../../types';
 import { componentsByCategory } from '../../metadata/componentRegistry';
 import type { BlockType } from '../../ui-display/types';
-import { BlockFormEditor } from '../propsEditors/BlockFormEditor';
+import { BlockFormEditor } from '@/core-adminApp/ui/Management/blockForm/BlockFormEditor';
+import { TablePropsEditor } from '@/core-adminApp/ui/Management/blockForm/TablePropsEditor';
 import { blockEditorSchemas } from '../propsEditors/blockEditorSchemas';
 
 const editableBlockTypes = new Set<BlockType>(
@@ -20,6 +21,11 @@ export function PropsEditorSwitch({
   onUpdate: (content: unknown) => void;
 }) {
   const content = block.content as Record<string, unknown>;
+
+  if (block.type === 'table') {
+    return <TablePropsEditor props={block.content} onUpdate={onUpdate} />;
+  }
+
   const schema = blockEditorSchemas[block.type];
 
   if (!isEditableBlockType(block.type) || !schema) {

@@ -1,4 +1,4 @@
-import type { FaqAccordionContent } from "../../types";
+import type { FaqAccordionContent } from "../../components/blocks";
 
 const faqAccordion: FaqAccordionContent = {
   title: {

@@ -1,4 +1,4 @@
-import type { FeaturedProductsContent } from "../../types";
+import type { FeaturedProductsContent } from "../../components/blocks";
 
 const featuredProducts: FeaturedProductsContent = {
   title: {

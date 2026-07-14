@@ -1,4 +1,4 @@
-import type { CtaBannerContent } from '../../block-adapters/ctaBannerAdapter';
+import type { CtaBannerContent } from '../../components/blocks';
 
 export const ctaBannerProps: CtaBannerContent = {
   title: {

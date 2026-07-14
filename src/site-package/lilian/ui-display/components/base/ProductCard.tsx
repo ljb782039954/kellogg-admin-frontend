@@ -1,8 +1,10 @@
-﻿import OptimizedImage from "@/runtime/components/OptimizedImage";
-import RichText from "@/runtime/components/RichText";
-// TODO 涓嶉渶瑕佸睍绀?鍒嗙被
+import OptimizedImage from "@/runtime/components/OptimizedImage";
+import type { Language, Product, } from "@/cms/types";
+import { toProductCardData } from "@/cms/adapters/productCard";
+import { formatPrice } from "@/cms/lib/currency";
+
 export interface ProductCardProps {
-  title: string;
+  title?: string;
   imageSrc?: string;
   href?: string;
   tagText?: string;
@@ -12,20 +14,88 @@ export interface ProductCardProps {
   originalPriceText?: string;
   releaseText?: string;
   variant?: "standard" | "compact" | "arrival";
+
+  // Self-formatting options
+  product?: Product;
+  lang?: Language;
+  formatPriceText?: (price?: number) => string;
+}
+
+export function toProductCardViewProps(
+  product: Product,
+  {
+    lang,
+    variant = "standard",
+    formatPriceText,
+  }: {
+    lang: Language;
+    variant?: ProductCardProps["variant"];
+    formatPriceText?: (price?: number) => string;
+  },
+): ProductCardProps {
+  const card = toProductCardData(product, {
+    lang,
+    formatPriceText: formatPriceText || formatPrice,
+    includeReleaseDate: variant === "arrival",
+    includeDescription: true,
+  });
+
+  return {
+    title: card.title,
+    href: `/product/${product.id}`,
+    imageSrc: card.imageSrc,
+    tagText: card.tagText,
+    quantityText: card.quantityText,
+    descriptionText: card.descriptionText,
+    priceText: card.priceText,
+    originalPriceText: card.originalPriceText,
+    releaseText: card.releaseText,
+    variant,
+  };
 }
 
 export default function ProductCard({
-  title,
-  imageSrc,
-  href = "#",
-  tagText = "",
-  quantityText = "",
-  descriptionText = "",
-  priceText = "",
-  originalPriceText = "",
-  releaseText = "",
+  title: initialTitle = "",
+  imageSrc: initialImageSrc,
+  href: initialHref = "#",
+  tagText: initialTagText = "",
+  quantityText: initialQuantityText = "",
+  descriptionText: initialDescriptionText = "",
+  priceText: initialPriceText = "",
+  originalPriceText: initialOriginalPriceText = "",
+  releaseText: initialReleaseText = "",
   variant = "standard",
+  product,
+  lang,
+  formatPriceText,
 }: ProductCardProps) {
+  let title = initialTitle;
+  let imageSrc = initialImageSrc;
+  let href = initialHref;
+  let tagText = initialTagText;
+  let quantityText = initialQuantityText;
+  let descriptionText = initialDescriptionText;
+  let priceText = initialPriceText;
+  let originalPriceText = initialOriginalPriceText;
+  let releaseText = initialReleaseText;
+
+  if (product && lang) {
+    const card = toProductCardViewProps(product, {
+      lang,
+      variant,
+      formatPriceText,
+      // categoryNames,
+    });
+    title = card.title || "";
+    imageSrc = card.imageSrc;
+    href = card.href || "#";
+    tagText = card.tagText || "";
+    quantityText = card.quantityText || "";
+    descriptionText = card.descriptionText || "";
+    priceText = card.priceText || "";
+    originalPriceText = card.originalPriceText || "";
+    releaseText = card.releaseText || "";
+  }
   const isCompact = variant === "compact";
 
   return (
@@ -76,7 +146,7 @@ export default function ProductCard({
             </div>
           )}
           {descriptionText && !isCompact && (
-            <RichText value={descriptionText} className="mt-2 text-sm leading-6 text-body line-clamp-2" />
+            <p className="mt-2 text-sm leading-6 text-body line-clamp-2"> {descriptionText}</p>
           )}
         </div>
       </article>

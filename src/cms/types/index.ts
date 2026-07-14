@@ -5,6 +5,8 @@ export * from "./common";
 export * from "./products";
 export * from "./baseEditor";
 export * from "./review";
+export * from "./query";
+export * from "./inquiry";
 
 import type { CompanyInfo, HeaderContent, FooterContent } from "./baseEditor";
 import type { CmsCustomPage } from "./pages";

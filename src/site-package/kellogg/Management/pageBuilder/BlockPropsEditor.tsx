@@ -4,7 +4,6 @@ import type {
   BrandValuesContent,
   CarouselContent,
   CategoriesContent,
-  CountdownContent,
   CtaBannerContent,
   FAQContent,
   FeatureListContent,
@@ -18,10 +17,14 @@ import type {
   PartnerLogosContent,
   ProductGridContent,
   StatisticsContent,
+  // TableContent,
   TestimonialsContent,
   TextSectionContent,
   VideoSectionContent,
-} from '@site/ui-display/block-adapters';
+} from '../../ui-display/components/blocks';
+
+// 通用组件编辑器
+import { TablePropsEditor } from '@/core-adminApp/ui/Management/blockForm/TablePropsEditor';
 
 // 组件基础编辑器
 import { TextSectionPropsEditor } from '../propsEditors/TextSectionPropsEditor';
@@ -40,7 +43,6 @@ import { CategoriesPropsEditor } from '../propsEditors/CategoriesPropsEditor';
 import { NewArrivalsPropsEditor } from '../propsEditors/NewArrivalsPropsEditor';
 import { FeaturedProductsPropsEditor } from '../propsEditors/FeaturedProductsPropsEditor';
 import { ImageTextPropsEditor } from '../propsEditors/ImageTextPropsEditor';
-import { CountdownPropsEditor } from '../propsEditors/CountdownPropsEditor';
 import { PartnerLogosPropsEditor } from '../propsEditors/PartnerLogosPropsEditor';
 import { GalleryPropsEditor } from '../propsEditors/GalleryPropsEditor';
 import { FeatureListPropsEditor } from '../propsEditors/FeatureListPropsEditor';
@@ -79,6 +81,8 @@ export function PropsEditorSwitch({
     // 局部内容组件
     case 'textSection':
       return <TextSectionPropsEditor props={content as TextSectionContent} onUpdate={onUpdate} />;
+    case 'table':
+      return <TablePropsEditor props={block.content} onUpdate={onUpdate} />;
     case 'imageBanner':
       return <ImageBannerPropsEditor props={content as ImageBannerContent} onUpdate={onUpdate} />;
     case 'imageFull':
@@ -96,8 +100,6 @@ export function PropsEditorSwitch({
       return <VideoSectionPropsEditor props={content as VideoSectionContent} onUpdate={onUpdate} />;
     case 'imageText':
       return <ImageTextPropsEditor props={content as ImageTextContent} onUpdate={onUpdate} />;
-    case 'countdown':
-      return <CountdownPropsEditor props={content as CountdownContent} onUpdate={onUpdate} />;
     case 'partnerLogos':
       return <PartnerLogosPropsEditor props={content as PartnerLogosContent} onUpdate={onUpdate} />;
     case 'gallery':
