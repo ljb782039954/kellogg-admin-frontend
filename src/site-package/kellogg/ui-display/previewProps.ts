@@ -53,7 +53,7 @@ export function getPreviewProps(
       };
     case "featuredProducts":
       return {
-        ...content,
+        content,
         products: mockProducts.filter((product) => product.isFeatured),
         lang,
       };

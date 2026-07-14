@@ -1,6 +1,6 @@
 export { default as Pagination } from "./Pagination";
-export { default as ProductCard } from "./ProductCardMotion";
-export { default as ProductCardStatic } from "./ProductCard";
+export { default as ProductCardMotion } from "./ProductCardMotion";
+export { default as ProductCard } from "./ProductCard";
 export type { ProductCardProps } from "./ProductCard";
 export { default as ProductCustomFields } from "./ProductCustomFields";
 export type { ProductCustomFieldItem, ProductCustomFieldsProps } from "./ProductCustomFields";

@@ -11,22 +11,23 @@ export interface FeaturedProductsContent {
   maxItems?: number;
 }
 
-export interface FeaturedProductsProps extends FeaturedProductsContent {
-  initialProducts?: Product[];
-  products?: Product[];
+export interface FeaturedProductsProps {
+  content: FeaturedProductsContent;
+  products: Product[];
   lang: Language;
 }
 
 export default function FeaturedProducts({
-  title,
-  subtitle,
-  maxItems = 8,
-  initialProducts = [],
-  products: providedProducts,
+  content: {
+    title,
+    subtitle,
+    maxItems = 8,
+  },
+  products: providedProducts = [],
   lang,
 }: FeaturedProductsProps) {
   const translate = createTranslate(lang);
-  const products = (providedProducts || initialProducts).slice(0, maxItems);
+  const products = providedProducts.slice(0, maxItems);
   const titleText = title ? translate(title) : "";
   const subtitleText = subtitle ? translate(subtitle) : "";
 
